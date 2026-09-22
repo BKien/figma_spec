@@ -1,0 +1,26 @@
+2026-09-20T09:08:04.226Z
+
+    schema.dbml(1,33): An Enum must have only a field and optionally a setting list
+    schema.dbml(2,29): An Enum must have only a field and optionally a setting list
+    schema.dbml(2,34): An Enum must have only a field and optionally a setting list
+    schema.dbml(3,30): An Enum must have only a field and optionally a setting list
+    schema.dbml(3,42): An Enum must have only a field and optionally a setting list
+    schema.dbml(3,49): An Enum must have only a field and optionally a setting list
+    schema.dbml(4,34): An Enum must have only a field and optionally a setting list
+    schema.dbml(5,28): An Enum must have only a field and optionally a setting list
+    schema.dbml(5,37): An Enum must have only a field and optionally a setting list
+    schema.dbml(5,42): An Enum must have only a field and optionally a setting list
+    schema.dbml(6,37): An Enum must have only a field and optionally a setting list
+    schema.dbml(6,46): An Enum must have only a field and optionally a setting list
+    schema.dbml(6,55): An Enum must have only a field and optionally a setting list
+    schema.dbml(7,26): An Enum must have only a field and optionally a setting list
+    schema.dbml(8,28): An Enum must have only a field and optionally a setting list
+    schema.dbml(9,30): An Enum must have only a field and optionally a setting list
+    schema.dbml(9,39): An Enum must have only a field and optionally a setting list
+    schema.dbml(9,49): An Enum must have only a field and optionally a setting list
+    schema.dbml(9,57): An Enum must have only a field and optionally a setting list
+    schema.dbml(10,37): An Enum must have only a field and optionally a setting list
+    schema.dbml(10,45): An Enum must have only a field and optionally a setting list
+    schema.dbml(10,55): An Enum must have only a field and optionally a setting list
+    schema.dbml(11,29): An Enum must have only a field and optionally a setting list
+

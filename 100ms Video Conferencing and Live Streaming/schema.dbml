@@ -1,0 +1,287 @@
+Project conferencing_contract {
+  database_type: 'PostgreSQL'
+  Note: 'Compile this schema, then apply persistence.sql. Expression unique indexes enforce conditional singleton constraints. Transaction/capacity semantics are defined by UC-02 and the other UC OCL rules.'
+}
+
+Enum session_kind {
+  LIVE_STREAM
+  VIDEO_CONFERENCE
+}
+
+Enum session_status {
+  LOBBY
+  LIVE
+  ENDED
+}
+
+Enum participant_role {
+  HOST
+  BROADCASTER
+  VIEWER
+  STAGE_PARTICIPANT
+}
+
+Enum participant_status {
+  JOINED
+  LEFT
+}
+
+Enum stream_status {
+  READY
+  STARTING
+  LIVE
+  ENDED
+}
+
+Enum stage_request_status {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+}
+
+Enum share_kind {
+  SCREEN
+  PDF
+}
+
+Enum share_status {
+  ACTIVE
+  STOPPED
+}
+
+Enum recording_status {
+  IDLE
+  STARTING
+  RECORDING
+  STOPPED
+  FAILED
+}
+
+Enum layout_mode {
+  EQUAL_PROMINENCE
+  SIDEBAR
+  SPOTLIGHT
+  PRESENTER
+}
+
+Enum departure_kind {
+  LEAVE
+  END
+}
+
+Table users {
+  id uuid [pk]
+  display_name varchar(50) [not null]
+  created_at timestamptz [not null]
+}
+
+Table principals {
+  id uuid [pk]
+  user_id uuid [ref: > users.id]
+  created_at timestamptz [not null]
+}
+
+Table virtual_backgrounds {
+  id uuid [pk]
+  name varchar(160) [not null]
+  asset_reference varchar(255) [not null, unique]
+  active boolean [not null, default: true]
+  created_at timestamptz [not null]
+}
+
+Table sessions {
+  id uuid [pk]
+  kind session_kind [not null]
+  status session_status [not null, default: 'LOBBY']
+  designated_host_principal_id uuid [not null, ref: > principals.id]
+  host_participant_id uuid
+  version int [not null, default: 1, check: `version > 0`]
+  created_at timestamptz [not null]
+  ended_at timestamptz
+
+  indexes { (status, created_at) }
+}
+
+Table participants {
+  id uuid [pk]
+  session_id uuid [not null, ref: > sessions.id]
+  user_id uuid [ref: > users.id]
+  principal_id uuid [not null, ref: > principals.id]
+  microphone_enabled boolean [not null, default: false]
+  camera_enabled boolean [not null, default: false]
+  display_name varchar(50) [not null]
+  role participant_role [not null]
+  status participant_status [not null]
+  joined_at timestamptz [not null]
+  left_at timestamptz
+  version int [not null, default: 1, check: `version > 0`]
+
+  indexes {
+    (session_id, status)
+    (session_id, user_id)
+    (session_id, id) [unique]
+    (session_id, `(CASE WHEN status = 'JOINED' THEN principal_id ELSE NULL END)`) [unique, name: 'one_joined_membership']
+    `(CASE WHEN status = 'JOINED' AND role = 'HOST' THEN session_id ELSE NULL END)` [unique, name: 'one_joined_host']
+  }
+}
+
+Ref session_host: sessions.(id, host_participant_id) > participants.(session_id, id)
+
+Table live_streams {
+  id uuid [pk]
+  session_id uuid [not null, unique, ref: > sessions.id]
+  status stream_status [not null]
+  version int [not null, default: 1, check: `version > 0`]
+  started_at timestamptz
+  ended_at timestamptz
+}
+
+Table stage_requests {
+  id uuid [pk]
+  session_id uuid [not null, ref: > sessions.id]
+  participant_id uuid [not null]
+  status stage_request_status [not null]
+  decided_by_participant_id uuid
+  created_at timestamptz [not null]
+  decided_at timestamptz
+
+  version int [not null, default: 1, check: `version > 0`]
+  indexes {
+    (session_id, participant_id, status)
+    (session_id, participant_id, `(CASE WHEN status = 'PENDING' THEN 1 ELSE NULL END)`) [unique, name: 'one_pending_stage_request']
+  }
+}
+
+Table chat_messages {
+  id uuid [pk]
+  session_id uuid [not null, ref: > sessions.id]
+  sender_participant_id uuid [not null]
+  body text [not null]
+  sent_at timestamptz [not null]
+
+  sequence bigint [not null]
+  indexes { (session_id, sequence) [unique] }
+}
+
+Table reaction_events {
+  id uuid [pk]
+  session_id uuid [not null, ref: > sessions.id]
+  participant_id uuid [not null]
+  reaction reaction_code [not null]
+  created_at timestamptz [not null]
+
+  sequence bigint [not null]
+  indexes { (session_id, sequence) [unique] }
+}
+
+Table content_shares {
+  id uuid [pk]
+  session_id uuid [not null, ref: > sessions.id]
+  owner_participant_id uuid [not null]
+  kind share_kind [not null]
+  status share_status [not null]
+  source_reference text [not null]
+  version int [not null, default: 1, check: `version > 0`]
+  started_at timestamptz [not null]
+  stopped_at timestamptz
+
+  indexes {
+    (session_id, status)
+    `(CASE WHEN status = 'ACTIVE' THEN session_id ELSE NULL END)` [unique, name: 'one_active_share']
+  }
+}
+
+Table media_preferences {
+  participant_id uuid [pk, ref: > participants.id]
+  microphone_device_id text
+  camera_device_id text
+  speaker_device_id text
+  virtual_background_id uuid [ref: > virtual_backgrounds.id]
+  updated_at timestamptz [not null]
+}
+
+Table view_preferences {
+  participant_id uuid [pk, ref: > participants.id]
+  layout layout_mode [not null, default: 'EQUAL_PROMINENCE']
+  focused_participant_id uuid [ref: > participants.id]
+  side_panel side_panel
+  picture_in_picture boolean [not null, default: false]
+  updated_at timestamptz [not null]
+}
+
+Table recordings {
+  created_at timestamptz [not null, default: `now()`]
+  id uuid [pk]
+  session_id uuid [not null, ref: > sessions.id]
+  started_by_participant_id uuid [not null]
+  status recording_status [not null]
+  provider_reference varchar(255)
+  version int [not null, default: 1, check: `version > 0`]
+  started_at timestamptz
+  stopped_at timestamptz
+
+  indexes {
+    (session_id, status)
+    `(CASE WHEN status IN ('STARTING', 'RECORDING') THEN session_id ELSE NULL END)` [unique, name: 'one_active_recording']
+  }
+}
+
+Table departures {
+  id uuid [pk]
+  session_id uuid [not null, ref: > sessions.id]
+  participant_id uuid [not null]
+  kind departure_kind [not null]
+  created_at timestamptz [not null]
+
+  indexes { (session_id, participant_id, created_at) }
+}
+
+Table mutation_responses {
+  id uuid [pk]
+  http_status int [not null]
+  response_body jsonb [not null]
+  created_at timestamptz [not null]
+}
+
+Table idempotency_records {
+  id uuid [pk]
+  principal_id uuid [not null, ref: > principals.id]
+  session_id uuid [not null, ref: > sessions.id]
+  operation varchar(160) [not null]
+  idempotency_key text [not null]
+  payload_hash char(64) [not null]
+  response_reference uuid [not null, ref: > mutation_responses.id]
+  completed_at timestamptz [not null]
+  expires_at timestamptz [not null]
+  indexes { (principal_id, session_id, operation, idempotency_key) [unique] }
+}
+
+Enum reaction_code {
+  LIKE
+  CLAP
+  HEART
+  CELEBRATE
+  HAND
+  SURPRISE
+}
+
+Enum side_panel {
+  CHAT
+  PARTICIPANTS
+  SETTINGS
+}
+
+Ref stage_requests_participant_id_scope: stage_requests.(session_id, participant_id) > participants.(session_id, id)
+
+Ref stage_requests_decided_by_participant_id_scope: stage_requests.(session_id, decided_by_participant_id) > participants.(session_id, id)
+
+Ref chat_messages_sender_participant_id_scope: chat_messages.(session_id, sender_participant_id) > participants.(session_id, id)
+
+Ref reaction_events_participant_id_scope: reaction_events.(session_id, participant_id) > participants.(session_id, id)
+
+Ref content_shares_owner_participant_id_scope: content_shares.(session_id, owner_participant_id) > participants.(session_id, id)
+
+Ref recordings_started_by_participant_id_scope: recordings.(session_id, started_by_participant_id) > participants.(session_id, id)
+
+Ref departures_participant_id_scope: departures.(session_id, participant_id) > participants.(session_id, id)
