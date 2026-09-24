@@ -46,6 +46,29 @@ Enum payment_status {
   REFUNDED
 }
 
+Enum vehicle_category {
+  SMALL
+  MEDIUM
+  LARGE
+  ESTATE
+}
+
+Enum transmission_type {
+  MANUAL
+  AUTOMATIC
+}
+
+Enum electric_type {
+  NONE
+  FULLY_ELECTRIC
+  HYBRID
+}
+
+Enum booking_for {
+  MAIN_GUEST
+  SOMEONE_ELSE
+}
+
 Enum offer_status {
   ACTIVE
   EXPIRED
@@ -163,17 +186,33 @@ Table payment_references {
   created_at timestamptz [not null]
 }
 
+
+Table saved_payment_methods {
+  id uuid [pk]
+  user_id uuid [not null, ref: > users.id]
+  provider varchar(80) [not null]
+  provider_reference varchar(255) [not null, unique]
+  display_label varchar(120)
+  created_at timestamptz [not null]
+
+  indexes { (user_id, created_at) }
+}
+
 Table stay_bookings {
   id uuid [pk]
   user_id uuid [not null, ref: > users.id]
   quote_id uuid [not null, unique, ref: > stay_quotes.id]
   payment_reference_id uuid [ref: > payment_references.id]
+  saved_payment_method_id uuid [ref: > saved_payment_methods.id]
   idempotency_key varchar(255) [not null]
   guest_first_name text [not null]
   guest_last_name text [not null]
+  guest_home_address text [not null]
   guest_email varchar(255) [not null]
   guest_phone varchar(40) [not null]
   guest_country_code char(2) [not null]
+  booking_for booking_for [not null]
+  work_travel boolean [not null, default: false]
   total_amount decimal(14,2) [not null]
   currency char(3) [not null]
   status booking_status [not null]
@@ -196,33 +235,39 @@ Table drivers {
 
 Table vehicles {
   id uuid [pk]
+  display_name text [not null]
   registration_number varchar(80) [not null, unique]
-  vehicle_type varchar(80) [not null]
+  category vehicle_category [not null]
+  transmission transmission_type [not null]
+  electric_type electric_type [not null, default: 'NONE']
   seat_capacity int [not null]
+  large_bag_capacity int [not null, default: 0]
   small_bag_capacity int [not null, default: 0]
+  image_url text
   active boolean [not null, default: true]
 }
 
 Table taxi_offers {
   id uuid [pk]
-  pickup_location_id uuid [not null, ref: > locations.id]
-  dropoff_location_id uuid [not null, ref: > locations.id]
+  location_id uuid [not null, ref: > locations.id]
   driver_id uuid [not null, ref: > drivers.id]
   vehicle_id uuid [not null, ref: > vehicles.id]
   provider_offer_ref varchar(255) [not null, unique]
   pickup_at timestamptz [not null]
   dropoff_at timestamptz [not null]
   passengers int [not null]
-  distance_km decimal(10,2) [not null]
+  distance_from_center_km decimal(10,2) [not null]
+  mileage_allowance_km decimal(10,2) [not null]
+  deposit_amount decimal(14,2) [not null]
   total_amount decimal(14,2) [not null]
   currency char(3) [not null]
+  rating decimal(2,1) [not null]
   payment_mode payment_mode [not null]
   status offer_status [not null]
   expires_at timestamptz [not null]
   version int [not null, default: 1]
 
-  indexes { (pickup_location_id, dropoff_location_id, pickup_at) }
-seats int [not null]
+  indexes { (location_id, pickup_at, dropoff_at) }
 }
 
 Table taxi_quotes {
@@ -230,6 +275,7 @@ Table taxi_quotes {
   user_id uuid [not null, ref: > users.id]
   offer_id uuid [not null, ref: > taxi_offers.id]
   total_amount decimal(14,2) [not null]
+  deposit_amount decimal(14,2) [not null]
   currency char(3) [not null]
   payment_mode payment_mode [not null]
   status quote_status [not null]
@@ -248,12 +294,16 @@ Table taxi_bookings {
   driver_id uuid [not null, ref: > drivers.id]
   vehicle_id uuid [not null, ref: > vehicles.id]
   payment_reference_id uuid [ref: > payment_references.id]
+  saved_payment_method_id uuid [ref: > saved_payment_methods.id]
   idempotency_key varchar(255) [not null]
   guest_first_name text [not null]
   guest_last_name text [not null]
+  guest_home_address text [not null]
   guest_email varchar(255) [not null]
   guest_phone varchar(40) [not null]
   guest_country_code char(2) [not null]
+  booking_for booking_for [not null]
+  work_travel boolean [not null, default: false]
   total_amount decimal(14,2) [not null]
   currency char(3) [not null]
   status booking_status [not null]

@@ -1,0 +1,222 @@
+[
+  {
+    "id": "1:2",
+    "name": "Product detail Page",
+    "x": "-150",
+    "y": "-516",
+    "width": "1440",
+    "height": "3338",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  },
+  {
+    "id": "64:33",
+    "name": "Products List page",
+    "x": "-1890",
+    "y": "-517",
+    "width": "1440",
+    "height": "4894",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  },
+  {
+    "id": "85:1544",
+    "name": "home page",
+    "x": "-3630",
+    "y": "-516",
+    "width": "1440",
+    "height": "7819",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  },
+  {
+    "id": "167:524",
+    "name": "Sign up page",
+    "x": "-5370",
+    "y": "851",
+    "width": "1440",
+    "height": "1063",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  },
+  {
+    "id": "178:381",
+    "name": "Sign In Page",
+    "x": "-5370",
+    "y": "-516",
+    "width": "1440",
+    "height": "1067",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  },
+  {
+    "id": "245:588",
+    "name": "Reset Password",
+    "x": "-5370",
+    "y": "2214",
+    "width": "1440",
+    "height": "1067",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  },
+  {
+    "id": "270:721",
+    "name": "Check Email",
+    "x": "-5370",
+    "y": "3581",
+    "width": "1440",
+    "height": "1067",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  },
+  {
+    "id": "270:792",
+    "name": "Verification",
+    "x": "-5370",
+    "y": "4948",
+    "width": "1440",
+    "height": "1067",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  },
+  {
+    "id": "250:710",
+    "name": "Create New Password",
+    "x": "-5370",
+    "y": "6315",
+    "width": "1440",
+    "height": "1067",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  },
+  {
+    "id": "181:393",
+    "name": "Cart Page",
+    "x": "1590",
+    "y": "-516",
+    "width": "1440",
+    "height": "2204",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  },
+  {
+    "id": "190:423",
+    "name": "Empty Cart",
+    "x": "10290",
+    "y": "-517",
+    "width": "1440",
+    "height": "1584",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  },
+  {
+    "id": "235:1056",
+    "name": "Checkout",
+    "x": "3330",
+    "y": "-516",
+    "width": "1440",
+    "height": "3263",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  },
+  {
+    "id": "273:839",
+    "name": "Confirmed Order",
+    "x": "8550",
+    "y": "-517",
+    "width": "1440",
+    "height": "1584",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  },
+  {
+    "id": "274:1030",
+    "name": "Error Page",
+    "x": "18990",
+    "y": "-517",
+    "width": "1440",
+    "height": "1479",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  },
+  {
+    "id": "275:1168",
+    "name": "Contact Details",
+    "x": "5070",
+    "y": "-516",
+    "width": "1440",
+    "height": "2159",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  },
+  {
+    "id": "279:1003",
+    "name": "Add Address",
+    "x": "6810",
+    "y": "-516",
+    "width": "1440",
+    "height": "2143",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  },
+  {
+    "id": "290:855",
+    "name": "wishlist",
+    "x": "12030",
+    "y": "-516",
+    "width": "1440",
+    "height": "1767",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  },
+  {
+    "id": "299:1027",
+    "name": "Empty wishlist",
+    "x": "13770",
+    "y": "-516",
+    "width": "1440",
+    "height": "2195",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  },
+  {
+    "id": "290:1372",
+    "name": "My Order",
+    "x": "15510",
+    "y": "-516",
+    "width": "1440",
+    "height": "2143",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  },
+  {
+    "id": "295:949",
+    "name": "Order Details",
+    "x": "17250",
+    "y": "-516",
+    "width": "1440",
+    "height": "1887",
+    "parent": "0:1",
+    "visibility": "not exposed by metadata",
+    "type": "frame"
+  }
+]

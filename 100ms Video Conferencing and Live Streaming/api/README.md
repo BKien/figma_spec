@@ -14,4 +14,5 @@
 - [API-SESSION-DEPARTURE](api-session-departure.md)
 - [API-SESSION-JOIN](api-session-join.md)
 - [API-SESSION-STATE](api-session-state.md)
+- [API-SPOTLIGHT-UPDATE](api-spotlight-update.md)
 - [API-STAGE-REQUEST-CREATE](api-stage-request-create.md)

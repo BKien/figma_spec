@@ -208,4 +208,4 @@ post BR_UC_12_13_LocalDeviceDraft:
 
 The shared model defines trusted context, persistence mapping, and query helpers. Server mutation execution uses MutationGateway and its common OCL constraints in UC-02. API command dispatch selects the named operation; it does not combine the preconditions of different operations. Read operations have no domain writes.
 
-UC-12 through UC-15 constrain one atomic PreferenceService.update operation. All four rule sets apply to one merged patch. Field-presence guards determine which values change. Client-local preview operations do not call this server operation.
+UC-12 through UC-14 and the personal-pin rules in UC-15 constrain one atomic PreferenceService.update operation. Field-presence guards determine which values change. Client-local preview operations do not call this server operation.

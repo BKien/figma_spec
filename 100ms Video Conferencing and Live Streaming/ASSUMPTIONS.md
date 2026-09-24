@@ -6,7 +6,7 @@ These explicit assumptions complete the existing supported Figma scope. They are
 
 Display names are trimmed and contain 1–50 characters after trimming; preview and join use the same rule. Permissions, hardware and requested track state govern local preview. Viewer preview starts muted. These are assumptions, not asserted hidden Figma facts.
 
-Rule references: `BR-UC-01-01`, `BR-UC-01-02`, `BR-UC-01-03`, `BR-UC-01-04`, `BR-UC-02-04`.
+Rule references: `BR-UC-01-01`, `BR-UC-01-02`, `BR-UC-01-03`, `BR-UC-01-04`, `BR-UC-01-05`, `BR-UC-01-06`, `BR-UC-01-07`, `BR-UC-02-04`.
 
 ## A-02 — Join and session lifecycle
 
@@ -30,7 +30,7 @@ Rule references: `BR-UC-04-04`, `BR-UC-04-05`, `BR-UC-04-06`, `BR-UC-04-07`.
 
 Viewer playback uses LIVE stream state; viewer publishing is disabled. Stage participants may publish while the stream is live. Autoplay starts muted.
 
-Rule references: `BR-UC-05-02`, `BR-UC-05-03`.
+Rule references: `BR-UC-05-02`, `BR-UC-05-03`, `BR-UC-05-04`, `BR-UC-05-05`, `BR-UC-05-06`, `BR-UC-05-07`.
 
 ## A-06 — Stage requests
 
@@ -48,7 +48,7 @@ Rule references: `BR-UC-07-04`, `BR-UC-07-05`, `BR-UC-07-06`, `BR-UC-07-07`, `BR
 
 Joined members read their session roster. Page size defaults to 50 and must be 1–50. The roster uses stable ascending joinedAt/id keyset order, without inferred host-first ranking. Cursors are scoped to the session and collection.
 
-Rule references: `BR-UC-08-02`, `BR-UC-08-03`.
+Rule references: `BR-UC-08-02`, `BR-UC-08-03`, `BR-UC-08-07`.
 
 ## A-09 — Chat
 
@@ -60,7 +60,7 @@ Rule references: `BR-UC-09-04`, `BR-UC-09-05`, `BR-UC-09-06`.
 
 Canonical values are LIKE, CLAP, HEART, CELEBRATE, HAND and SURPRISE. Clients map these to the six emoji appearances. Reaction HAND is visual feedback, not an implicit stage request.
 
-Rule references: `BR-UC-10-04`, `BR-UC-10-05`.
+Rule references: `BR-UC-10-04`, `BR-UC-10-05`, `BR-UC-10-06`, `BR-UC-10-07`.
 
 ## A-11 — Sharing
 
@@ -78,19 +78,19 @@ Rule references: `BR-UC-02-13`, `BR-UC-12-03`, `BR-UC-12-04`, `BR-UC-12-05`, `BR
 
 The catalog lists enabled background assets. The no-background choice is null. A local preview selection becomes a draft until join; joined selections use the same preference PATCH.
 
-Rule references: `BR-UC-02-12`, `BR-UC-13-01`, `BR-UC-13-02`, `BR-UC-13-03`, `BR-UC-13-04`, `BR-UC-13-06`.
+Rule references: `BR-UC-02-12`, `BR-UC-13-01`, `BR-UC-13-02`, `BR-UC-13-03`, `BR-UC-13-04`, `BR-UC-13-06`, `BR-UC-13-07`.
 
 ## A-14 — Layout and panels
 
 Layout and pictureInPicture cannot be null. PiP clears the side panel; otherwise the panel is null, CHAT, PARTICIPANTS or SETTINGS. PRESENTER can be selected only with an active content share. Updates are personal.
 
-Rule references: `BR-UC-14-01`, `BR-UC-14-02`, `BR-UC-14-03`, `BR-UC-14-04`, `BR-UC-14-05`.
+Rule references: `BR-UC-14-01`, `BR-UC-14-02`, `BR-UC-14-03`, `BR-UC-14-04`, `BR-UC-14-05`, `BR-UC-14-06`, `BR-UC-14-07`.
 
 ## A-15 — Pin and spotlight
 
-Both pin and spotlight are personal view preferences in this package. Focus targets must be joined in the same session. Clearing focus while the prior layout is SPOTLIGHT falls back to EQUAL_PROMINENCE unless another non-SPOTLIGHT layout is supplied. A combined clear-focus/SPOTLIGHT patch is rejected.
+Pin is a personal view preference, matching `Pin Tile for Myself` in the Figma tile menu. Spotlight is session-scoped, matching `Spotlight Tile for Everyone`; the session state exposes one nullable spotlight target to every client. Pin and spotlight targets must be joined in the same session. The design shows spotlight to publishing participants, so HOST, BROADCASTER and STAGE_PARTICIPANT may set or clear it; VIEWER may not. Personal pins remain unchanged when the shared spotlight changes.
 
-Rule references: `BR-UC-15-01`, `BR-UC-15-02`, `BR-UC-15-03`, `BR-UC-15-04`.
+Rule references: `BR-UC-15-01`, `BR-UC-15-02`, `BR-UC-15-03`, `BR-UC-15-06`, `BR-UC-15-07`, `BR-UC-15-08`, `BR-UC-15-09`, `BR-UC-15-10`.
 
 ## A-16 — Recording
 
@@ -114,13 +114,13 @@ Rule references: `BR-UC-18-04`, `BR-UC-18-05`, `BR-UC-18-06`, `BR-UC-18-07`, `BR
 
 Both registered and anonymous users receive an externally provisioned bearer session access token with a stable principal ID and session scope. The token remains usable across the documented endpoints; join does not exchange it. Command actor IDs come from trusted membership resolution. Provider callbacks use separate authentication. UUID text is used consistently at wire and database boundaries. Raw tokens are not persisted.
 
-Rule references: `BR-UC-02-01`, `BR-UC-02-02`, `BR-UC-03-01`, `BR-UC-03-02`, `BR-UC-04-01`, `BR-UC-04-02`, `BR-UC-05-01`, `BR-UC-06-01`, `BR-UC-06-02`, `BR-UC-07-01`, `BR-UC-07-02`, `BR-UC-08-01`, `BR-UC-09-01`, `BR-UC-09-02`, `BR-UC-09-07`, `BR-UC-10-01`, `BR-UC-10-02`, `BR-UC-11-01`, `BR-UC-11-02`, `BR-UC-12-01`, `BR-UC-13-05`, `BR-UC-16-01`, `BR-UC-16-02`, `BR-UC-17-01`, `BR-UC-17-02`, `BR-UC-18-01`, `BR-UC-18-02`.
+Rule references: `BR-UC-02-01`, `BR-UC-02-02`, `BR-UC-03-01`, `BR-UC-03-02`, `BR-UC-04-01`, `BR-UC-04-02`, `BR-UC-05-01`, `BR-UC-06-01`, `BR-UC-06-02`, `BR-UC-07-01`, `BR-UC-07-02`, `BR-UC-08-01`, `BR-UC-09-01`, `BR-UC-09-02`, `BR-UC-09-07`, `BR-UC-10-01`, `BR-UC-10-02`, `BR-UC-11-01`, `BR-UC-11-02`, `BR-UC-12-01`, `BR-UC-13-05`, `BR-UC-15-04`, `BR-UC-16-01`, `BR-UC-16-02`, `BR-UC-17-01`, `BR-UC-17-02`, `BR-UC-18-01`, `BR-UC-18-02`.
 
 ## A-20 — Mutation execution and retry
 
 Every public server mutation, including join and preferences, uses MutationGateway. A serializable transaction locks the session row before lookup and dispatch. Deduplication key scope is principal/session/operation/key and uses a canonical payload hash. Same-key same-payload replay returns the immutable original HTTP response without dispatch. A changed payload is a conflict. Successful receipts are retained for 24 hours; an expired record is atomically replaced on a fresh command; infrastructure failures roll back. Fresh successful commands and provider completions advance session.version once. Replays do not rerun domain preconditions, including after leave/end. All effects, result serialization and the receipt commit atomically; no raw bearer/provider token is stored.
 
-Rule references: `BR-UC-02-03`, `BR-UC-02-14`, `BR-UC-02-15`, `BR-UC-02-16`, `BR-UC-02-17`, `BR-UC-03-03`, `BR-UC-04-03`, `BR-UC-06-03`, `BR-UC-07-03`, `BR-UC-09-03`, `BR-UC-10-03`, `BR-UC-11-03`, `BR-UC-12-02`, `BR-UC-16-03`, `BR-UC-17-03`, `BR-UC-18-03`.
+Rule references: `BR-UC-02-03`, `BR-UC-02-14`, `BR-UC-02-15`, `BR-UC-02-16`, `BR-UC-02-17`, `BR-UC-03-03`, `BR-UC-04-03`, `BR-UC-06-03`, `BR-UC-07-03`, `BR-UC-09-03`, `BR-UC-10-03`, `BR-UC-11-03`, `BR-UC-12-02`, `BR-UC-15-05`, `BR-UC-16-03`, `BR-UC-17-03`, `BR-UC-18-03`.
 
 ## A-21 — Cascades
 

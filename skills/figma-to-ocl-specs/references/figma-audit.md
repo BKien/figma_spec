@@ -33,6 +33,14 @@ Record at least:
 
 Create UC specifications only from `Supported` rows. Report `Partial` and `Missing` rows in `coverage-report.md` unless the user asks to include planned behavior.
 
+## Scope cardinality
+
+A completed specification package contains 18–20 supported actor-goal use cases.
+
+- When the audit produces fewer than 18 supported goals, inspect nested states, overlays, and distinct outcomes again. If the evidence still supports fewer than 18, record the shortfall in `coverage-report.md`, request the missing evidence or explicit authorization for planned behavior, and leave the package incomplete.
+- When the audit produces more than 20 supported goals, select a user-approved product boundary or combine only variants that deliver the same actor goal. Record supported candidates excluded from the selected boundary in `coverage-report.md`.
+- Preserve evidence quality while meeting the range. A component, control, responsive variant, or decorative frame remains supporting evidence for a goal rather than becoming a standalone use case.
+
 ## Evidence boundary
 
 Treat Figma as evidence for product interaction, not as a source of hidden policies, provider behavior, database constraints, security thresholds, or pricing formulas. Resolve those from user-provided sources or explicit assumptions.

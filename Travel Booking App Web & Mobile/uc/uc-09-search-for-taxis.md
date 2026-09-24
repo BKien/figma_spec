@@ -1,12 +1,12 @@
-# UC-09 — Search for Taxis
+# UC-09 — Search for Taxi Rentals
 
 ### Description
 
-As a traveller, I want to search for a taxi by pickup, destination, time, and passenger count.
+As a traveller, I want to search for a vehicle with a driver at a selected location and rental period.
 
 ### Actors
 
-Traveller; Taxi Service.
+Traveller; Taxi Rental Service.
 
 ### Priority
 
@@ -14,23 +14,23 @@ P0.
 
 ### Trigger
 
-**TRG-UC-09-01** — The traveller chooses to search for taxis.
+**TRG-UC-09-01** — The traveller chooses the Taxi service.
 
 ### Preconditions
 
-- **PRE-UC-09-01** — The traveller can access the taxi-search interface.
+- **PRE-UC-09-01** — The traveller can access the Taxi search interface.
 
 ### Postconditions
 
-- **POST-UC-09-01** — The client displays the taxi-search outcome returned by the system.
-- **POST-UC-09-02** — The entered search context remains available for the next interaction.
+- **POST-UC-09-01** — The client displays the taxi-rental search outcome returned by the system.
+- **POST-UC-09-02** — The entered location and rental period remain available for the next interaction.
 
 ### Basic Flow
 
-1. The traveller opens the taxi-search interface.
-2. The client presents pickup, destination, schedule, and passenger controls.
-3. The traveller completes or revises the search criteria and submits the search.
-4. The client sends the selected criteria to the taxi-search API.
+1. The traveller opens the Taxi search interface.
+2. The client presents location, pick-up date and time, drop-off date and time, and passenger controls.
+3. The traveller completes or revises the displayed controls and submits the search.
+4. The client sends the selected criteria to the Taxi search API.
 5. The system processes the request and returns a search outcome.
 6. The client renders the returned outcome and its available continuation.
 
@@ -38,7 +38,7 @@ P0.
 
 #### AF-UC-09-01
 
-1. The traveller selects pickup and destination from location suggestions.
+1. The traveller selects the rental location from location suggestions.
 
 #### AF-UC-09-02
 
@@ -70,6 +70,9 @@ class BusinessClock
 class AllocationCalendar
 TaxiService ..> TaxiSearchCriteria
 TaxiService --> TaxiOffer
+TaxiOffer --> Location
+TaxiOffer --> Driver
+TaxiOffer --> Vehicle
 @enduml
 ```
 
@@ -77,45 +80,39 @@ TaxiService --> TaxiOffer
 
 ```ocl
 -- BR-UC-09-01
--- Source: Assumption
+-- Source: Figma
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-pre BR_UC_09_01_RouteEndpointsBelongToSupportedServiceAreas:
-  Location.allInstances()->one(l | l.id = criteria.pickupId and l.active and
-      ServiceArea.allInstances()->one(a | a.id = l.serviceAreaId and a.active)) and
-  Location.allInstances()->one(l | l.id = criteria.dropoffId and l.active and
-      ServiceArea.allInstances()->one(a | a.id = l.serviceAreaId and a.active))
+pre BR_UC_09_01_RentalLocationIsSupported:
+  Location.allInstances()->one(l | l.id = criteria.locationId and l.active and
+    ServiceArea.allInstances()->one(a | a.id = l.serviceAreaId and a.active))
 ```
 
 ```ocl
 -- BR-UC-09-02
 -- Source: Assumption
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-pre BR_UC_09_02_PickupFallsWithinTheDispatchPlanningWindow:
-  let pickup: Location =
-    Location.allInstances()->any(l | l.id = criteria.pickupId) in
-  BusinessClock::hoursBetween(
-    BusinessClock::now(pickup.timeZone), criteria.pickupAt) >= 2 and
-  BusinessClock::hoursBetween(
-    BusinessClock::now(pickup.timeZone), criteria.pickupAt) <= 4320
+pre BR_UC_09_02_PickupFallsWithinThePlanningWindow:
+  let location: Location = Location.allInstances()->any(l | l.id = criteria.locationId) in
+  BusinessClock::hoursBetween(BusinessClock::now(location.timeZone), criteria.pickupAt) >= 2 and
+  BusinessClock::hoursBetween(BusinessClock::now(location.timeZone), criteria.pickupAt) <= 4320
 ```
 
 ```ocl
 -- BR-UC-09-03
 -- Source: Assumption
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-pre BR_UC_09_03_PartyFitsACommercialVehicleCategory:
+pre BR_UC_09_03_PartyFitsAnAvailableVehicleCategory:
   criteria.passengers >= 1 and criteria.passengers <= 16
 ```
 
 ```ocl
 -- BR-UC-09-04
--- Source: Assumption
+-- Source: Figma
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-post BR_UC_09_04_OffersAreBoundToTheRequestedJourney:
+post BR_UC_09_04_OffersMatchTheRequestedLocationAndPeriod:
   result->forAll(o |
-    o.pickupId = criteria.pickupId and o.dropoffId = criteria.dropoffId and
-    o.pickupAt = criteria.pickupAt and o.dropoffAt = criteria.dropoffAt and
-    o.seats >= criteria.passengers)
+    o.locationId = criteria.locationId and o.pickupAt = criteria.pickupAt and
+    o.dropoffAt = criteria.dropoffAt and o.vehicle.seatCapacity >= criteria.passengers)
 ```
 
 ```ocl
@@ -126,9 +123,7 @@ post BR_UC_09_05_OfferedResourcesAreLiveAndUnallocated:
   result->forAll(o |
     o.available and o.expiresAt > RequestContext::startedAt and
     o.driver.active and o.vehicle.active and
-    o.vehicle.seatCapacity >= o.seats and
-    AllocationCalendar::isFree(
-      o.driver.id, o.vehicle.id, o.pickupAt, o.dropoffAt))
+    AllocationCalendar::isFree(o.driver.id, o.vehicle.id, o.pickupAt, o.dropoffAt))
 ```
 
 ```ocl
@@ -149,10 +144,10 @@ post BR_UC_09_07_SearchDoesNotAllocateResources:
 
 ```ocl
 -- BR-UC-09-08
--- Source: Assumption
+-- Source: Figma
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-pre BR_UC_09_08_JourneyHasDistinctEndpointsAndPositiveDuration:
-  criteria.pickupId <> criteria.dropoffId and criteria.dropoffAt > criteria.pickupAt
+pre BR_UC_09_08_RentalPeriodHasPositiveDuration:
+  criteria.dropoffAt > criteria.pickupAt
 ```
 
 ```ocl
@@ -160,12 +155,14 @@ pre BR_UC_09_08_JourneyHasDistinctEndpointsAndPositiveDuration:
 -- Source: Assumption
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
 post BR_UC_09_09_SearchPricesUseOneCurrency:
-  result->forAll(o | o.total.amount >= 0 and o.total.currency = criteria.currency)
+  result->forAll(o |
+    o.total.amount >= 0 and o.total.currency = criteria.currency and
+    o.deposit.amount >= 0 and o.deposit.currency = criteria.currency)
 ```
 
 ### Related UI
 
-`taxis`; `taxi home page`; `taxi locationsearch bar`; `Pick-up Date & Time`; `Drop Off Date & Time`.
+`Taxi`; `taxi home page`; `Smooth Travels Start Here`; location control; `Pick-up Date & Time`; `Drop-off Date & Time`; `Passengers`.
 
 ### Related APIs
 

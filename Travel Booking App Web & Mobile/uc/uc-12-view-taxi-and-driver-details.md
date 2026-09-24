@@ -1,12 +1,12 @@
-# UC-12 — View Taxi and Driver Details
+# UC-12 — View Taxi Rental and Driver Details
 
 ### Description
 
-As a traveller, I want to inspect a taxi offer, vehicle, and driver before reserving it.
+As a traveller, I want to inspect the selected vehicle, assigned driver, rental period, allowance, and price before reserving it.
 
 ### Actors
 
-Traveller; Taxi Service.
+Traveller; Taxi Rental Service.
 
 ### Priority
 
@@ -14,31 +14,31 @@ P0.
 
 ### Trigger
 
-**TRG-UC-12-01** — The traveller chooses a taxi offer from a result view.
+**TRG-UC-12-01** — The traveller chooses View Details for a Taxi offer.
 
 ### Preconditions
 
-- **PRE-UC-12-01** — A selected taxi-offer reference is available to the client.
+- **PRE-UC-12-01** — A selected Taxi offer reference is available to the client.
 
 ### Postconditions
 
-- **POST-UC-12-01** — The client displays the taxi-detail outcome returned by the system.
+- **POST-UC-12-01** — The client displays the Taxi rental detail outcome returned by the system.
 - **POST-UC-12-02** — Navigation back to the originating result context remains available.
 
 ### Basic Flow
 
-1. The traveller selects a taxi offer.
+1. The traveller selects View Details for a Taxi offer.
 2. The client requests the detail associated with the selected offer.
 3. The system processes the request and returns a detail outcome.
-4. The client renders the trip summary and returned detail sections.
+4. The client renders the vehicle, driver, pick-up and drop-off schedule, allowance, and price sections.
 5. The traveller reviews the displayed sections.
-6. The traveller may use an available continuation from the detail view.
+6. The traveller may continue to the reservation form.
 
 ### Alternative Flows
 
 #### AF-UC-12-01
 
-1. The traveller returns to the preserved taxi-result context.
+1. The traveller returns to the preserved Taxi result context.
 
 #### AF-UC-12-02
 
@@ -63,7 +63,6 @@ class Vehicle
 class TaxiBooking
 class TaxiOfferDetail
 class TaxiService
-class PrivacyMask
 TaxiOffer --> Driver
 TaxiOffer --> Vehicle
 @enduml
@@ -75,44 +74,37 @@ TaxiOffer --> Vehicle
 -- BR-UC-12-01
 -- Source: Assumption
 context TaxiService::getOffer(offerId: String): TaxiOfferDetail
-post BR_UC_12_01_DetailIsLiveOrAccessibleThroughOwnedConfirmedBooking:
+post BR_UC_12_01_DetailIsLiveOrAccessibleThroughOwnedBooking:
   result <> null and result.offer.id = offerId and
   ((result.offer.available and result.offer.expiresAt > RequestContext::startedAt) or
    TaxiBooking.allInstances()->exists(b |
      b.user.id = RequestContext::authenticatedUserId and b.offer.id = offerId and
-     b.status = BookingStatus::CONFIRMED))
+     Set{BookingStatus::PENDING, BookingStatus::CONFIRMED}->includes(b.status)))
 ```
 
 ```ocl
 -- BR-UC-12-02
--- Source: Assumption
+-- Source: Figma
 context TaxiService::getOffer(offerId: String): TaxiOfferDetail
 post BR_UC_12_02_DetailUsesTheOffersAssignedResources:
   result.driver = result.offer.driver and result.vehicle = result.offer.vehicle and
-  result.vehicle.seatCapacity >= result.offer.seats
+  result.vehicle.seatCapacity >= result.offer.passengers
 ```
 
 ```ocl
 -- BR-UC-12-03
--- Source: Assumption
+-- Source: Figma
 context TaxiService::getOffer(offerId: String): TaxiOfferDetail
-post BR_UC_12_03_DriverContactRequiresOwnedConfirmedBooking:
-  let authorized: Boolean =
-    TaxiBooking.allInstances()->exists(b |
-      b.user.id = RequestContext::authenticatedUserId and
-      b.offer.id = offerId and b.status = BookingStatus::CONFIRMED) in
-  (authorized and result.displayedDriverPhone = result.driver.phone) or
-  (not authorized and
-    result.displayedDriverPhone = PrivacyMask::phone(result.driver.phone))
+post BR_UC_12_03_DriverContactMatchesTheDisplayedAssignment:
+  result.displayedDriverPhone = result.driver.phone
 ```
 
 ```ocl
 -- BR-UC-12-04
--- Source: Assumption
+-- Source: Figma
 context TaxiService::getOffer(offerId: String): TaxiOfferDetail
-post BR_UC_12_04_PublicVehicleIdentityIsMasked:
-  result.displayedRegistration =
-    PrivacyMask::registration(result.vehicle.registrationNumber)
+post BR_UC_12_04_VehicleRegistrationMatchesTheDisplayedVehicle:
+  result.displayedRegistration = result.vehicle.registrationNumber
 ```
 
 ```ocl
@@ -125,23 +117,25 @@ post BR_UC_12_05_DetailRetrievalDoesNotAllocateTheOffer:
 
 ```ocl
 -- BR-UC-12-06
--- Source: Assumption
+-- Source: Figma
 context TaxiService::getOffer(offerId: String): TaxiOfferDetail
-post BR_UC_12_06_DisplayedJourneyHasPositiveDuration:
-  result.offer.dropoffAt > result.offer.pickupAt and result.offer.pickup.id <> result.offer.dropoff.id
+post BR_UC_12_06_DisplayedRentalUsesOneLocationAndPositiveDuration:
+  result.offer.location.id = result.offer.locationId and result.offer.dropoffAt > result.offer.pickupAt
 ```
 
 ```ocl
 -- BR-UC-12-07
--- Source: Assumption
+-- Source: Figma
 context TaxiService::getOffer(offerId: String): TaxiOfferDetail
-post BR_UC_12_07_DisplayedFareIsNonnegativeAndCurrencyIdentified:
-  result.offer.total.amount >= 0 and Validation::isCurrency(result.offer.total.currency)
+post BR_UC_12_07_DisplayedCommercialFactsAreCoherent:
+  result.offer.total.amount >= 0 and result.offer.deposit.amount >= 0 and
+  result.offer.total.currency = result.offer.deposit.currency and
+  result.offer.mileageAllowanceKm >= 0 and result.offer.rating >= 0 and result.offer.rating <= 5
 ```
 
 ### Related UI
 
-`Bajaj Details`.
+`Bajaj Details`; `Your Deal`; driver card; vehicle details; `Pick-up and drop-off`; price summary.
 
 ### Related APIs
 

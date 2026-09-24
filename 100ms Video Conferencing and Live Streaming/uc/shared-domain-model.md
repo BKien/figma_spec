@@ -4,7 +4,7 @@ This file is the canonical package vocabulary. UC diagrams declare the operation
 
 RequestContext is request-local trusted adapter data, never a process-global mutable singleton. Its principal and session are decoded from the authenticated session access token; participantId is resolved from that principal's membership. Command actor/principal fields are server-populated, not additional public request fields. Guest and registered credentials use the same boundary. Provider callbacks use a separate authenticated adapter.
 
-TransactionContext describes a database transaction. MutationGateway wraps every public server mutation. The gateway adapter dispatches exactly one selected operation on the fresh path; UC-12 through UC-15 are one combined preference operation. Domain operations below describe fresh successful dispatches; replay and rejection are handled by the gateway rules in UC-02. The persisted responseReference addresses an immutable serialized public response, including its HTTP status and envelope, not a resource that changes later. payloadHash is SHA-256 of canonical decoded method, path, and body, including field presence; tokens are excluded. Expired journal entries are replaced in the same transaction before a fresh receipt is written. Infrastructure errors roll back without a completion record. Policy constraints are in UC-02, not in this vocabulary definition.
+TransactionContext describes a database transaction. MutationGateway wraps every public server mutation. The gateway adapter dispatches exactly one selected operation on the fresh path; UC-12 through UC-14 and the personal-pin branch of UC-15 share one preference operation, while the shared spotlight branch uses SpotlightService. Domain operations below describe fresh successful dispatches; replay and rejection are handled by the gateway rules in UC-02. The persisted responseReference addresses an immutable serialized public response, including its HTTP status and envelope, not a resource that changes later. payloadHash is SHA-256 of canonical decoded method, path, and body, including field presence; tokens are excluded. Expired journal entries are replaced in the same transaction before a fresh receipt is written. Infrastructure errors roll back without a completion record. Policy constraints are in UC-02, not in this vocabulary definition.
 
 DateTime::now returns the transaction clock; addHours adds elapsed hours and isAfter compares instants. DomainState::snapshot is the canonical serialization of the session and all session-owned domain rows, excluding the command journal and immutable response storage. DeviceCatalog is the client device-discovery adapter. PreviewDraft is local memory and has no participant foreign key. Server preference storage treats device identifiers as references; the client checks/applies availability before submitting and reports device failure through the UC exception flow.
 
@@ -82,7 +82,6 @@ enum RecordingAction {
 enum LayoutMode {
   EQUAL_PROMINENCE
   SIDEBAR
-  SPOTLIGHT
   PRESENTER
 }
 enum DepartureKind {
@@ -146,6 +145,7 @@ class Session {
   status: SessionStatus
   designatedHostPrincipalId: String
   hostParticipantId: String
+  spotlightedParticipantId: String
   version: Integer
   endedAt: DateTime
   participants: Set(Participant)
@@ -360,6 +360,13 @@ class PreferencePatch {
   hasPictureInPicture: Boolean
   pictureInPicture: Boolean
 }
+class SpotlightCommand {
+  sessionId: String
+  actorParticipantId: String
+  targetParticipantId: String
+  expectedVersion: Integer
+  idempotencyKey: String
+}
 class PreferencesResult {
   media: MediaPreference
   view: ViewPreference
@@ -487,6 +494,9 @@ class ContentShareService {
 class PreferenceService {
   update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
   listBackgrounds(): Set(VirtualBackground)
+}
+class SpotlightService {
+  update(command: SpotlightCommand, session: Session): Session
 }
 class ClientPreferenceService {
   selectDevices(draft: PreviewDraft, microphone: String, camera: String, speaker: String): PreviewDraft

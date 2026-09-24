@@ -23,6 +23,7 @@ for path in sorted((ROOT / 'uc').glob('uc-*.md')):
     uc_texts[int(number)] = text
     rule_ids = re.findall(r'^-- BR-UC-(\d{2})-(\d{2})$', text, re.M)
     require(rule_ids == [(number, f'{n:02}') for n in range(1, len(rule_ids)+1)], path.name + ': rule IDs must be gap-free')
+    require(len(rule_ids) >= 7, path.name + ': at least seven business rules are required')
     for block in re.findall(r'```ocl\n(.*?)\n```', text, re.S):
         ctx = re.search(r'^context (.+)$', block, re.M).group(1)
         contexts += 1

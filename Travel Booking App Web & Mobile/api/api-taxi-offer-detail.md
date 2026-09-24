@@ -1,4 +1,4 @@
-# API-TAXI-OFFER-DETAIL — Get Taxi Offer Details
+# API-TAXI-OFFER-DETAIL — Get Taxi Rental Offer Details
 
 ## API ID
 
@@ -6,7 +6,7 @@
 
 ## API Name
 
-Taxi Offer Details
+Taxi Rental Offer Detail
 
 ## Related Use Case IDs
 
@@ -22,36 +22,38 @@ Taxi Offer Details
 
 ## Description
 
-Returns trip, price, capacity, driver, and vehicle data for one taxi offer.
+Returns the selected vehicle, assigned driver, rental period, allowance, price, and payment options.
 
 ## Authentication
 
-Optional bearer access token
+Optional bearer access token.
 
 ## Authorization
 
-None
+Public.
 
 ## Request Headers
 
 ### `Authorization`
 
 - Type: string
+- Format: bearer token
 - Required: No
 - Nullable: No
-- Format: bearer token
-- Validation: Must use the `Bearer <access-token>` syntax when supplied.
-- Description: Optional access token.
+- Validation: Must use the `Bearer <access-token>` syntax.
+- Description: Carries an optional access token.
+- Example: `Bearer eyJhbGciOiJIUzI1NiIs...`
 
 ## Path Parameters
 
 ### `offerId`
 
 - Type: string
+- Format: opaque identifier
 - Required: Yes
 - Nullable: No
-- Validation: Must be encoded as one path segment.
-- Description: Opaque taxi-offer identifier.
+- Validation: Must be encoded as a JSON string.
+- Description: Selected Taxi offer identifier.
 - Example: `to_01JABCDEF`
 
 ## Query Parameters
@@ -69,6 +71,7 @@ None.
 - Type: boolean
 - Required: Yes
 - Nullable: No
+- Validation: Must be encoded as the declared JSON type.
 - Example: `true`
 
 ### `message`
@@ -76,84 +79,68 @@ None.
 - Type: string
 - Required: Yes
 - Nullable: No
-- Example: `Taxi offer details retrieved.`
+- Validation: Must be encoded as a JSON string.
+- Example: `Taxi rental offer retrieved.`
 
-### `data.id`
+### `data.offer`
 
-- Type: string
+- Type: object
 - Required: Yes
 - Nullable: No
-- Description: Taxi-offer identifier.
-
-### `data.pickupAt`
-
-- Type: string
-- Format: ISO 8601 date-time
-- Required: Yes
-- Nullable: No
-- Description: Pickup timestamp.
-
-### `data.dropoffAt`
-
-- Type: string
-- Format: ISO 8601 date-time
-- Required: Yes
-- Nullable: No
-- Description: Drop-off timestamp.
-
-### `data.seats`
-
-- Type: integer
-- Required: Yes
-- Nullable: No
-- Description: Seat count represented by the offer.
-
-### `data.total`
-
-- Type: money object
-- Required: Yes
-- Nullable: No
-- Description: Offer total.
+- Fields: `id` (string), `location` (object), `pickupAt` (ISO 8601 date-time string), `dropoffAt` (ISO 8601 date-time string), `passengers` (integer), `distanceFromCenterKm` (number), `mileageAllowanceKm` (number), `deposit` (money object), `rating` (number), `total` (money object), `paymentMode` (string).
+- Description: Rental facts displayed in the detail and checkout summary.
 
 ### `data.driver`
 
 - Type: object
 - Required: Yes
 - Nullable: No
-- Fields: `id` (string), `fullName` (string), `phone` (string), `imageUrl` (nullable URI string).
-- Description: Driver data returned for display.
+- Fields: `id` (string), `fullName` (string), `phone` (string), `imageUrl` (URI string).
+- Description: Assigned driver card displayed by the Figma Taxi checkout.
 
 ### `data.vehicle`
 
 - Type: object
 - Required: Yes
 - Nullable: No
-- Fields: `id` (string), `registrationNumber` (string), `vehicleType` (string), `seatCapacity` (integer).
-- Description: Vehicle data returned for display.
+- Fields: `id` (string), `displayName` (string), `registrationNumber` (string), `category` (string), `transmission` (string), `electricType` (string), `seatCapacity` (integer), `largeBagCapacity` (integer), `smallBagCapacity` (integer), `imageUrl` (URI string).
+- Description: Selected vehicle details.
+
+## Error Response — HTTP 400
+
+- Code: `VALIDATION_ERROR`
+- Trigger: The path value cannot be decoded using the declared wire syntax.
+- Description: Protocol-level request error.
+- Example message: `The request could not be completed.`
 
 ## Error Response — HTTP 401
 
 - Code: `UNAUTHORIZED`
-- Trigger: The endpoint does not accept the supplied authentication context.
-- Description: Public authentication failure.
+- Trigger: The endpoint does not accept the supplied optional authentication context.
+- Description: Authentication error.
 - Example message: `The request could not be completed.`
 
 ## Error Response — HTTP 404
 
-- Code: `TAXI_OFFER_NOT_FOUND`
-- Trigger: The requested taxi offer cannot be returned.
+- Code: `NOT_FOUND`
+- Trigger: The requested offer cannot be returned.
 - Description: Public not-found response.
-- Example message: `The requested taxi offer was not found.`
+- Example message: `The request could not be completed.`
 
 ## Error Response — HTTP 409
 
 - Code: `OFFER_CONFLICT`
-- Trigger: The request conflicts with the current offer state.
+- Trigger: The requested detail conflicts with the current offer state.
 - Description: Public offer conflict.
-- Example message: `The taxi offer cannot be returned in its current state.`
+- Example message: `The request could not be completed.`
+
+## Error Response — HTTP 503
+
+- Code: `SERVICE_UNAVAILABLE`
+- Trigger: The endpoint is temporarily unable to return the offer.
+- Description: Temporary detail failure.
+- Example message: `The request could not be completed.`
 
 ## Notes
 
-Response envelopes, money values, and nested-field conventions follow the [common API contract](common-contract.md).
-
-Contact values are represented exactly as returned by this public response contract.
+Response envelopes and money values follow the [common API contract](common-contract.md). Driver phone and vehicle registration are included because both are visibly presented in the supplied mobile Figma checkout.

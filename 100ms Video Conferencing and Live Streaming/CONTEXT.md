@@ -17,6 +17,7 @@ This package specifies the observable collaboration experience represented by th
 - **Recording**: A persisted record of a recording-control lifecycle; it does not contain raw media bytes.
 - **Media Preference**: A participant's selected input/output devices and virtual-background choice.
 - **View Preference**: A participant's layout, focus, side-panel, or picture-in-picture choice.
+- **Spotlight**: The participant tile selected for shared prominence across the session; it is distinct from a caller's personal pin.
 - **Departure**: A participant leaves while the session remains available to others.
 - **Termination**: The host ends the session for all participants.
 
@@ -27,6 +28,7 @@ This package specifies the observable collaboration experience represented by th
 - Leaving affects one participant; ending affects the session.
 - A stage request is neither a participant role nor the admission decision.
 - Media preferences are per participant; recording and content sharing are session-scoped.
+- Pinning is per participant; spotlighting is session-scoped and visible to everyone.
 
 ## Integration Vocabulary
 
@@ -41,7 +43,7 @@ This package specifies the observable collaboration experience represented by th
 
 ## Contract Dispatch
 
-Wire action START/STOP maps to LiveStreamService.start/stop, not to a single operation with conflicting constraints. Stage CREATE/CANCEL maps to StageService.submitRequest; ACCEPT/REJECT maps to StageService.decide. Departure LEAVE/END maps to SessionService.leave/end. The one preference PATCH maps to PreferenceService.update and imports all UC-12 through UC-15 constraints. Media and view rows are obtained from the caller's participant record. Domain policy remains in the identified UC OCL blocks and assumption register.
+Wire action START/STOP maps to LiveStreamService.start/stop, not to a single operation with conflicting constraints. Stage CREATE/CANCEL maps to StageService.submitRequest; ACCEPT/REJECT maps to StageService.decide. Departure LEAVE/END maps to SessionService.leave/end. The preference PATCH maps to PreferenceService.update for UC-12 through UC-14 and personal pinning in UC-15. Shared spotlight updates map to SpotlightService.update. Media and view rows are obtained from the caller's participant record; spotlight is obtained from session state. Domain policy remains in the identified UC OCL blocks and assumption register.
 
 ## Supporting Reads
 

@@ -21,9 +21,32 @@ enum StaySort {
   RATING
 }
 enum TaxiSort {
-  RECOMMENDED
-  PRICE
-  DISTANCE
+  TOP_PICKS
+}
+enum VehicleCategory {
+  SMALL
+  MEDIUM
+  LARGE
+  ESTATE
+}
+enum ElectricType {
+  NONE
+  FULLY_ELECTRIC
+  HYBRID
+}
+enum TransmissionType {
+  MANUAL
+  AUTOMATIC
+}
+enum DepositBand {
+  LKR_200_500
+  LKR_500_1000
+  LKR_1000_1200
+  LKR_1200_1500
+}
+enum BookingFor {
+  MAIN_GUEST
+  SOMEONE_ELSE
 }
 enum FlightSort {
   CHEAPEST
@@ -165,23 +188,25 @@ class StayBooking {
   requestFingerprint: String
   providerReservationRef: String
   guest: GuestDetails
+  savedPaymentMethod: SavedPaymentMethod
 }
 class TaxiOffer {
   paymentMode: PaymentMode
   id: String
-  pickup: Location
-  dropoff: Location
+  location: Location
   pickupAt: DateTime
   dropoffAt: DateTime
-  seats: Integer
+  passengers: Integer
   available: Boolean
-  distanceKm: Real
   total: Money
+  deposit: Money
+  distanceFromCenterKm: Real
+  mileageAllowanceKm: Real
+  rating: Real
   driver: Driver
   vehicle: Vehicle
   providerOfferRef: String
-  pickupId: String
-  dropoffId: String
+  locationId: String
   expiresAt: DateTime
   searchContextId: String
   snapshotVersion: Integer
@@ -197,17 +222,22 @@ class Driver {
 }
 class Vehicle {
   id: String
+  displayName: String
   registrationNumber: String
   seatCapacity: Integer
   active: Boolean
-  vehicleType: String
+  category: VehicleCategory
+  transmission: TransmissionType
+  electricType: ElectricType
   smallBagCapacity: Integer
+  largeBagCapacity: Integer
 }
 class TaxiQuote {
   id: String
   offerId: String
   available: Boolean
   total: Money
+  deposit: Money
   paymentMode: PaymentMode
   expiresAt: DateTime
   user: User
@@ -228,6 +258,13 @@ class TaxiBooking {
   paymentReference: PaymentReference
   requestFingerprint: String
   guest: GuestDetails
+  savedPaymentMethod: SavedPaymentMethod
+}
+class SavedPaymentMethod {
+  id: String
+  user: User
+  provider: String
+  providerReference: String
 }
 class PaymentReference {
   id: String
@@ -332,8 +369,7 @@ class StaySearchCriteria {
   currency: String
 }
 class TaxiSearchCriteria {
-  pickupId: String
-  dropoffId: String
+  locationId: String
   pickupAt: DateTime
   dropoffAt: DateTime
   passengers: Integer
@@ -345,7 +381,9 @@ class TaxiSearchCriteria {
   searchContextId: String
   snapshotVersion: Integer
   currency: String
-  vehicleTypes: String[*] {ordered}
+  vehicleCategories: VehicleCategory[*] {ordered}
+  depositBands: DepositBand[*] {ordered}
+  electricTypes: ElectricType[*] {ordered}
 }
 class FlightSearchCriteria {
   originId: String
@@ -367,13 +405,17 @@ class FlightSearchCriteria {
 class GuestDetails {
   firstName: String
   lastName: String
+  homeAddress: String
   email: String
   phone: String
   countryCode: String
+  bookingFor: BookingFor
+  workTravel: Boolean
 }
 class StayBookingCommand {
   guest: GuestDetails
   paymentToken: String
+  savePaymentMethod: Boolean
   idempotencyKey: String
   quoteId: String
   requestFingerprint: String
@@ -381,6 +423,7 @@ class StayBookingCommand {
 class TaxiBookingCommand {
   guest: GuestDetails
   paymentToken: String
+  savePaymentMethod: Boolean
   idempotencyKey: String
   quoteId: String
   requestFingerprint: String
@@ -422,6 +465,14 @@ class HomeSummary {
   services: String[*] {ordered}
   viewer: HomeViewer
   sectionStates: HomeSectionStates
+  upcomingTrip: UpcomingTripSummary
+}
+class UpcomingTripSummary {
+  bookingId: String
+  destinationName: String
+  stayName: String
+  tripDate: Date
+  daysRemaining: Integer
 }
 class HomeService {
   getSummary(): HomeSummary
@@ -489,6 +540,10 @@ class PrivacyMask {
   {static} phone(value: String): String
   {static} registration(value: String): String
   {static} personName(value: String): String
+}
+class RentalFilter {
+  {static} depositMatches(bands: DepositBand[*], amount: Money): Boolean
+  {static} electricMatches(types: ElectricType[*], value: ElectricType): Boolean
 }
 class FlightSegment {
   originId: String
@@ -610,15 +665,15 @@ TaxiOffer --> Vehicle
 - OCL `null` denotes an omitted optional domain value. Optional API fields that disallow JSON null map absence to domain null; omitted list filters map to an empty sequence. Requiredness is specified by each API. Money equality compares amount and currency. String ordering is ordinal lexicographic ordering of opaque IDs; Date ordering is calendar ordering and DateTime ordering compares instants.
 - All multivalued properties used with `at`, `first`, or `last` are ordered sequences; `approvedRatings` is a Bag. `RequestContext.startedAt` is a fixed instant for one operation. A public request has a null authenticatedUserId. Session.accessToken is transient response data; only tokenHash is persisted.
 - Search service operations return the selected sequence of offers. The transport adapter wraps that sequence in the corresponding result page. Page.items is that sequence; orderedOfferIds is the complete filtered order for the snapshot. Snapshot metadata is supplied by SearchSnapshot, not by mutable provider inventory.
-- `SearchSnapshot.refinementChanged(criteria)` compares the submitted filters and sort with the referenced snapshot; it returns true for a new search. `SearchSnapshot.accepts(criteria, at)` resolves both ID and version, verifies unchanged base route/dates/party/currency, and checks at precedes validUntil. Changing refinements creates a new version with a new orderedOfferIds sequence; unchanged refinements reuse the sequence. These helper definitions form part of the search OCL semantics.
+- `SearchSnapshot.refinementChanged(criteria)` compares the submitted filters and sort with the referenced snapshot; it returns true for a new search. `SearchSnapshot.accepts(criteria, at)` resolves both ID and version, verifies unchanged base location/period/party/currency, and checks at precedes validUntil. Changing refinements creates a new version with a new orderedOfferIds sequence; unchanged refinements reuse the sequence. These helper definitions form part of the search OCL semantics.
 - Snapshot offer attributes are immutable observations captured at capturedAt. New provider observations do not edit an existing snapshot. Booking and detail operations resolve the current provider-backed offer separately. An unusable snapshot returns a conflict rather than silently removing rows or shifting page offsets.
 - `ReadState` helpers return canonical structural values, including row identities and all persisted columns, for their named tables and dependent rows. stayBookings and taxiBookings include reservations/allocations and their quotes; payments includes payment references and external payment effects; editorial includes trips, media, attractions and price evidence; reviews includes review records. Equality with @pre compares both membership and values, not just object identity.
 - IdentityNormalization.canonicalEmail trims surrounding whitespace and performs case-insensitive comparison. PasswordHasher.matches verifies a salted password hash; hash creates a salted hash. TokenHasher.hash and PaymentFingerprint.of produce one-way digests. CredentialPolicy.accepts excludes identity-derived and known-compromised secrets. These are implementation-supplied primitive helpers, not unconstrained business entities.
-- RequestFingerprint.of/ofTaxi hashes a canonical tuple of operation, authenticated user, quote ID, guest details and payment-token fingerprint. It is computed by the server, never accepted as a client field. The idempotency key is the separate lookup key. Raw secrets are excluded from stored snapshots, fingerprints, logs and payment references.
+- RequestFingerprint.of/ofTaxi hashes a canonical tuple of operation, authenticated user, quote ID, guest details, save-payment-method choice and payment-token fingerprint. It is computed by the server, never accepted as a client field. The idempotency key is the separate lookup key. Raw secrets are excluded from stored snapshots, fingerprints, logs and payment references.
 - AllocationCalendar.isFree checks active allocations over half-open intervals [pickupAt, dropoffAt). Atomic enforcement must cover overlapping bookings sharing either driver or vehicle, including different offers. The database exclusion constraints in persistence-constraints.sql enforce this boundary. ProviderInventory.reservations returns the provider reservation state; flight search only refreshes observations.
 - FlightItinerary.connects requires a nonempty, consecutive sequence with the requested first/last endpoints and positive segment durations. hasValidConnections returns true for an empty sequence, otherwise checks positive segment durations and every adjacent transfer against its inclusive bounds. duration is zero for an empty journey, otherwise elapsed minutes from first departure to last arrival. It excludes the gap between outbound arrival and inbound departure. FlightNormalization.signature includes both ordered journeys and their boundary.
-- PrivacyMask helpers return public display strings without exposing the full source value. ContentSafety.isPublicSafe is the configured public-content check. Public projections map Review.displayedAuthorName to authorName, TaxiOfferDetail.displayedDriverPhone to driver.phone and displayedRegistration to vehicle.registrationNumber; internal raw attributes are never serialized as public display fields.
-- API IDs are opaque encodings of database UUIDs, not UUID literals. StayOffer.destinationId maps through Stay.location; TaxiOffer.pickupId/dropoffId map to their Location references. Booking.offer is reached through its quote (taxi also stores offer_id). Review.bookingId resolves through exactly one optional stay_booking_id or taxi_booking_id. Review.tripCompletionStatus is COMPLETED exactly when completed_at is non-null on that booking, otherwise NOT_COMPLETED. A stay-linked review resolves stayId from its stay_id.
+- PrivacyMask helpers return public display strings without exposing the full source value. ContentSafety.isPublicSafe is the configured public-content check. Public projections map Review.displayedAuthorName to authorName. The Taxi checkout explicitly displays the assigned driver's phone and vehicle registration, so TaxiOfferDetail maps those display fields to the selected offer resources.
+- API IDs are opaque encodings of database UUIDs, not UUID literals. StayOffer.destinationId maps through Stay.location; TaxiOffer.locationId maps to its Location reference. Booking.offer is reached through its quote (taxi also stores offer_id). Review.bookingId resolves through exactly one optional stay_booking_id or taxi_booking_id. Review.tripCompletionStatus is COMPLETED exactly when completed_at is non-null on that booking, otherwise NOT_COMPLETED. A stay-linked review resolves stayId from its stay_id.
 - API detail projections flatten StayDetail.stay, map approvedCount/averageRating to reviewCount/rating, map ordered media to imageUrls, and expose currentOffer separately. Trip detail maps ordered Attraction.title values to attractions and TripMedia.mediaUrl values to imageUrls.
 - New booking persistence, quote consumption, inventory reservation/allocation and the idempotency record form one logical transaction. External reservations and authorizations use the same operation key and are reconciled before retry. A processor rejection yields a 422 response and creates no booking; persisted pending/confirmed bookings may later become failed/cancelled through provider lifecycle updates outside the current UI scope. Replays return the stored booking without reauthorizing payment or reallocating resources.
 

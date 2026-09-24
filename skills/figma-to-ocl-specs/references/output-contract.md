@@ -40,7 +40,7 @@ Every package contains `FIGMA.md` with:
 
 ## Use-case file contract
 
-Each file contains exactly one use case and these sections:
+A completed package contains 18–20 individual use-case files. Each file contains exactly one use case and these sections:
 
 1. `# UC-NN — Name`
 2. Description
@@ -177,6 +177,7 @@ UML is normative vocabulary for OCL, not decoration. Every OCL name resolves to 
 
 ## Validation gates
 
+- Each package contains 18–20 individual UC files.
 - One UC/API per file with correct filenames and one top-level heading.
 - One Figma source manifest per package.
 - All content is English.

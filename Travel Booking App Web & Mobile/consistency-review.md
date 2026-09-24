@@ -1,71 +1,65 @@
-# Specification Consistency Review
+# Figma Alignment and Consistency Review
 
-Audit date: 2026-09-22.
+## Scope
 
-Scope: all 18 use cases, 16 API contracts, the common API contract, shared UML vocabulary, assumptions, source manifest and persistence model in this package. This is a local-document audit; no live Figma inspection was possible from the retained source identifiers.
+The package was re-audited on 2026-09-24 against the supplied Figma Community resource and the creator-linked public prototype video. The review covered all 18 use cases, 16 API contracts, shared UML vocabulary, OCL rules, DBML persistence, source traceability, and cross-file references.
 
-## Corrections
+Direct canvas enumeration was unavailable because Figma required authentication. The source manifest records the public resource, the desktop and mobile prototype keys visible in the video, and the node IDs available from prototype URLs.
 
-| Finding | Correction | Main artifacts |
+## Corrected Figma Mismatches
+
+| Finding | Correction | Affected artifacts |
 | --- | --- | --- |
-| Login OCL and API used different public rejection codes. | Aligned the OCL outcome with INVALID_CREDENTIALS; completed accepted/rejected session effects. | UC-02, API-AUTH-LOGIN |
-| Hash creation was treated as deterministic equality, and read-only rules compared only object membership. | Verify salted password hashes; use structural state comparison for read-only operations; distinguish transient tokens from persisted hashes. | UC-01, UC-02, shared model |
-| Consumed or expired quotes made booking retries fail their own precondition. | Separate new-booking acceptance from identical replay; bind server-derived fingerprints and return the existing booking without new payment or allocation effects. | UC-08, UC-13 |
-| Quote APIs lacked corresponding quote-operation rules, and booking guest data had no persistence postcondition. | Added quote ownership/version/terms/nonreservation rules and explicit persisted guest mappings. | UC-08, UC-13, shared model |
-| Taxi allocation only counted bookings for one offer, allowing overlapping bookings through other offers. | Check overlapping intervals sharing either driver or vehicle; represent active resource claims and PostgreSQL exclusion constraints. | UC-13, schema.dbml, persistence-constraints.sql |
-| PAY_DRIVER required a payment-reference object despite nullable persistence and no provider payment. | Use a null payment reference for PAY_DRIVER; constrain initial ONLINE states separately. | UC-13, shared model |
-| Refinement always required offset zero, contradicting pagination; optional API filters were mandatory numeric comparisons in OCL. | Reset traversal only for changed refinements, guard absent filters, and specify snapshot ID/version, currency and exact page slices. | UC-05, UC-06, UC-10, UC-11, UC-15; search APIs |
-| Snapshot pages used a moving clock and live provider observations without a stable continuation contract. | Bind page observations to captured time and a validity window; expose continuation metadata and conflict responses. | UC-05, UC-10, shared model, search APIs |
-| Taxi vehicle filters were described but absent from the contract. | Added vehicleTypes transport and domain fields and conjunctive filtering. | UC-11, API-TAXI-SEARCH |
-| Stay detail modeled a current offer without an API request/response field. | Added optional offerId and nullable currentOffer; scoped the review aggregate to the selected stay. | UC-07, API-STAY-DETAIL |
-| Public taxi detail could not supply authenticated contact behavior and rejected an already booked offer. | Added optional authentication, display-field mapping and access through an owned confirmed booking. | UC-12, API-TAXI-OFFER-DETAIL |
-| Round-trip search ignored return dates and mixed a destination stay with flight connections. | Split outbound/inbound journeys, bind both local dates and endpoints, and calculate connections/duration within each journey. | UC-14, API-FLIGHT-SEARCH, flight_segments |
-| The quickest-flight sorting expression had an unmatched parenthesis. | Balanced the expression and checked all OCL delimiters. | UC-15 |
-| Editorial price evidence could be future-dated or compared across currencies. | Require nonfuture recent evidence in the displayed currency; add supporting persistence. | UC-03, UC-16, UC-17 |
-| Shared/local UML declared incompatible operation results and property types. | Centralized canonical members and signatures; retained local diagrams as views of that model. | All UC UML sections, shared-domain-model.md |
-| Several OCL concepts were absent from persistence. | Added snapshot observations, quote/booking fingerprints, price evidence, moderation/booking links, publication fields, flight journey direction and active taxi allocations. | schema.dbml |
-| Some response fields, public enum values and error outcomes were unspecified. | Added missing response projections, nested-field conventions, booking response variants and neutral 409/422 outcomes. | API contracts, common-contract.md |
+| Taxi search was modeled as a point-to-point transfer with separate pickup and destination locations. | Modeled the observed Taxi experience as a vehicle-and-driver rental at one location between pick-up and drop-off times. | UC-09–UC-13, Taxi APIs, shared model, DBML |
+| Taxi result filtering used price, distance, and generic vehicle types. | Added the displayed car categories, pick-up-deposit bands, Fully Electric/Hybrid filters, and the observed `Our top picks` ordering. Unobserved sort values were omitted. | UC-11, API-TAXI-SEARCH |
+| Result cards lacked several visible vehicle facts. | Added vehicle name, category, transmission, electric type, seat and bag capacities, distance from centre, mileage allowance, deposit, rating, and rental price. | UC-10–UC-12, Taxi APIs, shared model, DBML |
+| Driver details and vehicle registration were treated as masked or available only after a confirmed booking. | Matched the mobile prototype, which displays the assigned driver's name, phone and registration details before confirmation. | UC-12, API-TAXI-OFFER-DETAIL |
+| Checkout omitted visible contact and trip-purpose controls. | Added home address, booking-for selection, work-travel selection, and save-card choice to stay and Taxi checkout contracts and persistence. | UC-08, UC-13, booking APIs, shared model, DBML |
+| Card fields could be interpreted as raw server input. | Defined them as a payment-provider control; APIs accept only opaque payment tokens and persistence stores provider references rather than card number, expiry or CVV. | Booking APIs, shared model, DBML |
+| The home specification omitted the visible `Your Next Trip` notification. | Added an optional upcoming-trip projection to the home use case and API. | UC-03, API-HOME-SUMMARY, shared model |
+| The source manifest did not retain the supplied Figma identity. | Recorded the Community URL, resource ID, prototype keys, audit date, evidence boundary, and five observed prototype node IDs. | FIGMA.md |
+
+## Coverage Decisions
+
+- UC-01 through UC-07 and UC-09 through UC-18 have sufficient public prototype evidence for their stated interaction boundaries.
+- UC-08 remains `Partial`: the checkout, payment controls and `Book now` action are visible, but the post-submit presentation is not demonstrated. Its contract keeps the returned presentation generic and records the gap.
+- Flight-offer detail and flight booking remain outside supported scope.
+- Saved items, bookings/itinerary management, Help Centre, and budget-trip share/translation remain candidates because only entry points or actions are visible; no complete outcome is demonstrated.
+- Notification is represented inside UC-03 because it is a home-page state rather than a separate actor goal.
 
 ## Business Rule Coverage
 
-The package previously had 108 BR blocks. It now has 153, a net addition of 45. All 12 use cases that previously had fewer than seven rules now meet the requested minimum. Existing use cases with more than seven rules retain their necessary coverage.
+The package contains 156 OCL Business Rules. Every use case contains at least seven independent BR blocks. Trigger, precondition, postcondition, Basic Flow, Alternative Flow and Exception Flow sections contain no BR identifiers or duplicated policy predicates.
 
-| Use case | Before | After |
-| --- | ---: | ---: |
-| UC-01 | 7 | 8 |
-| UC-02 | 4 | 7 |
-| UC-03 | 5 | 8 |
-| UC-04 | 6 | 7 |
-| UC-05 | 5 | 7 |
-| UC-06 | 6 | 8 |
-| UC-07 | 6 | 7 |
-| UC-08 | 7 | 15 |
-| UC-09 | 7 | 9 |
-| UC-10 | 5 | 7 |
-| UC-11 | 6 | 8 |
-| UC-12 | 5 | 7 |
-| UC-13 | 8 | 15 |
-| UC-14 | 7 | 9 |
-| UC-15 | 6 | 8 |
-| UC-16 | 6 | 7 |
-| UC-17 | 5 | 7 |
-| UC-18 | 7 | 9 |
-
-## Policy Isolation
-
-Triggers, preconditions, postconditions, Basic Flows, Alternative Flows and Exception Flows were reviewed separately from the OCL blocks. They contain observable interactions and outcomes without BR IDs, rule names or duplicated policy predicates. Booking recovery now describes a request retry supported by the existing API instead of referring to an unspecified status-recovery interaction. No standalone flight-detail or flight-booking use case was added.
-
-New or corrected product-policy assumptions are inventoried in [ASSUMPTIONS.md](ASSUMPTIONS.md). The [shared model](uc/shared-domain-model.md) defines their domain vocabulary and primitive-helper semantics.
+| Use case | BR count |
+| --- | ---: |
+| UC-01 | 8 |
+| UC-02 | 7 |
+| UC-03 | 9 |
+| UC-04 | 7 |
+| UC-05 | 7 |
+| UC-06 | 8 |
+| UC-07 | 7 |
+| UC-08 | 16 |
+| UC-09 | 9 |
+| UC-10 | 7 |
+| UC-11 | 9 |
+| UC-12 | 7 |
+| UC-13 | 15 |
+| UC-14 | 9 |
+| UC-15 | 8 |
+| UC-16 | 7 |
+| UC-17 | 7 |
+| UC-18 | 9 |
 
 ## Validation
 
-- Package validator: 18 UC files, 16 sequential API files, 136 coded conditions/branch flows, 185 numbered activities and 153 uniquely identified OCL rules.
-- [Additional static checker](scripts/validate_audit.py): minimum BR counts, sequential IDs, balanced OCL delimiters, qualified-name resolution, direct property paths, repeated rule bodies, policy references and local Markdown links.
-- DBML compilation to PostgreSQL SQL.
-- Repository validator: both specification packages passed; edits were confined to the Travel Booking package.
-- PostgreSQL parser validation of the six statements in [persistence-constraints.sql](persistence-constraints.sql). This supplement is applied after DBML compilation; it was not executed against a database.
+- Package structure and traceability validator: 18 UC files, 16 sequential API files, 139 coded conditions and branch flows, 189 numbered flow activities, and 156 unique OCL rules.
+- Additional audit checker: rule count and sequencing, OCL delimiter balance, qualified-name and direct-property resolution, duplicate rule bodies, policy isolation, fences, and local links passed.
+- `schema.dbml` compiled successfully to PostgreSQL SQL with `@dbml/cli`.
+- `git diff --check` passed.
 
-The checks do not constitute a complete OCL type check or a proof of every policy. Primitive helpers need implementation and product confirmation. Missing Figma URL, file key and node IDs remain recorded in [FIGMA.md](FIGMA.md) and [coverage-report.md](coverage-report.md); frame-level design traceability cannot be independently verified from the current package.
+The static checks are not a complete OCL theorem proof. Hidden provider behavior, timeout values, credential policies, concurrency behavior and other nonvisual product decisions remain explicitly marked as assumptions.
 
 ## Re-run
 
@@ -73,6 +67,6 @@ From the repository root:
 
 ```powershell
 python '.\Travel Booking App Web & Mobile\scripts\validate_audit.py'
-powershell -NoProfile -ExecutionPolicy Bypass -File '.\skills\figma-to-ocl-specs\scripts\validate_specs.ps1' -Root '.\Travel Booking App Web & Mobile'
-powershell -NoProfile -ExecutionPolicy Bypass -File '.\skills\figma-to-ocl-specs\scripts\validate_repository.ps1' -Root '.'
+pwsh -NoProfile -File 'C:\Users\User\.codex\skills\figma-to-ocl-specs\scripts\validate_specs.ps1' -Root '.\Travel Booking App Web & Mobile' -SkipDbmlCompile
+npx --yes --package @dbml/cli dbml2sql '.\Travel Booking App Web & Mobile\schema.dbml' --postgres -o "$env:TEMP\travel-booking-schema.sql"
 ```

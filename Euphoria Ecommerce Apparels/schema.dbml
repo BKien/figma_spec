@@ -1,0 +1,300 @@
+Project euphoria {
+  database_type: 'PostgreSQL'
+  Note: 'Proposed persistence for the supported Euphoria scope. API, UML and OCL govern behavior. No raw passwords, session secrets, card numbers, CVV or payment provider tokens are stored.'
+}
+
+Enum order_status {
+  PLACED
+  IN_PROGRESS
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+Enum payment_method {
+  COD
+}
+Enum delivery_status {
+  QUEUED
+  SENT
+  FAILED
+}
+Enum address_role {
+  SHIPPING
+  BILLING
+}
+
+Table customers {
+  id varchar [pk]
+  name varchar [not null]
+  email varchar [not null, unique]
+  phone varchar
+}
+Table sessions {
+  id varchar [pk]
+  customer_id varchar [not null, ref: > customers.id]
+  token_hash varchar [not null, unique]
+  csrf_hash varchar [not null]
+  expires_at timestamptz [not null]
+  revoked boolean [not null, default: false]
+  indexes {
+    (customer_id, expires_at)
+  }
+}
+Table categories {
+  id varchar [pk]
+  name varchar [not null]
+  image_url varchar [not null]
+  display_rank integer [not null, unique]
+}
+Table products {
+  id varchar [pk]
+  category_id varchar [not null, ref: > categories.id]
+  title varchar [not null]
+  brand varchar [not null]
+  image_url varchar [not null]
+  description text [not null]
+  rating decimal(3,2) [not null]
+  comment_count integer [not null, default: 0]
+  question_count integer [not null, default: 0]
+  style varchar [not null]
+  published boolean [not null]
+  featured boolean [not null]
+  display_rank integer [not null, unique]
+  recommendation_rank integer [not null, unique]
+  created_at timestamptz [not null]
+  display_amount decimal(14,2) [not null]
+  currency char(3) [not null]
+  indexes {
+    (published, category_id, style)
+    (published, created_at)
+  }
+  checks {
+    `display_amount >= 0`
+    `comment_count >= 0 AND question_count >= 0`
+    `rating >= 0 AND rating <= 5`
+  }
+}
+Table variants {
+  id varchar [pk]
+  product_id varchar [not null, ref: > products.id]
+  size varchar [not null]
+  color varchar [not null]
+  amount decimal(14,2) [not null]
+  currency char(3) [not null]
+  sellable boolean [not null]
+  stock integer [not null]
+  version integer [not null, default: 0]
+  indexes {
+    (product_id, size, color) [unique]
+    (size, color)
+  }
+  checks {
+    `stock >= 0 AND amount >= 0 AND version >= 0`
+  }
+}
+Table product_images {
+  id varchar [pk]
+  product_id varchar [not null, ref: > products.id]
+  url varchar [not null]
+  position integer [not null]
+  indexes {
+    (product_id, position) [unique]
+  }
+}
+Table product_attributes {
+  id varchar [pk]
+  product_id varchar [not null, ref: > products.id]
+  name varchar [not null]
+  value varchar [not null]
+}
+Table promotions {
+  id varchar [pk]
+  heading varchar [not null]
+  image_url varchar [not null]
+  target_category_id varchar [ref: > categories.id]
+  published boolean [not null]
+  display_rank integer [not null, unique]
+}
+Table testimonials {
+  id varchar [pk]
+  name varchar [not null]
+  body text [not null]
+  rating decimal(3,2) [not null]
+  published boolean [not null]
+  display_rank integer [not null, unique]
+  checks {
+    `rating >= 0 AND rating <= 5`
+  }
+}
+Table carts {
+  id varchar [pk]
+  customer_id varchar [not null, unique, ref: > customers.id]
+  version integer [not null, default: 0]
+  currency char(3) [not null]
+  checks {
+    `version >= 0`
+  }
+}
+Table cart_lines {
+  id varchar [pk]
+  cart_id varchar [not null, ref: > carts.id]
+  variant_id varchar [not null, ref: > variants.id]
+  title varchar [not null]
+  image_url varchar [not null]
+  size varchar [not null]
+  color varchar [not null]
+  quantity integer [not null]
+  unit_amount decimal(14,2) [not null]
+  currency char(3) [not null]
+  indexes {
+    (cart_id, variant_id) [unique]
+  }
+  checks {
+    `quantity > 0 AND unit_amount >= 0`
+  }
+}
+Table address_books {
+  customer_id varchar [pk, ref: > customers.id]
+  version integer [not null, default: 0]
+  checks {
+    `version >= 0`
+  }
+}
+Table addresses {
+  id varchar [pk]
+  customer_id varchar [not null, ref: > address_books.customer_id]
+  first_name varchar [not null]
+  last_name varchar [not null]
+  country varchar [not null]
+  company varchar
+  street varchar [not null]
+  unit varchar
+  city varchar [not null]
+  state varchar [not null]
+  postal_code varchar [not null]
+  phone varchar [not null]
+  instructions text
+  indexes {
+    (customer_id, id) [unique]
+  }
+}
+Table default_address_roles {
+  customer_id varchar [not null, ref: > address_books.customer_id]
+  role address_role [not null]
+  address_id varchar [not null]
+  indexes {
+    (customer_id, role) [pk]
+  }
+}
+Ref: default_address_roles.(customer_id, address_id) > addresses.(customer_id, id)
+
+Table orders {
+  id varchar [pk]
+  number varchar [not null, unique]
+  customer_id varchar [not null, ref: > customers.id]
+  placed_at timestamptz [not null]
+  estimated_delivery date
+  status order_status [not null]
+  payment_method payment_method [not null]
+  version integer [not null, default: 0]
+  subtotal_amount decimal(14,2) [not null]
+  discount_amount decimal(14,2) [not null]
+  shipping_amount decimal(14,2) [not null]
+  total_amount decimal(14,2) [not null]
+  currency char(3) [not null]
+  indexes {
+    (customer_id, status, placed_at)
+    (customer_id, id) [unique]
+  }
+  checks {
+    `total_amount = subtotal_amount - discount_amount + shipping_amount`
+    `subtotal_amount >= 0 AND discount_amount >= 0 AND shipping_amount >= 0 AND total_amount >= 0 AND version >= 0`
+  }
+}
+Table order_addresses {
+  order_id varchar [not null, ref: > orders.id]
+  role address_role [not null]
+  first_name varchar [not null]
+  last_name varchar [not null]
+  country varchar [not null]
+  company varchar
+  street varchar [not null]
+  unit varchar
+  city varchar [not null]
+  state varchar [not null]
+  postal_code varchar [not null]
+  phone varchar [not null]
+  instructions text
+  indexes {
+    (order_id, role) [pk]
+  }
+}
+Table order_lines {
+  id varchar [pk]
+  order_id varchar [not null, ref: > orders.id]
+  variant_id varchar [not null, ref: > variants.id]
+  title varchar [not null]
+  image_url varchar [not null]
+  size varchar [not null]
+  color varchar [not null]
+  quantity integer [not null]
+  unit_amount decimal(14,2) [not null]
+  currency char(3) [not null]
+  indexes {
+    (order_id, variant_id) [unique]
+  }
+  checks {
+    `quantity > 0 AND unit_amount >= 0`
+  }
+}
+Table order_events {
+  id varchar [pk]
+  order_id varchar [not null, ref: > orders.id]
+  status order_status [not null]
+  occurred_at timestamptz [not null]
+  message text [not null]
+  indexes {
+    (order_id, occurred_at)
+  }
+}
+Table checkout_receipts {
+  id varchar [pk]
+  customer_id varchar [not null, ref: > customers.id]
+  request_key varchar [not null]
+  request_digest varchar [not null]
+  order_id varchar [not null, unique]
+  indexes {
+    (customer_id, request_key) [unique]
+  }
+}
+Ref: checkout_receipts.(customer_id, order_id) > orders.(customer_id, id)
+
+Table reset_deliveries {
+  id varchar [pk]
+  customer_id varchar [not null, ref: > customers.id]
+  status delivery_status [not null]
+  provider_reference varchar
+  created_at timestamptz [not null]
+  indexes {
+    (status, created_at)
+  }
+}
+Table wishlist_entries {
+  id varchar [pk]
+  customer_id varchar [not null, ref: > customers.id]
+  product_id varchar [not null, ref: > products.id]
+  created_at timestamptz [not null]
+  indexes {
+    (customer_id, product_id) [unique]
+  }
+}
+Table viewed_products {
+  id varchar [pk]
+  customer_id varchar [not null, ref: > customers.id]
+  product_id varchar [not null, ref: > products.id]
+  viewed_at timestamptz [not null]
+  indexes {
+    (customer_id, product_id) [unique]
+    (customer_id, viewed_at)
+  }
+}

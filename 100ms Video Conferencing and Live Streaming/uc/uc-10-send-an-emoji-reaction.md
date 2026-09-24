@@ -110,6 +110,24 @@ post BR_UC_10_05_ReactionValue:
   result.reaction = command.reaction and result.createdAt <> null and result.sequence = session.version@pre + 1
 ```
 
+```ocl
+-- BR-UC-10-06
+-- Source: Assumption
+-- Assumption: A-10
+context CollaborationService::sendReaction(command: ReactionCommand, session: Session): ReactionEvent
+post BR_UC_10_06_ParticipationUnaffected:
+  Participant.allInstances() = Participant.allInstances()@pre
+```
+
+```ocl
+-- BR-UC-10-07
+-- Source: Assumption
+-- Assumption: A-10
+context CollaborationService::sendReaction(command: ReactionCommand, session: Session): ReactionEvent
+post BR_UC_10_07_NoImplicitStageRequest:
+  StageRequest.allInstances() = StageRequest.allInstances()@pre
+```
+
 ### Related UI
 
 - Video Conferencing Desktop Features `6007:55138`.

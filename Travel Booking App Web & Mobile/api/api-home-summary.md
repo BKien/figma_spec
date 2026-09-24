@@ -114,6 +114,15 @@ None.
 - Allowed values for each field: `READY`, `EMPTY`, `UNAVAILABLE`.
 - Description: Content-section outcomes.
 
+
+### `data.upcomingTrip`
+
+- Type: object
+- Required: Yes
+- Nullable: Yes
+- Fields: `bookingId` (string), `destinationName` (string), `stayName` (string), `tripDate` (ISO 8601 date string), `daysRemaining` (integer).
+- Description: Upcoming-trip notification card for an authenticated traveller; null when no card is returned.
+
 ## Error Response — HTTP 401
 
 - Code: `UNAUTHORIZED`

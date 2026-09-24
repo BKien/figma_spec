@@ -123,7 +123,7 @@ None.
 - Type: string
 - Required: No
 - Nullable: No
-- Allowed values: `EQUAL_PROMINENCE`, `SIDEBAR`, `SPOTLIGHT`, `PRESENTER`
+- Allowed values: `EQUAL_PROMINENCE`, `SIDEBAR`, `PRESENTER`
 - Validation: Must be a JSON string. String values must belong to the declared enum.
 - Description: layout value.
 

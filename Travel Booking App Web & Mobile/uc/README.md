@@ -1,6 +1,6 @@
 # Use Case Specifications
 
-This directory contains the English-language specifications for the 18 use cases supported by the retained UI evidence.
+This directory contains the English-language specifications for 18 use cases derived from the retained UI evidence. Evidence strength and unresolved visual gaps are recorded in [`../coverage-report.md`](../coverage-report.md).
 
 ## Catalogue
 
@@ -16,11 +16,11 @@ Each use case is stored in its own Markdown file and follows the naming conventi
 | UC-06 | [Filter and Sort Stay Results](uc-06-filter-and-sort-stay-results.md) |
 | UC-07 | [View Stay Details](uc-07-view-stay-details.md) |
 | UC-08 | [Book a Stay](uc-08-book-a-stay.md) |
-| UC-09 | [Search for Taxis](uc-09-search-for-taxis.md) |
-| UC-10 | [View Taxi Results](uc-10-view-taxi-results.md) |
-| UC-11 | [Filter and Sort Taxi Results](uc-11-filter-and-sort-taxi-results.md) |
-| UC-12 | [View Taxi and Driver Details](uc-12-view-taxi-and-driver-details.md) |
-| UC-13 | [Book a Taxi](uc-13-book-a-taxi.md) |
+| UC-09 | [Search for Taxi Rentals](uc-09-search-for-taxis.md) |
+| UC-10 | [View Taxi Rental Results](uc-10-view-taxi-results.md) |
+| UC-11 | [Filter and Sort Taxi Rental Results](uc-11-filter-and-sort-taxi-results.md) |
+| UC-12 | [View Taxi Rental and Driver Details](uc-12-view-taxi-and-driver-details.md) |
+| UC-13 | [Book a Taxi Rental](uc-13-book-a-taxi.md) |
 | UC-14 | [Search for Flights](uc-14-search-for-flights.md) |
 | UC-15 | [View, Filter, and Sort Flight Results](uc-15-view-filter-and-sort-flight-results.md) |
 | UC-16 | [Browse Budget Trips](uc-16-browse-budget-trips.md) |

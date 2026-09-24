@@ -18,7 +18,7 @@
 | C-12 | Configure audio and video devices | `6007:51132`, `6066:89727`, `6066:89005` | Both | Supported | Device discovery is outside Figma |
 | C-13 | Select a virtual background | `6026:1184329` | Desktop | Supported | Background catalog source is not shown |
 | C-14 | Change session layout | `6007:96234`, `6012:102740`, `6007:77656`, `6012:78022` | Both | Supported | None |
-| C-15 | Pin or spotlight a participant | `6007:55138`, `6012:78022` | Both | Supported | None |
+| C-15 | Pin a tile for myself or spotlight a tile for everyone | `6007:55138`, `6012:78022`, `6073:15912` | Both plus component | Supported | Spotlight authorization is not shown |
 | C-16 | Control session recording | `6007:55138`, `6012:90506`, `6012:52233` | Both | Supported | Recording retention is not shown |
 | C-17 | Leave a session | `6007:86770`, `6007:55138`, `6012:90506`, `6012:52233` | Both | Supported | Rejoin policy is not shown |
 | C-18 | End a session for everyone | `6007:86770`, `6007:55138`, `6012:90506`, `6012:52233` | Both | Supported | Host policy is not shown |
@@ -33,4 +33,4 @@ Foundation pages, component pages, generic tile-state galleries, progress indica
 
 ## Contract Completion — 2026-09-22
 
-The 18 supported use cases remain unchanged in scope. Supporting session-state, chat-history and background-catalog read contracts complete their observable interactions. Internal role, identity, lifecycle, retry and concurrency decisions are explicitly recorded in ASSUMPTIONS.md. No new Figma audit or new product screen is claimed by this revision. Pin/spotlight is scoped to a personal view; host transfer and stream restart after STOP are not added as supported flows.
+The 18 supported use cases remain unchanged in scope. Supporting session-state, chat-history and background-catalog read contracts complete their observable interactions. Internal role, identity, lifecycle, retry and concurrency decisions are explicitly recorded in ASSUMPTIONS.md. No new product screen is claimed by this revision. The tile-menu component distinguishes personal pinning from session-wide spotlighting; host transfer and stream restart after STOP are not added as supported flows.

@@ -18,7 +18,7 @@ Before creating artifacts, read:
 
 2. **Audit the Figma evidence.** Enumerate pages, top-level product screens, nested states, overlays, mobile/desktop variants, and action labels. Distinguish product screens from components and decorative frames. Capture screenshots for ambiguous frames. Record the source identity in `FIGMA.md`.
 
-3. **Freeze supported scope.** Build a candidate use-case matrix and classify each candidate as supported, partial, or missing. Create specifications only for supported use cases unless the user explicitly authorizes inferred or planned flows. Record partial and missing flows separately.
+3. **Freeze supported scope.** Build a candidate use-case matrix and classify each candidate as supported, partial, or missing. Resolve the package to 18–20 supported actor-goal use cases by following the scope-cardinality procedure in `references/figma-audit.md`. Create specifications only for supported use cases unless the user explicitly authorizes inferred or planned flows. Record partial and missing flows separately, and do not claim completion while the package is outside the 18–20 range.
 
 4. **Establish the domain language.** Create or update package-local `CONTEXT.md` with canonical terms. In booking domains, keep `Offer`, `Quote`, and `Booking` distinct. Use the same terms in filenames, UML, OCL, APIs, and DBML.
 

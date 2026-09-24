@@ -43,6 +43,11 @@ P1.
 
 1. The client renders the header state returned for the current actor context.
 
+#### AF-UC-03-03
+
+1. An authenticated traveller opens the notification control.
+2. The client displays the returned upcoming-trip summary.
+
 ### Exception Flows
 
 #### EF-UC-03-01
@@ -157,9 +162,23 @@ post BR_UC_03_08_HomePricesUseRecentEvidenceInTheSameCurrency:
     t.startingPrice.amount = eligible->collect(e | e.amount.amount)->min())
 ```
 
+
+```ocl
+-- BR-UC-03-09
+-- Source: Figma
+context HomeService::getSummary(): HomeSummary
+post BR_UC_03_09_UpcomingTripNoticeBelongsToTheAuthenticatedTraveller:
+  result.upcomingTrip = null or
+  (result.viewer.authenticated and
+   StayBooking.allInstances()->exists(b |
+     b.id = result.upcomingTrip.bookingId and b.user.id = RequestContext::authenticatedUserId and
+     Set{BookingStatus::PENDING, BookingStatus::CONFIRMED}->includes(b.status)) and
+   result.upcomingTrip.daysRemaining >= 0)
+```
+
 ### Related UI
 
-`Home page`; `Home page after login`; `home page`.
+`Home page`; `Home page after login`; `home page`; notification bell; `Your Next Trip` pop-up.
 
 ### Related APIs
 

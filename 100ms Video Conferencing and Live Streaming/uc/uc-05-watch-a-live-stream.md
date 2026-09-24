@@ -90,10 +90,43 @@ pre BR_UC_05_02_ViewerTarget:
 context LiveStreamService::view(sessionId: String, participantId: String, session: Session, stream: LiveStream): ViewerSession
 post BR_UC_05_03_ViewerRepresentation:
   result.sessionId = session.id and result.participantId = participantId and
-  result.role = Participant.allInstances()->any(p | p.id = participantId).role and result.streamStatus = stream.status and
-  result.streamVersion = stream.version and result.sessionVersion = session.version and result.initialAudioMuted and
-  result.canPlayMedia = (stream.status = StreamStatus::LIVE) and
+  result.role = Participant.allInstances()->any(p | p.id = participantId).role
+```
+
+```ocl
+-- BR-UC-05-04
+-- Source: Assumption
+-- Assumption: A-05
+context LiveStreamService::view(sessionId: String, participantId: String, session: Session, stream: LiveStream): ViewerSession
+post BR_UC_05_04_StreamSnapshot:
+  result.streamStatus = stream.status and result.streamVersion = stream.version and result.sessionVersion = session.version
+```
+
+```ocl
+-- BR-UC-05-05
+-- Source: Assumption
+-- Assumption: A-05
+context LiveStreamService::view(sessionId: String, participantId: String, session: Session, stream: LiveStream): ViewerSession
+post BR_UC_05_05_PlaybackAvailability:
+  result.canPlayMedia = (stream.status = StreamStatus::LIVE)
+```
+
+```ocl
+-- BR-UC-05-06
+-- Source: Assumption
+-- Assumption: A-05
+context LiveStreamService::view(sessionId: String, participantId: String, session: Session, stream: LiveStream): ViewerSession
+post BR_UC_05_06_PublishingAvailability:
   result.canPublishMedia = (stream.status = StreamStatus::LIVE and result.role = ParticipantRole::STAGE_PARTICIPANT)
+```
+
+```ocl
+-- BR-UC-05-07
+-- Source: Assumption
+-- Assumption: A-05
+context LiveStreamService::view(sessionId: String, participantId: String, session: Session, stream: LiveStream): ViewerSession
+post BR_UC_05_07_MutedPlaybackStart:
+  result.initialAudioMuted
 ```
 
 ### Related UI

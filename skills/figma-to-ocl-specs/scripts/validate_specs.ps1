@@ -23,7 +23,9 @@ $apiDir = Join-Path $rootPath 'api'
 $ucFiles = if (Test-Path $ucDir) { @(Get-ChildItem $ucDir -Filter '*.md' | Where-Object Name -Match '^uc-\d{2}-[a-z0-9-]+\.md$') } else { @() }
 $apiFiles = if (Test-Path $apiDir) { @(Get-ChildItem $apiDir -Filter 'api-*.md' | Where-Object Name -NotMatch '^README\.md$|^common-contract\.md$') } else { @() }
 
-if ($ucFiles.Count -eq 0) { Add-Error 'No individual UC files found.' }
+if ($ucFiles.Count -lt 18 -or $ucFiles.Count -gt 20) {
+  Add-Error "Expected 18 to 20 individual UC files; found $($ucFiles.Count)."
+}
 if ($apiFiles.Count -eq 0) { Add-Error 'No individual API files found.' }
 
 if (Test-Path $apiDir) {

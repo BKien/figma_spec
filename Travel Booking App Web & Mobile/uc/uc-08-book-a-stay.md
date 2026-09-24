@@ -30,7 +30,7 @@ P0.
 1. The traveller opens checkout from a selected stay offer.
 2. The client requests a checkout summary for the current context.
 3. The system processes the request and returns a checkout-summary outcome.
-4. The client presents the returned summary and booking-data controls.
+4. The client presents the returned summary and the contact, home-address, booking-party, work-travel, payment, and save-card controls shown in checkout.
 5. The traveller reviews the summary, completes the displayed controls, and confirms.
 6. The client submits the confirmation request.
 7. The system processes the request and returns a booking outcome.
@@ -220,7 +220,7 @@ context StayService::book(command: StayBookingCommand): StayBooking
 pre BR_UC_08_12_GuestContactAndAuthenticatedOwnerAreUsable:
   User.allInstances()->one(u | u.id = RequestContext::authenticatedUserId and u.active) and
   command.guest.firstName.trim().size() > 0 and command.guest.lastName.trim().size() > 0 and
-  Validation::isEmail(command.guest.email) and Validation::isPhone(command.guest.phone) and
+  command.guest.homeAddress.trim().size() > 0 and Validation::isEmail(command.guest.email) and Validation::isPhone(command.guest.phone) and
   Validation::isCountryCode(command.guest.countryCode)
 ```
 
@@ -250,13 +250,26 @@ post BR_UC_08_14_QuoteDoesNotReserveInventoryOrAuthorizePayment:
 context StayService::book(command: StayBookingCommand): StayBooking
 post BR_UC_08_15_BookingRetainsTheSubmittedGuestContact:
   result.guest.firstName = command.guest.firstName and result.guest.lastName = command.guest.lastName and
-  result.guest.email = command.guest.email and result.guest.phone = command.guest.phone and
-  result.guest.countryCode = command.guest.countryCode
+  result.guest.homeAddress = command.guest.homeAddress and result.guest.email = command.guest.email and
+  result.guest.phone = command.guest.phone and result.guest.countryCode = command.guest.countryCode and
+  result.guest.bookingFor = command.guest.bookingFor and result.guest.workTravel = command.guest.workTravel
+```
+
+
+```ocl
+-- BR-UC-08-16
+-- Source: Figma
+context StayService::book(command: StayBookingCommand): StayBooking
+post BR_UC_08_16_SaveCardChoiceControlsTheSavedProviderReference:
+  (command.savePaymentMethod implies
+    result.savedPaymentMethod <> null and result.savedPaymentMethod.user = result.user and
+    result.savedPaymentMethod.providerReference <> command.paymentToken) and
+  (not command.savePaymentMethod implies result.savedPaymentMethod = null)
 ```
 
 ### Related UI
 
-`hotel reservation page`; `stay checkoutmobile`.
+`hotel reservation page`; `stay checkoutmobile`; `Your Selection`; `Your Details`; `Final Step`; `Home Address`; `Who are you booking for?`; `Are you travelling for work?`; `Save card details`; `Book now`.
 
 ### Related APIs
 

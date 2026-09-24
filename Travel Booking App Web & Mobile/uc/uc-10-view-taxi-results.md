@@ -1,12 +1,12 @@
-# UC-10 — View Taxi Results
+# UC-10 — View Taxi Rental Results
 
 ### Description
 
-As a traveller, I want to browse taxi offers that satisfy my search criteria.
+As a traveller, I want to browse available vehicle-and-driver rental offers for my selected location and period.
 
 ### Actors
 
-Traveller; Taxi Service.
+Traveller; Taxi Rental Service.
 
 ### Priority
 
@@ -14,25 +14,25 @@ P0.
 
 ### Trigger
 
-**TRG-UC-10-01** — The client receives a taxi-search result context.
+**TRG-UC-10-01** — The client receives a taxi-rental search result context.
 
 ### Preconditions
 
-- **PRE-UC-10-01** — A taxi-search result context is available to the client.
+- **PRE-UC-10-01** — A taxi-rental search result context is available to the client.
 
 ### Postconditions
 
 - **POST-UC-10-01** — The client displays the returned result-page state.
-- **POST-UC-10-02** — The displayed search context remains available for navigation or revision.
+- **POST-UC-10-02** — The displayed rental context remains available for navigation or revision.
 
 ### Basic Flow
 
-1. The client opens the taxi-results view for the current search context.
+1. The client opens the Taxi results view for the current search context.
 2. The client requests the corresponding result page.
 3. The system processes the request and returns a page outcome.
-4. The client renders the route summary and returned offer presentations.
-5. The traveller reviews the visible offer summaries.
-6. The traveller may select an offer to continue to taxi and driver details.
+4. The client renders the location and period summary with the returned vehicle cards.
+5. The traveller reviews vehicle name, rating, capacity, transmission, baggage, mileage allowance, and price.
+6. The traveller may select View Details for an offer.
 
 ### Alternative Flows
 
@@ -62,7 +62,9 @@ Classifiers and operations are defined in the [shared domain model](shared-domai
 @startuml
 class TaxiResultPage
 class TaxiOffer
+class Vehicle
 TaxiResultPage o-- TaxiOffer
+TaxiOffer --> Vehicle
 @enduml
 ```
 
@@ -74,8 +76,7 @@ TaxiResultPage o-- TaxiOffer
 context TaxiResultPage
 inv BR_UC_10_01_PageBelongsToOneSearchSnapshot:
   self.items->forAll(o |
-    o.searchContextId = self.searchContextId and
-    o.snapshotVersion = self.snapshotVersion)
+    o.searchContextId = self.searchContextId and o.snapshotVersion = self.snapshotVersion)
 ```
 
 ```ocl
@@ -93,10 +94,8 @@ inv BR_UC_10_02_PageMetadataMatchesItsSlice:
 -- Source: Assumption
 context TaxiResultPage
 inv BR_UC_10_03_PageInventoryWasLiveAtSnapshotCreation:
-  self.items->forAll(o |
-    o.available and o.expiresAt > self.capturedAt) and
-  self.validUntil > self.capturedAt and
-  self.items->forAll(o | self.validUntil <= o.expiresAt)
+  self.items->forAll(o | o.available and o.expiresAt > self.capturedAt) and
+  self.validUntil > self.capturedAt and self.items->forAll(o | self.validUntil <= o.expiresAt)
 ```
 
 ```ocl
@@ -130,15 +129,18 @@ inv BR_UC_10_06_PageIsExactSliceOfTheOrderedSnapshot:
 
 ```ocl
 -- BR-UC-10-07
--- Source: Assumption
+-- Source: Figma
 context TaxiResultPage
-inv BR_UC_10_07_SnapshotUsesOneComparisonCurrency:
-  self.items->forAll(o | o.total.currency = self.currency and o.total.amount >= 0)
+inv BR_UC_10_07_CardsContainComparableRentalFacts:
+  self.items->forAll(o |
+    o.total.currency = self.currency and o.total.amount >= 0 and o.rating >= 0 and o.rating <= 5 and
+    o.vehicle.seatCapacity > 0 and o.vehicle.largeBagCapacity >= 0 and
+    o.vehicle.smallBagCapacity >= 0 and o.mileageAllowanceKm >= 0)
 ```
 
 ### Related UI
 
-`taxi list`.
+`taxi list`; `Kurunegala: 68 Cars available`; vehicle result cards; `View Details`.
 
 ### Related APIs
 

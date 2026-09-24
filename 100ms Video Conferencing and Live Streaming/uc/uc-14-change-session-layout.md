@@ -100,9 +100,7 @@ pre BR_UC_14_03_PanelValues:
 -- Assumption: A-14
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
 post BR_UC_14_04_LayoutPatch:
-  view.layout = if command.hasLayout then command.layout
-    else if command.hasFocusedParticipantId and command.focusedParticipantId = null and view.layout@pre = LayoutMode::SPOTLIGHT
-      then LayoutMode::EQUAL_PROMINENCE else view.layout@pre endif endif
+  view.layout = if command.hasLayout then command.layout else view.layout@pre endif
 ```
 
 ```ocl
@@ -110,10 +108,27 @@ post BR_UC_14_04_LayoutPatch:
 -- Source: Assumption
 -- Assumption: A-14
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
-post BR_UC_14_05_PiPAndPanelPatch:
-  view.pictureInPicture = (if command.hasPictureInPicture then command.pictureInPicture else view.pictureInPicture@pre endif) and
-  view.sidePanel = if view.pictureInPicture then null else
-    if command.hasSidePanel then command.sidePanel else view.sidePanel@pre endif endif
+post BR_UC_14_05_PiPPatch:
+  view.pictureInPicture = if command.hasPictureInPicture then command.pictureInPicture else view.pictureInPicture@pre endif
+```
+
+```ocl
+-- BR-UC-14-06
+-- Source: Assumption
+-- Assumption: A-14
+context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
+post BR_UC_14_06_PiPClearsPanel:
+  view.pictureInPicture implies view.sidePanel = null
+```
+
+```ocl
+-- BR-UC-14-07
+-- Source: Assumption
+-- Assumption: A-14
+context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
+post BR_UC_14_07_PanelPatch:
+  not view.pictureInPicture implies
+    view.sidePanel = if command.hasSidePanel then command.sidePanel else view.sidePanel@pre endif
 ```
 
 ### Related UI
@@ -132,4 +147,4 @@ post BR_UC_14_05_PiPAndPanelPatch:
 
 The shared model defines trusted context, persistence mapping, and query helpers. Server mutation execution uses MutationGateway and its common OCL constraints in UC-02. API command dispatch selects the named operation; it does not combine the preconditions of different operations. Read operations have no domain writes.
 
-UC-12 through UC-15 constrain one atomic PreferenceService.update operation. All four rule sets apply to one merged patch. Field-presence guards determine which values change. Client-local preview operations do not call this server operation.
+UC-12 through UC-14 and the personal-pin rules in UC-15 constrain one atomic PreferenceService.update operation. Field-presence guards determine which values change. Client-local preview operations do not call this server operation.

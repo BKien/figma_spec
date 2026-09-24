@@ -101,6 +101,34 @@ None.
 - Description: Guest last name.
 - Example: `Morgan`
 
+### `guest.homeAddress`
+
+- Type: string
+- Required: Yes
+- Nullable: No
+- Validation: Must be encoded as a JSON string.
+- Description: Home address entered at checkout.
+- Example: `14 Lake Road, Colombo`
+
+### `guest.bookingFor`
+
+- Type: string
+- Required: Yes
+- Nullable: No
+- Allowed values: `MAIN_GUEST`, `SOMEONE_ELSE`
+- Validation: Must be one of the public enum values.
+- Description: Displayed booking-party choice.
+- Example: `MAIN_GUEST`
+
+### `guest.workTravel`
+
+- Type: boolean
+- Required: Yes
+- Nullable: No
+- Validation: Must be encoded as a JSON boolean.
+- Description: Displayed work-travel choice.
+- Example: `false`
+
 ### `guest.email`
 
 - Type: string
@@ -140,6 +168,15 @@ None.
 - Validation: Must be encoded as a JSON string.
 - Description: Opaque payment reference supplied by the payment client.
 - Example: `pay_tok_01JABCDEF`
+
+### `savePaymentMethod`
+
+- Type: boolean
+- Required: Yes
+- Nullable: No
+- Validation: Must be encoded as a JSON boolean.
+- Description: Save-card checkbox selection.
+- Example: `false`
 
 ## Success Response — HTTP 201
 
@@ -279,4 +316,4 @@ None.
 
 Response envelopes, money values, and nested-field conventions follow the [common API contract](common-contract.md).
 
-The paymentToken field carries the payment-provider string representation. HTTP 201 and HTTP 200 use the same response schema.
+The card fields visible in Figma belong to a payment-provider control; this API receives only its opaque token. No card number, expiry value, or CVV is accepted or stored. HTTP 201 and HTTP 200 use the same response schema.

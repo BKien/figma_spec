@@ -216,6 +216,14 @@ The following named object definitions are referenced by endpoint field types. T
 - Description: UUID identifier.
 - Example: `11111111-1111-4111-8111-111111111111`
 
+### `spotlightedParticipantId`
+
+- Type: string
+- Required: Yes
+- Nullable: Yes
+- Description: UUID identifier of the tile spotlighted for everyone, or null when no shared spotlight is active.
+- Example: `11111111-1111-4111-8111-111111111111`
+
 ### `endedAt`
 
 - Type: string
@@ -651,7 +659,7 @@ The following named object definitions are referenced by endpoint field types. T
 - Type: string
 - Required: Yes
 - Nullable: No
-- Allowed values: `EQUAL_PROMINENCE`, `SIDEBAR`, `SPOTLIGHT`, `PRESENTER`
+- Allowed values: `EQUAL_PROMINENCE`, `SIDEBAR`, `PRESENTER`
 - Description: layout value.
 - Example: `EQUAL_PROMINENCE`
 

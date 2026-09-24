@@ -98,6 +98,35 @@ post BR_UC_01_04_PreviewKey:
   result.participantKey = command.participantKey
 ```
 
+```ocl
+-- BR-UC-01-05
+-- Source: Assumption
+-- Assumption: A-01
+context PreviewService::prepare(command: PreviewCommand): PreviewState
+post BR_UC_01_05_CameraDeniedState:
+  result.cameraPermission <> PermissionStatus::GRANTED implies not result.cameraEnabled
+```
+
+```ocl
+-- BR-UC-01-06
+-- Source: Assumption
+-- Assumption: A-01
+context PreviewService::prepare(command: PreviewCommand): PreviewState
+post BR_UC_01_06_MicrophoneDeniedState:
+  result.microphonePermission <> PermissionStatus::GRANTED implies not result.microphoneEnabled
+```
+
+```ocl
+-- BR-UC-01-07
+-- Source: Assumption
+-- Assumption: A-01
+context PreviewService::prepare(command: PreviewCommand): PreviewState
+post BR_UC_01_07_ClientLocalPreview:
+  Participant.allInstances() = Participant.allInstances()@pre and
+  MediaPreference.allInstances() = MediaPreference.allInstances()@pre and
+  ViewPreference.allInstances() = ViewPreference.allInstances()@pre
+```
+
 ### Related UI
 
 - Broadcaster Preview `6007:51245`.

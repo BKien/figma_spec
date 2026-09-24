@@ -1,0 +1,31 @@
+{
+  "use_cases": 18,
+  "apis": 13,
+  "ocl_rules": 138,
+  "rules_per_uc": {
+    "UC-01": 7,
+    "UC-02": 7,
+    "UC-03": 8,
+    "UC-04": 7,
+    "UC-05": 10,
+    "UC-06": 8,
+    "UC-07": 9,
+    "UC-08": 11,
+    "UC-09": 7,
+    "UC-10": 7,
+    "UC-11": 7,
+    "UC-12": 7,
+    "UC-13": 7,
+    "UC-14": 7,
+    "UC-15": 7,
+    "UC-16": 7,
+    "UC-17": 7,
+    "UC-18": 8
+  },
+  "minimum_rules_per_uc": 7,
+  "policy_neutral_interaction_sections": 18,
+  "wire_schemas": 29,
+  "json_examples": 17,
+  "source_frames": 20,
+  "errors": []
+}

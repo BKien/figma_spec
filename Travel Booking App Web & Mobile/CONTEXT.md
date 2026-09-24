@@ -21,7 +21,7 @@ A short-lived revalidation of one offer for one authenticated user before bookin
 _Avoid_: Offer, reservation, price estimate
 
 **Booking**:
-A persisted request by an authenticated user to reserve a quoted stay or taxi service.
+A persisted request by an authenticated user to reserve a quoted stay or Taxi vehicle-and-driver rental.
 _Avoid_: Offer, quote, order
 
 **Stay**:
@@ -32,9 +32,9 @@ _Avoid_: Hotel when referring to every accommodation type
 An offer for a stay, date range, occupancy, and room quantity.
 _Avoid_: Stay, room, stay booking
 
-**Taxi Offer**:
-An offer for a route, time window, passenger count, driver, and vehicle.
-_Avoid_: Taxi, ride, taxi booking
+**Taxi Rental Offer**:
+An offer for one vehicle and driver at one rental location between a pick-up time and a drop-off time. It includes capacity, vehicle characteristics, mileage allowance, deposit, and price. The Figma navigation label for this service is `Taxi`.
+_Avoid_: Point-to-point route, ride-hail trip, destination transfer
 
 **Flight Offer**:
 A provider-backed itinerary returned by flight search. It is not bookable in the current scope.

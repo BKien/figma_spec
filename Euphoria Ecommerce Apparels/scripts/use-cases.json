@@ -1,0 +1,1510 @@
+[
+  {
+    "n": 1,
+    "slug": "explore-storefront",
+    "name": "Explore the storefront",
+    "nodes": [
+      "85:1544"
+    ],
+    "api": [
+      "STOREFRONT",
+      "CATALOG"
+    ],
+    "desc": "Discover promotions, apparel categories, featured products, and feedback on the storefront.",
+    "trigger": "The shopper opens the Shop landing page.",
+    "pre": "The storefront route is open in the client.",
+    "post": "The client displays the storefront sections.",
+    "basic": [
+      "The shopper opens the storefront.",
+      "The client requests storefront content.",
+      "The system returns promotions, categories, featured products, and feedback.",
+      "The client renders the returned sections.",
+      "The shopper chooses an Explore Now category.",
+      "The client opens the product listing and displays the returned cards."
+    ],
+    "alt": [
+      "The shopper selects a featured product card.",
+      "The client opens the product detail route."
+    ],
+    "err": [
+      "The system returns a temporary service failure.",
+      "The client presents a retry action for the storefront.",
+      "The shopper retries the request."
+    ],
+    "service": "StorefrontService",
+    "operation": "read(): Storefront",
+    "rules": [
+      [
+        "Assumption",
+        "context StorefrontService::read(): Storefront",
+        "post Promotions",
+        "result.promotions = Promotion.allInstances()->select(p | p.published)->sortedBy(p | p.displayRank)"
+      ],
+      [
+        "Assumption",
+        "context StorefrontService::read(): Storefront",
+        "post Categories",
+        "result.categories = Category.allInstances()->sortedBy(c | c.displayRank)"
+      ],
+      [
+        "Assumption",
+        "context StorefrontService::read(): Storefront",
+        "post FeaturedCards",
+        "result.featured = Product.allInstances()->select(p | p.published and p.featured)->sortedBy(p | p.displayRank)"
+      ],
+      [
+        "Assumption",
+        "context StorefrontService::read(): Storefront",
+        "post Feedback",
+        "result.testimonials = Testimonial.allInstances()->select(t | t.published)->sortedBy(t | t.displayRank)"
+      ],
+      [
+        "Assumption",
+        "context Promotion",
+        "inv CategoryDestination",
+        "self.targetCategoryId = null or Category.allInstances()->exists(c | c.id = self.targetCategoryId)"
+      ],
+      [
+        "Assumption",
+        "context Testimonial",
+        "inv RatingScale",
+        "self.rating >= 0 and self.rating <= 5"
+      ],
+      [
+        "Assumption",
+        "context Promotion",
+        "inv EditorialPositions",
+        "Promotion.allInstances()->isUnique(displayRank) and Category.allInstances()->isUnique(displayRank) and Testimonial.allInstances()->isUnique(displayRank)"
+      ]
+    ],
+    "actor": "Shopper",
+    "priority": "Medium"
+  },
+  {
+    "n": 2,
+    "slug": "browse-products",
+    "name": "Browse products by category",
+    "nodes": [
+      "64:33"
+    ],
+    "api": [
+      "CATALOG"
+    ],
+    "desc": "Open the apparel listing from Shop or a category and inspect its product cards.",
+    "trigger": "The shopper opens Shop or selects a category.",
+    "pre": "The storefront or category navigation is displayed.",
+    "post": "The client displays the product listing.",
+    "basic": [
+      "The shopper chooses Shop or a category.",
+      "The client requests the product listing.",
+      "The system returns product cards and filter choices.",
+      "The client displays the listing and the category heading.",
+      "The shopper selects a product card.",
+      "The client opens its product detail route."
+    ],
+    "alt": [
+      "The shopper chooses another category.",
+      "The client requests and displays its product listing."
+    ],
+    "err": [
+      "The system returns an unavailable resource response.",
+      "The client displays the returned message.",
+      "The shopper returns to category navigation."
+    ],
+    "service": "CatalogService",
+    "operation": "list(criteria: CatalogCriteria): CatalogResult",
+    "rules": [
+      [
+        "Assumption",
+        "context CatalogService::list(criteria: CatalogCriteria): CatalogResult",
+        "pre CategoryReference",
+        "criteria.categoryId = null or Category.allInstances()->exists(c | c.id = criteria.categoryId)"
+      ],
+      [
+        "Assumption",
+        "context CatalogService::list(criteria: CatalogCriteria): CatalogResult",
+        "post PublishedCatalog",
+        "result.items->forAll(p | p.published)"
+      ],
+      [
+        "Assumption",
+        "context CatalogService::list(criteria: CatalogCriteria): CatalogResult",
+        "post CategoryBoundary",
+        "criteria.categoryId = null or result.items->forAll(p | p.category.id = criteria.categoryId)"
+      ],
+      [
+        "Assumption",
+        "context CatalogService::list(criteria: CatalogCriteria): CatalogResult",
+        "post CardIdentity",
+        "result.items->isUnique(id)"
+      ],
+      [
+        "Assumption",
+        "context CatalogService::list(criteria: CatalogCriteria): CatalogResult",
+        "post CategoryChoices",
+        "result.categories = Category.allInstances()->collect(c | c.id)->asSet()"
+      ],
+      [
+        "Assumption",
+        "context CatalogService::list(criteria: CatalogCriteria): CatalogResult",
+        "post ResultCount",
+        "result.total = result.items->size()"
+      ],
+      [
+        "Assumption",
+        "context Product",
+        "inv DisplayPrice",
+        "self.displayPrice.amount >= 0 and self.variants->exists(v | v.price = self.displayPrice)"
+      ]
+    ],
+    "actor": "Shopper",
+    "priority": "High"
+  },
+  {
+    "n": 3,
+    "slug": "filter-products",
+    "name": "Filter the product listing",
+    "nodes": [
+      "64:33"
+    ],
+    "api": [
+      "CATALOG"
+    ],
+    "desc": "Refine the displayed apparel listing using price, color, size, and dress style controls.",
+    "trigger": "The shopper changes a product filter.",
+    "pre": "The product listing and filter controls are displayed.",
+    "post": "The client displays the returned filtered listing.",
+    "basic": [
+      "The shopper changes the price, color, size, or dress style controls.",
+      "The client submits the selected values.",
+      "The system returns a listing result.",
+      "The client displays the returned cards and the selected controls."
+    ],
+    "alt": [
+      "The shopper clears the selected controls.",
+      "The client submits the changed selection.",
+      "The client displays the returned listing."
+    ],
+    "err": [
+      "The system returns a request rejection.",
+      "The client presents the returned message beside the listing controls.",
+      "The shopper revises the selections and submits again."
+    ],
+    "service": "CatalogService",
+    "operation": "list(criteria: CatalogCriteria): CatalogResult",
+    "rules": [
+      [
+        "Assumption",
+        "context CatalogCriteria",
+        "inv LowerDefault",
+        "self.minAmount = (if self.rawMinAmount = null then 0 else self.rawMinAmount endif)"
+      ],
+      [
+        "Assumption",
+        "context CatalogCriteria",
+        "inv UpperDefault",
+        "self.maxAmount = (if self.rawMaxAmount = null then if Product.allInstances()->isEmpty() then 0 else Product.allInstances()->collect(p | p.displayPrice.amount)->max() endif else self.rawMaxAmount endif)"
+      ],
+      [
+        "Assumption",
+        "context CatalogService::list(criteria: CatalogCriteria): CatalogResult",
+        "pre PriceInterval",
+        "criteria.minAmount >= 0 and criteria.maxAmount >= criteria.minAmount"
+      ],
+      [
+        "Assumption",
+        "context CatalogService::list(criteria: CatalogCriteria): CatalogResult",
+        "post PriceSelection",
+        "result.items->forAll(p | p.displayPrice.amount >= criteria.minAmount and p.displayPrice.amount <= criteria.maxAmount)"
+      ],
+      [
+        "Assumption",
+        "context CatalogService::list(criteria: CatalogCriteria): CatalogResult",
+        "post DressStyleSelection",
+        "criteria.styles->isEmpty() or result.items->forAll(p | criteria.styles->includes(p.style))"
+      ],
+      [
+        "Assumption",
+        "context CatalogService::list(criteria: CatalogCriteria): CatalogResult",
+        "post VariantIntersection",
+        "result.items->forAll(p | p.variants->exists(v | (criteria.colors->isEmpty() or criteria.colors->includes(v.color)) and (criteria.sizes->isEmpty() or criteria.sizes->includes(v.size))))"
+      ],
+      [
+        "Assumption",
+        "context CatalogService::list(criteria: CatalogCriteria): CatalogResult",
+        "post CompleteMatches",
+        "result.items->asSet() = Product.allInstances()->select(p | p.published and (criteria.categoryId = null or p.category.id = criteria.categoryId) and p.displayPrice.amount >= criteria.minAmount and p.displayPrice.amount <= criteria.maxAmount and (criteria.styles->isEmpty() or criteria.styles->includes(p.style)) and p.variants->exists(v | (criteria.colors->isEmpty() or criteria.colors->includes(v.color)) and (criteria.sizes->isEmpty() or criteria.sizes->includes(v.size))))"
+      ],
+      [
+        "Assumption",
+        "context CatalogService::list(criteria: CatalogCriteria): CatalogResult",
+        "post FilterChoices",
+        "result.colors = Variant.allInstances()->collect(v | v.color)->asSet() and result.sizes = Variant.allInstances()->collect(v | v.size)->asSet() and result.styles = Product.allInstances()->collect(p | p.style)->asSet()"
+      ]
+    ],
+    "actor": "Shopper",
+    "priority": "High"
+  },
+  {
+    "n": 4,
+    "slug": "sort-products",
+    "name": "Change product listing order",
+    "nodes": [
+      "64:33"
+    ],
+    "api": [
+      "CATALOG"
+    ],
+    "desc": "Switch the product listing between New and Recommended views.",
+    "trigger": "The shopper chooses New or Recommended.",
+    "pre": "The product listing is displayed.",
+    "post": "The client displays the returned product sequence.",
+    "basic": [
+      "The shopper chooses New.",
+      "The client submits the listing request with the chosen view.",
+      "The system returns product cards.",
+      "The client displays the returned sequence and highlights the chosen view."
+    ],
+    "alt": [
+      "The shopper chooses Recommended.",
+      "The client submits the changed view.",
+      "The client displays the returned sequence."
+    ],
+    "err": [
+      "The system returns a temporary service failure.",
+      "The client keeps the displayed listing and offers Retry."
+    ],
+    "service": "CatalogService",
+    "operation": "list(criteria: CatalogCriteria): CatalogResult",
+    "rules": [
+      [
+        "Assumption",
+        "context CatalogCriteria",
+        "inv DefaultView",
+        "self.sort = (if self.rawSort = null then CatalogSort::RECOMMENDED else self.rawSort endif)"
+      ],
+      [
+        "Assumption",
+        "context CatalogService::list(criteria: CatalogCriteria): CatalogResult",
+        "post NewFirst",
+        "criteria.sort = CatalogSort::NEW implies result.items->forAll(a,b | a.createdAt > b.createdAt implies result.items->indexOf(a) < result.items->indexOf(b))"
+      ],
+      [
+        "Assumption",
+        "context CatalogService::list(criteria: CatalogCriteria): CatalogResult",
+        "post NewTies",
+        "criteria.sort = CatalogSort::NEW implies result.items->forAll(a,b | a.createdAt = b.createdAt and a.displayRank < b.displayRank implies result.items->indexOf(a) < result.items->indexOf(b))"
+      ],
+      [
+        "Assumption",
+        "context CatalogService::list(criteria: CatalogCriteria): CatalogResult",
+        "post RecommendedFirst",
+        "criteria.sort = CatalogSort::RECOMMENDED implies result.items = result.items->sortedBy(p | p.recommendationRank)"
+      ],
+      [
+        "Assumption",
+        "context Product",
+        "inv EditorialRankIdentity",
+        "Product.allInstances()->isUnique(displayRank)"
+      ],
+      [
+        "Assumption",
+        "context Product",
+        "inv RecommendationRankIdentity",
+        "Product.allInstances()->isUnique(recommendationRank)"
+      ],
+      [
+        "Assumption",
+        "context CatalogService::list(criteria: CatalogCriteria): CatalogResult",
+        "post StableCatalogValues",
+        "Product.allInstances() = Product.allInstances()@pre and Product.allInstances()->forAll(p | p.displayPrice = p.displayPrice@pre and p.displayRank = p.displayRank@pre and p.recommendationRank = p.recommendationRank@pre and p.createdAt = p.createdAt@pre)"
+      ]
+    ],
+    "actor": "Shopper",
+    "priority": "High"
+  },
+  {
+    "n": 5,
+    "slug": "view-product-details",
+    "name": "View product details",
+    "nodes": [
+      "1:2"
+    ],
+    "api": [
+      "PRODUCT"
+    ],
+    "desc": "Inspect product imagery, description, attributes, rating summary, size and color selections, and similar products.",
+    "trigger": "The shopper selects a product card.",
+    "pre": "The client has a product identifier from a displayed card.",
+    "post": "The client displays the product detail and variant choices.",
+    "basic": [
+      "The shopper selects a product card.",
+      "The client requests the product detail.",
+      "The system returns images, description, attributes, rating summary, variants, and similar products.",
+      "The client renders the product detail.",
+      "The shopper selects an image, size, and color.",
+      "The client displays the selected image and variant."
+    ],
+    "alt": [
+      "The shopper selects a similar product.",
+      "The client requests and displays that product detail."
+    ],
+    "err": [
+      "The system returns an unavailable resource response.",
+      "The client displays the unavailable product message.",
+      "The shopper returns to the listing."
+    ],
+    "service": "ProductService",
+    "operation": "read(productId: String): ProductDetail",
+    "rules": [
+      [
+        "Assumption",
+        "context ProductService::read(productId: String): ProductDetail",
+        "pre PublishedProduct",
+        "Product.allInstances()->exists(p | p.id = productId and p.published)"
+      ],
+      [
+        "Assumption",
+        "context ProductService::read(productId: String): ProductDetail",
+        "post ProductIdentity",
+        "result.product.id = productId"
+      ],
+      [
+        "Assumption",
+        "context ProductService::read(productId: String): ProductDetail",
+        "post VariantChoices",
+        "result.variants->asSet() = result.product.variants and result.variants->forAll(v | v.productId = productId)"
+      ],
+      [
+        "Assumption",
+        "context ProductService::read(productId: String): ProductDetail",
+        "post GallerySequence",
+        "result.images = result.product.images->sortedBy(i | i.position) and result.images->forAll(i | i.productId = productId)"
+      ],
+      [
+        "Assumption",
+        "context ProductService::read(productId: String): ProductDetail",
+        "post DescriptionAndAttributes",
+        "result.description = result.product.description and result.attributes = result.product.attributes and result.attributes->forAll(a | a.productId = productId)"
+      ],
+      [
+        "Assumption",
+        "context ProductService::read(productId: String): ProductDetail",
+        "post RelatedProducts",
+        "result.similarProducts = Product.allInstances()->select(p | p.published and p.id <> productId and p.category = result.product.category)->sortedBy(p | p.displayRank)"
+      ],
+      [
+        "Assumption",
+        "context Variant",
+        "inv PublicSelection",
+        "self.purchasable = (self.sellable and self.stock > 0)"
+      ],
+      [
+        "Assumption",
+        "context ProductService::read(productId: String): ProductDetail",
+        "post ReviewSummary",
+        "result.rating = result.product.rating and result.commentCount = result.product.commentCount and result.questionCount = result.product.questionCount"
+      ],
+      [
+        "Assumption",
+        "context Product",
+        "inv ReviewValues",
+        "self.rating >= 0 and self.rating <= 5 and self.commentCount >= 0 and self.questionCount >= 0"
+      ],
+      [
+        "Assumption",
+        "context Product",
+        "inv VariantIdentity",
+        "self.variants->isUnique(v | Tuple{size = v.size, color = v.color}) and self.images->isUnique(position)"
+      ]
+    ],
+    "actor": "Shopper",
+    "priority": "High"
+  },
+  {
+    "n": 6,
+    "slug": "review-cart",
+    "name": "Review the cart",
+    "nodes": [
+      "181:393",
+      "190:423"
+    ],
+    "api": [
+      "CART"
+    ],
+    "desc": "Review product lines, quantities, and the subtotal, including the dedicated empty-cart state.",
+    "trigger": "The shopper opens the cart.",
+    "pre": "The cart route is open in the client.",
+    "post": "The client displays the returned cart or the empty-cart state.",
+    "basic": [
+      "The shopper opens the cart.",
+      "The client requests the cart.",
+      "The system returns cart lines and the subtotal.",
+      "The client displays product details, selected options, quantities, subtotal, shipping estimate, and total estimate.",
+      "The shopper chooses Proceed Check Out.",
+      "The client opens checkout."
+    ],
+    "alt": [
+      "The system returns a cart with no lines.",
+      "The client displays the empty-cart message.",
+      "The shopper returns to shopping."
+    ],
+    "err": [
+      "The system returns a rejected authentication context.",
+      "The client presents the sign-in entry point."
+    ],
+    "service": "CartService",
+    "operation": "read(ctx: RequestContext): Cart",
+    "rules": [
+      [
+        "Assumption",
+        "context CartService::read(ctx: RequestContext): Cart",
+        "pre AccountContext",
+        "ctx.authenticated"
+      ],
+      [
+        "Assumption",
+        "context CartService::read(ctx: RequestContext): Cart",
+        "post CustomerCart",
+        "result.customerId = ctx.customerId"
+      ],
+      [
+        "Assumption",
+        "context CartLine",
+        "inv QuantityAndAmount",
+        "self.quantity > 0 and self.unitPrice.amount >= 0"
+      ],
+      [
+        "Assumption",
+        "context Cart",
+        "inv CurrencyConsistency",
+        "self.items->forAll(l | l.unitPrice.currency = self.subtotal.currency and l.lineTotal.currency = self.subtotal.currency)"
+      ],
+      [
+        "Assumption",
+        "context CartLine",
+        "inv LineAmount",
+        "self.lineTotal.amount = self.quantity * self.unitPrice.amount"
+      ],
+      [
+        "Assumption",
+        "context Cart",
+        "inv Subtotal",
+        "self.subtotal.amount = self.items->collect(l | l.lineTotal.amount)->sum()"
+      ],
+      [
+        "Assumption",
+        "context Cart",
+        "inv OneVariantLine",
+        "self.items->isUnique(variantId) and self.version >= 0"
+      ],
+      [
+        "Assumption",
+        "context Cart",
+        "inv DisplayEstimates",
+        "self.shippingEstimate.amount = (if self.items->isEmpty() then 0 else 5.00 endif) and self.shippingEstimate.currency = self.subtotal.currency and self.totalEstimate.currency = self.subtotal.currency and self.totalEstimate.amount = self.subtotal.amount + self.shippingEstimate.amount"
+      ]
+    ],
+    "actor": "Shopper",
+    "priority": "High"
+  },
+  {
+    "n": 7,
+    "slug": "review-checkout",
+    "name": "Enter billing details and review checkout",
+    "nodes": [
+      "181:393",
+      "235:1056"
+    ],
+    "api": [
+      "CART",
+      "CHECKOUT-PREVIEW"
+    ],
+    "desc": "Enter billing details and review the delivery information and order summary before submitting an order.",
+    "trigger": "The shopper chooses Proceed Check Out from the cart.",
+    "pre": "The checkout screen is open.",
+    "post": "The client displays the returned checkout summary and delivery information.",
+    "basic": [
+      "The shopper chooses Proceed Check Out.",
+      "The client displays the billing form and cart summary.",
+      "The shopper enters billing details and chooses Same as Billing address.",
+      "The shopper chooses Continue to delivery.",
+      "The client submits the checkout details.",
+      "The system returns the checkout summary.",
+      "The client displays the returned amounts and delivery information."
+    ],
+    "alt": [
+      "The shopper returns to the billing fields and edits the details.",
+      "The shopper chooses Continue to delivery again.",
+      "The client displays the returned checkout summary."
+    ],
+    "err": [
+      "The system returns an operation conflict.",
+      "The client requests a refreshed cart and checkout summary.",
+      "The client shows the returned summary and asks the shopper to review it before submitting again."
+    ],
+    "service": "CheckoutService",
+    "operation": "preview(ctx: RequestContext, input: CheckoutInput): CheckoutPreview",
+    "rules": [
+      [
+        "Assumption",
+        "context CheckoutService::preview(ctx: RequestContext, input: CheckoutInput): CheckoutPreview",
+        "pre AccountCart",
+        "ctx.authenticated and input.cart.customerId = ctx.customerId"
+      ],
+      [
+        "Assumption",
+        "context CheckoutService::preview(ctx: RequestContext, input: CheckoutInput): CheckoutPreview",
+        "pre CartRevision",
+        "input.cartVersion = input.cart.version and input.cart.items->notEmpty()"
+      ],
+      [
+        "Assumption",
+        "context CheckoutService::preview(ctx: RequestContext, input: CheckoutInput): CheckoutPreview",
+        "pre AddressValues",
+        "AddressValidation::valid(input.billing) and input.sameAsBilling and input.shipping = null"
+      ],
+      [
+        "Assumption",
+        "context CheckoutService::preview(ctx: RequestContext, input: CheckoutInput): CheckoutPreview",
+        "post CartSnapshot",
+        "result.cartVersion = input.cartVersion and result.items = input.cart.items and result.subtotal = input.cart.subtotal"
+      ],
+      [
+        "Assumption",
+        "context CheckoutService::preview(ctx: RequestContext, input: CheckoutInput): CheckoutPreview",
+        "post DeliveryAndSavings",
+        "result.discount.amount = 0 and result.shipping.amount = self.deliveryCharge"
+      ],
+      [
+        "Assumption",
+        "context CheckoutService::preview(ctx: RequestContext, input: CheckoutInput): CheckoutPreview",
+        "post TotalAmount",
+        "result.total.amount = result.subtotal.amount - result.discount.amount + result.shipping.amount"
+      ],
+      [
+        "Assumption",
+        "context CheckoutService::preview(ctx: RequestContext, input: CheckoutInput): CheckoutPreview",
+        "post Currency",
+        "result.total.currency = self.currency and result.subtotal.currency = self.currency and result.discount.currency = self.currency and result.shipping.currency = self.currency"
+      ],
+      [
+        "Assumption",
+        "context CheckoutService",
+        "inv ProvisionalConfiguration",
+        "self.currency = 'USD' and self.deliveryCharge = 5.00"
+      ],
+      [
+        "Assumption",
+        "context CheckoutService::preview(ctx: RequestContext, input: CheckoutInput): CheckoutPreview",
+        "post NoOrderCreation",
+        "Order.allInstances() = Order.allInstances()@pre and CheckoutReceipt.allInstances() = CheckoutReceipt.allInstances()@pre and input.cart.items = input.cart.items@pre and input.cart.version = input.cart.version@pre"
+      ]
+    ],
+    "actor": "Shopper",
+    "priority": "High"
+  },
+  {
+    "n": 8,
+    "slug": "place-cash-on-delivery-order",
+    "name": "Place a cash-on-delivery order",
+    "nodes": [
+      "235:1056",
+      "273:839",
+      "181:393"
+    ],
+    "api": [
+      "CART",
+      "CHECKOUT-PREVIEW",
+      "ORDER-CREATE"
+    ],
+    "desc": "Submit the reviewed checkout using Cash on delivery and read the resulting order confirmation.",
+    "trigger": "The shopper chooses Pay Now after selecting Cash on delivery.",
+    "pre": "The checkout summary and payment choices are displayed.",
+    "post": "The client displays the returned order confirmation.",
+    "basic": [
+      "The shopper selects Cash on delivery.",
+      "The shopper chooses Pay Now.",
+      "The client submits the checkout request.",
+      "The system returns the order confirmation.",
+      "The client displays Your Order is Confirmed."
+    ],
+    "alt": [
+      "The shopper returns to the billing details.",
+      "The client displays the checkout form."
+    ],
+    "err": [
+      "The system returns an operation conflict.",
+      "The client requests a refreshed cart and checkout summary.",
+      "The client shows the returned summary and asks the shopper to review it before submitting again."
+    ],
+    "service": "CheckoutService",
+    "operation": "preview(ctx: RequestContext, input: CheckoutInput): CheckoutPreview\n  +place(ctx: RequestContext, input: CheckoutInput, key: String, displayedTotal: Money): Order",
+    "rules": [
+      [
+        "Assumption",
+        "context CheckoutService::place(ctx: RequestContext, input: CheckoutInput, key: String, displayedTotal: Money): Order",
+        "pre Identity",
+        "ctx.authenticated and input.cart.customerId = ctx.customerId and key.size() > 0"
+      ],
+      [
+        "Assumption",
+        "context CheckoutService::place(ctx: RequestContext, input: CheckoutInput, key: String, displayedTotal: Money): Order",
+        "pre NewOrReplay",
+        "let receipts : Set(CheckoutReceipt) = CheckoutReceipt.allInstances()->select(r | r.customerId = ctx.customerId and r.key = key) in if receipts->notEmpty() then receipts->forAll(r | r.requestDigest = Digest::checkout(input, displayedTotal)) else input.cartVersion = input.cart.version and input.cart.items->notEmpty() and AddressValidation::valid(input.billing) and (input.sameAsBilling or (input.shipping <> null and AddressValidation::valid(input.shipping))) and input.cart.items->forAll(l | l.variant.sellable and l.variant.stock >= l.quantity and l.unitPrice = l.variant.price) and displayedTotal = self.preview(ctx, input).total endif"
+      ],
+      [
+        "Assumption",
+        "context CheckoutService::place(ctx: RequestContext, input: CheckoutInput, key: String, displayedTotal: Money): Order",
+        "post ReplayOrCreate",
+        "let prior : Set(CheckoutReceipt) = CheckoutReceipt.allInstances()@pre->select(r | r.customerId = ctx.customerId and r.key = key) in if prior->notEmpty() then result = prior->any(true).order else result.oclIsNew() and result.customerId = ctx.customerId and result.status = OrderStatus::PLACED and result.paymentMethod = PaymentMethod::COD and result.total = displayedTotal and result.billing = input.billing and result.shipping = (if input.sameAsBilling then input.billing else input.shipping endif) and result.items->size() = input.cart.items@pre->size() and result.items->forAll(o | input.cart.items@pre->one(c | o.variantId = c.variantId and o.quantity = c.quantity and o.unitPrice = c.unitPrice and o.title = c.title)) and input.cart.items->isEmpty() and input.cart.version = input.cart.version@pre + 1 endif"
+      ],
+      [
+        "Assumption",
+        "context CheckoutService::place(ctx: RequestContext, input: CheckoutInput, key: String, displayedTotal: Money): Order",
+        "post ReceiptAndStock",
+        "let prior : Set(CheckoutReceipt) = CheckoutReceipt.allInstances()@pre->select(r | r.customerId = ctx.customerId and r.key = key) in if prior->isEmpty() then CheckoutReceipt.allInstances()->one(r | r.oclIsNew() and r.customerId = ctx.customerId and r.key = key and r.order = result and r.requestDigest = Digest::checkout(input, displayedTotal)) and Variant.allInstances()->forAll(v | v.stock = v.stock@pre - input.cart.items@pre->select(l | l.variantId = v.id)->collect(l | l.quantity)->sum()) else Variant.allInstances()->forAll(v | v.stock = v.stock@pre) and input.cart.items = input.cart.items@pre and input.cart.version = input.cart.version@pre endif"
+      ],
+      [
+        "Assumption",
+        "context CheckoutReceipt",
+        "inv ReceiptIdentity",
+        "CheckoutReceipt.allInstances()->isUnique(r | Tuple{customerId = r.customerId, key = r.key})"
+      ],
+      [
+        "Assumption",
+        "context CheckoutService::place(ctx: RequestContext, input: CheckoutInput, key: String, displayedTotal: Money): Order",
+        "pre RequestBinding",
+        "ctx.csrfValid"
+      ],
+      [
+        "Assumption",
+        "context CheckoutService::place(ctx: RequestContext, input: CheckoutInput, key: String, displayedTotal: Money): Order",
+        "post InitialSnapshot",
+        "if result.oclIsNew() then result.subtotal.amount = input.cart.items@pre->collect(l | l.lineTotal.amount)->sum() and result.discount.amount = 0 and result.shippingCharge.amount = self.deliveryCharge and result.placedAt = Clock::now() and result.version = 0 and result.events->one(e | e.oclIsNew() and e.status = OrderStatus::PLACED and e.occurredAt = result.placedAt and e.orderId = result.id) and result.items->forAll(o | input.cart.items@pre->one(c | o.variantId = c.variantId and o.size = c.size and o.color = c.color and o.imageUrl = c.imageUrl)) else result.items = result.items@pre and result.events = result.events@pre endif"
+      ],
+      [
+        "Assumption",
+        "context CheckoutService::place(ctx: RequestContext, input: CheckoutInput, key: String, displayedTotal: Money): Order",
+        "post AtomicCommit",
+        "-- The operation is atomic across the cart, inventory, order, lines, addresses, event and receipt.\n  -- Concurrent calls serialize the receipt key and cart revision checks with these writes.\n  if result.oclIsNew() then Order.allInstances() = Order.allInstances()@pre->including(result) and Variant.allInstances()->forAll(v | v.version = v.version@pre + (if input.cart.items@pre->exists(l | l.variantId = v.id) then 1 else 0 endif)) else Order.allInstances() = Order.allInstances()@pre and CheckoutReceipt.allInstances() = CheckoutReceipt.allInstances()@pre and Variant.allInstances()->forAll(v | v.version = v.version@pre) endif"
+      ],
+      [
+        "Assumption",
+        "context Order",
+        "inv PublicIdentity",
+        "Order.allInstances()->isUnique(number) and self.items->isUnique(variantId) and self.items->forAll(l | l.orderId = self.id)"
+      ],
+      [
+        "Assumption",
+        "context CheckoutService::place(ctx: RequestContext, input: CheckoutInput, key: String, displayedTotal: Money): Order",
+        "pre SupportedAddressChoice",
+        "input.sameAsBilling and input.shipping = null"
+      ],
+      [
+        "Assumption",
+        "context Variant",
+        "inv StockAndRevision",
+        "self.stock >= 0 and self.version >= 0 and self.price.amount >= 0"
+      ]
+    ],
+    "actor": "Shopper",
+    "priority": "High"
+  },
+  {
+    "n": 9,
+    "slug": "request-password-reset",
+    "name": "Request a password reset email",
+    "nodes": [
+      "245:588",
+      "270:721"
+    ],
+    "api": [
+      "RESET-REQUEST"
+    ],
+    "desc": "Submit an email address and reach the Check Email acknowledgement screen. Completing the reset is outside this use case.",
+    "trigger": "The visitor chooses Forget your password.",
+    "pre": "The Reset Your Password form is displayed.",
+    "post": "The client displays the Check Email acknowledgement.",
+    "basic": [
+      "The visitor enters an email address in the reset form.",
+      "The client submits the email request.",
+      "The system returns an acknowledgement.",
+      "The client displays Check Email and the Back to Login link."
+    ],
+    "alt": [
+      "The visitor chooses Back to Login.",
+      "The client displays the sign-in page."
+    ],
+    "err": [
+      "The system returns a temporary service failure.",
+      "The client presents the retry action.",
+      "The visitor retries the request."
+    ],
+    "service": "ResetService",
+    "operation": "request(email: String): Accepted",
+    "rules": [
+      [
+        "Assumption",
+        "context ResetService::request(email: String): Accepted",
+        "pre EmailSyntax",
+        "TextSyntax::email(email)"
+      ],
+      [
+        "Assumption",
+        "context ResetService::request(email: String): Accepted",
+        "post NeutralAcknowledgement",
+        "result.accepted = true"
+      ],
+      [
+        "Assumption",
+        "context ResetService::request(email: String): Accepted",
+        "post KnownAccountQueue",
+        "let matches : Set(Customer) = Customer.allInstances()->select(c | c.email = TextSyntax::canonicalEmail(email)) in matches->notEmpty() implies ResetDelivery.allInstances()->one(d | d.oclIsNew() and d.customerId = matches->any(true).id and d.status = DeliveryStatus::QUEUED)"
+      ],
+      [
+        "Assumption",
+        "context ResetService::request(email: String): Accepted",
+        "post UnknownAddress",
+        "Customer.allInstances()->forAll(c | c.email <> TextSyntax::canonicalEmail(email)) implies ResetDelivery.allInstances() = ResetDelivery.allInstances()@pre"
+      ],
+      [
+        "Assumption",
+        "context ResetService::request(email: String): Accepted",
+        "post QueueCardinality",
+        "ResetDelivery.allInstances()->select(d | d.oclIsNew())->size() = (if Customer.allInstances()->exists(c | c.email = TextSyntax::canonicalEmail(email)) then 1 else 0 endif)"
+      ],
+      [
+        "Assumption",
+        "context ResetService::request(email: String): Accepted",
+        "post QueueTime",
+        "ResetDelivery.allInstances()->select(d | d.oclIsNew())->forAll(d | d.createdAt = Clock::now())"
+      ],
+      [
+        "Assumption",
+        "context ResetService::request(email: String): Accepted",
+        "post DispatchBoundary",
+        "ResetDelivery.allInstances()->select(d | d.oclIsNew())->forAll(d | d.providerReference = null)"
+      ]
+    ],
+    "actor": "Visitor",
+    "priority": "Medium"
+  },
+  {
+    "n": 10,
+    "slug": "resend-password-reset-email",
+    "name": "Resend the password reset email",
+    "nodes": [
+      "270:721",
+      "245:588"
+    ],
+    "api": [
+      "RESET-REQUEST"
+    ],
+    "desc": "Request another reset email from the Check Email screen without completing a password change.",
+    "trigger": "The visitor chooses Click here to resend.",
+    "pre": "The Check Email screen is displayed.",
+    "post": "The client displays the returned acknowledgement.",
+    "basic": [
+      "The visitor chooses Click here to resend.",
+      "The client submits the email request again.",
+      "The system returns an acknowledgement.",
+      "The client displays the acknowledgement on Check Email."
+    ],
+    "alt": [
+      "The visitor chooses Back to Login.",
+      "The client displays the sign-in page."
+    ],
+    "err": [
+      "The system returns a temporary service failure.",
+      "The client presents the retry action.",
+      "The visitor retries the request."
+    ],
+    "service": "ResetService",
+    "operation": "request(email: String): Accepted",
+    "rules": [
+      [
+        "Assumption",
+        "context ResetService::request(email: String): Accepted",
+        "post KeepEarlierRequests",
+        "ResetDelivery.allInstances()@pre->forAll(d | ResetDelivery.allInstances()->includes(d) and d.customerId = d.customerId@pre and d.status = d.status@pre and d.providerReference = d.providerReference@pre and d.createdAt = d.createdAt@pre)"
+      ],
+      [
+        "Assumption",
+        "context ResetService::request(email: String): Accepted",
+        "post SameDestination",
+        "ResetDelivery.allInstances()->select(d | d.oclIsNew())->forAll(d | Customer.allInstances()->exists(c | c.id = d.customerId and c.email = TextSyntax::canonicalEmail(email)))"
+      ],
+      [
+        "Assumption",
+        "context ResetService::request(email: String): Accepted",
+        "post NoAccountCreation",
+        "Customer.allInstances() = Customer.allInstances()@pre"
+      ],
+      [
+        "Assumption",
+        "context ResetService::request(email: String): Accepted",
+        "post ContactDataPreserved",
+        "Customer.allInstances()->forAll(c | c.email = c.email@pre and c.name = c.name@pre and c.phone = c.phone@pre)"
+      ],
+      [
+        "Assumption",
+        "context ResetService::request(email: String): Accepted",
+        "post SessionsPreserved",
+        "Session.allInstances() = Session.allInstances()@pre and Session.allInstances()->forAll(s | s.tokenHash = s.tokenHash@pre and s.csrfHash = s.csrfHash@pre and s.expiresAt = s.expiresAt@pre and s.revoked = s.revoked@pre)"
+      ],
+      [
+        "Assumption",
+        "context ResetDelivery",
+        "inv QueuedDispatchReference",
+        "self.status = DeliveryStatus::QUEUED implies self.providerReference = null"
+      ],
+      [
+        "Assumption",
+        "context ResetDelivery",
+        "inv SentDispatchReference",
+        "self.status = DeliveryStatus::SENT implies (self.providerReference <> null and TextSyntax::nonBlank(self.providerReference))"
+      ]
+    ],
+    "actor": "Visitor",
+    "priority": "Medium"
+  },
+  {
+    "n": 11,
+    "slug": "view-profile",
+    "name": "View contact details",
+    "nodes": [
+      "275:1168"
+    ],
+    "api": [
+      "PROFILE"
+    ],
+    "desc": "Read the contact information displayed in My Info.",
+    "trigger": "The customer chooses My info.",
+    "pre": "The My Account area is displayed.",
+    "post": "The client displays the returned contact details.",
+    "basic": [
+      "The customer chooses My info.",
+      "The client requests the profile.",
+      "The system returns name, email, and phone information.",
+      "The client displays Contact Details."
+    ],
+    "alt": [
+      "The customer returns to My orders.",
+      "The client displays the order-history route."
+    ],
+    "err": [
+      "The system returns a rejected authentication context.",
+      "The client presents the sign-in entry point."
+    ],
+    "service": "ProfileService",
+    "operation": "read(ctx: RequestContext): Customer",
+    "rules": [
+      [
+        "Assumption",
+        "context ProfileService::read(ctx: RequestContext): Customer",
+        "pre AccountContext",
+        "ctx.authenticated"
+      ],
+      [
+        "Assumption",
+        "context ProfileService::read(ctx: RequestContext): Customer",
+        "pre ProfileReference",
+        "Customer.allInstances()->exists(c | c.id = ctx.customerId)"
+      ],
+      [
+        "Assumption",
+        "context ProfileService::read(ctx: RequestContext): Customer",
+        "post CustomerProfile",
+        "result.id = ctx.customerId"
+      ],
+      [
+        "Assumption",
+        "context RequestContext",
+        "inv SessionAuthentication",
+        "self.authenticated = Session.allInstances()->exists(s | s.tokenHash = self.sessionHash and s.customerId = self.customerId and not s.revoked and s.expiresAt > Clock::now())"
+      ],
+      [
+        "Assumption",
+        "context RequestContext",
+        "inv CsrfContext",
+        "self.csrfValid = Session.allInstances()->exists(s | s.tokenHash = self.sessionHash and s.customerId = self.customerId and s.csrfHash = self.csrfHash and not s.revoked and s.expiresAt > Clock::now())"
+      ],
+      [
+        "Assumption",
+        "context Customer",
+        "inv CanonicalIdentity",
+        "self.email = TextSyntax::canonicalEmail(self.email) and Customer.allInstances()->isUnique(email)"
+      ],
+      [
+        "Assumption",
+        "context ProfileService::read(ctx: RequestContext): Customer",
+        "post ContactsUnchanged",
+        "Customer.allInstances()->forAll(c | c.name = c.name@pre and c.email = c.email@pre and c.phone = c.phone@pre)"
+      ]
+    ],
+    "actor": "Customer",
+    "priority": "Medium"
+  },
+  {
+    "n": 12,
+    "slug": "view-address-book",
+    "name": "View saved addresses",
+    "nodes": [
+      "275:1168"
+    ],
+    "api": [
+      "ADDRESSES"
+    ],
+    "desc": "Read saved address cards and their shipping and billing default badges.",
+    "trigger": "The customer opens the Address section of My Info.",
+    "pre": "The My Info screen is displayed.",
+    "post": "The client displays the returned address cards.",
+    "basic": [
+      "The customer opens the Address section.",
+      "The client requests the address book.",
+      "The system returns saved addresses and their displayed badges.",
+      "The client displays the address cards."
+    ],
+    "alt": [
+      "The customer chooses Add New in the address section.",
+      "The client opens Add Address."
+    ],
+    "err": [
+      "The system returns a rejected authentication context.",
+      "The client presents the sign-in entry point."
+    ],
+    "service": "ProfileService",
+    "operation": "addresses(ctx: RequestContext): AddressBook",
+    "rules": [
+      [
+        "Assumption",
+        "context ProfileService::addresses(ctx: RequestContext): AddressBook",
+        "pre AccountContext",
+        "ctx.authenticated"
+      ],
+      [
+        "Assumption",
+        "context ProfileService::addresses(ctx: RequestContext): AddressBook",
+        "pre BookReference",
+        "AddressBook.allInstances()->exists(b | b.customerId = ctx.customerId)"
+      ],
+      [
+        "Assumption",
+        "context ProfileService::addresses(ctx: RequestContext): AddressBook",
+        "post BookIdentity",
+        "result.customerId = ctx.customerId"
+      ],
+      [
+        "Assumption",
+        "context ProfileService::addresses(ctx: RequestContext): AddressBook",
+        "post AddressEntries",
+        "result.items = Address.allInstances()->select(a | a.customerId = ctx.customerId)->sortedBy(a | a.id)"
+      ],
+      [
+        "Assumption",
+        "context AddressBook",
+        "inv SingleShippingDefault",
+        "self.items->select(a | a.defaultShipping)->size() <= 1"
+      ],
+      [
+        "Assumption",
+        "context AddressBook",
+        "inv SingleBillingDefault",
+        "self.items->select(a | a.defaultBilling)->size() <= 1"
+      ],
+      [
+        "Assumption",
+        "context ProfileService::addresses(ctx: RequestContext): AddressBook",
+        "post BookUnchanged",
+        "AddressBook.allInstances()->forAll(b | b.version = b.version@pre and b.items = b.items@pre) and Address.allInstances()->forAll(a | a.defaultShipping = a.defaultShipping@pre and a.defaultBilling = a.defaultBilling@pre and a.details = a.details@pre)"
+      ]
+    ],
+    "actor": "Customer",
+    "priority": "Medium"
+  },
+  {
+    "n": 13,
+    "slug": "add-address",
+    "name": "Add a delivery address",
+    "nodes": [
+      "279:1003",
+      "275:1168"
+    ],
+    "api": [
+      "ADDRESSES",
+      "ADDRESS-CREATE"
+    ],
+    "desc": "Enter a new address and optional default-address selections, then return to the address book.",
+    "trigger": "The customer chooses Add New in My Info.",
+    "pre": "The Add Address form is displayed.",
+    "post": "The client displays the returned address book.",
+    "basic": [
+      "The customer enters the address fields and delivery instructions.",
+      "The customer chooses the default shipping and default billing checkboxes as desired.",
+      "The customer chooses Save.",
+      "The client submits the address form.",
+      "The system returns the saved address book.",
+      "The client displays the address cards."
+    ],
+    "alt": [
+      "The customer chooses Cancel.",
+      "The client returns to My Info."
+    ],
+    "err": [
+      "The system returns an operation conflict.",
+      "The client refreshes the address book.",
+      "The client asks the customer to review and submit the form again."
+    ],
+    "service": "AddressService",
+    "operation": "add(ctx: RequestContext, book: AddressBook, input: AddressFields, shipping: Boolean, billing: Boolean, expectedVersion: Integer): AddressBook",
+    "rules": [
+      [
+        "Assumption",
+        "context AddressService::add(ctx: RequestContext, book: AddressBook, input: AddressFields, shipping: Boolean, billing: Boolean, expectedVersion: Integer): AddressBook",
+        "pre AccountBook",
+        "ctx.authenticated and ctx.csrfValid and book.customerId = ctx.customerId"
+      ],
+      [
+        "Assumption",
+        "context AddressService::add(ctx: RequestContext, book: AddressBook, input: AddressFields, shipping: Boolean, billing: Boolean, expectedVersion: Integer): AddressBook",
+        "pre ExpectedRevision",
+        "expectedVersion = book.version"
+      ],
+      [
+        "Assumption",
+        "context AddressService::add(ctx: RequestContext, book: AddressBook, input: AddressFields, shipping: Boolean, billing: Boolean, expectedVersion: Integer): AddressBook",
+        "pre AddressAccepted",
+        "AddressValidation::valid(input)"
+      ],
+      [
+        "Assumption",
+        "context AddressService::add(ctx: RequestContext, book: AddressBook, input: AddressFields, shipping: Boolean, billing: Boolean, expectedVersion: Integer): AddressBook",
+        "post AddressCreated",
+        "result = book and result.version = expectedVersion + 1 and result.items->size() = book.items@pre->size() + 1 and result.items->one(a | a.oclIsNew() and a.customerId = ctx.customerId and a.details = input and a.defaultShipping = shipping and a.defaultBilling = billing)"
+      ],
+      [
+        "Assumption",
+        "context AddressService::add(ctx: RequestContext, book: AddressBook, input: AddressFields, shipping: Boolean, billing: Boolean, expectedVersion: Integer): AddressBook",
+        "post PreserveEntries",
+        "book.items@pre->forAll(a | result.items->includes(a) and a.details = a.details@pre and a.defaultShipping = (if shipping then false else a.defaultShipping@pre endif) and a.defaultBilling = (if billing then false else a.defaultBilling@pre endif))"
+      ],
+      [
+        "Assumption",
+        "context AddressBook",
+        "inv CustomerAddresses",
+        "self.items->forAll(a | a.customerId = self.customerId)"
+      ],
+      [
+        "Assumption",
+        "context AddressValidation::valid(input: AddressFields): Boolean",
+        "post RequiredAddressValues",
+        "result = (TextSyntax::nonBlank(input.firstName) and TextSyntax::nonBlank(input.lastName) and TextSyntax::nonBlank(input.country) and TextSyntax::nonBlank(input.street) and TextSyntax::nonBlank(input.city) and TextSyntax::nonBlank(input.state) and TextSyntax::nonBlank(input.postalCode) and TextSyntax::nonBlank(input.phone))"
+      ]
+    ],
+    "actor": "Customer",
+    "priority": "Medium"
+  },
+  {
+    "n": 14,
+    "slug": "view-wishlist",
+    "name": "View saved wishlist products",
+    "nodes": [
+      "290:855",
+      "299:1027"
+    ],
+    "api": [
+      "WISHLIST",
+      "PRODUCT"
+    ],
+    "desc": "Read saved product cards or the empty-wishlist state.",
+    "trigger": "The customer chooses Wishlist.",
+    "pre": "The My Account area is displayed.",
+    "post": "The client displays the returned wishlist state.",
+    "basic": [
+      "The customer chooses Wishlist.",
+      "The client requests the wishlist.",
+      "The system returns saved product cards.",
+      "The client displays the wishlist cards.",
+      "The customer selects a card.",
+      "The client opens the product detail."
+    ],
+    "alt": [
+      "The system returns a wishlist with no saved cards.",
+      "The client displays Your wishlist is empty and the Shop entry point."
+    ],
+    "err": [
+      "The system returns a rejected authentication context.",
+      "The client presents the sign-in entry point."
+    ],
+    "service": "WishlistService",
+    "operation": "read(ctx: RequestContext): WishlistResult",
+    "rules": [
+      [
+        "Assumption",
+        "context WishlistService::read(ctx: RequestContext): WishlistResult",
+        "pre AccountContext",
+        "ctx.authenticated"
+      ],
+      [
+        "Assumption",
+        "context WishlistService::read(ctx: RequestContext): WishlistResult",
+        "post SavedCards",
+        "result.items->asSet() = WishlistEntry.allInstances()->select(w | w.customerId = ctx.customerId and w.product.published)->collect(w | w.product)->asSet() and result.items->forAll(a,b | let wa : WishlistEntry = WishlistEntry.allInstances()->any(w | w.customerId = ctx.customerId and w.product = a) in let wb : WishlistEntry = WishlistEntry.allInstances()->any(w | w.customerId = ctx.customerId and w.product = b) in wa.createdAt > wb.createdAt implies result.items->indexOf(a) < result.items->indexOf(b))"
+      ],
+      [
+        "Assumption",
+        "context WishlistEntry",
+        "inv SavedOnce",
+        "WishlistEntry.allInstances()->isUnique(w | Tuple{customerId = w.customerId, productId = w.product.id})"
+      ],
+      [
+        "Assumption",
+        "context WishlistService::read(ctx: RequestContext): WishlistResult",
+        "post CardCount",
+        "result.items->size() = WishlistEntry.allInstances()->select(w | w.customerId = ctx.customerId and w.product.published)->size()"
+      ],
+      [
+        "Assumption",
+        "context WishlistService::read(ctx: RequestContext): WishlistResult",
+        "post StableSavedOrder",
+        "result.items->forAll(a,b | let wa : WishlistEntry = WishlistEntry.allInstances()->any(w | w.customerId = ctx.customerId and w.product = a) in let wb : WishlistEntry = WishlistEntry.allInstances()->any(w | w.customerId = ctx.customerId and w.product = b) in wa.createdAt = wb.createdAt and a.displayRank < b.displayRank implies result.items->indexOf(a) < result.items->indexOf(b))"
+      ],
+      [
+        "Assumption",
+        "context WishlistService::read(ctx: RequestContext): WishlistResult",
+        "post SavedEntriesUnchanged",
+        "WishlistEntry.allInstances() = WishlistEntry.allInstances()@pre and WishlistEntry.allInstances()->forAll(w | w.customerId = w.customerId@pre and w.product = w.product@pre and w.createdAt = w.createdAt@pre)"
+      ],
+      [
+        "Assumption",
+        "context WishlistService::read(ctx: RequestContext): WishlistResult",
+        "post CartUnchanged",
+        "Cart.allInstances()->forAll(c | c.items = c.items@pre and c.version = c.version@pre)"
+      ]
+    ],
+    "actor": "Customer",
+    "priority": "Medium"
+  },
+  {
+    "n": 15,
+    "slug": "view-recently-viewed-products",
+    "name": "Rediscover recently viewed products",
+    "nodes": [
+      "299:1027"
+    ],
+    "api": [
+      "WISHLIST",
+      "PRODUCT"
+    ],
+    "desc": "Use Recently Viewed on the empty-wishlist screen to reopen a product.",
+    "trigger": "The customer opens Recently Viewed from the empty-wishlist screen.",
+    "pre": "The empty-wishlist screen is displayed.",
+    "post": "The client displays a selected product detail.",
+    "basic": [
+      "The customer opens Recently Viewed.",
+      "The client requests the wishlist screen content.",
+      "The system returns recently viewed cards.",
+      "The client displays the cards.",
+      "The customer selects a card.",
+      "The client requests and displays its product detail."
+    ],
+    "alt": [
+      "The customer chooses the Shop entry point.",
+      "The client opens the product listing."
+    ],
+    "err": [
+      "The system returns a rejected authentication context.",
+      "The client presents the sign-in entry point."
+    ],
+    "service": "WishlistService",
+    "operation": "read(ctx: RequestContext): WishlistResult",
+    "rules": [
+      [
+        "Assumption",
+        "context WishlistService::read(ctx: RequestContext): WishlistResult",
+        "pre CustomerContext",
+        "ctx.authenticated"
+      ],
+      [
+        "Assumption",
+        "context WishlistService::read(ctx: RequestContext): WishlistResult",
+        "post ViewedMembership",
+        "result.recentlyViewed->asSet() = ViewedProduct.allInstances()->select(v | v.customerId = ctx.customerId and v.product.published)->collect(v | v.product)->asSet()"
+      ],
+      [
+        "Assumption",
+        "context ViewedProduct",
+        "inv RecentOnce",
+        "ViewedProduct.allInstances()->isUnique(v | Tuple{customerId = v.customerId, productId = v.product.id})"
+      ],
+      [
+        "Assumption",
+        "context WishlistService::read(ctx: RequestContext): WishlistResult",
+        "post RecentSequence",
+        "result.recentlyViewed->forAll(a,b | let va : ViewedProduct = ViewedProduct.allInstances()->any(v | v.customerId = ctx.customerId and v.product = a) in let vb : ViewedProduct = ViewedProduct.allInstances()->any(v | v.customerId = ctx.customerId and v.product = b) in va.viewedAt > vb.viewedAt implies result.recentlyViewed->indexOf(a) < result.recentlyViewed->indexOf(b))"
+      ],
+      [
+        "Assumption",
+        "context WishlistService::read(ctx: RequestContext): WishlistResult",
+        "post RecentTies",
+        "result.recentlyViewed->forAll(a,b | let va : ViewedProduct = ViewedProduct.allInstances()->any(v | v.customerId = ctx.customerId and v.product = a) in let vb : ViewedProduct = ViewedProduct.allInstances()->any(v | v.customerId = ctx.customerId and v.product = b) in va.viewedAt = vb.viewedAt and a.displayRank < b.displayRank implies result.recentlyViewed->indexOf(a) < result.recentlyViewed->indexOf(b))"
+      ],
+      [
+        "Assumption",
+        "context WishlistService::read(ctx: RequestContext): WishlistResult",
+        "post RecentCardIdentity",
+        "result.recentlyViewed->isUnique(id)"
+      ],
+      [
+        "Assumption",
+        "context WishlistService::read(ctx: RequestContext): WishlistResult",
+        "post ViewingHistoryUnchanged",
+        "ViewedProduct.allInstances() = ViewedProduct.allInstances()@pre and ViewedProduct.allInstances()->forAll(v | v.product = v.product@pre and v.customerId = v.customerId@pre and v.viewedAt = v.viewedAt@pre)"
+      ]
+    ],
+    "actor": "Customer",
+    "priority": "Medium"
+  },
+  {
+    "n": 16,
+    "slug": "view-order-history",
+    "name": "View order history",
+    "nodes": [
+      "290:1372"
+    ],
+    "api": [
+      "ORDERS",
+      "ORDER-DETAIL"
+    ],
+    "desc": "Open My Orders and read the displayed summaries before opening a selected order.",
+    "trigger": "The customer chooses My orders.",
+    "pre": "The My Account area is displayed.",
+    "post": "The client displays the returned order summaries.",
+    "basic": [
+      "The customer chooses My orders.",
+      "The client requests the displayed tab.",
+      "The system returns order summaries.",
+      "The client displays order numbers, dates, statuses, delivery estimates, payment labels, items, and totals.",
+      "The customer opens an order.",
+      "The client requests and displays its detail."
+    ],
+    "alt": [
+      "The customer returns to My Info.",
+      "The client opens My Info."
+    ],
+    "err": [
+      "The system returns a temporary service failure.",
+      "The client presents a retry action in the order list."
+    ],
+    "service": "OrderService",
+    "operation": "list(ctx: RequestContext, tab: OrderTab): Sequence(Order)",
+    "rules": [
+      [
+        "Assumption",
+        "context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)",
+        "pre AccountContext",
+        "ctx.authenticated"
+      ],
+      [
+        "Assumption",
+        "context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)",
+        "post CustomerSummaries",
+        "result->forAll(o | o.customerId = ctx.customerId)"
+      ],
+      [
+        "Assumption",
+        "context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)",
+        "post DistinctOrders",
+        "result->isUnique(id)"
+      ],
+      [
+        "Assumption",
+        "context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)",
+        "post RecentFirst",
+        "result->forAll(a,b | a.placedAt > b.placedAt implies result->indexOf(a) < result->indexOf(b))"
+      ],
+      [
+        "Assumption",
+        "context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)",
+        "post PlacementTies",
+        "result->forAll(a,b | a.placedAt = b.placedAt and a.number < b.number implies result->indexOf(a) < result->indexOf(b))"
+      ],
+      [
+        "Assumption",
+        "context Order",
+        "inv OrderNumberIdentity",
+        "Order.allInstances()->isUnique(number)"
+      ],
+      [
+        "Assumption",
+        "context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)",
+        "post SummarySnapshotPreserved",
+        "Order.allInstances()->forAll(o | o.status = o.status@pre and o.total = o.total@pre and o.paymentMethod = o.paymentMethod@pre and o.placedAt = o.placedAt@pre and o.items = o.items@pre)"
+      ]
+    ],
+    "actor": "Customer",
+    "priority": "Medium"
+  },
+  {
+    "n": 17,
+    "slug": "filter-order-history",
+    "name": "Filter orders by status",
+    "nodes": [
+      "290:1372"
+    ],
+    "api": [
+      "ORDERS"
+    ],
+    "desc": "Switch between Active, Cancelled, and Completed order-history views.",
+    "trigger": "The customer chooses an order-history tab.",
+    "pre": "My Orders and its tabs are displayed.",
+    "post": "The client displays the returned order-history view.",
+    "basic": [
+      "The customer chooses Active, Cancelled, or Completed.",
+      "The client requests the chosen view.",
+      "The system returns order summaries.",
+      "The client displays the summaries and highlights the chosen tab."
+    ],
+    "alt": [
+      "The customer chooses a different tab.",
+      "The client requests and displays that view."
+    ],
+    "err": [
+      "The system returns a temporary service failure.",
+      "The client presents a retry action in the order list."
+    ],
+    "service": "OrderService",
+    "operation": "list(ctx: RequestContext, tab: OrderTab): Sequence(Order)",
+    "rules": [
+      [
+        "Assumption",
+        "context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)",
+        "post ActiveMembership",
+        "tab = OrderTab::ACTIVE implies result->forAll(o | Set{OrderStatus::PLACED, OrderStatus::IN_PROGRESS, OrderStatus::SHIPPED}->includes(o.status))"
+      ],
+      [
+        "Assumption",
+        "context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)",
+        "post CancelledMembership",
+        "tab = OrderTab::CANCELLED implies result->forAll(o | o.status = OrderStatus::CANCELLED)"
+      ],
+      [
+        "Assumption",
+        "context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)",
+        "post CompletedMembership",
+        "tab = OrderTab::COMPLETED implies result->forAll(o | o.status = OrderStatus::DELIVERED)"
+      ],
+      [
+        "Assumption",
+        "context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)",
+        "post TabMembership",
+        "result->asSet() = Order.allInstances()->select(o | o.customerId = ctx.customerId and (if tab = OrderTab::ACTIVE then Set{OrderStatus::PLACED, OrderStatus::IN_PROGRESS, OrderStatus::SHIPPED}->includes(o.status) else if tab = OrderTab::COMPLETED then o.status = OrderStatus::DELIVERED else o.status = OrderStatus::CANCELLED endif endif))"
+      ],
+      [
+        "Assumption",
+        "context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)",
+        "post NoCancellationAction",
+        "Order.allInstances() = Order.allInstances()@pre and Order.allInstances()->forAll(o | o.status = o.status@pre and o.version = o.version@pre)"
+      ],
+      [
+        "Assumption",
+        "context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)",
+        "post EventsPreserved",
+        "OrderEvent.allInstances() = OrderEvent.allInstances()@pre and OrderEvent.allInstances()->forAll(e | e.status = e.status@pre and e.occurredAt = e.occurredAt@pre and e.message = e.message@pre)"
+      ],
+      [
+        "Assumption",
+        "context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)",
+        "post PaymentChoicePreserved",
+        "Order.allInstances()->forAll(o | o.paymentMethod = o.paymentMethod@pre and o.total = o.total@pre)"
+      ]
+    ],
+    "actor": "Customer",
+    "priority": "Medium"
+  },
+  {
+    "n": 18,
+    "slug": "view-order-detail",
+    "name": "View order details and progress",
+    "nodes": [
+      "295:949"
+    ],
+    "api": [
+      "ORDER-DETAIL"
+    ],
+    "desc": "Inspect the order line summary and the Order Placed, Inprogress, Shipped, and Delivered progress display.",
+    "trigger": "The customer opens an order from My Orders.",
+    "pre": "The client has an order identifier from the order list.",
+    "post": "The client displays the returned order details and timeline.",
+    "basic": [
+      "The customer opens an order.",
+      "The client requests its detail.",
+      "The system returns the order summary and timeline.",
+      "The client displays the order number, placement time, total, product lines, progress stages, and event message."
+    ],
+    "alt": [
+      "The customer returns to My orders.",
+      "The client displays the order list."
+    ],
+    "err": [
+      "The system returns an unavailable resource response.",
+      "The client displays the unavailable order message.",
+      "The customer returns to the order list."
+    ],
+    "service": "OrderDetailService",
+    "operation": "read(ctx: RequestContext, orderId: String): OrderDetail",
+    "rules": [
+      [
+        "Assumption",
+        "context OrderDetailService::read(ctx: RequestContext, orderId: String): OrderDetail",
+        "pre CustomerOrder",
+        "ctx.authenticated and Order.allInstances()->exists(o | o.id = orderId and o.customerId = ctx.customerId)"
+      ],
+      [
+        "Assumption",
+        "context OrderDetailService::read(ctx: RequestContext, orderId: String): OrderDetail",
+        "post OrderIdentity",
+        "result.order.id = orderId and result.order.customerId = ctx.customerId"
+      ],
+      [
+        "Assumption",
+        "context OrderDetailService::read(ctx: RequestContext, orderId: String): OrderDetail",
+        "post TimelineSequence",
+        "result.events = result.order.events->sortedBy(e | e.occurredAt) and result.events->forAll(e | e.orderId = orderId)"
+      ],
+      [
+        "Assumption",
+        "context Order",
+        "inv ItemAmounts",
+        "self.items->forAll(l | l.lineTotal.amount = l.quantity * l.unitPrice.amount and l.quantity > 0 and l.unitPrice.amount >= 0)"
+      ],
+      [
+        "Assumption",
+        "context Order",
+        "inv CurrencyAgreement",
+        "self.items->forAll(l | l.unitPrice.currency = self.total.currency and l.lineTotal.currency = self.total.currency) and self.total.currency = self.subtotal.currency and self.total.currency = self.discount.currency and self.total.currency = self.shippingCharge.currency"
+      ],
+      [
+        "Assumption",
+        "context Order",
+        "inv Subtotal",
+        "self.subtotal.amount = self.items->collect(l | l.lineTotal.amount)->sum()"
+      ],
+      [
+        "Assumption",
+        "context Order",
+        "inv Total",
+        "self.total.amount = self.subtotal.amount - self.discount.amount + self.shippingCharge.amount and self.discount.amount >= 0 and self.shippingCharge.amount >= 0 and self.total.amount >= 0"
+      ],
+      [
+        "Assumption",
+        "context Order",
+        "inv ItemIdentity",
+        "self.items->isUnique(variantId) and self.items->forAll(l | l.orderId = self.id)"
+      ]
+    ],
+    "actor": "Customer",
+    "priority": "Medium"
+  }
+]

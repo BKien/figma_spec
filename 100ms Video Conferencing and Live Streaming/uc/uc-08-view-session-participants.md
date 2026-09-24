@@ -133,6 +133,15 @@ post BR_UC_08_06_StateAudience:
   result.nextReactionCursor = Paging::nextReactionCursor(session.id, reactionCursor)
 ```
 
+```ocl
+-- BR-UC-08-07
+-- Source: Assumption
+-- Assumption: A-08
+context CollaborationService::listParticipants(query: ParticipantListQuery, session: Session): ParticipantPage
+post BR_UC_08_07_UniqueRosterEntries:
+  result.items->isUnique(id)
+```
+
 ### Related UI
 
 - Live Streaming Desktop Features `6007:86770`.

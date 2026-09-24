@@ -25,6 +25,7 @@ Each direct child directory other than `skills` is a self-contained specificatio
 
 | Package | Description |
 | --- | --- |
+| [Euphoria Ecommerce Apparels](Euphoria%20Ecommerce%20Apparels/) | Apparel ecommerce specification: 18 use cases with 7-11 BRs each, 13 API contracts, UML/OCL and DBML; partial flows are recorded separately. |
 | [100ms Video Conferencing and Live Streaming](100ms%20Video%20Conferencing%20and%20Live%20Streaming/) | Desktop and mobile real-time video-conference and live-stream specification. |
 | [Travel Booking App Web & Mobile](Travel%20Booking%20App%20Web%20%26%20Mobile/) | Web and mobile travel-booking product specification. |
 

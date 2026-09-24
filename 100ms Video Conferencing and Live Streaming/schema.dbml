@@ -61,7 +61,6 @@ Enum recording_status {
 Enum layout_mode {
   EQUAL_PROMINENCE
   SIDEBAR
-  SPOTLIGHT
   PRESENTER
 }
 
@@ -96,6 +95,7 @@ Table sessions {
   status session_status [not null, default: 'LOBBY']
   designated_host_principal_id uuid [not null, ref: > principals.id]
   host_participant_id uuid
+  spotlighted_participant_id uuid
   version int [not null, default: 1, check: `version > 0`]
   created_at timestamptz [not null]
   ended_at timestamptz
@@ -285,3 +285,5 @@ Ref content_shares_owner_participant_id_scope: content_shares.(session_id, owner
 Ref recordings_started_by_participant_id_scope: recordings.(session_id, started_by_participant_id) > participants.(session_id, id)
 
 Ref departures_participant_id_scope: departures.(session_id, participant_id) > participants.(session_id, id)
+
+Ref sessions_spotlighted_participant_scope: sessions.(id, spotlighted_participant_id) > participants.(session_id, id)
