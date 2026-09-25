@@ -4,6 +4,7 @@
 | --- | --- |
 | Specification package | Travel Booking App Web & Mobile |
 | Product scope | Travel booking web and mobile interfaces |
+| Specification contract | `self-contained-uml-v1` |
 | Supplied Figma Community URL | https://www.figma.com/files/team/1669929272057222224/resources/community/file/1391829093186122934?q_id=03180f6e-2778-44e9-92a3-a369db686444 |
 | Community resource ID | `1391829093186122934` |
 | Public Community page | https://www.figma.com/community/file/1391829093186122934/travel-booking-app-web-mobile |

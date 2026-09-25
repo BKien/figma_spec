@@ -56,15 +56,120 @@ P0.
 
 ### UML Model
 
-Classifiers and operations are defined in the [shared domain model](shared-domain-model.md).
-
 ```plantuml
 @startuml
-class TaxiResultPage
-class TaxiOffer
-class Vehicle
-TaxiResultPage o-- TaxiOffer
-TaxiOffer --> Vehicle
+hide empty members
+enum VehicleCategory {
+  SMALL
+  MEDIUM
+  LARGE
+  ESTATE
+}
+enum ElectricType {
+  NONE
+  FULLY_ELECTRIC
+  HYBRID
+}
+enum TransmissionType {
+  MANUAL
+  AUTOMATIC
+}
+enum PaymentMode {
+  ONLINE
+  PAY_DRIVER
+}
+class String {
+  +trim(): String
+  +toLower(): String
+  +matches(pattern: String): Boolean
+  +includes(fragment: String): Boolean
+  +concat(value: String): String
+  +<(other: String): Boolean
+}
+class DateTime {
+  +{static} now(): DateTime
+  +{static} hoursBetween(start: DateTime, end: DateTime): Real
+  +<(other: DateTime): Boolean
+  +<=(other: DateTime): Boolean
+  +>(other: DateTime): Boolean
+  +>=(other: DateTime): Boolean
+}
+class Location {
+  +id: String
+  +name: String
+  +countryCode: String
+  +active: Boolean
+  +serviceAreaId: String
+  +timeZone: String
+  +airTravel: Boolean
+}
+class Money {
+  +amount: Real
+  +currency: String
+}
+class TaxiOffer {
+  +paymentMode: PaymentMode
+  +id: String
+  +location: Location
+  +pickupAt: DateTime
+  +dropoffAt: DateTime
+  +passengers: Integer
+  +available: Boolean
+  +total: Money
+  +deposit: Money
+  +distanceFromCenterKm: Real
+  +mileageAllowanceKm: Real
+  +rating: Real
+  +driver: Driver
+  +vehicle: Vehicle
+  +providerOfferRef: String
+  +locationId: String
+  +expiresAt: DateTime
+  +searchContextId: String
+  +snapshotVersion: Integer
+  +rank: Integer
+  +recommendationScore: Real
+  +version: Integer
+}
+class Driver {
+  +id: String
+  +fullName: String
+  +phone: String
+  +active: Boolean
+}
+class Vehicle {
+  +id: String
+  +displayName: String
+  +registrationNumber: String
+  +seatCapacity: Integer
+  +active: Boolean
+  +category: VehicleCategory
+  +transmission: TransmissionType
+  +electricType: ElectricType
+  +smallBagCapacity: Integer
+  +largeBagCapacity: Integer
+}
+class TaxiResultPage {
+  +searchContextId: String
+  +snapshotVersion: Integer
+  +items: TaxiOffer[*] {ordered}
+  +total: Integer
+  +limit: Integer
+  +offset: Integer
+  +hasMore: Boolean
+  +capturedAt: DateTime
+  +validUntil: DateTime
+  +orderedOfferIds: String[*] {ordered}
+  +currency: String
+}
+TaxiOffer --> PaymentMode : paymentMode
+TaxiOffer --> Location : location
+TaxiOffer --> Driver : driver
+TaxiOffer --> Vehicle : vehicle
+Vehicle --> VehicleCategory : category
+Vehicle --> TransmissionType : transmission
+Vehicle --> ElectricType : electricType
+TaxiResultPage "1" o-- "0..*" TaxiOffer : items
 @enduml
 ```
 

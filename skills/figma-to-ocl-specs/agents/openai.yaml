@@ -1,7 +1,7 @@
 interface:
   display_name: "Figma to OCL Specifications"
   short_description: "Create isolated specification packages from Figma"
-  default_prompt: "Use $figma-to-ocl-specs to inspect this Figma file and create a self-contained specification package with structured flows, OCL rules, APIs, UML, and DBML."
+  default_prompt: "Use $figma-to-ocl-specs to inspect this Figma file and create a self-contained specification package with structured flows, OCL rules, per-use-case local UML, APIs, and DBML."
 
 policy:
   allow_implicit_invocation: true

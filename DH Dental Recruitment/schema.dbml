@@ -1,0 +1,42 @@
+Enum execution_status {
+  REQUESTED
+  COMPLETED
+  REJECTED
+}
+
+Table specification_actor {
+  id varchar [pk]
+  external_ref varchar [not null, unique]
+  created_at timestamp [not null]
+}
+
+Table use_case_execution {
+  id varchar [pk]
+  actor_id varchar [not null, ref: > specification_actor.id]
+  use_case_id varchar [not null]
+  request_id varchar [not null]
+  request_payload text [not null]
+  result_payload text
+  status execution_status [not null, default: 'REQUESTED']
+  version int [not null, default: 1]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  indexes {
+    (use_case_id, request_id) [unique]
+    (actor_id, created_at)
+  }
+}
+
+Table api_request_receipt {
+  id varchar [pk]
+  execution_id varchar [not null, ref: > use_case_execution.id]
+  api_id varchar [not null]
+  response_status int [not null]
+  response_payload text [not null]
+  created_at timestamp [not null]
+
+  indexes {
+    (execution_id, api_id) [unique]
+  }
+}

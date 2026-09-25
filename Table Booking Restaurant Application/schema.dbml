@@ -1,0 +1,208 @@
+Project restaurant_booking {
+  database_type: 'PostgreSQL'
+  Note: 'Customer booking and administration persistence. Reports are derived from bookings.'
+}
+
+Enum account_status {
+  PENDING_VERIFICATION
+  ACTIVE
+  SUSPENDED
+}
+
+Enum role_name {
+  CUSTOMER
+  MANAGER
+  SUPER_ADMIN
+}
+
+Enum restaurant_status {
+  DRAFT
+  PUBLISHED
+}
+
+Enum menu_item_status {
+  HIDDEN
+  VISIBLE
+}
+
+Enum booking_status {
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+Enum contact_status {
+  RECEIVED
+  CLOSED
+}
+
+Enum challenge_purpose {
+  REGISTRATION
+  BOOKING
+}
+
+Table accounts {
+  id varchar [pk]
+  email_canonical varchar [not null, unique]
+  display_name varchar [not null]
+  password_hash varchar [not null, note: 'One-way password hash; never raw password']
+  status account_status [not null]
+  version integer [not null, default: 1]
+  points_balance integer [not null, default: 0]
+  created_at timestamptz [not null]
+
+  indexes {
+    email_canonical [unique]
+    (status, created_at)
+  }
+}
+
+Table account_roles {
+  account_id varchar [not null, ref: > accounts.id]
+  role role_name [not null]
+  restaurant_id varchar [ref: > restaurants.id, note: 'Required for a manager assignment']
+
+  indexes {
+    (account_id, role, restaurant_id) [unique]
+    restaurant_id
+  }
+}
+
+Table sessions {
+  id varchar [pk]
+  account_id varchar [not null, ref: > accounts.id]
+  token_hash varchar [not null, unique, note: 'Hash of bearer token; no raw access token']
+  created_at timestamptz [not null]
+  expires_at timestamptz [not null]
+
+  indexes {
+    (account_id, expires_at)
+  }
+}
+
+Table restaurants {
+  id varchar [pk]
+  name varchar [not null]
+  city varchar [not null]
+  cuisine varchar [not null]
+  rating decimal
+  timezone varchar [not null]
+  address varchar [not null]
+  hero_image_url varchar
+  status restaurant_status [not null]
+  version integer [not null, default: 1]
+  created_at timestamptz [not null]
+
+  indexes {
+    (city, status)
+    (status, created_at)
+  }
+}
+
+Table dining_tables {
+  id varchar [pk]
+  restaurant_id varchar [not null, ref: > restaurants.id]
+  label varchar [not null]
+  capacity integer [not null]
+  layout_x decimal [not null, default: 0]
+  layout_y decimal [not null, default: 0]
+  version integer [not null, default: 1]
+
+  indexes {
+    (restaurant_id, label) [unique]
+  }
+}
+
+Table menu_items {
+  id varchar [pk]
+  restaurant_id varchar [not null, ref: > restaurants.id]
+  section_name varchar [not null]
+  name varchar [not null]
+  description text
+  image_url varchar [note: 'Required for visible menu items']
+  status menu_item_status [not null]
+
+  indexes {
+    (restaurant_id, section_name, status)
+  }
+}
+
+Table reservation_slots {
+  id varchar [pk]
+  restaurant_id varchar [not null, ref: > restaurants.id]
+  service_date date [not null]
+  starts_at timestamptz [not null]
+  meal_name varchar [not null]
+  seat_capacity integer [not null]
+  remaining_seats integer [not null]
+  version integer [not null, default: 1, note: 'Optimistic capacity update']
+
+  indexes {
+    (restaurant_id, starts_at) [unique]
+    (restaurant_id, service_date)
+  }
+}
+
+Table verification_challenges {
+  id varchar [pk]
+  account_id varchar [not null, ref: > accounts.id]
+  code_hash varchar [not null, note: 'One-way code hash; no raw OTP']
+  purpose challenge_purpose [not null]
+  expires_at timestamptz [not null]
+  consumed_at timestamptz
+  created_at timestamptz [not null]
+
+  indexes {
+    (account_id, purpose, expires_at)
+  }
+}
+
+Table bookings {
+  id varchar [pk]
+  account_id varchar [not null, ref: > accounts.id]
+  restaurant_id varchar [not null, ref: > restaurants.id]
+  slot_id varchar [not null, ref: > reservation_slots.id]
+  party_size integer [not null]
+  points_used integer [not null, default: 0]
+  contact_phone_encrypted varchar [note: 'Encrypted customer contact phone']
+  status booking_status [not null]
+  idempotency_key varchar [not null]
+  request_fingerprint varchar [not null, note: 'Derived request fingerprint for safe replay']
+  version integer [not null, default: 1]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+
+  indexes {
+    (account_id, idempotency_key) [unique]
+    (account_id, created_at)
+    (restaurant_id, created_at)
+    (slot_id, status)
+  }
+}
+
+Table notifications {
+  id varchar [pk]
+  account_id varchar [not null, ref: > accounts.id]
+  booking_id varchar [ref: > bookings.id]
+  title varchar [not null]
+  body text [not null]
+  read_at timestamptz
+  created_at timestamptz [not null]
+
+  indexes {
+    (account_id, created_at)
+  }
+}
+
+Table contact_messages {
+  id varchar [pk]
+  name varchar [not null]
+  email_canonical varchar [not null]
+  message text [not null]
+  status contact_status [not null]
+  created_at timestamptz [not null]
+
+  indexes {
+    (status, created_at)
+  }
+}

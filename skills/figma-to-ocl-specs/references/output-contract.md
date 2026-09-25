@@ -15,7 +15,6 @@
     ├── schema.dbml
     ├── uc/
     │   ├── README.md
-    │   ├── shared-domain-model.md
     │   └── uc-01-<slug>.md
     └── api/
         ├── README.md
@@ -24,6 +23,8 @@
 ```
 
 Keep shared skills at the repository root. Store no `CONTEXT.md`, `ASSUMPTIONS.md`, `coverage-report.md`, `schema.dbml`, `uc/`, or `api/` directly in the repository root. Each specification package is self-contained and represents exactly one Figma file or one user-approved Figma scope.
+
+Use-case UML exists only inside the individual `uc/uc-NN-*.md` files. The `uc/` directory contains its index and individual use cases, not a shared, common, package-level, or separately linked UML/domain-model artifact. Files such as `shared-domain-model.md`, `domain-model.md`, `shared-uml.puml`, and equivalent variants are invalid output. `CONTEXT.md` defines canonical language but never supplies UML declarations omitted from a use case.
 
 Write all artifact content in English.
 
@@ -36,6 +37,7 @@ Every package contains `FIGMA.md` with:
 - Figma URL and file key;
 - inspected page or node boundary;
 - audit date;
+- specification contract `self-contained-uml-v1` for newly created or updated packages;
 - an explicit note for any source identifier unavailable from the supplied evidence.
 
 ## Use-case file contract
@@ -137,7 +139,7 @@ Error triggers state only public protocol outcomes such as malformed wire input,
 
 ## OCL contract
 
-Every Business Rule is its own fenced `ocl` block. The section contains only blank lines and OCL fences.
+Each use case contains at least seven distinct, testable Business Rules. Every Business Rule is its own fenced `ocl` block. The section contains only blank lines and OCL fences. IDs start at `BR-UC-NN-01` and continue without gaps within the file. Rules must add separate domain constraints or outcomes; repeated, tautological, or merely restated rules do not satisfy the minimum.
 
 ```ocl
 -- BR-UC-04-01
@@ -151,7 +153,9 @@ Rule IDs are globally unique and sequential within a use-case file. OCL constrai
 
 ## UML semantic support
 
-UML is normative vocabulary for OCL, not decoration. Every OCL name resolves to a classifier, property, association, enumeration literal, operation, or explicitly defined primitive helper. Define helpers such as `DateTime::now()`, normalization, hashing, and validation in UML before using them.
+The `### UML Model` section of each use case contains exactly one complete `plantuml` fence with `@startuml` and `@enduml`. It is the sole UML source for the Business Rules in that file. Build it from the OCL below it and continue its local dependency closure until every referenced classifier, typed property, association, enumeration literal, service operation, command/result type, and helper is defined. Define helpers such as `DateTime::now()`, normalization, hashing, and validation before using them. Give classes and enums complete bodies; a name-only stub is insufficient. Repeat relevant definitions across use cases when necessary.
+
+When updating a legacy package that contains a shared model, rebuild each local UML block from that use case's OCL, remove every link or mapping to the shared artifact, remove the artifact from indexes, and delete the artifact before validation. A shared model is never a valid fallback for an incomplete local UML block.
 
 ## DBML contract
 
@@ -178,6 +182,10 @@ UML is normative vocabulary for OCL, not decoration. Every OCL name resolves to 
 ## Validation gates
 
 - Each package contains 18–20 individual UC files.
+- Each use case contains at least seven distinct, gap-free numbered OCL Business Rules.
+- Each use case contains a complete local PlantUML model that resolves its OCL vocabulary without external model files or class stubs.
+- No shared, common, package-level, or separately linked UML/domain-model artifact exists anywhere in the package.
+- Every `FIGMA.md` declares the `self-contained-uml-v1` contract; omitting the marker never disables local-UML validation.
 - One UC/API per file with correct filenames and one top-level heading.
 - One Figma source manifest per package.
 - All content is English.

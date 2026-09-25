@@ -64,23 +64,246 @@ P0.
 
 ### UML Model
 
-Classifiers and operations are defined in the [shared domain model](shared-domain-model.md).
-
 ```plantuml
 @startuml
-enum QuoteStatus
-enum PaymentMode
-enum PaymentStatus
-enum BookingFor
-class TaxiBookingCommand
-class GuestDetails
-class TaxiOffer
-class TaxiQuote
-class TaxiBooking
-class TaxiService
-TaxiService ..> TaxiBookingCommand
-TaxiService --> TaxiBooking
-TaxiBooking --> TaxiOffer
+hide empty members
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+  CANCELLED
+}
+enum VehicleCategory {
+  SMALL
+  MEDIUM
+  LARGE
+  ESTATE
+}
+enum ElectricType {
+  NONE
+  FULLY_ELECTRIC
+  HYBRID
+}
+enum TransmissionType {
+  MANUAL
+  AUTOMATIC
+}
+enum BookingFor {
+  MAIN_GUEST
+  SOMEONE_ELSE
+}
+enum QuoteStatus {
+  ACTIVE
+  EXPIRED
+  CONSUMED
+  UNAVAILABLE
+}
+enum PaymentStatus {
+  REFUNDED
+  PENDING
+  AUTHORIZED
+  FAILED
+  NOT_REQUIRED
+}
+enum PaymentMode {
+  ONLINE
+  PAY_DRIVER
+}
+class String {
+  +trim(): String
+  +toLower(): String
+  +matches(pattern: String): Boolean
+  +includes(fragment: String): Boolean
+  +concat(value: String): String
+  +<(other: String): Boolean
+}
+class DateTime {
+  +{static} now(): DateTime
+  +{static} hoursBetween(start: DateTime, end: DateTime): Real
+  +<(other: DateTime): Boolean
+  +<=(other: DateTime): Boolean
+  +>(other: DateTime): Boolean
+  +>=(other: DateTime): Boolean
+}
+class RequestContext {
+  +{static} authenticatedUserId: String
+  +{static} startedAt: DateTime
+}
+class User {
+  +id: String
+  +fullName: String
+  +email: String
+  +passwordHash: String
+  +active: Boolean
+  +createdAt: DateTime
+}
+class Location {
+  +id: String
+  +name: String
+  +countryCode: String
+  +active: Boolean
+  +serviceAreaId: String
+  +timeZone: String
+  +airTravel: Boolean
+}
+class Money {
+  +amount: Real
+  +currency: String
+}
+class TaxiOffer {
+  +paymentMode: PaymentMode
+  +id: String
+  +location: Location
+  +pickupAt: DateTime
+  +dropoffAt: DateTime
+  +passengers: Integer
+  +available: Boolean
+  +total: Money
+  +deposit: Money
+  +distanceFromCenterKm: Real
+  +mileageAllowanceKm: Real
+  +rating: Real
+  +driver: Driver
+  +vehicle: Vehicle
+  +providerOfferRef: String
+  +locationId: String
+  +expiresAt: DateTime
+  +searchContextId: String
+  +snapshotVersion: Integer
+  +rank: Integer
+  +recommendationScore: Real
+  +version: Integer
+}
+class Driver {
+  +id: String
+  +fullName: String
+  +phone: String
+  +active: Boolean
+}
+class Vehicle {
+  +id: String
+  +displayName: String
+  +registrationNumber: String
+  +seatCapacity: Integer
+  +active: Boolean
+  +category: VehicleCategory
+  +transmission: TransmissionType
+  +electricType: ElectricType
+  +smallBagCapacity: Integer
+  +largeBagCapacity: Integer
+}
+class TaxiQuote {
+  +id: String
+  +offerId: String
+  +available: Boolean
+  +total: Money
+  +deposit: Money
+  +paymentMode: PaymentMode
+  +expiresAt: DateTime
+  +user: User
+  +offer: TaxiOffer
+  +offerVersion: Integer
+  +status: QuoteStatus
+}
+class TaxiBooking {
+  +id: String
+  +user: User
+  +offer: TaxiOffer
+  +quote: TaxiQuote
+  +driver: Driver
+  +vehicle: Vehicle
+  +status: BookingStatus
+  +total: Money
+  +idempotencyKey: String
+  +paymentReference: PaymentReference
+  +requestFingerprint: String
+  +guest: GuestDetails
+  +savedPaymentMethod: SavedPaymentMethod
+}
+class SavedPaymentMethod {
+  +id: String
+  +user: User
+  +provider: String
+  +providerReference: String
+}
+class PaymentReference {
+  +id: String
+  +provider: String
+  +providerReference: String
+  +tokenFingerprint: String
+  +status: PaymentStatus
+}
+class TaxiService {
+  +quote(offerId: String): TaxiQuote
+  +book(command: TaxiBookingCommand): TaxiBooking
+}
+class GuestDetails {
+  +firstName: String
+  +lastName: String
+  +homeAddress: String
+  +email: String
+  +phone: String
+  +countryCode: String
+  +bookingFor: BookingFor
+  +workTravel: Boolean
+}
+class TaxiBookingCommand {
+  +guest: GuestDetails
+  +paymentToken: String
+  +savePaymentMethod: Boolean
+  +idempotencyKey: String
+  +quoteId: String
+  +requestFingerprint: String
+}
+class Validation {
+  +{static} isEmail(value: String): Boolean
+  +{static} isPhone(value: String): Boolean
+  +{static} isCurrency(value: String): Boolean
+  +{static} isCountryCode(value: String): Boolean
+}
+class AllocationCalendar {
+  +{static} isFree(driverId: String, vehicleId: String, start: DateTime, end: DateTime): Boolean
+}
+class PaymentFingerprint {
+  +{static} of(value: String): String
+}
+class RequestFingerprint {
+  +{static} ofTaxi(command: TaxiBookingCommand): String
+}
+class ReadState {
+  +{static} users(): String
+  +{static} sessions(): String
+  +{static} stays(): String
+  +{static} stayBookings(): String
+  +{static} taxiBookings(): String
+  +{static} payments(): String
+  +{static} editorial(): String
+  +{static} reviews(): String
+}
+TaxiOffer --> PaymentMode : paymentMode
+TaxiOffer --> Location : location
+TaxiOffer --> Driver : driver
+TaxiOffer --> Vehicle : vehicle
+Vehicle --> VehicleCategory : category
+Vehicle --> TransmissionType : transmission
+Vehicle --> ElectricType : electricType
+TaxiQuote --> PaymentMode : paymentMode
+TaxiQuote --> User : user
+TaxiQuote --> TaxiOffer : offer
+TaxiQuote --> QuoteStatus : status
+TaxiBooking --> User : user
+TaxiBooking --> TaxiOffer : offer
+TaxiBooking --> TaxiQuote : quote
+TaxiBooking --> Driver : driver
+TaxiBooking --> Vehicle : vehicle
+TaxiBooking --> BookingStatus : status
+TaxiBooking --> PaymentReference : paymentReference
+TaxiBooking --> GuestDetails : guest
+TaxiBooking --> SavedPaymentMethod : savedPaymentMethod
+SavedPaymentMethod --> User : user
+PaymentReference --> PaymentStatus : status
+GuestDetails --> BookingFor : bookingFor
+TaxiBookingCommand --> GuestDetails : guest
 @enduml
 ```
 

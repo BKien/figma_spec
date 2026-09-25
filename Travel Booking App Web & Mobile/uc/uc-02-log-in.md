@@ -53,21 +53,80 @@ P0.
 
 ### UML Model
 
-Classifiers and operations are defined in the [shared domain model](shared-domain-model.md).
-
 ```plantuml
 @startuml
-class User
-class LoginCommand
-class Session
-class LoginOutcome
-class AuthService
-class IdentityNormalization
-class PasswordHasher
-AuthService ..> LoginCommand
-AuthService ..> User
-AuthService --> LoginOutcome
-LoginOutcome o-- Session
+hide empty members
+class String {
+  +trim(): String
+  +toLower(): String
+  +matches(pattern: String): Boolean
+  +includes(fragment: String): Boolean
+  +concat(value: String): String
+  +<(other: String): Boolean
+}
+class DateTime {
+  +{static} now(): DateTime
+  +{static} hoursBetween(start: DateTime, end: DateTime): Real
+  +<(other: DateTime): Boolean
+  +<=(other: DateTime): Boolean
+  +>(other: DateTime): Boolean
+  +>=(other: DateTime): Boolean
+}
+class RequestContext {
+  +{static} authenticatedUserId: String
+  +{static} startedAt: DateTime
+}
+class PasswordHasher {
+  +{static} matches(password: String, hash: String): Boolean
+  +{static} hash(password: String): String
+}
+class User {
+  +id: String
+  +fullName: String
+  +email: String
+  +passwordHash: String
+  +active: Boolean
+  +createdAt: DateTime
+}
+class Session {
+  +accessToken: String
+  +expiresAt: DateTime
+  +user: User
+  +id: String
+  +tokenHash: String
+  +createdAt: DateTime
+  +revokedAt: DateTime
+}
+class AuthService {
+  +login(command: LoginCommand): LoginOutcome
+}
+class IdentityNormalization {
+  +{static} canonicalEmail(value: String): String
+}
+class LoginCommand {
+  +email: String
+  +password: String
+}
+class LoginOutcome {
+  +accepted: Boolean
+  +publicCode: String
+  +session: Session
+}
+class TokenHasher {
+  +{static} hash(value: String): String
+}
+class ReadState {
+  +{static} users(): String
+  +{static} sessions(): String
+  +{static} stays(): String
+  +{static} stayBookings(): String
+  +{static} taxiBookings(): String
+  +{static} payments(): String
+  +{static} editorial(): String
+  +{static} reviews(): String
+}
+Session --> User : user
+LoginOutcome --> Session : session
 @enduml
 ```
 

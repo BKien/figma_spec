@@ -60,16 +60,293 @@ P1.
 
 ### UML Model
 
-Classifiers and operations are defined in the [shared domain model](shared-domain-model.md).
-
 ```plantuml
 @startuml
-class HomeSummary
-class BudgetTrip
-class Review
-class HomeService
-HomeSummary o-- BudgetTrip
-HomeSummary o-- Review
+hide empty members
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+  CANCELLED
+}
+enum BookingFor {
+  MAIN_GUEST
+  SOMEONE_ELSE
+}
+enum QuoteStatus {
+  ACTIVE
+  EXPIRED
+  CONSUMED
+  UNAVAILABLE
+}
+enum PaymentStatus {
+  REFUNDED
+  PENDING
+  AUTHORIZED
+  FAILED
+  NOT_REQUIRED
+}
+enum ModerationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+enum TripCompletionStatus {
+  COMPLETED
+  NOT_COMPLETED
+}
+class String {
+  +trim(): String
+  +toLower(): String
+  +matches(pattern: String): Boolean
+  +includes(fragment: String): Boolean
+  +concat(value: String): String
+  +<(other: String): Boolean
+}
+class DateTime {
+  +{static} now(): DateTime
+  +{static} hoursBetween(start: DateTime, end: DateTime): Real
+  +<(other: DateTime): Boolean
+  +<=(other: DateTime): Boolean
+  +>(other: DateTime): Boolean
+  +>=(other: DateTime): Boolean
+}
+class RequestContext {
+  +{static} authenticatedUserId: String
+  +{static} startedAt: DateTime
+}
+class User {
+  +id: String
+  +fullName: String
+  +email: String
+  +passwordHash: String
+  +active: Boolean
+  +createdAt: DateTime
+}
+class Location {
+  +id: String
+  +name: String
+  +countryCode: String
+  +active: Boolean
+  +serviceAreaId: String
+  +timeZone: String
+  +airTravel: Boolean
+}
+class Money {
+  +amount: Real
+  +currency: String
+}
+class DateRange {
+  +start: Date
+  +end: Date
+}
+class Stay {
+  +id: String
+  +name: String
+  +location: Location
+  +rating: Real
+  +active: Boolean
+  +amenities: String[*] {ordered}
+  +media: StayMedia[*] {ordered}
+}
+class StayOffer {
+  +id: String
+  +stay: Stay
+  +period: DateRange
+  +rooms: Integer
+  +available: Boolean
+  +total: Money
+  +providerOfferRef: String
+  +destinationId: String
+  +adults: Integer
+  +availableRooms: Integer
+  +expiresAt: DateTime
+  +searchContextId: String
+  +snapshotVersion: Integer
+  +rank: Integer
+  +rating: Real
+  +recommendationScore: Real
+  +version: Integer
+}
+class StayQuote {
+  +id: String
+  +offerId: String
+  +available: Boolean
+  +total: Money
+  +expiresAt: DateTime
+  +user: User
+  +offer: StayOffer
+  +offerVersion: Integer
+  +status: QuoteStatus
+}
+class StayBooking {
+  +id: String
+  +user: User
+  +offer: StayOffer
+  +quote: StayQuote
+  +status: BookingStatus
+  +total: Money
+  +idempotencyKey: String
+  +paymentReference: PaymentReference
+  +requestFingerprint: String
+  +providerReservationRef: String
+  +guest: GuestDetails
+  +savedPaymentMethod: SavedPaymentMethod
+}
+class SavedPaymentMethod {
+  +id: String
+  +user: User
+  +provider: String
+  +providerReference: String
+}
+class PaymentReference {
+  +id: String
+  +provider: String
+  +providerReference: String
+  +tokenFingerprint: String
+  +status: PaymentStatus
+}
+class BudgetTrip {
+  +id: String
+  +title: String
+  +description: String
+  +attractions: Attraction[*] {ordered}
+  +destination: Location
+  +active: Boolean
+  +startingPrice: Money
+  +destinationId: String
+  +editorialRank: Integer
+  +publishFrom: DateTime
+  +publishUntil: DateTime
+  +priceEvidence: PriceEvidence[*] {ordered}
+  +media: TripMedia[*] {ordered}
+}
+class Review {
+  +id: String
+  +authorName: String
+  +rating: Integer
+  +comment: String
+  +published: Boolean
+  +publishedAt: DateTime
+  +featuredRank: Integer
+  +authorId: String
+  +displayedAuthorName: String
+  +bookingId: String
+  +tripCompletionStatus: TripCompletionStatus
+  +verifiedBooking: Boolean
+  +moderationStatus: ModerationStatus
+  +stayId: String
+}
+class GuestDetails {
+  +firstName: String
+  +lastName: String
+  +homeAddress: String
+  +email: String
+  +phone: String
+  +countryCode: String
+  +bookingFor: BookingFor
+  +workTravel: Boolean
+}
+class HomeSummary {
+  +destinations: BudgetTrip[*] {ordered}
+  +reviews: Review[*] {ordered}
+  +services: String[*] {ordered}
+  +viewer: HomeViewer
+  +sectionStates: HomeSectionStates
+  +upcomingTrip: UpcomingTripSummary
+}
+class UpcomingTripSummary {
+  +bookingId: String
+  +destinationName: String
+  +stayName: String
+  +tripDate: Date
+  +daysRemaining: Integer
+}
+class HomeService {
+  +getSummary(): HomeSummary
+}
+class StayMedia {
+  +id: String
+  +sortOrder: Integer
+  +mediaUrl: String
+}
+class PrivacyMask {
+  +{static} phone(value: String): String
+  +{static} registration(value: String): String
+  +{static} personName(value: String): String
+}
+class PriceEvidence {
+  +amount: Money
+  +active: Boolean
+  +observedAt: DateTime
+}
+class Attraction {
+  +id: String
+  +destinationId: String
+  +title: String
+  +published: Boolean
+  +editorialRank: Integer
+}
+class ContentSafety {
+  +{static} isPublicSafe(value: String): Boolean
+}
+class Date {
+  +<(other: Date): Boolean
+  +<=(other: Date): Boolean
+  +>(other: Date): Boolean
+  +>=(other: Date): Boolean
+}
+class ReadState {
+  +{static} users(): String
+  +{static} sessions(): String
+  +{static} stays(): String
+  +{static} stayBookings(): String
+  +{static} taxiBookings(): String
+  +{static} payments(): String
+  +{static} editorial(): String
+  +{static} reviews(): String
+}
+class TripMedia {
+  +id: String
+  +sortOrder: Integer
+  +mediaUrl: String
+}
+class HomeViewer {
+  +authenticated: Boolean
+  +displayName: String
+}
+class HomeSectionStates {
+  +destinations: String
+  +reviews: String
+}
+Stay --> Location : location
+Stay "1" o-- "0..*" StayMedia : media
+StayOffer --> Stay : stay
+StayOffer --> DateRange : period
+StayQuote --> User : user
+StayQuote --> StayOffer : offer
+StayQuote --> QuoteStatus : status
+StayBooking --> User : user
+StayBooking --> StayOffer : offer
+StayBooking --> StayQuote : quote
+StayBooking --> BookingStatus : status
+StayBooking --> PaymentReference : paymentReference
+StayBooking --> GuestDetails : guest
+StayBooking --> SavedPaymentMethod : savedPaymentMethod
+SavedPaymentMethod --> User : user
+PaymentReference --> PaymentStatus : status
+BudgetTrip "1" o-- "0..*" Attraction : attractions
+BudgetTrip --> Location : destination
+BudgetTrip "1" o-- "0..*" PriceEvidence : priceEvidence
+BudgetTrip "1" o-- "0..*" TripMedia : media
+Review --> TripCompletionStatus : tripCompletionStatus
+Review --> ModerationStatus : moderationStatus
+GuestDetails --> BookingFor : bookingFor
+HomeSummary "1" o-- "0..*" BudgetTrip : destinations
+HomeSummary "1" o-- "0..*" Review : reviews
+HomeSummary --> HomeViewer : viewer
+HomeSummary --> HomeSectionStates : sectionStates
+HomeSummary --> UpcomingTripSummary : upcomingTrip
 @enduml
 ```
 

@@ -7,14 +7,31 @@
 $ErrorActionPreference = 'Stop'
 $rootPath = (Resolve-Path -LiteralPath $Root).Path
 $errors = [System.Collections.Generic.List[string]]::new()
+$manifestPath = Join-Path $rootPath 'FIGMA.md'
+$manifestText = if (Test-Path -LiteralPath $manifestPath) {
+  Get-Content -Encoding UTF8 -Raw -LiteralPath $manifestPath
+} else {
+  ''
+}
 
 function Add-Error([string]$message) {
   $script:errors.Add($message)
 }
 
+if ($manifestText -notmatch 'self-contained-uml-v1') {
+  Add-Error 'FIGMA.md must declare the self-contained-uml-v1 specification contract.'
+}
+
 foreach ($required in @('FIGMA.md', 'CONTEXT.md', 'ASSUMPTIONS.md', 'coverage-report.md', 'schema.dbml', 'uc', 'api')) {
   if (-not (Test-Path -LiteralPath (Join-Path $rootPath $required))) {
     Add-Error "Missing required artifact: $required"
+  }
+}
+
+$forbiddenModelArtifactPattern = '(?i)^(?:(?:shared|common)[-_. ]*(?:domain[-_. ]*)?(?:model|uml)|(?:domain|uml)[-_. ]*model)\.(?:md|puml|plantuml)$'
+foreach ($artifact in Get-ChildItem -LiteralPath $rootPath -Recurse -File) {
+  if ($artifact.Name -match $forbiddenModelArtifactPattern) {
+    Add-Error "Forbidden shared UML/domain-model artifact: $($artifact.FullName)"
   }
 }
 
@@ -99,6 +116,61 @@ foreach ($file in @($ucFiles) + @($apiFiles)) {
     $ucHeading = [regex]::Match($text, '(?m)^# UC-(\d{2}) — ')
     $ucNumber = if ($ucHeading.Success) { $ucHeading.Groups[1].Value } else { '' }
     if ($ucHeading.Success) { [void]$ucDefinitions.Add("UC-$ucNumber") }
+    if ($ruleBlocks.Count -lt 7) {
+      Add-Error "$($file.Name): expected at least seven Business Rules; found $($ruleBlocks.Count)."
+    }
+    for ($ruleIndex = 0; $ruleIndex -lt $ruleBlocks.Count; $ruleIndex++) {
+      $expectedRuleId = 'BR-UC-{0}-{1:D2}' -f $ucNumber, ($ruleIndex + 1)
+      if ($ruleBlocks[$ruleIndex].Groups[1].Value -notmatch "(?m)^-- $expectedRuleId`r?$") {
+        Add-Error "$($file.Name): Business Rule IDs must be gap-free from BR-UC-$ucNumber-01."
+        break
+      }
+    }
+      $umlSection = [regex]::Match($text, '(?ms)^### UML Model\s*\r?\n(.*?)(?=^### |\z)')
+      $umlFences = if ($umlSection.Success) { @([regex]::Matches($umlSection.Groups[1].Value, '(?ms)```plantuml\r?\n(.*?)\r?\n```')) } else { @() }
+      if ($umlFences.Count -ne 1) {
+        Add-Error "$($file.Name): UML Model must contain exactly one complete PlantUML fence."
+      } else {
+        $model = $umlFences[0].Groups[1].Value
+        if ($model -notmatch '(?m)^@startuml\s*$' -or $model -notmatch '(?m)^@enduml\s*$' -or $text -match '(?i)shared[-_ ]*(?:domain[-_ ]*)?(?:model|uml)') {
+          Add-Error "$($file.Name): UML must be self-contained with @startuml/@enduml and no shared-model reference."
+        }
+        if ($model -match '(?m)^class \w+(?: <<[^>]+>>)?\s*$') {
+          Add-Error "$($file.Name): UML contains a name-only class stub."
+        }
+        $definedNames = [System.Collections.Generic.HashSet[string]]::new()
+        foreach ($definition in [regex]::Matches($model, '(?m)^(?:class|enum) (\w+)(?: <<[^>]+>>)? \{')) {
+          [void]$definedNames.Add($definition.Groups[1].Value)
+        }
+        $ocl = ($ruleBlocks | ForEach-Object { $_.Groups[1].Value }) -join "`n"
+        foreach ($context in [regex]::Matches($ocl, '(?m)^context (\w+)::(\w+)\(')) {
+          $classifier = $context.Groups[1].Value
+          $operation = $context.Groups[2].Value
+          if (-not $definedNames.Contains($classifier) -or $model -notmatch "(?m)^\s*\+(?:\{static\}\s*)?$operation\(") {
+            Add-Error "$($file.Name): UML does not define OCL context ${classifier}::${operation}."
+          }
+        }
+        foreach ($reference in [regex]::Matches($ocl, '\b(\w+)(?:\.allInstances\(\)|::(\w+))')) {
+          $classifier = $reference.Groups[1].Value
+          if (-not $definedNames.Contains($classifier)) {
+            Add-Error "$($file.Name): UML does not define OCL classifier $classifier."
+            continue
+          }
+          if ($reference.Groups[2].Success) {
+            $member = $reference.Groups[2].Value
+            if ($model -notmatch "(?m)^\s*(?:\+(?:\{static\}\s*)?)?$member(?:\(|:|\s*$)") {
+              Add-Error "$($file.Name): UML does not define OCL member ${classifier}::${member}."
+            }
+          }
+        }
+        $builtInCalls = @('allInstances', 'any', 'exists', 'forAll', 'isUnique', 'notEmpty', 'one', 'select', 'size', 'trim')
+        foreach ($property in [regex]::Matches($ocl, '(?<!\.)\.(\w+)\b(?!\s*\()')) {
+          $name = $property.Groups[1].Value
+          if ($name -notin $builtInCalls -and $model -notmatch "(?m)^\s*\+${name}:") {
+            Add-Error "$($file.Name): UML does not define OCL property $name."
+          }
+        }
+      }
     $codedItemSections = @(
       @{ Heading = 'Trigger'; Prefix = 'TRG'; Marker = 'plain' },
       @{ Heading = 'Preconditions'; Prefix = 'PRE'; Marker = 'bullet' },

@@ -56,13 +56,99 @@ P0.
 
 ### UML Model
 
-Classifiers and operations are defined in the [shared domain model](shared-domain-model.md).
-
 ```plantuml
 @startuml
-class StayResultPage
-class StayOffer
-StayResultPage o-- StayOffer
+hide empty members
+class String {
+  +trim(): String
+  +toLower(): String
+  +matches(pattern: String): Boolean
+  +includes(fragment: String): Boolean
+  +concat(value: String): String
+  +<(other: String): Boolean
+}
+class DateTime {
+  +{static} now(): DateTime
+  +{static} hoursBetween(start: DateTime, end: DateTime): Real
+  +<(other: DateTime): Boolean
+  +<=(other: DateTime): Boolean
+  +>(other: DateTime): Boolean
+  +>=(other: DateTime): Boolean
+}
+class Location {
+  +id: String
+  +name: String
+  +countryCode: String
+  +active: Boolean
+  +serviceAreaId: String
+  +timeZone: String
+  +airTravel: Boolean
+}
+class Money {
+  +amount: Real
+  +currency: String
+}
+class DateRange {
+  +start: Date
+  +end: Date
+}
+class Stay {
+  +id: String
+  +name: String
+  +location: Location
+  +rating: Real
+  +active: Boolean
+  +amenities: String[*] {ordered}
+  +media: StayMedia[*] {ordered}
+}
+class StayOffer {
+  +id: String
+  +stay: Stay
+  +period: DateRange
+  +rooms: Integer
+  +available: Boolean
+  +total: Money
+  +providerOfferRef: String
+  +destinationId: String
+  +adults: Integer
+  +availableRooms: Integer
+  +expiresAt: DateTime
+  +searchContextId: String
+  +snapshotVersion: Integer
+  +rank: Integer
+  +rating: Real
+  +recommendationScore: Real
+  +version: Integer
+}
+class StayResultPage {
+  +searchContextId: String
+  +snapshotVersion: Integer
+  +items: StayOffer[*] {ordered}
+  +total: Integer
+  +limit: Integer
+  +offset: Integer
+  +hasMore: Boolean
+  +capturedAt: DateTime
+  +validUntil: DateTime
+  +orderedOfferIds: String[*] {ordered}
+  +currency: String
+}
+class StayMedia {
+  +id: String
+  +sortOrder: Integer
+  +mediaUrl: String
+}
+class Date {
+  +<(other: Date): Boolean
+  +<=(other: Date): Boolean
+  +>(other: Date): Boolean
+  +>=(other: Date): Boolean
+}
+Stay --> Location : location
+Stay "1" o-- "0..*" StayMedia : media
+StayOffer --> Stay : stay
+StayOffer --> DateRange : period
+StayResultPage "1" o-- "0..*" StayOffer : items
 @enduml
 ```
 

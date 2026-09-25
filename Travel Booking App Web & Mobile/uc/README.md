@@ -26,14 +26,14 @@ Each use case is stored in its own Markdown file and follows the naming conventi
 | UC-16 | [Browse Budget Trips](uc-16-browse-budget-trips.md) |
 | UC-17 | [View Budget Trip Details](uc-17-view-budget-trip-details.md) |
 | UC-18 | [View Traveller Reviews](uc-18-view-traveller-reviews.md) |
-| Shared | [Shared Domain Model](shared-domain-model.md) |
 
 ## Conventions
 
 - All content is written in English.
 - Every use case contains at least seven distinct Business Rules.
 - Every Business Rule is an independent OCL block with an identifier such as `BR-UC-04-01`.
-- The UML model defines the classifiers, attributes, associations, enumerations, and operations referenced by the OCL constraints.
+- Every use case contains a self-contained UML model that locally defines every classifier, attribute, association, enumeration, literal, operation, command, result, and helper referenced by its OCL constraints.
+- UML vocabulary is repeated where use cases overlap; no shared or external domain model is used to resolve OCL.
 - Trigger and condition items use the namespaces `TRG`, `PRE`, and `POST`, followed by the use-case number and a two-digit local sequence.
 - Each use case has exactly one Basic Flow. Its activities are an ordered list starting at `1` and carry no individual identifiers.
 - Each Alternative Flow and Exception Flow has its own `AF-UC-NN-XX` or `EF-UC-NN-XX` heading. The activities under each flow are an ordered list starting at `1`.

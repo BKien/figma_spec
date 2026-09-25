@@ -55,15 +55,99 @@ P1.
 
 ### UML Model
 
-Classifiers and operations are defined in the [shared domain model](shared-domain-model.md).
-
 ```plantuml
 @startuml
-class PriceEvidence
-class BudgetTrip
-class TripPage
-class TripService
-TripPage o-- BudgetTrip
+hide empty members
+class String {
+  +trim(): String
+  +toLower(): String
+  +matches(pattern: String): Boolean
+  +includes(fragment: String): Boolean
+  +concat(value: String): String
+  +<(other: String): Boolean
+}
+class DateTime {
+  +{static} now(): DateTime
+  +{static} hoursBetween(start: DateTime, end: DateTime): Real
+  +<(other: DateTime): Boolean
+  +<=(other: DateTime): Boolean
+  +>(other: DateTime): Boolean
+  +>=(other: DateTime): Boolean
+}
+class RequestContext {
+  +{static} authenticatedUserId: String
+  +{static} startedAt: DateTime
+}
+class Location {
+  +id: String
+  +name: String
+  +countryCode: String
+  +active: Boolean
+  +serviceAreaId: String
+  +timeZone: String
+  +airTravel: Boolean
+}
+class Money {
+  +amount: Real
+  +currency: String
+}
+class BudgetTrip {
+  +id: String
+  +title: String
+  +description: String
+  +attractions: Attraction[*] {ordered}
+  +destination: Location
+  +active: Boolean
+  +startingPrice: Money
+  +destinationId: String
+  +editorialRank: Integer
+  +publishFrom: DateTime
+  +publishUntil: DateTime
+  +priceEvidence: PriceEvidence[*] {ordered}
+  +media: TripMedia[*] {ordered}
+}
+class TripService {
+  +list(limit: Integer, offset: Integer): TripPage
+}
+class PriceEvidence {
+  +amount: Money
+  +active: Boolean
+  +observedAt: DateTime
+}
+class TripPage {
+  +items: BudgetTrip[*] {ordered}
+  +total: Integer
+  +limit: Integer
+  +offset: Integer
+  +hasMore: Boolean
+}
+class Attraction {
+  +id: String
+  +destinationId: String
+  +title: String
+  +published: Boolean
+  +editorialRank: Integer
+}
+class ReadState {
+  +{static} users(): String
+  +{static} sessions(): String
+  +{static} stays(): String
+  +{static} stayBookings(): String
+  +{static} taxiBookings(): String
+  +{static} payments(): String
+  +{static} editorial(): String
+  +{static} reviews(): String
+}
+class TripMedia {
+  +id: String
+  +sortOrder: Integer
+  +mediaUrl: String
+}
+BudgetTrip "1" o-- "0..*" Attraction : attractions
+BudgetTrip --> Location : destination
+BudgetTrip "1" o-- "0..*" PriceEvidence : priceEvidence
+BudgetTrip "1" o-- "0..*" TripMedia : media
+TripPage "1" o-- "0..*" BudgetTrip : items
 @enduml
 ```
 

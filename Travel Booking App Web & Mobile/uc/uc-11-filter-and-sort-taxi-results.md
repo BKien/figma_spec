@@ -53,17 +53,159 @@ P1.
 
 ### UML Model
 
-Classifiers and operations are defined in the [shared domain model](shared-domain-model.md).
-
 ```plantuml
 @startuml
-enum TaxiSort
-enum VehicleCategory
-enum DepositBand
-enum ElectricType
-class TaxiSearchCriteria
-class TaxiOffer
-class RentalFilter
+hide empty members
+enum TaxiSort {
+  TOP_PICKS
+}
+enum VehicleCategory {
+  SMALL
+  MEDIUM
+  LARGE
+  ESTATE
+}
+enum ElectricType {
+  NONE
+  FULLY_ELECTRIC
+  HYBRID
+}
+enum TransmissionType {
+  MANUAL
+  AUTOMATIC
+}
+enum DepositBand {
+  LKR_200_500
+  LKR_500_1000
+  LKR_1000_1200
+  LKR_1200_1500
+}
+enum PaymentMode {
+  ONLINE
+  PAY_DRIVER
+}
+class String {
+  +trim(): String
+  +toLower(): String
+  +matches(pattern: String): Boolean
+  +includes(fragment: String): Boolean
+  +concat(value: String): String
+  +<(other: String): Boolean
+}
+class DateTime {
+  +{static} now(): DateTime
+  +{static} hoursBetween(start: DateTime, end: DateTime): Real
+  +<(other: DateTime): Boolean
+  +<=(other: DateTime): Boolean
+  +>(other: DateTime): Boolean
+  +>=(other: DateTime): Boolean
+}
+class RequestContext {
+  +{static} authenticatedUserId: String
+  +{static} startedAt: DateTime
+}
+class Location {
+  +id: String
+  +name: String
+  +countryCode: String
+  +active: Boolean
+  +serviceAreaId: String
+  +timeZone: String
+  +airTravel: Boolean
+}
+class Money {
+  +amount: Real
+  +currency: String
+}
+class TaxiOffer {
+  +paymentMode: PaymentMode
+  +id: String
+  +location: Location
+  +pickupAt: DateTime
+  +dropoffAt: DateTime
+  +passengers: Integer
+  +available: Boolean
+  +total: Money
+  +deposit: Money
+  +distanceFromCenterKm: Real
+  +mileageAllowanceKm: Real
+  +rating: Real
+  +driver: Driver
+  +vehicle: Vehicle
+  +providerOfferRef: String
+  +locationId: String
+  +expiresAt: DateTime
+  +searchContextId: String
+  +snapshotVersion: Integer
+  +rank: Integer
+  +recommendationScore: Real
+  +version: Integer
+}
+class Driver {
+  +id: String
+  +fullName: String
+  +phone: String
+  +active: Boolean
+}
+class Vehicle {
+  +id: String
+  +displayName: String
+  +registrationNumber: String
+  +seatCapacity: Integer
+  +active: Boolean
+  +category: VehicleCategory
+  +transmission: TransmissionType
+  +electricType: ElectricType
+  +smallBagCapacity: Integer
+  +largeBagCapacity: Integer
+}
+class TaxiService {
+  +search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
+}
+class TaxiSearchCriteria {
+  +locationId: String
+  +pickupAt: DateTime
+  +dropoffAt: DateTime
+  +passengers: Integer
+  +minPrice: Real
+  +maxPrice: Real
+  +sort: TaxiSort
+  +limit: Integer
+  +offset: Integer
+  +searchContextId: String
+  +snapshotVersion: Integer
+  +currency: String
+  +vehicleCategories: VehicleCategory[*] {ordered}
+  +depositBands: DepositBand[*] {ordered}
+  +electricTypes: ElectricType[*] {ordered}
+}
+class RentalFilter {
+  +{static} depositMatches(bands: DepositBand[*], amount: Money): Boolean
+  +{static} electricMatches(types: ElectricType[*], value: ElectricType): Boolean
+}
+class SearchSnapshot {
+  +id: String
+  +version: Integer
+  +currency: String
+  +criteriaFingerprint: String
+  +refinementFingerprint: String
+  +capturedAt: DateTime
+  +validUntil: DateTime
+  +orderedOfferIds: String[*] {ordered}
+  +{static} refinementChanged(criteria: TaxiSearchCriteria): Boolean
+  +{static} accepts(criteria: TaxiSearchCriteria, at: DateTime): Boolean
+}
+TaxiOffer --> PaymentMode : paymentMode
+TaxiOffer --> Location : location
+TaxiOffer --> Driver : driver
+TaxiOffer --> Vehicle : vehicle
+Vehicle --> VehicleCategory : category
+Vehicle --> TransmissionType : transmission
+Vehicle --> ElectricType : electricType
+TaxiSearchCriteria --> TaxiSort : sort
+TaxiSearchCriteria "1" o-- "0..*" VehicleCategory : vehicleCategories
+TaxiSearchCriteria "1" o-- "0..*" DepositBand : depositBands
+TaxiSearchCriteria "1" o-- "0..*" ElectricType : electricTypes
 @enduml
 ```
 

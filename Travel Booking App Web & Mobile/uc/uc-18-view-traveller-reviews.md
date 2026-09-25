@@ -56,18 +56,85 @@ P2.
 
 ### UML Model
 
-Classifiers and operations are defined in the [shared domain model](shared-domain-model.md).
-
 ```plantuml
 @startuml
-enum ModerationStatus
-enum TripCompletionStatus
-class Review
-class ReviewPage
-class ReviewService
-class PrivacyMask
-class ContentSafety
-ReviewPage o-- Review
+hide empty members
+enum ModerationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+enum TripCompletionStatus {
+  COMPLETED
+  NOT_COMPLETED
+}
+class String {
+  +trim(): String
+  +toLower(): String
+  +matches(pattern: String): Boolean
+  +includes(fragment: String): Boolean
+  +concat(value: String): String
+  +<(other: String): Boolean
+}
+class DateTime {
+  +{static} now(): DateTime
+  +{static} hoursBetween(start: DateTime, end: DateTime): Real
+  +<(other: DateTime): Boolean
+  +<=(other: DateTime): Boolean
+  +>(other: DateTime): Boolean
+  +>=(other: DateTime): Boolean
+}
+class RequestContext {
+  +{static} authenticatedUserId: String
+  +{static} startedAt: DateTime
+}
+class Review {
+  +id: String
+  +authorName: String
+  +rating: Integer
+  +comment: String
+  +published: Boolean
+  +publishedAt: DateTime
+  +featuredRank: Integer
+  +authorId: String
+  +displayedAuthorName: String
+  +bookingId: String
+  +tripCompletionStatus: TripCompletionStatus
+  +verifiedBooking: Boolean
+  +moderationStatus: ModerationStatus
+  +stayId: String
+}
+class ReviewService {
+  +list(limit: Integer, offset: Integer): ReviewPage
+}
+class PrivacyMask {
+  +{static} phone(value: String): String
+  +{static} registration(value: String): String
+  +{static} personName(value: String): String
+}
+class ReviewPage {
+  +items: Review[*] {ordered}
+  +total: Integer
+  +limit: Integer
+  +offset: Integer
+  +hasMore: Boolean
+}
+class ContentSafety {
+  +{static} isPublicSafe(value: String): Boolean
+}
+class ReadState {
+  +{static} users(): String
+  +{static} sessions(): String
+  +{static} stays(): String
+  +{static} stayBookings(): String
+  +{static} taxiBookings(): String
+  +{static} payments(): String
+  +{static} editorial(): String
+  +{static} reviews(): String
+}
+Review --> TripCompletionStatus : tripCompletionStatus
+Review --> ModerationStatus : moderationStatus
+ReviewPage "1" o-- "0..*" Review : items
 @enduml
 ```
 

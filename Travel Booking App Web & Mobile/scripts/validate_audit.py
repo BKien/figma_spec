@@ -4,22 +4,29 @@ import re
 
 root=Path(__file__).resolve().parents[1]
 errors=[]
-model=(root/'uc/shared-domain-model.md').read_text(encoding='utf-8')
-classifiers={}
-for kind,name,body in re.findall(r'(class|enum) (\w+)\s*\{((?:\{(?:static|ordered)\}|[^}])*)\}',model):
-    members={}
-    for line in body.splitlines():
-        line=re.sub(r'\{static\}\s*','',line.strip())
-        m=re.match(r'(\w+)\s*:\s*(\w+)',line)
-        if m: members[m[1]]=m[2]
-        op=re.match(r'(\w+)\(',line)
-        if op: members[op[1]]='operation'
-        if kind=='enum' and line: members[line]=name
-    classifiers[name]=members
 
 total=0
 for p in sorted((root/'uc').glob('uc-*.md')):
     text=p.read_text(encoding='utf-8'); uc=p.name[3:5]
+    uml_section=re.search(r'### UML Model\s*(.*?)\s*### Business Rules',text,re.S)
+    uml_blocks=re.findall(r'```plantuml\n(.*?)```',uml_section[1],re.S) if uml_section else []
+    if len(uml_blocks)!=1:
+        errors.append(f'{p.name}: expected exactly one local UML model')
+        model=''
+    else:
+        model=uml_blocks[0]
+    classifiers={}
+    for kind,name,body in re.findall(r'^(class|enum) (\w+)\s*\{(.*?)^\}',model,re.M|re.S):
+        members={}
+        for line in body.splitlines():
+            line=re.sub(r'^\+','',line.strip())
+            line=re.sub(r'^\{static\}\s*','',line)
+            m=re.match(r'(\w+)\s*:\s*(\w+)',line)
+            if m: members[m[1]]=m[2]
+            op=re.match(r'(\w+)\(',line)
+            if op: members[op[1]]='operation'
+            if kind=='enum' and line: members[line]=name
+        classifiers[name]=members
     blocks=re.findall(r'```ocl\n(.*?)```',text,re.S)
     ids=[re.search(r'^-- (BR-UC-\d+-\d+)',b,re.M)[1] for b in blocks]
     expected=[f'BR-UC-{uc}-{i:02}' for i in range(1,len(blocks)+1)]

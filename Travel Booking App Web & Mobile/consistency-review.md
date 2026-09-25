@@ -2,7 +2,7 @@
 
 ## Scope
 
-The package was re-audited on 2026-09-24 against the supplied Figma Community resource and the creator-linked public prototype video. The review covered all 18 use cases, 16 API contracts, shared UML vocabulary, OCL rules, DBML persistence, source traceability, and cross-file references.
+The package was re-audited on 2026-09-24 against the supplied Figma Community resource and the creator-linked public prototype video. The review covered all 18 use cases, 16 API contracts, self-contained per-use-case UML vocabulary, OCL rules, DBML persistence, source traceability, and cross-file references.
 
 Direct canvas enumeration was unavailable because Figma required authentication. The source manifest records the public resource, the desktop and mobile prototype keys visible in the video, and the node IDs available from prototype URLs.
 
@@ -10,13 +10,13 @@ Direct canvas enumeration was unavailable because Figma required authentication.
 
 | Finding | Correction | Affected artifacts |
 | --- | --- | --- |
-| Taxi search was modeled as a point-to-point transfer with separate pickup and destination locations. | Modeled the observed Taxi experience as a vehicle-and-driver rental at one location between pick-up and drop-off times. | UC-09–UC-13, Taxi APIs, shared model, DBML |
+| Taxi search was modeled as a point-to-point transfer with separate pickup and destination locations. | Modeled the observed Taxi experience as a vehicle-and-driver rental at one location between pick-up and drop-off times. | UC-09–UC-13, Taxi APIs, local UML models, DBML |
 | Taxi result filtering used price, distance, and generic vehicle types. | Added the displayed car categories, pick-up-deposit bands, Fully Electric/Hybrid filters, and the observed `Our top picks` ordering. Unobserved sort values were omitted. | UC-11, API-TAXI-SEARCH |
-| Result cards lacked several visible vehicle facts. | Added vehicle name, category, transmission, electric type, seat and bag capacities, distance from centre, mileage allowance, deposit, rating, and rental price. | UC-10–UC-12, Taxi APIs, shared model, DBML |
+| Result cards lacked several visible vehicle facts. | Added vehicle name, category, transmission, electric type, seat and bag capacities, distance from centre, mileage allowance, deposit, rating, and rental price. | UC-10–UC-12, Taxi APIs, local UML models, DBML |
 | Driver details and vehicle registration were treated as masked or available only after a confirmed booking. | Matched the mobile prototype, which displays the assigned driver's name, phone and registration details before confirmation. | UC-12, API-TAXI-OFFER-DETAIL |
-| Checkout omitted visible contact and trip-purpose controls. | Added home address, booking-for selection, work-travel selection, and save-card choice to stay and Taxi checkout contracts and persistence. | UC-08, UC-13, booking APIs, shared model, DBML |
-| Card fields could be interpreted as raw server input. | Defined them as a payment-provider control; APIs accept only opaque payment tokens and persistence stores provider references rather than card number, expiry or CVV. | Booking APIs, shared model, DBML |
-| The home specification omitted the visible `Your Next Trip` notification. | Added an optional upcoming-trip projection to the home use case and API. | UC-03, API-HOME-SUMMARY, shared model |
+| Checkout omitted visible contact and trip-purpose controls. | Added home address, booking-for selection, work-travel selection, and save-card choice to stay and Taxi checkout contracts and persistence. | UC-08, UC-13, booking APIs, local UML models, DBML |
+| Card fields could be interpreted as raw server input. | Defined them as a payment-provider control; APIs accept only opaque payment tokens and persistence stores provider references rather than card number, expiry or CVV. | Booking APIs, local UML models, DBML |
+| The home specification omitted the visible `Your Next Trip` notification. | Added an optional upcoming-trip projection to the home use case and API. | UC-03, API-HOME-SUMMARY, local UML model |
 | The source manifest did not retain the supplied Figma identity. | Recorded the Community URL, resource ID, prototype keys, audit date, evidence boundary, and five observed prototype node IDs. | FIGMA.md |
 
 ## Coverage Decisions

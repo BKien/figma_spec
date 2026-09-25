@@ -60,13 +60,118 @@ P1.
 
 ### UML Model
 
-Classifiers and operations are defined in the [shared domain model](shared-domain-model.md).
-
 ```plantuml
 @startuml
-enum FlightSort
-class FlightSearchCriteria
-class FlightOffer
+hide empty members
+enum FlightSort {
+  CHEAPEST
+  BEST
+  QUICKEST
+}
+class String {
+  +trim(): String
+  +toLower(): String
+  +matches(pattern: String): Boolean
+  +includes(fragment: String): Boolean
+  +concat(value: String): String
+  +<(other: String): Boolean
+}
+class DateTime {
+  +{static} now(): DateTime
+  +{static} hoursBetween(start: DateTime, end: DateTime): Real
+  +<(other: DateTime): Boolean
+  +<=(other: DateTime): Boolean
+  +>(other: DateTime): Boolean
+  +>=(other: DateTime): Boolean
+}
+class RequestContext {
+  +{static} authenticatedUserId: String
+  +{static} startedAt: DateTime
+}
+class Location {
+  +id: String
+  +name: String
+  +countryCode: String
+  +active: Boolean
+  +serviceAreaId: String
+  +timeZone: String
+  +airTravel: Boolean
+}
+class Money {
+  +amount: Real
+  +currency: String
+}
+class FlightOffer {
+  +snapshotVersion: Integer
+  +id: String
+  +providerId: String
+  +origin: Location
+  +destination: Location
+  +departureAt: DateTime
+  +arrivalAt: DateTime
+  +passengers: Integer
+  +durationMinutes: Integer
+  +available: Boolean
+  +total: Money
+  +expiresAt: DateTime
+  +fareFingerprint: String
+  +itinerarySignature: String
+  +seatsRemaining: Integer
+  +searchContextId: String
+  +stopCount: Integer
+  +bestScore: Real
+  +outboundSegments: FlightSegment[*] {ordered}
+  +inboundSegments: FlightSegment[*] {ordered}
+}
+class FlightService {
+  +search(criteria: FlightSearchCriteria): Sequence(FlightOffer)
+}
+class FlightSearchCriteria {
+  +originId: String
+  +destinationId: String
+  +departOn: Date
+  +returnOn: Date
+  +passengers: Integer
+  +minPrice: Real
+  +maxPrice: Real
+  +maxDurationMinutes: Integer
+  +providerIds: String[*] {ordered}
+  +sort: FlightSort
+  +limit: Integer
+  +offset: Integer
+  +searchContextId: String
+  +snapshotVersion: Integer
+  +currency: String
+}
+class FlightSegment {
+  +originId: String
+  +destinationId: String
+  +departureAt: DateTime
+  +arrivalAt: DateTime
+}
+class Date {
+  +<(other: Date): Boolean
+  +<=(other: Date): Boolean
+  +>(other: Date): Boolean
+  +>=(other: Date): Boolean
+}
+class SearchSnapshot {
+  +id: String
+  +version: Integer
+  +currency: String
+  +criteriaFingerprint: String
+  +refinementFingerprint: String
+  +capturedAt: DateTime
+  +validUntil: DateTime
+  +orderedOfferIds: String[*] {ordered}
+  +{static} refinementChanged(criteria: FlightSearchCriteria): Boolean
+  +{static} accepts(criteria: FlightSearchCriteria, at: DateTime): Boolean
+}
+FlightOffer --> Location : origin
+FlightOffer --> Location : destination
+FlightOffer "1" o-- "0..*" FlightSegment : outboundSegments
+FlightOffer "1" o-- "0..*" FlightSegment : inboundSegments
+FlightSearchCriteria --> FlightSort : sort
 @enduml
 ```
 

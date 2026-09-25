@@ -53,21 +53,142 @@ P0.
 
 ### UML Model
 
-Classifiers and operations are defined in the [shared domain model](shared-domain-model.md).
-
 ```plantuml
 @startuml
-class Stay
-class Location
-class StayMedia
-class ReviewSummary
-class StayOffer
-class StayDetail
-class StayService
-Stay --> Location
-StayDetail --> Stay
-StayDetail o-- ReviewSummary
-StayDetail o-- StayOffer
+hide empty members
+enum ModerationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+enum TripCompletionStatus {
+  COMPLETED
+  NOT_COMPLETED
+}
+class String {
+  +trim(): String
+  +toLower(): String
+  +matches(pattern: String): Boolean
+  +includes(fragment: String): Boolean
+  +concat(value: String): String
+  +<(other: String): Boolean
+}
+class DateTime {
+  +{static} now(): DateTime
+  +{static} hoursBetween(start: DateTime, end: DateTime): Real
+  +<(other: DateTime): Boolean
+  +<=(other: DateTime): Boolean
+  +>(other: DateTime): Boolean
+  +>=(other: DateTime): Boolean
+}
+class RequestContext {
+  +{static} authenticatedUserId: String
+  +{static} startedAt: DateTime
+}
+class Location {
+  +id: String
+  +name: String
+  +countryCode: String
+  +active: Boolean
+  +serviceAreaId: String
+  +timeZone: String
+  +airTravel: Boolean
+}
+class Money {
+  +amount: Real
+  +currency: String
+}
+class DateRange {
+  +start: Date
+  +end: Date
+}
+class Stay {
+  +id: String
+  +name: String
+  +location: Location
+  +rating: Real
+  +active: Boolean
+  +amenities: String[*] {ordered}
+  +media: StayMedia[*] {ordered}
+}
+class StayOffer {
+  +id: String
+  +stay: Stay
+  +period: DateRange
+  +rooms: Integer
+  +available: Boolean
+  +total: Money
+  +providerOfferRef: String
+  +destinationId: String
+  +adults: Integer
+  +availableRooms: Integer
+  +expiresAt: DateTime
+  +searchContextId: String
+  +snapshotVersion: Integer
+  +rank: Integer
+  +rating: Real
+  +recommendationScore: Real
+  +version: Integer
+}
+class Review {
+  +id: String
+  +authorName: String
+  +rating: Integer
+  +comment: String
+  +published: Boolean
+  +publishedAt: DateTime
+  +featuredRank: Integer
+  +authorId: String
+  +displayedAuthorName: String
+  +bookingId: String
+  +tripCompletionStatus: TripCompletionStatus
+  +verifiedBooking: Boolean
+  +moderationStatus: ModerationStatus
+  +stayId: String
+}
+class StayService {
+  +getDetail(stayId: String, offerId: String): StayDetail
+}
+class StayMedia {
+  +id: String
+  +sortOrder: Integer
+  +mediaUrl: String
+}
+class ReviewSummary {
+  +approvedCount: Integer
+  +averageRating: Real
+  +approvedRatings: Bag(Real)
+}
+class StayDetail {
+  +stay: Stay
+  +reviewSummary: ReviewSummary
+  +currentOffer: StayOffer
+}
+class Date {
+  +<(other: Date): Boolean
+  +<=(other: Date): Boolean
+  +>(other: Date): Boolean
+  +>=(other: Date): Boolean
+}
+class ReadState {
+  +{static} users(): String
+  +{static} sessions(): String
+  +{static} stays(): String
+  +{static} stayBookings(): String
+  +{static} taxiBookings(): String
+  +{static} payments(): String
+  +{static} editorial(): String
+  +{static} reviews(): String
+}
+Stay --> Location : location
+Stay "1" o-- "0..*" StayMedia : media
+StayOffer --> Stay : stay
+StayOffer --> DateRange : period
+Review --> TripCompletionStatus : tripCompletionStatus
+Review --> ModerationStatus : moderationStatus
+StayDetail --> Stay : stay
+StayDetail --> ReviewSummary : reviewSummary
+StayDetail --> StayOffer : currentOffer
 @enduml
 ```
 
