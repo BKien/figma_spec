@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "checks": {
+    "api": 227,
+    "code_blocks": 1380,
+    "business_rules": 1211,
+    "unchanged_files": 220,
+    "uc": 152,
+    "id_aliases": 857
+  },
+  "packages": {
+    "100ms Video Conferencing and Live Streaming": {
+      "api": 15,
+      "uc": 18
+    },
+    "Clicon Ecommerce Marketplace": {
+      "api": 49,
+      "uc": 20
+    },
+    "DH Dental Recruitment": {
+      "api": 42,
+      "uc": 20
+    },
+    "EdTech Education Dashboard": {
+      "api": 50,
+      "uc": 20
+    },
+    "Euphoria Ecommerce Apparels": {
+      "api": 13,
+      "uc": 18
+    },
+    "Financial Management": {
+      "api": 18,
+      "uc": 18
+    },
+    "Table Booking Restaurant Application": {
+      "api": 24,
+      "uc": 20
+    },
+    "Travel Booking App Web & Mobile": {
+      "api": 16,
+      "uc": 18
+    }
+  }
+}

@@ -22,7 +22,7 @@ if ($manifestText -notmatch 'self-contained-uml-v1') {
   Add-Error 'FIGMA.md must declare the self-contained-uml-v1 specification contract.'
 }
 
-foreach ($required in @('FIGMA.md', 'CONTEXT.md', 'ASSUMPTIONS.md', 'coverage-report.md', 'schema.dbml', 'uc', 'api')) {
+foreach ($required in @('FIGMA.md', 'CONTEXT.md', 'ASSUMPTIONS.md', 'coverage-report.md', 'schema.dbml', '01-inception', '01-inception\uc', '01-inception\api')) {
   if (-not (Test-Path -LiteralPath (Join-Path $rootPath $required))) {
     Add-Error "Missing required artifact: $required"
   }
@@ -35,8 +35,9 @@ foreach ($artifact in Get-ChildItem -LiteralPath $rootPath -Recurse -File) {
   }
 }
 
-$ucDir = Join-Path $rootPath 'uc'
-$apiDir = Join-Path $rootPath 'api'
+$inceptionDir = Join-Path $rootPath '01-inception'
+$ucDir = Join-Path $inceptionDir 'uc'
+$apiDir = Join-Path $inceptionDir 'api'
 $ucFiles = if (Test-Path $ucDir) { @(Get-ChildItem $ucDir -Filter '*.md' | Where-Object Name -Match '^uc-\d{2}-[a-z0-9-]+\.md$') } else { @() }
 $apiFiles = if (Test-Path $apiDir) { @(Get-ChildItem $apiDir -Filter 'api-*.md' | Where-Object Name -NotMatch '^README\.md$|^common-contract\.md$') } else { @() }
 
@@ -507,17 +508,17 @@ if (-not $SkipDbmlCompile -and (Test-Path -LiteralPath (Join-Path $rootPath 'sch
     try {
       $dbmlCommand = Get-Command dbml2sql -ErrorAction SilentlyContinue
       if ($dbmlCommand) {
-        & $dbmlCommand.Source (Join-Path $rootPath 'schema.dbml') --postgres -o $tempSql | Out-Null
-      } elseif (Get-Command npx -ErrorAction SilentlyContinue) {
-        npx --yes --package @dbml/cli dbml2sql (Join-Path $rootPath 'schema.dbml') --postgres -o $tempSql | Out-Null
+        & $dbmlCommand.Source (Join-Path $rootPath 'schema.dbml') --mysql -o $tempSql | Out-Null
+      } elseif (Get-Command npm -ErrorAction SilentlyContinue) {
+        npm exec --yes --package @dbml/cli@9.1.1 -- dbml2sql (Join-Path $rootPath 'schema.dbml') --mysql -o $tempSql | Out-Null
       } else {
-        Add-Error 'DBML compiler unavailable; install @dbml/cli or use -SkipDbmlCompile.'
+        Add-Error 'DBML compiler unavailable; install @dbml/cli 9.1.1 or use -SkipDbmlCompile.'
       }
     } finally {
       Pop-Location
     }
     if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $tempSql)) {
-      Add-Error 'schema.dbml did not compile to PostgreSQL SQL.'
+      Add-Error 'schema.dbml did not compile to MySQL SQL.'
     }
   } finally {
     if (Test-Path -LiteralPath $tempSql) { Remove-Item -LiteralPath $tempSql -Force }

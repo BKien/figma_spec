@@ -23,4 +23,4 @@ The supported checkout scope is the Cash on delivery choice with Same as Billing
 
 ## Operational contract notes
 
-The OCL constraints describe before/after states of application operations, not a particular transaction engine or executable implementation. Wire decimal strings and timestamps map to the modeled value types described in the shared model. SQL constraints support the model, while cross-row calculations and operation postconditions still require service implementation. DBML compilation does not prove those predicates.
+The OCL constraints describe before/after states of application operations, not a particular transaction engine or executable implementation. Wire decimal strings and timestamps map to the modeled value types described in each use case's local UML model. SQL constraints support the model, while cross-row calculations and operation postconditions still require service implementation. DBML compilation does not prove those predicates.

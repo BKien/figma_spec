@@ -1,6 +1,6 @@
 Project euphoria {
-  database_type: 'PostgreSQL'
-  Note: 'Proposed persistence for the supported Euphoria scope. API, UML and OCL govern behavior. No raw passwords, session secrets, card numbers, CVV or payment provider tokens are stored.'
+  database_type: 'MySQL'
+  Note: 'MySQL 8.0 persistence for the supported Euphoria scope. All datetime values are UTC. API, UML and OCL govern behavior. No raw passwords, session secrets, card numbers, CVV or payment provider tokens are stored.'
 }
 
 Enum order_status {
@@ -34,7 +34,7 @@ Table sessions {
   customer_id varchar [not null, ref: > customers.id]
   token_hash varchar [not null, unique]
   csrf_hash varchar [not null]
-  expires_at timestamptz [not null]
+  expires_at datetime [not null]
   revoked boolean [not null, default: false]
   indexes {
     (customer_id, expires_at)
@@ -61,7 +61,7 @@ Table products {
   featured boolean [not null]
   display_rank integer [not null, unique]
   recommendation_rank integer [not null, unique]
-  created_at timestamptz [not null]
+  created_at datetime [not null]
   display_amount decimal(14,2) [not null]
   currency char(3) [not null]
   indexes {
@@ -192,7 +192,7 @@ Table orders {
   id varchar [pk]
   number varchar [not null, unique]
   customer_id varchar [not null, ref: > customers.id]
-  placed_at timestamptz [not null]
+  placed_at datetime [not null]
   estimated_delivery date
   status order_status [not null]
   payment_method payment_method [not null]
@@ -251,7 +251,7 @@ Table order_events {
   id varchar [pk]
   order_id varchar [not null, ref: > orders.id]
   status order_status [not null]
-  occurred_at timestamptz [not null]
+  occurred_at datetime [not null]
   message text [not null]
   indexes {
     (order_id, occurred_at)
@@ -274,7 +274,7 @@ Table reset_deliveries {
   customer_id varchar [not null, ref: > customers.id]
   status delivery_status [not null]
   provider_reference varchar
-  created_at timestamptz [not null]
+  created_at datetime [not null]
   indexes {
     (status, created_at)
   }
@@ -283,7 +283,7 @@ Table wishlist_entries {
   id varchar [pk]
   customer_id varchar [not null, ref: > customers.id]
   product_id varchar [not null, ref: > products.id]
-  created_at timestamptz [not null]
+  created_at datetime [not null]
   indexes {
     (customer_id, product_id) [unique]
   }
@@ -292,7 +292,7 @@ Table viewed_products {
   id varchar [pk]
   customer_id varchar [not null, ref: > customers.id]
   product_id varchar [not null, ref: > products.id]
-  viewed_at timestamptz [not null]
+  viewed_at datetime [not null]
   indexes {
     (customer_id, product_id) [unique]
     (customer_id, viewed_at)

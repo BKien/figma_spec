@@ -1,6 +1,6 @@
 Project restaurant_booking {
-  database_type: 'PostgreSQL'
-  Note: 'Customer booking and administration persistence. Reports are derived from bookings.'
+  database_type: 'MySQL'
+  Note: 'MySQL 8.0 customer booking and administration persistence. All datetime values are UTC. Reports are derived from bookings.'
 }
 
 Enum account_status {
@@ -49,7 +49,7 @@ Table accounts {
   status account_status [not null]
   version integer [not null, default: 1]
   points_balance integer [not null, default: 0]
-  created_at timestamptz [not null]
+  created_at datetime [not null]
 
   indexes {
     email_canonical [unique]
@@ -72,8 +72,8 @@ Table sessions {
   id varchar [pk]
   account_id varchar [not null, ref: > accounts.id]
   token_hash varchar [not null, unique, note: 'Hash of bearer token; no raw access token']
-  created_at timestamptz [not null]
-  expires_at timestamptz [not null]
+  created_at datetime [not null]
+  expires_at datetime [not null]
 
   indexes {
     (account_id, expires_at)
@@ -91,7 +91,7 @@ Table restaurants {
   hero_image_url varchar
   status restaurant_status [not null]
   version integer [not null, default: 1]
-  created_at timestamptz [not null]
+  created_at datetime [not null]
 
   indexes {
     (city, status)
@@ -131,7 +131,7 @@ Table reservation_slots {
   id varchar [pk]
   restaurant_id varchar [not null, ref: > restaurants.id]
   service_date date [not null]
-  starts_at timestamptz [not null]
+  starts_at datetime [not null]
   meal_name varchar [not null]
   seat_capacity integer [not null]
   remaining_seats integer [not null]
@@ -148,9 +148,9 @@ Table verification_challenges {
   account_id varchar [not null, ref: > accounts.id]
   code_hash varchar [not null, note: 'One-way code hash; no raw OTP']
   purpose challenge_purpose [not null]
-  expires_at timestamptz [not null]
-  consumed_at timestamptz
-  created_at timestamptz [not null]
+  expires_at datetime [not null]
+  consumed_at datetime
+  created_at datetime [not null]
 
   indexes {
     (account_id, purpose, expires_at)
@@ -169,8 +169,8 @@ Table bookings {
   idempotency_key varchar [not null]
   request_fingerprint varchar [not null, note: 'Derived request fingerprint for safe replay']
   version integer [not null, default: 1]
-  created_at timestamptz [not null]
-  updated_at timestamptz [not null]
+  created_at datetime [not null]
+  updated_at datetime [not null]
 
   indexes {
     (account_id, idempotency_key) [unique]
@@ -186,8 +186,8 @@ Table notifications {
   booking_id varchar [ref: > bookings.id]
   title varchar [not null]
   body text [not null]
-  read_at timestamptz
-  created_at timestamptz [not null]
+  read_at datetime
+  created_at datetime [not null]
 
   indexes {
     (account_id, created_at)
@@ -200,7 +200,7 @@ Table contact_messages {
   email_canonical varchar [not null]
   message text [not null]
   status contact_status [not null]
-  created_at timestamptz [not null]
+  created_at datetime [not null]
 
   indexes {
     (status, created_at)

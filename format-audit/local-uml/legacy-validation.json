@@ -1,0 +1,74 @@
+{
+  "Clicon Ecommerce Marketplace": {
+    "exit_code": 1,
+    "diagnostic_count": 278,
+    "first_diagnostics": [
+      "uc-01-register-and-verify-email.md: expected exactly one matching top-level heading.",
+      "uc-01-register-and-verify-email.md: non-OCL content inside Business Rules section."
+    ]
+  },
+  "DH Dental Recruitment": {
+    "exit_code": 1,
+    "diagnostic_count": 264,
+    "first_diagnostics": [
+      "uc-01-register-job-seeker.md: expected exactly one matching top-level heading.",
+      "uc-01-register-job-seeker.md: non-OCL content inside Business Rules section."
+    ]
+  },
+  "EdTech Education Dashboard": {
+    "exit_code": 1,
+    "diagnostic_count": 280,
+    "first_diagnostics": [
+      "uc-01-register-student.md: expected exactly one matching top-level heading.",
+      "uc-01-register-student.md: non-OCL content inside Business Rules section."
+    ]
+  },
+  "Euphoria Ecommerce Apparels": {
+    "exit_code": 1,
+    "diagnostic_count": 189,
+    "first_diagnostics": [
+      "FIGMA.md must declare the self-contained-uml-v1 specification contract.",
+      "uc-01-explore-storefront.md: expected exactly one matching top-level heading."
+    ]
+  },
+  "Financial Management": {
+    "exit_code": 1,
+    "diagnostic_count": 198,
+    "first_diagnostics": [
+      "uc-01-register-an-account.md: expected exactly one matching top-level heading.",
+      "uc-01-register-an-account.md: non-OCL content inside Business Rules section."
+    ]
+  },
+  "Table Booking Restaurant Application": {
+    "exit_code": 1,
+    "diagnostic_count": 228,
+    "first_diagnostics": [
+      "uc-01-register-account.md: expected exactly one matching top-level heading.",
+      "uc-01-register-account.md: non-OCL content inside Business Rules section."
+    ]
+  },
+  "Travel Booking App Web & Mobile": {
+    "exit_code": 1,
+    "diagnostic_count": 194,
+    "first_diagnostics": [
+      "uc-01-register-an-account.md: expected exactly one matching top-level heading.",
+      "uc-01-register-an-account.md: non-OCL content inside Business Rules section."
+    ]
+  },
+  "Tripma": {
+    "exit_code": 1,
+    "diagnostic_count": 10,
+    "first_diagnostics": [
+      "FIGMA.md must declare the self-contained-uml-v1 specification contract.",
+      "Missing required artifact: FIGMA.md"
+    ]
+  },
+  "repository": {
+    "exit_code": 1,
+    "first_diagnostics": [
+      "Validating package: 100ms Video Conferencing and Live Streaming",
+      "FIGMA.md must declare the self-contained-uml-v1 specification contract.",
+      "Forbidden shared UML/domain-model artifact: D:\\figma_spec\\100ms Video Conferencing and Live Streaming\\01-inception\\uc\\shared-domain-model.md"
+    ]
+  }
+}

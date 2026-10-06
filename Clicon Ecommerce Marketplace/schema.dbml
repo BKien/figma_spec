@@ -1,3 +1,8 @@
+Project clicon_ecommerce_marketplace {
+  database_type: 'MySQL'
+  Note: 'MySQL 8.0 persistence contract. All timestamps are stored and interpreted in UTC.'
+}
+
 Enum execution_status {
   REQUESTED
   COMPLETED

@@ -13,18 +13,19 @@
     ├── ASSUMPTIONS.md
     ├── coverage-report.md
     ├── schema.dbml
-    ├── uc/
-    │   ├── README.md
-    │   └── uc-01-<slug>.md
-    └── api/
-        ├── README.md
-        ├── common-contract.md
-        └── api-<lowercase-api-id>.md
+    └── 01-inception/
+        ├── uc/
+        │   ├── README.md
+        │   └── uc-01-<slug>.md
+        └── api/
+            ├── README.md
+            ├── common-contract.md
+            └── api-<lowercase-api-id>.md
 ```
 
-Keep shared skills at the repository root. Store no `CONTEXT.md`, `ASSUMPTIONS.md`, `coverage-report.md`, `schema.dbml`, `uc/`, or `api/` directly in the repository root. Each specification package is self-contained and represents exactly one Figma file or one user-approved Figma scope.
+Keep shared skills at the repository root. Store no `CONTEXT.md`, `ASSUMPTIONS.md`, `coverage-report.md`, `schema.dbml`, `01-inception/`, `uc/`, or `api/` directly in the repository root. Within each package, store `uc/` and `api/` only under `01-inception/`. Each specification package is self-contained and represents exactly one Figma file or one user-approved Figma scope.
 
-Use-case UML exists only inside the individual `uc/uc-NN-*.md` files. The `uc/` directory contains its index and individual use cases, not a shared, common, package-level, or separately linked UML/domain-model artifact. Files such as `shared-domain-model.md`, `domain-model.md`, `shared-uml.puml`, and equivalent variants are invalid output. `CONTEXT.md` defines canonical language but never supplies UML declarations omitted from a use case.
+Use-case UML exists only inside the individual `01-inception/uc/uc-NN-*.md` files. The `01-inception/uc/` directory contains its index and individual use cases, not a shared, common, package-level, or separately linked UML/domain-model artifact. Files such as `shared-domain-model.md`, `domain-model.md`, `shared-uml.puml`, and equivalent variants are invalid output. `CONTEXT.md` defines canonical language but never supplies UML declarations omitted from a use case.
 
 Write all artifact content in English.
 
@@ -203,4 +204,4 @@ When updating a legacy package that contains a shared model, rebuild each local 
 - API error triggers expose only public protocol outcomes.
 - Markdown fences and relative links are valid.
 - UC-to-API references resolve in both directions.
-- DBML compiles to PostgreSQL SQL.
+- DBML compiles to MySQL 8.0 SQL.

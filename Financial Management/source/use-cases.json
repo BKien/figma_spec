@@ -1,0 +1,2391 @@
+{
+  "sheet": "Use cases",
+  "rows": [
+    {
+      "row": 1,
+      "cells": [
+        "USE CASE SPECIFICATIONS"
+      ]
+    },
+    {
+      "row": 2,
+      "cells": [
+        "Utility Function Definitions (for Business Rules):\n\nStringNormalizer.trim(s):\n- Removes leading and trailing whitespace characters from s.\n- Internal whitespace characters remain unchanged.\n\nStringNormalizer.nfc(s):\n- Returns the Unicode NFC-normalized representation of s.\n- Used to normalize user-provided text before validation and persistence.\n\nStringNormalizer.lower(s):\n- Returns the lowercase representation of s.\n- Used for case-insensitive comparison, especially email normalization.\n\n\nStringValidator.matches(s, pattern):\n- Returns true if s fully matches the specified regular expression pattern.\n- Partial matching is not allowed.\n\n\nEmailValidator.isEmail(email):\n- Returns true if the input value follows a valid email format.\n- Used to validate email fields before processing.\n\n\nPasswordHasher.matches(password, hash):\n- Returns true if the provided plaintext password matches the stored password hash.\n- Plaintext password shall never be stored or returned.\n\nPasswordHasher.cost(hash):\n- Returns the cost factor used to generate the password hash.\n- Used to validate password hashing configuration.\n\n\nDateUtility.toIsoDate(date):\n- Converts a date value into ISO date string format (YYYY-MM-DD).\n- Used for date comparison and API response formatting.\n\nNumericUtility.round2(value):\n- Returns value rounded to exactly two decimal places.\n- Rounding uses HALF_UP semantics.\n- Used to normalize monetary values, percentages, and other decimal values before comparison or inclusion in API responses.\n\n' =========================\n' Utility Classes\n' =========================\n\nclass StringNormalizer <<Utility>> {\n  +trim(s: String): String\n  +nfc(s: String): String\n  +lower(s: String): String\n}\n\n\nclass StringValidator <<Utility>> {\n  +matches(s: String, pattern: String): Boolean\n}\n\n\nclass EmailValidator <<Utility>> {\n  +isEmail(email: String): Boolean\n}\n\n\nclass DateUtility <<Utility>> {\n  +toIsoDate(date: Date): String\n  +isWithinInclusiveMonth(\n      date: Date,\n      month: String\n  ): Boolean\n}\n\n\nclass NumericUtility <<Utility>> {\n  +round2(value: Real): Real\n}\n\n\nclass PasswordHasher <<Service>> {\n  +hash(\n      password: String,\n      rounds: Integer\n  ): String\n\n  +matches(\n      password: String,\n      hash: String\n  ): Boolean\n\n  +cost(\n      hash: String\n  ): Integer\n}\n\nDateUtility.isWithinInclusiveMonth(date, month):\n- Returns true if the date belongs to the specified month.\n- The target month follows the YYYY-MM format."
+      ]
+    },
+    {
+      "row": 3,
+      "cells": []
+    },
+    {
+      "row": 4,
+      "cells": []
+    },
+    {
+      "row": 5,
+      "cells": [
+        "UC-01 - Register an Account"
+      ]
+    },
+    {
+      "row": 6,
+      "cells": [
+        "Use Case ID",
+        "UC-01"
+      ]
+    },
+    {
+      "row": 7,
+      "cells": [
+        "Use Case Name",
+        "Register an Account"
+      ]
+    },
+    {
+      "row": 8,
+      "cells": [
+        "Description",
+        "As a visitor, I want to register with my full name, email address, password, and password confirmation so that the application creates an authenticated user session."
+      ]
+    },
+    {
+      "row": 9,
+      "cells": [
+        "Actor(s)",
+        "Visitor"
+      ]
+    },
+    {
+      "row": 10,
+      "cells": [
+        "Priority",
+        "Not Specified"
+      ]
+    },
+    {
+      "row": 11,
+      "cells": [
+        "Trigger",
+        "The visitor opens the registration page or selects the Create an account link."
+      ]
+    },
+    {
+      "row": 12,
+      "cells": [
+        "Pre-Condition(s)",
+        "PRE-1: The frontend registration route /register is accessible.\nPRE-2: The backend and database are available."
+      ]
+    },
+    {
+      "row": 13,
+      "cells": [
+        "Post-Condition(s)",
+        "POST-1: On success, a new user record is stored with a generated unique username, a bcrypt password hash, and totalBalance = 0.\nPOST-2: A JWT and mapped user object are stored in localStorage.\nPOST-3: The frontend authentication context contains the new user and navigates to /.\nPOST-4: On failure, no authenticated frontend state is created."
+      ]
+    },
+    {
+      "row": 14,
+      "cells": [
+        "Basic Flow",
+        "1. The visitor opens /register.\n2. The frontend displays SignUpForm.\n3. The visitor enters fullName, email, password, and confirmPassword.\n4. The visitor selects Sign Up.\n5. The frontend validates the submitted data according to BR-REG-01, BR-REG-02, BR-REG-04, BR-REG-05, and BR-REG-06.\n6. The frontend sends POST /api/auth/register.\n7. The backend normalizes the input and independently enforces all applicable registration rules.\n8. AuthService verifies password equality and checks whether the email already exists.\n9. AuthService generates a unique username from the email prefix, hashes the password with bcrypt using 10 salt rounds, and stores the user with totalBalance = 0.\n10. AuthService creates the registered user result and signs a JWT. The backend returns success, message, and a data object containing accessToken and the created user's id, fullName, and email.\n11. AuthContext reads data.accessToken and data.user, maps the returned user, stores the token and user in localStorage, and updates its user state.\n12. The frontend navigates to /."
+      ]
+    },
+    {
+      "row": 15,
+      "cells": [
+        "Alternative Flow",
+        "AF-1: Client-side validation failure\n5a. If any required field is empty, the email format is invalid, or the passwords differ, the frontend displays a field-level error and does not call the API.\n\nAF-2: Duplicate email\n8a. If the email already exists, the backend returns HTTP 409 and the frontend displays the returned error."
+      ]
+    },
+    {
+      "row": 16,
+      "cells": [
+        "Exception Flow",
+        "EF-1: Registration request failure\n6a. If the request fails for another reason, SignUpForm displays the API error value or a general registration failure message and remains on the form."
+      ]
+    },
+    {
+      "row": 17,
+      "cells": [
+        "UML Model",
+        "@startuml\n\nclass RegisterDto <<DTO>> {\n  fullName: String [0..1]\n  email: String [0..1]\n  password: String [0..1]\n  confirmPassword: String [0..1]\n}\n\nclass User <<Entity>> {\n  id: Integer [1]\n  fullName: String [1]\n  email: String [1]\n  passwordHash: String [1]\n}\n\nclass RegisteredUserDto <<DTO>> {\n  id: Integer [1]\n  fullName: String [1]\n  email: String [1]\n}\n\nclass RegisterDataDto <<DTO>> {\n  accessToken: String [1]\n  user: RegisteredUserDto [1]\n}\n\nclass RegisterResponseDto <<DTO>> {\n  success: Boolean [1]\n  message: String [1]\n  data: RegisterDataDto [0..1]\n}\n\nclass AuthResponse <<DTO>> {\n  success: Boolean\n  user: User [0..1]\n  accessToken: String [0..1]\n}\n\nclass PasswordHasher <<Service>> {\n  hash(password: String, rounds: Integer): String\n  matches(password: String, hash: String): Boolean {query}\n  cost(hash: String): Integer {query}\n}\n\nclass AuthService <<Service>> {\n  register(dto: RegisterDto): RegisterResponseDto\n  isRegistrationInputValid(dto: RegisterDto): Boolean {query}\n}\n\nAuthService ..> RegisterDto\nAuthService ..> RegisterResponseDto\nAuthService ..> PasswordHasher\n\nRegisterResponseDto --> RegisterDataDto\nRegisterDataDto --> RegisteredUserDto\nRegisteredUserDto ..> User : maps from\n\n@enduml",
+        "s"
+      ]
+    },
+    {
+      "row": 18,
+      "cells": [
+        "Business Rules",
+        "BR-REG-01: Valid registration full name:\ncontext AuthService::register(\n  dto : RegisterDto\n) : AuthResponse\n\npre BR_REG_01_Defined:\n  not dto.fullName.oclIsUndefined()\n\npre BR_REG_01_Length:\n  let normalizedName : String = trim(nfc(dto.fullName))\n  in\n    normalizedName.size() >= 4 and\n    normalizedName.size() <= 25\n\npre BR_REG_01_Pattern:\n  let normalizedName : String = trim(nfc(dto.fullName))\n  in\n    matches(\n      normalizedName,\n      '^[\\p{L}]+(?: [\\p{L}]+)*$'\n    )\n\npost BR_REG_01_Normalized:\n  let normalizedName : String = trim(nfc(dto.fullName))\n  in\n    result.success implies\n      not result.data.oclIsUndefined() and\n      not result.data.user.oclIsUndefined() and\n      result.data.user.fullName = normalizedName\n\nBR-REG-02: Valid registration email:\ncontext AuthService::register(\n  dto : RegisterDto\n) : AuthResponse\n\npre BR_REG_02_Defined:\n  not dto.email.oclIsUndefined()\n\npre BR_REG_02_NotEmpty:\n  trim(dto.email).size() > 0\n\npre BR_REG_02_MaxLength:\n  let normalizedEmail : String = lower(trim(dto.email))\n  in\n    normalizedEmail.size() <= 255\n\npre BR_REG_02_ValidFormat:\n  let normalizedEmail : String = lower(trim(dto.email))\n  in\n    isEmail(normalizedEmail)\n\npost BR_REG_02_Normalized:\n  let normalizedEmail : String = lower(trim(dto.email))\n  in\n    result.success implies\n      not result.data.oclIsUndefined() and\n      not result.data.user.oclIsUndefined() and\n      result.data.user.email = normalizedEmail\n\nBR-REG-03: Unique registration email:\ncontext User\n\ninv BR_REG_03_UniqueNormalizedEmail:\n  User.allInstances()->isUnique(\n    user | lower(trim(user.email))\n  )\n\ncontext AuthService::register(\n  dto : RegisterDto\n) : AuthResponse\n\npre BR_REG_03_EmailNotRegistered:\n  not User.allInstances()->exists(\n    user |\n      lower(trim(user.email)) =\n      lower(trim(dto.email))\n  )"
+      ]
+    },
+    {
+      "row": 19,
+      "cells": [
+        null,
+        "BR-REG-04: Valid registration password\ncontext AuthService::register(\n  dto : RegisterDto\n) : AuthResponse\n\npre BR_REG_04_Defined:\n  not dto.password.oclIsUndefined()\n\npre BR_REG_04_Length:\n  dto.password.size() >= 8 and\n  dto.password.size() <= 64\n\npre BR_REG_04_NoWhitespace:\n  not matches(\n    dto.password,\n    '.*\\s.*'\n  )\n\npre BR_REG_04_ContainsLowercase:\n  matches(\n    dto.password,\n    '.*[a-z].*'\n  )\n\npre BR_REG_04_ContainsUppercase:\n  matches(\n    dto.password,\n    '.*[A-Z].*'\n  )\n\npre BR_REG_04_ContainsDigit:\n  matches(\n    dto.password,\n    '.*[0-9].*'\n  )\n\npre BR_REG_04_ContainsSpecialCharacter:\n  matches(\n    dto.password,\n    '.*[!@#$%^&*(){}\\-_+=\\[\\],./<>?\\\\|:;].*'\n  )\n\nBR-REG-05: Permitted password characters\ncontext AuthService::register(\n  dto : RegisterDto\n) : AuthResponse\n\npre BR_REG_05_AllowedCharacters:\n  matches(\n    dto.password,\n    '^[A-Za-z0-9!@#$%^&*(){}_=+\\[\\],./<>?\\\\|:;\\-]+$'\n  )"
+      ]
+    },
+    {
+      "row": 20,
+      "cells": [
+        null,
+        "BR-REG-06: Matching registration passwords\ncontext AuthService::register(\n  dto : RegisterDto\n) : AuthResponse\n\npre BR_REG_06_ConfirmPasswordDefined:\n  not dto.confirmPassword.oclIsUndefined()\n\npre BR_REG_06_PasswordsMatch:\n  dto.confirmPassword = dto.password\n\nBR-REG-07: Confirm password handling\nconfirmPassword shall not be persisted or written to application logs.\n\nBR-REG-08: Invalid registration handling\ncontext AuthService::register(\n  dto : RegisterDto\n) : AuthResponse\n\npost BR_REG_08_InvalidRequestRejected:\n  not self.isRegistrationInputValid(dto)\n  implies\n    result.success = false\n\npost BR_REG_08_NoUserCreated:\n  not self.isRegistrationInputValid(dto)\n  implies\n    User.allInstances()->size() =\n    User.allInstances()@pre->size()"
+      ]
+    },
+    {
+      "row": 21,
+      "cells": [
+        null,
+        "BR-REG-09: Bcrypt password storage\ncontext AuthService::register(\n  dto : RegisterDto\n) : AuthResponse\n\npost BR_REG_09_PasswordHashed:\n  result.success implies\n    let createdUser : User =\n      User.allInstances()->any(\n        user |\n          lower(trim(user.email)) =\n          lower(trim(dto.email))\n      )\n    in\n      not createdUser.oclIsUndefined() and\n      createdUser.passwordHash <> dto.password and\n      bcryptMatches(\n        dto.password,\n        createdUser.passwordHash\n      ) and\n      bcryptCost(createdUser.passwordHash) = 10\nTechnical constraints:\n- The plaintext password shall not be persisted or logged.\n- Neither the plaintext password nor passwordHash shall be included in the API response.\n- The bcrypt hash shall be generated before the User record is persisted.\n\nBR-REG-10: Concurrent registration conflict handling\ncontext User\n\ninv BR_REG_10_AtMostOneUserPerNormalizedEmail:\n  User.allInstances()->forAll(user |\n    User.allInstances()\n      ->select(other |\n        lower(trim(other.email)) =\n        lower(trim(user.email))\n      )\n      ->size() = 1\n  )\nTechnical constraints:\n- User.email shall be protected by the database unique constraint defined in BR-REG-03.\n- If multiple concurrent registration requests contain the same normalized email, exactly one User creation shall succeed.\n- Each conflicting request shall be rejected with HTTP 409 Conflict.\n- A rejected request shall not issue a JWT or establish an authenticated session.\n- After all concurrent requests complete, exactly one User shall exist for the normalized email.\n\nBR-REG-11: Successful registration\ncontext AuthService::register(\n  dto : RegisterDto\n) : RegisterResponseDto\n\npost BR_REG_11_SuccessResponse:\n  result.success implies\n    result.message.size() > 0 and\n    not result.data.oclIsUndefined() and\n    not result.data.user.oclIsUndefined() and\n    not result.data.accessToken.oclIsUndefined() and\n    result.data.accessToken.size() > 0\n\npost BR_REG_11_UserCreated:\n  result.success implies\n    User.allInstances()->one(user |\n      user.id = result.data.user.id and\n      lower(trim(user.email)) =\n        lower(trim(dto.email))\n    )\nTechnical constraints:\n- After the User has been successfully persisted, the backend shall issue a signed JWT access token identifying that User.\n- The successful response shall contain the created user information and access token inside the data object.\n- After receiving the successful response, the client shall establish an authenticated session using the returned token.\n- The client shall redirect the authenticated user to the home page.\n- A session shall not be established and navigation shall not occur when registration fails."
+      ]
+    },
+    {
+      "row": 22,
+      "cells": [
+        "Related UI",
+        "Register page; SignUpForm; route /register; AuthContext"
+      ]
+    },
+    {
+      "row": 23,
+      "cells": [
+        "Related API IDs",
+        "API-AUTH-REGISTER"
+      ]
+    },
+    {
+      "row": 24,
+      "cells": [
+        "Notes",
+        "Scope clarification: This use case covers email/password registration only. Google sign-up is outside scope."
+      ]
+    },
+    {
+      "row": 25,
+      "cells": []
+    },
+    {
+      "row": 26,
+      "cells": [
+        "UC-02 - Log In"
+      ]
+    },
+    {
+      "row": 27,
+      "cells": [
+        "Use Case ID",
+        "UC-02"
+      ]
+    },
+    {
+      "row": 28,
+      "cells": [
+        "Use Case Name",
+        "Log In"
+      ]
+    },
+    {
+      "row": 29,
+      "cells": [
+        "Description",
+        "As a registered visitor, I want to log in with my email address and password so that the application creates an authenticated session."
+      ]
+    },
+    {
+      "row": 30,
+      "cells": [
+        "Actor(s)",
+        "Visitor"
+      ]
+    },
+    {
+      "row": 31,
+      "cells": [
+        "Priority",
+        "Not Specified"
+      ]
+    },
+    {
+      "row": 32,
+      "cells": [
+        "Trigger",
+        "The visitor opens the login page or selects the Login link."
+      ]
+    },
+    {
+      "row": 33,
+      "cells": [
+        "Pre-Condition(s)",
+        "PRE-1: A user record with the submitted email exists for successful authentication.\nPRE-2: The frontend login route /login is accessible.\nPRE-3: The backend and database are available."
+      ]
+    },
+    {
+      "row": 34,
+      "cells": [
+        "Post-Condition(s)",
+        "POST-1: On success, a JWT and mapped user object are stored in localStorage.\nPOST-2: AuthContext contains the authenticated user.\nPOST-3: The frontend navigates to /.\nPOST-4: On failure, the visitor remains on the login page and no new authenticated state is created."
+      ]
+    },
+    {
+      "row": 35,
+      "cells": [
+        "Basic Flow",
+        "1. The visitor clicks login button.\n2. The frontend displays LoginForm.\n3. The visitor enters email and password.\n4. The visitor selects Login.\n5. The frontend verifies that email is non-empty and matches its email pattern and that password is non-empty.\n6. The frontend sends POST /api/auth/login.\n7. The backend ValidationPipe validates LoginDto.\n8. AuthService finds the user by email and compares the submitted password with the stored bcrypt hash.\n9. AuthService signs a JWT whose payload contains sub and email.\n10. The backend returns success, message, accessToken, and basic user information.\n11. AuthContext maps the user, stores token and user in localStorage, and updates its user state.\n12. The frontend navigates to /."
+      ]
+    },
+    {
+      "row": 36,
+      "cells": [
+        "Alternative Flow",
+        "AF-1: Client-side validation failure\n5a. If email or password is invalid or empty, the frontend displays a field-level error and does not call the API."
+      ]
+    },
+    {
+      "row": 37,
+      "cells": [
+        "Exception Flow",
+        "EF-1: Invalid credentials\n8a. If the user does not exist or bcrypt comparison fails, the backend returns HTTP 401 and the frontend displays the authentication error.\n\nEF-2: Other request failure\n6a. LoginForm displays the returned message or a general login failure message."
+      ]
+    },
+    {
+      "row": 38,
+      "cells": [
+        "UML Model",
+        "@startuml\n\nclass LoginDto <<DTO>> {\n  email: String [0..1]\n  password: String [0..1]\n}\n\nclass User <<Entity>> {\n  id: Integer [1]\n  fullName: String [1]\n  email: String [1]\n  passwordHash: String [1]\n}\n\nclass LoginUserDto <<DTO>> {\n  id: Integer [1]\n  fullName: String [1]\n  email: String [1]\n}\n\nclass LoginDataDto <<DTO>> {\n  accessToken: String [1]\n  user: LoginUserDto [1]\n}\n\nclass LoginResponseDto <<DTO>> {\n  success: Boolean [1]\n  message: String [1]\n  data: LoginDataDto [0..1]\n}\n\nclass PasswordHasher <<Service>> {\n  matches(password: String, hash: String): Boolean {query}\n}\n\nclass AuthService <<Service>> {\n  login(dto: LoginDto): LoginResponseDto\n  isLoginInputValid(dto: LoginDto): Boolean {query}\n}\n\nAuthService ..> LoginDto\nAuthService ..> LoginResponseDto\nAuthService ..> PasswordHasher\n\nLoginResponseDto --> LoginDataDto\nLoginDataDto --> LoginUserDto\nLoginUserDto ..> User : maps from\n\n@enduml"
+      ]
+    },
+    {
+      "row": 39,
+      "cells": [
+        "Business Rules",
+        "BR-LOG-01 - Valid login email\n\ncontext AuthService::login(\n  dto : LoginDto\n) : LoginResponseDto\n\npre BR_LOG_01_Defined:\n  not dto.email.oclIsUndefined()\n\npre BR_LOG_01_NotEmpty:\n  trim(dto.email).size() > 0\n\npre BR_LOG_01_ValidFormat:\n  let normalizedEmail : String =\n    lower(trim(dto.email))\n  in\n    isEmail(normalizedEmail)\n\nBR-LOG-02 - Non-empty login password\n\ncontext AuthService::login(\n  dto : LoginDto\n) : LoginResponseDto\n\npre BR_LOG_02_Defined:\n  not dto.password.oclIsUndefined()\n\npre BR_LOG_02_NotEmpty:\n  dto.password.size() > 0\n\nBR-LOG-03 - Existing login account\n\ncontext AuthService::login(\n  dto : LoginDto\n) : LoginResponseDto\n\npost BR_LOG_03_SuccessRequiresExistingUser:\n  result.success implies\n    User.allInstances()->exists(\n      user |\n        lower(trim(user.email)) =\n        lower(trim(dto.email))\n    )"
+      ]
+    },
+    {
+      "row": 40,
+      "cells": [
+        "Business Rules",
+        "BR-LOG-04 - Credential verification\n\ncontext AuthService::login(\n  dto : LoginDto\n) : LoginResponseDto\n\npost BR_LOG_04_SuccessRequiresValidCredentials:\n  result.success implies\n    User.allInstances()->exists(\n      user |\n        lower(trim(user.email)) =\n          lower(trim(dto.email))\n        and\n        self.passwordHasher.matches(\n          dto.password,\n          user.passwordHash\n        )\n    )\n\nBR-LOG-05 - Invalid credential handling\n\ncontext AuthService::login(\n  dto : LoginDto\n) : LoginResponseDto\n\npost BR_LOG_05_InvalidCredentialsRejected:\n  let credentialsValid : Boolean =\n    User.allInstances()->exists(\n      user |\n        lower(trim(user.email)) =\n          lower(trim(dto.email))\n        and\n        self.passwordHasher.matches(\n          dto.password,\n          user.passwordHash\n        )\n    )\n  in\n    result.success = credentialsValid\n\nTechnical constraints:\n\nIf credentialsValid = false, the backend shall return HTTP 401 Unauthorized.\nThe same authentication error shall be returned when the email does not exist or when the password is incorrect.\n\nBR-LOG-06 - Successful login\n\ncontext AuthService::login(\n  dto : LoginDto\n) : LoginResponseDto\n\npost BR_LOG_06_SuccessResponse:\n  result.success implies\n    not result.data.oclIsUndefined() and\n    not result.data.accessToken.oclIsUndefined() and\n    result.data.accessToken.size() > 0 and\n    not result.data.user.oclIsUndefined()\n\npost BR_LOG_06_CorrectAuthenticatedUser:\n  result.success implies\n    User.allInstances()->exists(\n      user |\n        user.id = result.data.user.id and\n        lower(trim(user.email)) =\n          lower(trim(dto.email)) and\n        result.data.user.fullName = user.fullName and\n        result.data.user.email = user.email\n    )\n\nTechnical constraints:\n\nThe backend shall issue a signed JWT access token after successful authentication.\nNeither the submitted plaintext password nor the stored password hash shall be included in the API response.\nAfter receiving a successful response, the client shall establish the authenticated session using the returned access token and user information."
+      ]
+    },
+    {
+      "row": 41,
+      "cells": [
+        "Related UI",
+        "Login page; LoginForm; route /login; AuthContext"
+      ]
+    },
+    {
+      "row": 42,
+      "cells": [
+        "Related API IDs",
+        "API-AUTH-LOGIN"
+      ]
+    },
+    {
+      "row": 43,
+      "cells": [
+        "Notes",
+        "Scope clarification: Authentication data is persisted in localStorage regardless of the “Keep me signed in” selection. Password recovery and Google login are outside scope."
+      ]
+    },
+    {
+      "row": 44,
+      "cells": []
+    },
+    {
+      "row": 45,
+      "cells": [
+        "UC-03 - View Transaction History"
+      ]
+    },
+    {
+      "row": 46,
+      "cells": [
+        "Use Case ID",
+        "UC-03"
+      ]
+    },
+    {
+      "row": 47,
+      "cells": [
+        "Use Case Name",
+        "View Transaction History"
+      ]
+    },
+    {
+      "row": 48,
+      "cells": [
+        "Description",
+        "As an authenticated user, I want to view, filter, and paginate transactions belonging to my accounts."
+      ]
+    },
+    {
+      "row": 49,
+      "cells": [
+        "Actor(s)",
+        "Authenticated User"
+      ]
+    },
+    {
+      "row": 50,
+      "cells": [
+        "Priority",
+        "Not Specified"
+      ]
+    },
+    {
+      "row": 51,
+      "cells": [
+        "Trigger",
+        "The user opens the Transactions page."
+      ]
+    },
+    {
+      "row": 52,
+      "cells": [
+        "Pre-Condition(s)",
+        "PRE-1: The user is authenticated.\nPRE-2: The protected route /transactions is accessible to the authenticated user."
+      ]
+    },
+    {
+      "row": 53,
+      "cells": [
+        "Post-Condition(s)",
+        "POST-1: The frontend stores the current offset and hasMore state for pagination.\nPOST-2: If the returned transaction list is empty, the page displays an empty state."
+      ]
+    },
+    {
+      "row": 54,
+      "cells": [
+        "Basic Flow",
+        "1. The user opens /transactions.\n2. The frontend requests transaction history from GET /api/v1/transactions using the current filter and pagination state.\n3. The system validates the authenticated session and identifies the current user.\n4. The system retrieves the transaction history according to the applicable business rules.\n5. The backend returns the transaction-list response.\n6. The frontend displays the returned transaction history."
+      ]
+    },
+    {
+      "row": 55,
+      "cells": [
+        "Alternative Flow",
+        "AF-1: Change transaction filter\n2a. The user changes the transaction filter.\n2b. The frontend clears the current list and requests the first page using the selected filter.\n2c. The frontend displays the returned filtered results.\n\nAF-2: Load more\n6a. The user selects Load More.\n6b. The frontend requests the next page using the current view state and appends the returned rows."
+      ]
+    },
+    {
+      "row": 56,
+      "cells": [
+        "Exception Flow",
+        "EF-1: Unauthorized request\n3a. If the JWT is missing, invalid, expired, or cannot resolve the authenticated user identity, the backend returns HTTP 401.\n3b. The Axios response interceptor removes token and user from localStorage and redirects to /login.\n\nEF-2: Invalid transaction-history request\n4a. If the request violates the applicable transaction-history business rules, the backend returns HTTP 400.\n4b. The frontend displays the returned message and an error toast.\n\nEF-3: Retrieval failure\n4c. If transaction retrieval fails, the backend returns HTTP 500.\n4d. The frontend displays the returned message and an error toast."
+      ]
+    },
+    {
+      "row": 57,
+      "cells": [
+        "UML Model",
+        "@startuml\n\nclass User <<Entity>> {\n  user_id: Integer [1]\n  full_name: String [1]\n  email: String [1]\n  username: String [1]\n  password: String [1]\n  phone_number: String [1]\n  profile_picture_url: String [1]\n  total_balance: Decimal [1]\n}\n\nclass Account <<Entity>> {\n  account_id: Integer [1]\n  user_id: Integer [1]\n  bank_name: String [1]\n  account_type: AccountType [1]\n  branch_name: String [1]\n  account_number_full: String [1]\n  account_number_last_4: String [1]\n  balance: Decimal [1]\n}\n\nclass Category <<Entity>> {\n  category_id: Integer [1]\n  category_name: String [1]\n}\n\nclass Transaction <<Entity>> {\n  transaction_id: Integer [1]\n  account_id: Integer [1]\n  transaction_date: Date [1]\n  type: TransactionType [1]\n  item_description: String [1]\n  shop_name: String [1]\n  amount: Decimal [1]\n  payment_method: String [1]\n  status: TransactionStatus [1]\n  receipt_id: Integer [1]\n  category_id: Integer [0..1]\n}\n\nenum AccountType {\n  Checking\n  Credit_Card\n  Savings\n  Investment\n  Loan\n}\nnote right of AccountType\n  Credit_Card maps to database literal 'Credit Card'.\nend note\n\nenum TransactionType {\n  Revenue\n  Expense\n}\n\nenum TransactionStatus {\n  Complete\n  Pending\n  Failed\n}\n\nenum TransactionFilterType {\n  All\n  Revenue\n  Expense\n}\n\nclass TransactionListQueryDto <<DTO>> {\n  type: TransactionFilterType [1]\n  limit: Integer [0..1]\n  offset: Integer [0..1]\n}\n\nclass TransactionDto <<DTO>> {\n  transaction_id: Integer [1]\n  account_id: Integer [1]\n  transaction_date: Date [1]\n  type: TransactionType [1]\n  item_description: String [1]\n  shop_name: String [1]\n  amount: Decimal [1]\n  payment_method: String [1]\n  status: TransactionStatus [1]\n}\n\nclass TransactionListResponseDto <<DTO>> {\n  data: TransactionDto [*]\n  total: Integer [1]\n  hasMore: Boolean [1]\n}\n\nclass TransactionService <<Service>> {\n  findAllByUserId(user_id: Integer, type: TransactionFilterType, limit: Integer, offset: Integer): TransactionListResponseDto\n}\n\nUser \"1\" -- \"0..*\" Account : owns\nAccount \"1\" -- \"0..*\" Transaction : contains\nCategory \"0..1\" -- \"0..*\" Transaction : classifies\n\nTransactionService ..> TransactionListQueryDto\nTransactionService ..> TransactionListResponseDto\nTransactionListResponseDto --> TransactionDto\nTransactionDto ..> Transaction : maps from\n\n@enduml"
+      ]
+    },
+    {
+      "row": 58,
+      "cells": [
+        "Business Rules",
+        "BR-TXN-01: Transaction ownership scope\ncontext TransactionService::findAllByUserId(\n  user_id : Integer,\n  type : TransactionFilterType,\n  limit : Integer,\n  offset : Integer\n) : TransactionListResponseDto\n\npre BR_TXN_01_UserExists:\n  User.allInstances()->exists(u |\n    u.user_id = user_id\n  )\n\npost BR_TXN_01_OwnedAccountsOnly:\n  result.data->forAll(t |\n    Account.allInstances()->exists(a |\n      a.account_id = t.account_id and\n      a.user_id = user_id\n    )\n  )\n\nBR-TXN-02: Allowed transaction filter and stored transaction type\ncontext TransactionService::findAllByUserId(\n  user_id : Integer,\n  type : TransactionFilterType,\n  limit : Integer,\n  offset : Integer\n) : TransactionListResponseDto\n\npre BR_TXN_02_AllowedFilter:\n  Set{TransactionFilterType::All,\n      TransactionFilterType::Revenue,\n      TransactionFilterType::Expense}->includes(type)\n\npost BR_TXN_02_FilterApplied:\n  (type = TransactionFilterType::Revenue implies\n    result.data->forAll(t |\n      t.type = TransactionType::Revenue\n    )) and\n  (type = TransactionFilterType::Expense implies\n    result.data->forAll(t |\n      t.type = TransactionType::Expense\n    ))\n\ncontext Transaction\ninv BR_TXN_02_StoredType:\n  type = TransactionType::Revenue or\n  type = TransactionType::Expense\n\nTechnical constraint:\n- All is a query/UI filter only. It shall never be stored in Transactions.type.\n\nBR-TXN-03: Pagination and ordering\ncontext TransactionService::findAllByUserId(\n  user_id : Integer,\n  type : TransactionFilterType,\n  limit : Integer,\n  offset : Integer\n) : TransactionListResponseDto\n\npre BR_TXN_03_LimitPositive:\n  limit > 0\n\npre BR_TXN_03_OffsetNonNegative:\n  offset >= 0\n\npost BR_TXN_03_PageSize:\n  result.data->size() <= limit\n\npost BR_TXN_03_HasMore:\n  result.hasMore =\n    (offset + result.data->size() < result.total)\n\npost BR_TXN_03_DescendingTransactionDate:\n  result.data->size() <= 1 or\n  Sequence{1..result.data->size()-1}->forAll(i |\n    result.data->at(i).transaction_date >=\n    result.data->at(i + 1).transaction_date\n  )\n\nTechnical constraints:\n- If limit is omitted, the endpoint shall use limit = 10.\n- If offset is omitted, the endpoint shall use offset = 0.\n\nBR-TXN-04: Database relationship integrity\ncontext Account\ninv BR_TXN_04_AccountOwnerExists:\n  User.allInstances()->exists(u |\n    u.user_id = self.user_id\n  )\n\ncontext Transaction\ninv BR_TXN_04_TransactionAccountExists:\n  Account.allInstances()->exists(a |\n    a.account_id = self.account_id\n  )\n\ninv BR_TXN_04_OptionalCategoryValid:\n  self.category_id.oclIsUndefined() or\n  Category.allInstances()->exists(c |\n    c.category_id = self.category_id\n  )"
+      ]
+    },
+    {
+      "row": 59,
+      "cells": [
+        null,
+        "BR-TXN-05: Empty transaction result\ncontext TransactionService::findAllByUserId(\n  user_id : Integer,\n  type : TransactionFilterType,\n  limit : Integer,\n  offset : Integer\n) : TransactionListResponseDto\n\npost BR_TXN_05_EmptyResultConsistency:\n  result.total = 0 implies\n    result.data->isEmpty() and\n    result.hasMore = false\n\nBR-TXN-06: Response rows map to persisted Transactions\ncontext TransactionService::findAllByUserId(\n  user_id : Integer,\n  type : TransactionFilterType,\n  limit : Integer,\n  offset : Integer\n) : TransactionListResponseDto\n\npost BR_TXN_06_ResponseBackedByTransaction:\n  result.data->forAll(dto |\n    Transaction.allInstances()->exists(t |\n      t.transaction_id = dto.transaction_id and\n      t.account_id = dto.account_id and\n      t.transaction_date = dto.transaction_date and\n      t.type = dto.type and\n      t.item_description = dto.item_description and\n      t.shop_name = dto.shop_name and\n      t.amount = dto.amount and\n      t.payment_method = dto.payment_method and\n      t.status = dto.status\n    )\n  )\n\nBR-TXN-07: Viewing transaction history is read-only\ncontext TransactionService::findAllByUserId(\n  user_id : Integer,\n  type : TransactionFilterType,\n  limit : Integer,\n  offset : Integer\n) : TransactionListResponseDto\n\npost BR_TXN_07_TransactionIdentityUnchanged:\n  Transaction.allInstances()->collect(t | t.transaction_id)->asSet() =\n  Transaction.allInstances()@pre->collect(t | t.transaction_id)->asSet()\n\npost BR_TXN_07_TransactionDataUnchanged:\n  Transaction.allInstances()->forAll(t |\n    Transaction.allInstances()@pre->exists(old |\n      old.transaction_id = t.transaction_id and\n      old.account_id = t.account_id and\n      old.transaction_date = t.transaction_date and\n      old.type = t.type and\n      old.item_description = t.item_description and\n      old.shop_name = t.shop_name and\n      old.amount = t.amount and\n      old.payment_method = t.payment_method and\n      old.status = t.status and\n      old.receipt_id = t.receipt_id and\n      old.category_id = t.category_id\n    )\n  )\n\npost BR_TXN_07_AccountIdentityUnchanged:\n  Account.allInstances()->collect(a | a.account_id)->asSet() =\n  Account.allInstances()@pre->collect(a | a.account_id)->asSet()\n\nTechnical constraint:\n- Listing transaction history shall not create, update, or delete Transactions or Accounts records."
+      ]
+    },
+    {
+      "row": 60,
+      "cells": [
+        "Related UI",
+        "TransactionsPage; route /transactions"
+      ]
+    },
+    {
+      "row": 61,
+      "cells": [
+        "Related API IDs",
+        "API-TRANSACTION-LIST"
+      ]
+    },
+    {
+      "row": 62,
+      "cells": [
+        "Notes"
+      ]
+    },
+    {
+      "row": 63,
+      "cells": []
+    },
+    {
+      "row": 64,
+      "cells": [
+        "UC-04 - Create a Transaction"
+      ]
+    },
+    {
+      "row": 65,
+      "cells": [
+        "Use Case ID",
+        "UC-04"
+      ]
+    },
+    {
+      "row": 66,
+      "cells": [
+        "Use Case Name",
+        "Create a Transaction"
+      ]
+    },
+    {
+      "row": 67,
+      "cells": [
+        "Description",
+        "As an authenticated user, I want to create a revenue or expense transaction for one of my accounts."
+      ]
+    },
+    {
+      "row": 68,
+      "cells": [
+        "Actor(s)",
+        "Authenticated User"
+      ]
+    },
+    {
+      "row": 69,
+      "cells": [
+        "Priority",
+        "Not Specified"
+      ]
+    },
+    {
+      "row": 70,
+      "cells": [
+        "Trigger",
+        "The user selects Add Transaction from the Transactions page."
+      ]
+    },
+    {
+      "row": 71,
+      "cells": [
+        "Pre-Condition(s)",
+        "PRE-1: The user is authenticated and the validated JWT identifies an existing Users.user_id.\nPRE-2: At least one Accounts row exists with Accounts.user_id equal to the authenticated user_id.\nPRE-3: The selected account exists and is owned by the authenticated user.\nPRE-4: A category is optional. If category_id is supplied, it must reference an existing Categories.category_id."
+      ]
+    },
+    {
+      "row": 72,
+      "cells": [
+        "Post-Condition(s)",
+        "POST-1: On success, exactly one new Transactions row is stored for the selected account.\nPOST-2: The stored transaction has type Revenue or Expense, amount > 0, and non-empty item_description, shop_name, and payment_method. category_id may be null.\nPOST-3: For Revenue, the selected Accounts.balance increases by amount; for Expense, it decreases by amount.\nPOST-4: The Transactions insert and Accounts.balance update are committed atomically; on failure neither partial change remains.\nPOST-5: The frontend shows a success toast, resets the form, and navigates to /transactions after 1.5 seconds."
+      ]
+    },
+    {
+      "row": 73,
+      "cells": [
+        "Basic Flow",
+        "1. The user opens /transactions/add.\n2. AddTransactionForm loads the user's accounts and loads categories for optional classification.\n3. The user enters itemDescription, amount, transaction type, account, transaction date, shopName, and paymentMethod; the user may optionally select a category.\n4. The form defaults type to Expense, transactionDate to today, and submitted status to Complete.\n5. The user selects Save.\n6. The frontend validates accountId, transactionDate, type, non-empty itemDescription, non-empty shopName, non-empty paymentMethod, and amount >= 0.01. category_id is not required.\n7. The frontend sends POST /api/v1/transactions.\n8. JwtAuthGuard validates the JWT and supplies the authenticated identifier corresponding to Users.user_id.\n9. The backend validates CreateTransactionDto, verifies category_id only when supplied, and verifies that accountId references an Accounts row owned by the authenticated user_id.\n10. For Expense, the backend verifies Accounts.balance >= amount.\n11. The backend creates the Transactions row, mapping accountId -> account_id, transactionDate -> transaction_date, itemDescription -> item_description, shopName -> shop_name, and paymentMethod -> payment_method. If status is omitted, Complete is used.\n12. In the same database transaction, the backend updates Accounts.balance by +amount for Revenue or -amount for Expense and commits both changes.\n13. The frontend displays a success toast, resets fields, and navigates to /transactions after 1.5 seconds."
+      ]
+    },
+    {
+      "row": 74,
+      "cells": [
+        "Alternative Flow",
+        "AF-1: Create Revenue\n4a. The user selects Revenue.\n10a. The insufficient-balance check is not applied.\n12a. The backend increases Accounts.balance by amount.\n\nAF-2: Create transaction without category\n3a. The user leaves category unselected.\n9a. The backend does not require a category lookup and stores Transactions.category_id = null.\n\nAF-3: Category list unavailable\n2a. If categories cannot be loaded, the frontend shows a warning but still allows creation without category because category_id is optional.\n\nAF-4: Cancel\n5a. The user selects Cancel and the frontend navigates to /transactions without submitting."
+      ]
+    },
+    {
+      "row": 75,
+      "cells": [
+        "Exception Flow",
+        "EF-1: Accounts cannot be loaded\n2a. If the user's accounts cannot be loaded, the frontend displays an error and cannot submit because accountId is required.\n\nEF-2: Client-side validation failure\n6a. If accountId, transactionDate, type, itemDescription, shopName, or paymentMethod is missing/empty, or amount < 0.01, the frontend displays field errors and does not send the request.\n\nEF-3: Unauthorized request\n8a. If the JWT is missing, invalid, or expired, the backend returns HTTP 401.\n\nEF-4: Backend validation or business-rule failure\n9a. Invalid required input, an invalid supplied category_id, a non-owned account, or insufficient Expense balance produces HTTP 400; the frontend displays the returned error.\n\nEF-5: Database failure\n12a. The backend rolls back the database transaction so neither the Transactions row nor Accounts.balance is partially changed, and returns HTTP 500."
+      ]
+    },
+    {
+      "row": 76,
+      "cells": [
+        "UML Model",
+        "@startuml\n\nclass User <<Entity>> {\n  user_id: Integer [1]\n  full_name: String [1]\n  email: String [1]\n  username: String [1]\n  password: String [1]\n  phone_number: String [1]\n  profile_picture_url: String [1]\n  total_balance: Decimal [1]\n}\n\nclass Account <<Entity>> {\n  account_id: Integer [1]\n  user_id: Integer [1]\n  bank_name: String [1]\n  account_type: AccountType [1]\n  branch_name: String [1]\n  account_number_full: String [1]\n  account_number_last_4: String [1]\n  balance: Decimal [1]\n}\n\nclass Category <<Entity>> {\n  category_id: Integer [1]\n  category_name: String [1]\n}\n\nclass Transaction <<Entity>> {\n  transaction_id: Integer [1]\n  account_id: Integer [1]\n  transaction_date: Date [1]\n  type: TransactionType [1]\n  item_description: String [1]\n  shop_name: String [1]\n  amount: Decimal [1]\n  payment_method: String [1]\n  status: TransactionStatus [1]\n  receipt_id: Integer [1]\n  category_id: Integer [0..1]\n}\n\nenum AccountType {\n  Checking\n  Credit_Card\n  Savings\n  Investment\n  Loan\n}\nnote right of AccountType\n  Credit_Card maps to database literal 'Credit Card'.\nend note\n\nenum TransactionType {\n  Revenue\n  Expense\n}\n\nenum TransactionStatus {\n  Complete\n  Pending\n  Failed\n}\n\nclass CreateTransactionDto <<DTO>> {\n  accountId: Integer [1]\n  transactionDate: Date [1]\n  type: TransactionType [1]\n  itemDescription: String [1]\n  category_id: Integer [0..1]\n  shopName: String [1]\n  amount: Decimal [1]\n  paymentMethod: String [1]\n  status: TransactionStatus [0..1]\n}\n\nclass CreateTransactionDataDto <<DTO>> {\n  transactionId: Integer [1]\n  accountId: Integer [1]\n  transactionDate: Date [1]\n  type: TransactionType [1]\n  itemDescription: String [1]\n  shopName: String [1]\n  amount: Decimal [1]\n  paymentMethod: String [1]\n  status: TransactionStatus [1]\n  receiptId: Integer [0..1]\n  category_id: Integer [0..1]\n}\n\nclass CreateTransactionResponseDto <<DTO>> {\n  message: String [1]\n  data: CreateTransactionDataDto [1]\n}\n\nclass TransactionService <<Service>> {\n  create(user_id: Integer, dto: CreateTransactionDto): CreateTransactionResponseDto\n}\n\nUser \"1\" -- \"0..*\" Account : owns\nAccount \"1\" -- \"0..*\" Transaction : contains\nCategory \"0..1\" -- \"0..*\" Transaction : classifies\n\nTransactionService ..> CreateTransactionDto\nTransactionService ..> CreateTransactionResponseDto\nCreateTransactionResponseDto --> CreateTransactionDataDto\nCreateTransactionDataDto ..> Transaction : maps from\n\n@enduml"
+      ]
+    },
+    {
+      "row": 77,
+      "cells": [
+        "Business Rules",
+        "BR-TXN-08: Required transaction data\ncontext TransactionService::create(\n  user_id : Integer,\n  dto : CreateTransactionDto\n) : CreateTransactionResponseDto\n\npre BR_TXN_08_RequiredFields:\n  not dto.accountId.oclIsUndefined() and\n  not dto.transactionDate.oclIsUndefined() and\n  not dto.type.oclIsUndefined() and\n  not dto.itemDescription.oclIsUndefined() and\n  trim(dto.itemDescription).size() > 0 and\n  not dto.shopName.oclIsUndefined() and\n  trim(dto.shopName).size() > 0 and\n  not dto.paymentMethod.oclIsUndefined() and\n  trim(dto.paymentMethod).size() > 0 and\n  not dto.amount.oclIsUndefined() and\n  dto.amount >= 0.01\n\nBR-TXN-09: Allowed transaction type and status\ncontext TransactionService::create(\n  user_id : Integer,\n  dto : CreateTransactionDto\n) : CreateTransactionResponseDto\n\npre BR_TXN_09_AllowedType:\n  dto.type = TransactionType::Revenue or\n  dto.type = TransactionType::Expense\n\npre BR_TXN_09_AllowedStatus:\n  dto.status.oclIsUndefined() or\n  Set{TransactionStatus::Complete,\n      TransactionStatus::Pending,\n      TransactionStatus::Failed}->includes(dto.status)\n\npost BR_TXN_09_DefaultStatus:\n  (dto.status.oclIsUndefined() implies\n    result.data.status = TransactionStatus::Complete) and\n  (not dto.status.oclIsUndefined() implies\n    result.data.status = dto.status)\n\nBR-TXN-10: Optional category must be valid when supplied\ncontext TransactionService::create(\n  user_id : Integer,\n  dto : CreateTransactionDto\n) : CreateTransactionResponseDto\n\npre BR_TXN_10_CategoryOptionalAndValid:\n  dto.category_id.oclIsUndefined() or\n  Category.allInstances()->exists(c |\n    c.category_id = dto.category_id\n  )\n\npost BR_TXN_10_CategoryStored:\n  (dto.category_id.oclIsUndefined() implies\n    result.data.category_id.oclIsUndefined()) and\n  (not dto.category_id.oclIsUndefined() implies\n    result.data.category_id = dto.category_id)"
+      ]
+    },
+    {
+      "row": 78,
+      "cells": [
+        null,
+        "BR-TXN-11: Account ownership\ncontext TransactionService::create(\n  user_id : Integer,\n  dto : CreateTransactionDto\n) : CreateTransactionResponseDto\n\npre BR_TXN_11_AccountOwnedByUser:\n  Account.allInstances()->exists(a |\n    a.account_id = dto.accountId and\n    a.user_id = user_id\n  )\n\nBR-TXN-12: Sufficient balance for Expense\ncontext TransactionService::create(\n  user_id : Integer,\n  dto : CreateTransactionDto\n) : CreateTransactionResponseDto\n\npre BR_TXN_12_SufficientExpenseBalance:\n  dto.type = TransactionType::Expense implies\n    Account.allInstances()->exists(a |\n      a.account_id = dto.accountId and\n      a.user_id = user_id and\n      a.balance >= dto.amount\n    )\n\nBR-TXN-13: Account balance adjustment\ncontext TransactionService::create(\n  user_id : Integer,\n  dto : CreateTransactionDto\n) : CreateTransactionResponseDto\n\npost BR_TXN_13_BalanceAdjusted:\n  Account.allInstances()->exists(a |\n    a.account_id = dto.accountId and\n    ((dto.type = TransactionType::Revenue and\n      a.balance = a.balance@pre + dto.amount) or\n     (dto.type = TransactionType::Expense and\n      a.balance = a.balance@pre - dto.amount))\n  )\n\nBR-TXN-14: Created transaction maps to the request and database\ncontext TransactionService::create(\n  user_id : Integer,\n  dto : CreateTransactionDto\n) : CreateTransactionResponseDto\n\npost BR_TXN_14_OneNewTransaction:\n  Transaction.allInstances()->size() =\n    Transaction.allInstances()@pre->size() + 1\n\npost BR_TXN_14_PersistedTransaction:\n  Transaction.allInstances()->exists(t |\n    t.transaction_id = result.data.transactionId and\n    t.account_id = dto.accountId and\n    t.transaction_date = dto.transactionDate and\n    t.type = dto.type and\n    t.item_description = trim(dto.itemDescription) and\n    t.shop_name = trim(dto.shopName) and\n    t.amount = dto.amount and\n    t.payment_method = trim(dto.paymentMethod) and\n    t.status = result.data.status and\n    ((dto.category_id.oclIsUndefined() and\n      t.category_id.oclIsUndefined()) or\n     (not dto.category_id.oclIsUndefined() and\n      t.category_id = dto.category_id))\n  )\n\nBR-TXN-15: Atomic transaction creation\nTechnical constraints:\n- The Transactions insert and Accounts.balance update shall execute in one database transaction.\n- If any validation, persistence, or balance-update step fails before commit, the operation shall roll back and leave both Transactions and Accounts unchanged by this request.\n- shopName maps to Transactions.shop_name and paymentMethod maps to Transactions.payment_method; both are mandatory and shall not be null or empty.\n- category_id maps to Transactions.category_id and remains optional/nullable."
+      ]
+    },
+    {
+      "row": 79,
+      "cells": [
+        "Related UI",
+        "AddTransactionPage; AddTransactionForm; route /transactions/add"
+      ]
+    },
+    {
+      "row": 80,
+      "cells": [
+        "Related API IDs",
+        "API-TRANSACTION-CREATE; API-ACCOUNT-LIST; API-CATEGORY-LIST"
+      ]
+    },
+    {
+      "row": 81,
+      "cells": [
+        "Notes",
+        "Specification alignment: Transaction ownership follows Users → Accounts → Transactions. category_id is optional/nullable; shopName and paymentMethod are required and must be non-empty. BR-TXN-08..15 belong to UC-04 and are intentionally distinct from UC-03 rules BR-TXN-01..07."
+      ]
+    },
+    {
+      "row": 82,
+      "cells": []
+    },
+    {
+      "row": 83,
+      "cells": [
+        "UC-05 - View Bank Accounts"
+      ]
+    },
+    {
+      "row": 84,
+      "cells": [
+        "Use Case ID",
+        "UC-05"
+      ]
+    },
+    {
+      "row": 85,
+      "cells": [
+        "Use Case Name",
+        "View Bank Accounts"
+      ]
+    },
+    {
+      "row": 86,
+      "cells": [
+        "Description",
+        "As an authenticated user, I want to view the bank accounts linked to my user identifier."
+      ]
+    },
+    {
+      "row": 87,
+      "cells": [
+        "Actor(s)",
+        "Authenticated User"
+      ]
+    },
+    {
+      "row": 88,
+      "cells": [
+        "Priority",
+        "Not Specified"
+      ]
+    },
+    {
+      "row": 89,
+      "cells": [
+        "Trigger",
+        "The user opens the Accounts page."
+      ]
+    },
+    {
+      "row": 90,
+      "cells": [
+        "Pre-Condition(s)",
+        "PRE-1: The user is authenticated."
+      ]
+    },
+    {
+      "row": 91,
+      "cells": [
+        "Post-Condition(s)",
+        "POST-1: The frontend displays accounts.\nPOST-2: If no accounts exist, the page displays an empty state and an Add Account action."
+      ]
+    },
+    {
+      "row": 92,
+      "cells": [
+        "Basic Flow",
+        "1. The user opens /accounts.\r\n2. The frontend sends GET /api/v1/accounts.\r\n3. JwtAuthGuard authenticates the request and supplies userId.\r\n4. AccountService processes the request to retrieve the account data.\r\n5. The backend returns success, message, and a data object containing user_id and accounts.\r\n6. The frontend displays account cards containing bank name, account type, account number, and balance."
+      ]
+    },
+    {
+      "row": 93,
+      "cells": [
+        "Alternative Flow",
+        "AF-1: No linked accounts\n4a. The query returns an empty array.\n6a. The frontend displays its no-account message and an action that navigates to /accounts/add."
+      ]
+    },
+    {
+      "row": 94,
+      "cells": [
+        "Exception Flow",
+        "EF-1: Unauthorized request\n3a. HTTP 401 is handled by the Axios interceptor, which clears local authentication data and redirects to /login.\n\nEF-2: Retrieval failure\n4a. The page displays the returned error message or a general loading error."
+      ]
+    },
+    {
+      "row": 95,
+      "cells": [
+        "UML Model",
+        "@startuml\n\nclass User <<Entity>> {\n  user_id: Integer [1]\n  full_name: String [1]\n  email: String [1]\n  username: String [1]\n  password: String [1]\n  phone_number: String [1]\n  profile_picture_url: String [1]\n  total_balance: Decimal [1]\n}\n\nclass Account <<Entity>> {\n  account_id: Integer [1]\n  user_id: Integer [1]\n  bank_name: String [1]\n  account_type: AccountType [1]\n  branch_name: String [0..1]\n  account_number_full: String [1]\n  account_number_last_4: String [1]\n  balance: Decimal [1]\n}\n\nenum AccountType {\n  Checking\n  Credit_Card\n  Savings\n  Investment\n  Loan\n}\nnote right of AccountType\n  Credit_Card maps to database literal 'Credit Card'.\nend note\n\nclass AccountDto <<DTO>> {\n  id: Integer [1]\n  bank_name: String [1]\n  account_type: AccountType [1]\n  branch_name: String [0..1]\n  account_number_last_4: String [1]\n  balance: Decimal [1]\n}\n\nclass AccountListDataDto <<DTO>> {\n  user_id: Integer [1]\n  accounts: AccountDto [0..*]\n}\n\nclass AccountListResponseDto <<DTO>> {\n  success: Boolean [1]\n  message: String [1]\n  data: AccountListDataDto [1]\n}\n\nclass AccountService <<Service>> {\n  findAllByUserId(user_id: Integer): AccountListResponseDto\n}\n\nUser \"1\" -- \"0..*\" Account : owns\n\nAccountService ..> AccountListResponseDto\nAccountListResponseDto --> AccountListDataDto\nAccountListDataDto \"1\" -- \"0..*\" AccountDto : contains\nAccountDto ..> Account : maps from\n\n@enduml"
+      ]
+    },
+    {
+      "row": 96,
+      "cells": [
+        "Business Rules",
+        "BR-ACC-01: Account ownership scope\ncontext AccountService::findAllByUserId(\n  user_id : Integer\n) : AccountListResponseDto\n\npre BR_ACC_01_UserDefined:\n  not user_id.oclIsUndefined()\n\npost BR_ACC_01_OwnedAccountsOnly:\n  result.success implies\n    result.data.accounts->forAll(dto |\n      Account.allInstances()->exists(a |\n        a.account_id = dto.id and\n        a.user_id = user_id\n      )\n    )"
+      ]
+    },
+    {
+      "row": 97,
+      "cells": [
+        null,
+        "BR-ACC-02: Ordering\ncontext AccountService::findAllByUserId(\n  user_id : Integer\n) : AccountListResponseDto\n\npost BR_ACC_02_OrderedByAccountIdAsc:\n  result.success implies\n    result.data.accounts->size() <= 1 or\n    Sequence{1..result.data.accounts->size()-1}->forAll(i |\n      result.data.accounts->at(i).id < result.data.accounts->at(i + 1).id\n    )"
+      ]
+    },
+    {
+      "row": 98,
+      "cells": [
+        null,
+        "BR-ACC-03: Response rows map to persisted Accounts\ncontext AccountService::findAllByUserId(\n  user_id : Integer\n) : AccountListResponseDto\n\npost BR_ACC_03_ResponseBackedByAccount:\n  result.success implies\n    result.data.accounts->forAll(dto |\n      Account.allInstances()->exists(a |\n        a.account_id = dto.id and\n        a.bank_name = dto.bank_name and\n        a.account_type = dto.account_type and\n        a.branch_name = dto.branch_name and\n        a.account_number_last_4 = dto.account_number_last_4 and\n        a.balance = dto.balance\n      )\n    )\n"
+      ]
+    },
+    {
+      "row": 99,
+      "cells": [
+        null,
+        "BR-ACC-04: Account number exposure restriction\ncontext AccountService::findAllByUserId(\n  user_id : Integer\n) : AccountListResponseDto\npost BR_ACC_04_NoFullAccountNumber:\n  result.success implies\n    result.data.accounts->forAll(dto |\n      dto.account_number_full.oclIsUndefined()\n    )\n\nTechnical constraints:\n- The backend shall only query the necessary columns to optimize performance.\n- The backend shall not return the full account number (account_number_full) in the list response to prevent exposing sensitive data over the network.\n- The backend shall return only the stored account_number_last_4.\n- The frontend shall mask the account number by prefixing these 4 digits with exactly four asterisks (e.g., \"\"**** 1234\"\"), regardless of the original account number's length.\""
+      ]
+    },
+    {
+      "row": 100,
+      "cells": [
+        null,
+        "BR-ACC-05: Empty account result\r\ncontext AccountService::findAllByUserId(\r\n  user_id : Integer\r\n) : AccountListResponseDto\r\npost BR_ACC_05_EmptyResultConsistency:\r\n  not Account.allInstances()->exists(a | a.user_id = user_id)\r\n  implies\r\n    result.success and\r\n    result.data.accounts->isEmpty()\r\n"
+      ]
+    },
+    {
+      "row": 101,
+      "cells": [
+        null,
+        "BR-ACC-06: Viewing accounts is read-only\ncontext AccountService::findAllByUserId(\n  user_id : Integer\n) : AccountListResponseDto\n\npost BR_ACC_06_AccountIdentityUnchanged:\n  Account.allInstances()->collect(a | a.account_id)->asSet() =\n  Account.allInstances()@pre->collect(a | a.account_id)->asSet()\n\npost BR_ACC_06_AccountDataUnchanged:\n  Account.allInstances()->forAll(a |\n    Account.allInstances()@pre->exists(old |\n      old.account_id = a.account_id and\n      old.user_id = a.user_id and\n      old.bank_name = a.bank_name and\n      old.account_type = a.account_type and\n      old.branch_name = a.branch_name and\n      old.account_number_full = a.account_number_full and\n      old.account_number_last_4 = a.account_number_last_4 and\n      old.balance = a.balance\n    )\n  )\n\nTechnical constraint:\n- Listing accounts shall not create, update, or delete any Account or Transaction records."
+      ]
+    },
+    {
+      "row": 102,
+      "cells": [
+        "Related UI",
+        "AccountListPage; AccountCard; route /accounts"
+      ]
+    },
+    {
+      "row": 103,
+      "cells": [
+        "Related API IDs",
+        "API-ACCOUNT-LIST"
+      ]
+    },
+    {
+      "row": 104,
+      "cells": [
+        "Notes"
+      ]
+    },
+    {
+      "row": 105,
+      "cells": []
+    },
+    {
+      "row": 106,
+      "cells": [
+        "UC-06 - Add a Bank Account"
+      ]
+    },
+    {
+      "row": 107,
+      "cells": [
+        "Use Case ID",
+        "UC-06"
+      ]
+    },
+    {
+      "row": 108,
+      "cells": [
+        "Use Case Name",
+        "Add a Bank Account"
+      ]
+    },
+    {
+      "row": 109,
+      "cells": [
+        "Description",
+        "As an authenticated user, I want to add a bank account with its current balance."
+      ]
+    },
+    {
+      "row": 110,
+      "cells": [
+        "Actor(s)",
+        "Authenticated User"
+      ]
+    },
+    {
+      "row": 111,
+      "cells": [
+        "Priority",
+        "Not Specified"
+      ]
+    },
+    {
+      "row": 112,
+      "cells": [
+        "Trigger",
+        "The user selects an Add Account action."
+      ]
+    },
+    {
+      "row": 113,
+      "cells": [
+        "Pre-Condition(s)",
+        "PRE-1: The user is authenticated.\nPRE-2: The Add Account route /accounts/add is accessible."
+      ]
+    },
+    {
+      "row": 114,
+      "cells": [
+        "Post-Condition(s)",
+        "POST-1: On success, an account row is stored with userId from the JWT and account_number_last_4 derived from account_number_full.\r\nPOST-2: The frontend shows a success toast and navigates to /accounts after 1.5 seconds.\r\nPOST-3: On failure, the account is not added by the request."
+      ]
+    },
+    {
+      "row": 115,
+      "cells": [
+        "Basic Flow",
+        "1. The user opens /accounts/add.\r\n2. The frontend displays AddAccountForm with accountType defaulted to Checking.\r\n3. The user enters bank_name, account_type, optional branch_name, account_number_full, and balance.\r\n4. The user selects Add Account.\r\n5. The frontend validates the input fields before submission.\r\n6. The frontend sends POST /api/v1/accounts.\r\n7. The backend ValidationPipe validates CreateAccountDto.\r\n8. AccountService validates the creation request.\r\n9. AccountService creates the account using userId from the JWT and stores it.\r\n10. The frontend shows a success toast and navigates to /accounts after 1.5 seconds."
+      ]
+    },
+    {
+      "row": 116,
+      "cells": [
+        "Alternative Flow",
+        "AF-1: Optional branch omitted\r\n3a. The user leaves branch_name empty.\r\n6a. The frontend omits branch_name and the backend stores it appropriately.\r\n\r\nAF-2: Cancel\r\n4a. The user selects Cancel and returns to /accounts without submitting."
+      ]
+    },
+    {
+      "row": 117,
+      "cells": [
+        "Exception Flow",
+        "EF-1: Client-side validation failure\r\n5a. The form displays field errors and does not call the API.\r\n\r\nEF-2: Account creation conflict\r\n8a. The backend returns HTTP 409 and the frontend displays the conflict message.\r\n\r\nEF-3: Backend validation failure\r\n7a. The frontend maps returned validation messages to fields when possible.\r\n\r\nEF-4: Storage failure\r\n9a. The backend returns HTTP 500 and the frontend displays its create-account failure message."
+      ]
+    },
+    {
+      "row": 118,
+      "cells": [
+        "UML Model",
+        "@startuml\r\n\r\nclass User <<Entity>> {\r\n  user_id: Integer [1]\r\n  full_name: String [1]\r\n  email: String [1]\r\n  username: String [1]\r\n  password: String [1]\r\n  phone_number: String [1]\r\n  profile_picture_url: String [1]\r\n  total_balance: Decimal [1]\r\n}\r\n\r\nclass Account <<Entity>> {\r\n  account_id: Integer [1]\r\n  user_id: Integer [1]\r\n  bank_name: String [1]\r\n  account_type: AccountType [1]\r\n  branch_name: String [0..1]\r\n  account_number_full: String [1]\r\n  account_number_last_4: String [1]\r\n  balance: Decimal [1]\r\n}\r\n\r\nenum AccountType {\r\n  Checking\r\n  Credit_Card\r\n  Savings\r\n  Investment\r\n  Loan\r\n}\r\nnote right of AccountType\r\n  Credit_Card maps to database literal 'Credit Card'.\r\nend note\r\n\r\nclass CreateAccountDto <<DTO>> {\r\n  bank_name: String [1]\r\n  account_type: AccountType [1]\r\n  branch_name: String [0..1]\r\n  account_number_full: String [1]\r\n  balance: Decimal [1]\r\n}\r\n\r\nclass AccountResponseDto <<DTO>> {\r\n  id: Integer [1]\r\n  user_id: Integer [1]\r\n  bank_name: String [1]\r\n  account_type: AccountType [1]\r\n  branch_name: String [0..1]\r\n  account_number_last_4: String [1]\r\n  balance: Decimal [1]\r\n}\r\n\r\nclass AccountService <<Service>> {\r\n  create(userId: Integer, dto: CreateAccountDto): AccountResponseDto\r\n}\r\n\r\nUser \"1\" -- \"0..*\" Account : owns\r\nAccountService ..> AccountResponseDto\r\nAccountService ..> CreateAccountDto\r\nCreateAccountDto ..> Account : mapped to\r\nAccountResponseDto ..> Account : mapped from\r\n\r\n@enduml"
+      ]
+    },
+    {
+      "row": 119,
+      "cells": [
+        "Business Rules",
+        "BR-ACC-07: Allowed account type\r\ncontext AccountService::create(\r\n  userId : Integer,\r\n  dto : CreateAccountDto\r\n) : AccountResponseDto\r\n\r\npre BR_ACC_07_ValidType:\r\n  Set{'Checking', 'Credit Card', 'Savings', 'Investment', 'Loan'}->includes(dto.account_type)"
+      ]
+    },
+    {
+      "row": 120,
+      "cells": [
+        null,
+        "BR-ACC-08: Required account text fields\r\ncontext AccountService::create(\r\n  userId : Integer,\r\n  dto : CreateAccountDto\r\n) : AccountResponseDto\r\n\r\npre BR_ACC_08_RequiredText:\r\n  not dto.bank_name.oclIsUndefined() and dto.bank_name.trim().size() > 0 and\r\n  not dto.account_number_full.oclIsUndefined() and dto.account_number_full.trim().size() > 0"
+      ]
+    },
+    {
+      "row": 121,
+      "cells": [
+        null,
+        "BR-ACC-09: Numeric non-negative account balance\r\ncontext AccountService::create(\r\n  userId : Integer,\r\n  dto : CreateAccountDto\r\n) : AccountResponseDto\r\n\r\npre BR_ACC_09_IsNumeric:\r\n  dto.balance.oclIsTypeOf(Real) or dto.balance.oclIsTypeOf(Integer)\r\n\r\npre BR_ACC_09_NonNegativeBalance:\r\n  not dto.balance.oclIsUndefined() and dto.balance >= 0\r\nTechnical constraint:\r\n- The balance must be a valid numeric type (not a string), and must be greater than or equal to zero."
+      ]
+    },
+    {
+      "row": 122,
+      "cells": [
+        null,
+        "BR-ACC-10: Unique account number per owner\r\ncontext AccountService::create(\r\n  userId : Integer,\r\n  dto : CreateAccountDto\r\n) : AccountResponseDto\r\n\r\npre BR_ACC_10_UniqueAccount:\r\n  not Account.allInstances()->exists(a | \r\n    a.user_id = userId and \r\n    a.account_number_full = dto.account_number_full\r\n  )"
+      ]
+    },
+    {
+      "row": 123,
+      "cells": [
+        null,
+        "BR-ACC-11: Derive final four account characters\ncontext AccountService::create(\n  userId : Integer,\n  dto : CreateAccountDto\n) : AccountResponseDto\n\npost BR_ACC_11_DeriveLast4:\n  let newAcc = Account.allInstances()->any(a | a.account_id = result.id) in\n  newAcc.account_number_last_4 = dto.account_number_full.substring(dto.account_number_full.size() - 3, dto.account_number_full.size())\n\nTechnical constraint:\n- The backend derives account_number_last_4 by taking the exact last 4 characters of the submitted account_number_full (e.g., via .slice(-4))."
+      ]
+    },
+    {
+      "row": 124,
+      "cells": [
+        null,
+        "BR-ACC-12: Account creation persistence mapping\r\ncontext AccountService::create(\r\n  userId : Integer,\r\n  dto : CreateAccountDto\r\n) : AccountResponseDto\r\n\r\npost BR_ACC_12_StorageMapping:\r\n  Account.allInstances()->exists(a |\r\n    a.account_id = result.id and\r\n    a.user_id = userId and\r\n    a.bank_name = dto.bank_name and\r\n    a.account_type = dto.account_type and\r\n    a.branch_name = dto.branch_name and\r\n    a.account_number_full = dto.account_number_full and\r\n    a.balance = dto.balance\r\n  )\r\n\r\npost BR_ACC_12_ResponseMapping:\r\n  result.id = Account.allInstances()->any(a | a.account_number_full = dto.account_number_full).account_id"
+      ]
+    },
+    {
+      "row": 125,
+      "cells": [
+        null,
+        "BR-ACC-13: Account number format and length\r\ncontext AccountService::create(\r\n  userId : Integer,\r\n  dto : CreateAccountDto\r\n) : AccountResponseDto\r\n\r\npre BR_ACC_13_NumericCharactersOnly:\r\n  not dto.account_number_full.oclIsUndefined() and \r\n  matches(dto.account_number_full, '^[0-9]+$')\r\npre BR_ACC_13_LengthConstraints:\r\n  dto.account_number_full.size() >= 8 and dto.account_number_full.size() <= 34\r\n\r\nTechnical constraint:\r\n- account_number_full must contain only numeric digits.\r\n- The length must be between 8 and 34 characters (to safely derive the last 4 digits and reflect real-world bank account numbers)."
+      ]
+    },
+    {
+      "row": 126,
+      "cells": [
+        null,
+        "BR-ACC-14: Conditional branch name requirement\ncontext AccountService::create(\n  userId : Integer,\n  dto : CreateAccountDto\n) : AccountResponseDto\n\npre BR_ACC_14_BranchNameConditional:\n  if Set{'Loan', 'Investment'}->includes(dto.account_type) then\n    not dto.branch_name.oclIsUndefined() and dto.branch_name.trim().size() > 0\n  else\n    dto.branch_name.oclIsUndefined() or dto.branch_name.oclIsTypeOf(String)\n  endif\n\nTechnical constraint:\n- This rule overrides the base optional branch rule. If the account_type is 'Loan' or 'Investment', the branch_name field is strictly required and cannot be empty.\n- For all other account types, branch_name is optional. If omitted, it shall be processed and stored as null or undefined."
+      ]
+    },
+    {
+      "row": 127,
+      "cells": [
+        null,
+        "BR-ACC-15: Minimum initial deposit for specific types\r\ncontext AccountService::create(\r\n  userId : Integer,\r\n  dto : CreateAccountDto\r\n) : AccountResponseDto\r\n\r\npre BR_ACC_15_MinInitialDeposit:\r\n  if Set{'Savings', 'Investment'}->includes(dto.account_type) then\r\n    not dto.balance.oclIsUndefined() and dto.balance >= 50000\r\n  else\r\n    not dto.balance.oclIsUndefined() and dto.balance >= 0\r\n  endif\r\n\r\nTechnical constraint:\r\n- If the user creates a 'Savings' or 'Investment' account, the initial balance must be at least 50,000.\r\n- For other account types, the balance can be 0 or more."
+      ]
+    },
+    {
+      "row": 128,
+      "cells": [
+        null,
+        "BR-ACC-16: Financial capacity proof for Investment accounts\r\ncontext AccountService::create(\r\n  userId : Integer,\r\n  dto : CreateAccountDto\r\n) : AccountResponseDto\r\n\r\npre BR_ACC_16_InvestmentCapacity:\r\n  dto.account_type = 'Investment' implies\r\n    Account.allInstances()\r\n      ->select(a | a.user_id = userId and (a.account_type = 'Checking' or a.account_type = 'Savings'))\r\n      ->collect(balance)\r\n      ->sum() >= 100000\r\n      \r\nTechnical constraint:\r\n- If a user attempts to create an 'Investment' account, the backend must query the user's existing accounts.\r\n- The creation is only allowed if the sum of the balances of all the user's existing 'Checking' and 'Savings' accounts is greater than or equal to 100,000.\r\n- If the user does not meet this financial capacity requirement, the request must be rejected."
+      ]
+    },
+    {
+      "row": 129,
+      "cells": [
+        "Related UI",
+        "AddAccountPage; AddAccountForm; route /accounts/add"
+      ]
+    },
+    {
+      "row": 130,
+      "cells": [
+        "Related API IDs",
+        "API-ACCOUNT-CREATE"
+      ]
+    },
+    {
+      "row": 131,
+      "cells": [
+        "Notes"
+      ]
+    },
+    {
+      "row": 132,
+      "cells": []
+    },
+    {
+      "row": 133,
+      "cells": [
+        "UC-07 - View Bank Account Details"
+      ]
+    },
+    {
+      "row": 134,
+      "cells": [
+        "Use Case ID",
+        "UC-07"
+      ]
+    },
+    {
+      "row": 135,
+      "cells": [
+        "Use Case Name",
+        "View Bank Account Details"
+      ]
+    },
+    {
+      "row": 136,
+      "cells": [
+        "Description",
+        "As an authenticated account owner, I want to view one account and its five most recent transactions."
+      ]
+    },
+    {
+      "row": 137,
+      "cells": [
+        "Actor(s)",
+        "Authenticated User"
+      ]
+    },
+    {
+      "row": 138,
+      "cells": [
+        "Priority",
+        "Not Specified"
+      ]
+    },
+    {
+      "row": 139,
+      "cells": [
+        "Trigger",
+        "The user selects an account card."
+      ]
+    },
+    {
+      "row": 140,
+      "cells": [
+        "Pre-Condition(s)",
+        "PRE-1: The user is authenticated.\nPRE-2: The path contains an account identifier."
+      ]
+    },
+    {
+      "row": 141,
+      "cells": [
+        "Post-Condition(s)",
+        "POST-1: On success, the page displays account information and at most five recent transactions.\nPOST-2: Expense amounts in recent_transactions are returned as negative values.\nPOST-3: Unauthorized account data is not returned."
+      ]
+    },
+    {
+      "row": 142,
+      "cells": [
+        "Basic Flow",
+        "1. The user selects an account card and opens /accounts/:id.\n2. AccountDetailPage requests GET /api/v1/accounts/:id.\n3. The controller validates authentication and parses id as an integer.\n4. AccountService loads the account by accountId.\n5. AccountService verifies account.userId equals the authenticated userId.\n6. AccountService loads at most five transactions for the account, ordered by transactionDate descending.\n7. AccountService maps transaction dates to YYYY-MM-DD and makes Expense amounts negative.\n8. The frontend displays bank name, type, branch, full account number, balance, and recent transactions."
+      ]
+    },
+    {
+      "row": 143,
+      "cells": [
+        "Alternative Flow",
+        "AF-1: No recent transactions\n6a. The query returns an empty array.\n8a. The account information remains visible with an empty recent-transactions section."
+      ]
+    },
+    {
+      "row": 144,
+      "cells": [
+        "Exception Flow",
+        "EF-1: Invalid account ID\n3a. The controller returns HTTP 400.\n\nEF-2: Account not found\n4a. The backend returns HTTP 404.\n\nEF-3: Account belongs to another user\n5a. The backend returns HTTP 403.\n\nEF-4: Retrieval failure\n6a. The backend returns HTTP 500 and the frontend displays its error state."
+      ]
+    },
+    {
+      "row": 145,
+      "cells": [
+        "UML Model",
+        "@startuml\n\nclass User <<Entity>> {\n  user_id: Integer [1]\n  full_name: String [1]\n  email: String [1]\n  username: String [1]\n  password: String [1]\n  phone_number: String [0..1]\n  profile_picture_url: String [0..1]\n  total_balance: Decimal [1]\n}\n\nclass Account <<Entity>> {\n  account_id: Integer [1]\n  user_id: Integer [1]\n  bank_name: String [1]\n  account_type: AccountType [1]\n  branch_name: String [0..1]\n  account_number_full: String [1]\n  account_number_last_4: String [1]\n  balance: Decimal [1]\n}\n\nenum AccountType {\n  Checking\n  Credit_Card\n  Savings\n  Investment\n  Loan\n}\n\nclass Transaction <<Entity>> {\n  transaction_id: Integer [1]\n  account_id: Integer [1]\n  category_id: Integer [0..1]\n  transaction_date: Date [1]\n  type: TransactionTypeEnum [1]\n  item_description: String [1]\n  shop_name: String [0..1]\n  amount: Decimal [1]\n  payment_method: String [0..1]\n  status: TransactionStatus [1]\n  receipt_id: String [0..1]\n}\n\nenum TransactionTypeEnum {\n  Revenue\n  Expense\n}\n\nenum TransactionStatus {\n  Complete\n  Pending\n  Failed\n}\n\nclass TransactionDto <<DTO>> {\r\n  date: String [1]\r\n  amount: Decimal [1]\r\n  description: String [1]\r\n  status: TransactionStatus [1]\r\n  receipt_id: String [0..1]\r\n  type: TransactionTypeEnum [1]\r\n}\n\nclass AccountDetailResponseDto <<DTO>> {\n  id: Integer [1]\n  bank_name: String [1]\n  account_type: AccountType [1]\n  branch_name: String [0..1]\n  account_number_full: String [1]\n  balance: Decimal [1]\n  recent_transactions: TransactionDto [0..5]\n}\n\nclass AccountService <<Service>> {\n  findOneWithTransactions(accountId: Integer, userId: Integer): AccountDetailResponseDto\n}\n\nUser \"1\" -- \"0..*\" Account : owns\nAccount \"1\" -- \"0..*\" Transaction : has\nAccountService ..> AccountDetailResponseDto\nAccountDetailResponseDto *-- \"0..5\" TransactionDto : contains\nAccountDetailResponseDto ..> Account : maps from\nTransactionDto ..> Transaction : maps from\n\n@enduml"
+      ]
+    },
+    {
+      "row": 146,
+      "cells": [
+        "Business Rules",
+        "BR-ACC-15: Account existence and ownership\ncontext AccountService::findOneWithTransactions(\n  accountId : Integer,\n  userId : Integer\n) : AccountDetailResponseDto\npre BR_ACC_15_AccountMustBeOwned:\n  Account.allInstances()->exists(a | \n    a.account_id = accountId and \n    a.user_id = userId\n  )"
+      ]
+    },
+    {
+      "row": 147,
+      "cells": [
+        null,
+        "BR-ACC-16: Five most recent account transactions\r\ncontext AccountService::findOneWithTransactions(\r\n  accountId : Integer,\r\n  userId : Integer\r\n) : AccountDetailResponseDto\r\npost BR_ACC_16_MaxFiveRecentTransactions:\r\n  result.recent_transactions->size() <= 5\r\npost BR_ACC_16_OrderedByDateDescending:\r\n  result.recent_transactions->size() <= 1 or\r\n  Sequence{1..result.recent_transactions->size()-1}->forAll(i |\r\n    result.recent_transactions->at(i).date >= result.recent_transactions->at(i + 1).date\r\n  )\r\nTechnical constraint:\r\n- The backend shall return at most five transactions ordered by transaction_date descending."
+      ]
+    },
+    {
+      "row": 148,
+      "cells": [
+        null,
+        "BR-ACC-17: Response rows map to persisted data with signed amounts\r\ncontext AccountService::findOneWithTransactions(\r\n  accountId : Integer,\r\n  userId : Integer\r\n) : AccountDetailResponseDto\r\npost BR_ACC_17_ResponseBackedByAccount:\r\n  Account.allInstances()->exists(a |\r\n    a.account_id = result.id and\r\n    a.user_id = userId and\r\n    a.bank_name = result.bank_name and\r\n    a.account_type = result.account_type and\r\n    (a.branch_name.oclIsUndefined() implies result.branch_name.oclIsUndefined()) and\r\n    (not a.branch_name.oclIsUndefined() implies a.branch_name = result.branch_name) and\r\n    a.account_number_full = result.account_number_full and\r\n    a.balance = result.balance\r\n  )\r\npost BR_ACC_17_ResponseBackedByTransaction:\r\n  result.recent_transactions->forAll(tDto |\r\n    Transaction.allInstances()->exists(t |\r\n      t.account_id = accountId and\r\n      t.item_description = tDto.description and\r\n      ((t.type = TransactionTypeEnum::Expense and tDto.amount = -(t.amount)) or\r\n       (t.type = TransactionTypeEnum::Revenue and tDto.amount = t.amount)) and\r\n      t.status = tDto.status and\r\n      (t.receipt_id.oclIsUndefined() implies tDto.receipt_id.oclIsUndefined()) and\r\n      (not t.receipt_id.oclIsUndefined() implies t.receipt_id = tDto.receipt_id) and\r\n      t.type = tDto.type and\r\n      tDto.date = toIsoDate(t.transaction_date)\r\n    )\r\n  )\r\nTechnical constraint:\r\n- In the account-detail mapping, Expense amounts are negated (returned as negative) and Revenue amounts remain positive.\r\n- Unused persisted fields in Transaction (e.g., shop_name, payment_method, category_id) are intentionally excluded from the returned TransactionDto."
+      ]
+    },
+    {
+      "row": 149,
+      "cells": [
+        null,
+        "post BR_ACC_18_AccountIdentityUnchanged:\r\n  Account.allInstances()->collect(a | a.account_id)->asSet() =\r\n  Account.allInstances()@pre->collect(a | a.account_id)->asSet()\r\npost BR_ACC_18_AccountDataUnchanged:\r\n  Account.allInstances()->forAll(a |\r\n    Account.allInstances()@pre->exists(old |\r\n      old.account_id = a.account_id and\r\n      old.user_id = a.user_id and\r\n      old.bank_name = a.bank_name and\r\n      old.account_type = a.account_type and\r\n      old.branch_name = a.branch_name and\r\n      old.account_number_full = a.account_number_full and\r\n      old.account_number_last_4 = a.account_number_last_4 and\r\n      old.balance = a.balance\r\n    )\r\n  )\r\npost BR_ACC_18_TransactionIdentityUnchanged:\r\n  Transaction.allInstances()->collect(t | t.transaction_id)->asSet() =\r\n  Transaction.allInstances()@pre->collect(t | t.transaction_id)->asSet()\r\npost BR_ACC_18_TransactionDataUnchanged:\r\n  Transaction.allInstances()->forAll(t |\r\n    Transaction.allInstances()@pre->exists(old |\r\n      old.transaction_id = t.transaction_id and\r\n      old.account_id = t.account_id and\r\n      old.category_id = t.category_id and\r\n      old.transaction_date = t.transaction_date and\r\n      old.type = t.type and\r\n      old.item_description = t.item_description and\r\n      old.shop_name = t.shop_name and\r\n      old.amount = t.amount and\r\n      old.payment_method = t.payment_method and\r\n      old.status = t.status and\r\n      old.receipt_id = t.receipt_id\r\n    )\r\n  )\r\nTechnical constraint:\r\n- Viewing account details shall not create, update, or delete any Account or Transaction records."
+      ]
+    },
+    {
+      "row": 150,
+      "cells": [
+        "Related UI",
+        "AccountDetailPage; route /accounts/:id"
+      ]
+    },
+    {
+      "row": 151,
+      "cells": [
+        "Related API IDs",
+        "API-ACCOUNT-DETAIL"
+      ]
+    },
+    {
+      "row": 152,
+      "cells": [
+        "Notes"
+      ]
+    },
+    {
+      "row": 153,
+      "cells": []
+    },
+    {
+      "row": 154,
+      "cells": []
+    },
+    {
+      "row": 155,
+      "cells": [
+        "UC-08 - Edit a Bank Account"
+      ]
+    },
+    {
+      "row": 156,
+      "cells": [
+        "Use Case ID",
+        "Use Case ID"
+      ]
+    },
+    {
+      "row": 157,
+      "cells": [
+        "Use Case Name",
+        "Edit a Bank Account"
+      ]
+    },
+    {
+      "row": 158,
+      "cells": [
+        "Description",
+        "As an authenticated account owner, I want to edit an account's bank name, type, branch, full account number, and balance."
+      ]
+    },
+    {
+      "row": 159,
+      "cells": [
+        "Actor(s)",
+        "Authenticated User"
+      ]
+    },
+    {
+      "row": 160,
+      "cells": [
+        "Priority",
+        "Not Specified"
+      ]
+    },
+    {
+      "row": 161,
+      "cells": [
+        "Trigger",
+        "The user selects Edit on an account detail page."
+      ]
+    },
+    {
+      "row": 162,
+      "cells": [
+        "Pre-Condition(s)",
+        "PRE-1: The user is authenticated.\nPRE-2: The account exists and is owned by the authenticated user.\nPRE-3: Account details have been loaded."
+      ]
+    },
+    {
+      "row": 163,
+      "cells": [
+        "Post-Condition(s)",
+        "POST-1: On success, the account fields are overwritten with the submitted values.\nPOST-2: account_number_last_4 is implicitly derived by the backend from the submitted account_number_full.\nPOST-3: On success, the system displays a success toast notification (\"Update successful\"), waits 1500 ms, closes the edit form, and reloads the account details to reflect the updated data.\nPOST-4: On failure, the stored account remains unchanged by the failed request."
+      ]
+    },
+    {
+      "row": 164,
+      "cells": [
+        "Basic Flow",
+        "1. The user opens an account detail page and selects Edit.\n2. AccountEditForm is populated from loaded AccountDetail data.\n3. The user changes bank_name, account_type, optional branch_name, account_number_full, or balance.\n4. The user selects Save Changes.\n5. The frontend validates required fields (bank_name, account_number_full), allowed account_type, valid account_number_full format (8-34 digits), and numeric non-negative balance.\n6. The frontend sends PUT /api/v1/accounts/:id with all update fields (excluding account_number_last_4).\n7. The controller validates that id parses to an integer.\n8. AccountService verifies that the account exists and belongs to userId.\n9. ValidationPipe and AccountService validate the submitted fields.\n10. AccountService derives account_number_last_4, overwrites the account fields, and saves the row.\n11. The frontend displays a success toast, waits 1500ms, and invokes its success callback; AccountDetailPage reloads account data and exits edit mode."
+      ]
+    },
+    {
+      "row": 165,
+      "cells": [
+        "Alternative Flow",
+        "AF-1: Optional branch omitted\n3a. The user clears branch_name.\n10a. The backend stores branchName as undefined/null.\n\nAF-2: Cancel\n4a. The user selects Cancel and the detail page exits edit mode without sending an update request."
+      ]
+    },
+    {
+      "row": 166,
+      "cells": [
+        "Exception Flow",
+        "EF-1: Client-side or DTO validation failure\n5a. The frontend displays field errors, or the backend returns HTTP 400.\n\nEF-2: Account not found\n8a. The backend returns HTTP 404.\n\nEF-3: Account belongs to another user\n8a. The backend returns HTTP 403 and the frontend displays its permission error.\n\nEF-4: Storage failure\n10a. The backend returns HTTP 500 and the frontend displays its save failure message."
+      ]
+    },
+    {
+      "row": 167,
+      "cells": [
+        "UML Model",
+        "@startuml\r\n\r\nclass User <<Entity>> {\r\n  user_id: Integer [1]\r\n  full_name: String [1]\r\n  email: String [1]\r\n  username: String [1]\r\n  password: String [1]\r\n  phone_number: String [1]\r\n  profile_picture_url: String [1]\r\n  total_balance: Decimal [1]\r\n}\r\n\r\nclass Account <<Entity>> {\r\n  account_id: Integer [1]\r\n  user_id: Integer [1]\r\n  bank_name: String [1]\r\n  account_type: AccountType [1]\r\n  branch_name: String [0..1]\r\n  account_number_full: String [1]\r\n  account_number_last_4: String [1]\r\n  balance: Decimal [1]\r\n}\r\n\r\nenum AccountType {\r\n  Checking\r\n  Credit_Card\r\n  Savings\r\n  Investment\r\n  Loan\r\n}\r\nnote right of AccountType\r\n  Credit_Card maps to database literal 'Credit Card'.\r\nend note\r\n\r\nclass UpdateAccountDto <<DTO>> {\r\n  bank_name: String [1]\r\n  account_type: AccountType [1]\r\n  branch_name: String [0..1]\r\n  account_number_full: String [1]\r\n  balance: Decimal [1]\r\n}\r\nnote left of UpdateAccountDto\r\n  account_number_last_4 is deliberately omitted \r\n  from input to enforce backend derivation.\r\nend note\r\n\r\nclass UpdatedAccountDto <<DTO>> {\r\n  account_id: Integer [1]\r\n  user_id: Integer [1]\r\n  bank_name: String [1]\r\n  account_type: AccountType [1]\r\n  branch_name: String [0..1]\r\n  account_number_full: String [1]\r\n  account_number_last_4: String [1]\r\n  balance: Decimal [1]\r\n}\r\n\r\nclass UpdateAccountResponseDto <<DTO>> {\r\n  message: String [1]\r\n  account: UpdatedAccountDto [1]\r\n}\r\n\r\nclass AccountService <<Service>> {\r\n  update(accountId: Integer, userId: Integer, dto: UpdateAccountDto): UpdatedAccountDto\r\n}\r\n\r\nUser \"1\" -- \"0..*\" Account : owns\r\nAccountService ..> UpdatedAccountDto\r\nAccountService ..> UpdateAccountDto\r\nUpdateAccountDto ..> Account : mapped to\r\nUpdatedAccountDto ..> Account : mapped from\r\nUpdateAccountResponseDto *-- \"1\" UpdatedAccountDto : contains\r\n\r\n@enduml"
+      ]
+    },
+    {
+      "row": 168,
+      "cells": [
+        "Business Rules",
+        "BR-ACC-19: Account ownership validation for update\ncontext AccountService::update(\n  accountId : Integer,\n  userId : Integer,\n  dto : UpdateAccountDto\n) : UpdatedAccountDto\npre BR_ACC_19_MustOwnAccount:\n  Account.allInstances()->exists(a |\n    a.account_id = accountId and\n    a.user_id = userId\n  )"
+      ]
+    },
+    {
+      "row": 169,
+      "cells": [
+        null,
+        "BR-ACC-20: Allowed account types for update\r\ncontext AccountService::update(\r\n  accountId : Integer,\r\n  userId : Integer,\r\n  dto : UpdateAccountDto\r\n) : UpdatedAccountDto\r\npre BR_ACC_20_ValidType:\r\n  Set{AccountType::Checking, AccountType::Credit_Card, AccountType::Savings, AccountType::Investment, AccountType::Loan}->includes(dto.account_type)"
+      ]
+    },
+    {
+      "row": 170,
+      "cells": [
+        null,
+        "BR-ACC-21: Required account text fields for update\r\ncontext AccountService::update(\r\n  accountId : Integer,\r\n  userId : Integer,\r\n  dto : UpdateAccountDto\r\n) : UpdatedAccountDto\r\npre BR_ACC_21_RequiredText:\r\n  not dto.bank_name.oclIsUndefined() and dto.bank_name.trim().size() > 0 and\r\n  not dto.account_number_full.oclIsUndefined() and dto.account_number_full.trim().size() > 0"
+      ]
+    },
+    {
+      "row": 171,
+      "cells": [
+        null,
+        "BR-ACC-22: Account number format and length for update\r\ncontext AccountService::update(\r\n  accountId : Integer,\r\n  userId : Integer,\r\n  dto : UpdateAccountDto\r\n) : UpdatedAccountDto\r\npre BR_ACC_22_NumericCharactersOnly:\r\n  not dto.account_number_full.oclIsUndefined() and \r\n  matches(dto.account_number_full, '^[0-9]+$')\r\npre BR_ACC_22_LengthConstraints:\r\n  dto.account_number_full.size() >= 8 and dto.account_number_full.size() <= 34"
+      ]
+    },
+    {
+      "row": 172,
+      "cells": [
+        null,
+        "BR-ACC-23: Numeric non-negative account balance for update\r\ncontext AccountService::update(\r\n  accountId : Integer,\r\n  userId : Integer,\r\n  dto : UpdateAccountDto\r\n) : UpdatedAccountDto\r\npre BR_ACC_23_IsNumeric:\r\n  dto.balance.oclIsTypeOf(Real) or dto.balance.oclIsTypeOf(Integer)\r\npre BR_ACC_23_NonNegativeBalance:\r\n  not dto.balance.oclIsUndefined() and dto.balance >= 0"
+      ]
+    },
+    {
+      "row": 173,
+      "cells": [
+        null,
+        "BR-ACC-24: Optional branch name handling during update\r\ncontext AccountService::update(\r\n  accountId : Integer,\r\n  userId : Integer,\r\n  dto : UpdateAccountDto\r\n) : UpdatedAccountDto\r\npre BR_ACC_24_BranchNameOptional:\r\n  dto.branch_name.oclIsUndefined() or dto.branch_name.oclIsTypeOf(String)"
+      ]
+    },
+    {
+      "row": 174,
+      "cells": [
+        null,
+        "BR-ACC-25: Derive final four account characters for update\r\ncontext AccountService::update(\r\n  accountId : Integer,\r\n  userId : Integer,\r\n  dto : UpdateAccountDto\r\n) : UpdatedAccountDto\r\npost BR_ACC_25_DeriveLast4:\r\n  let updatedAcc = Account.allInstances()->any(a | a.account_id = accountId) in\r\n  updatedAcc.account_number_last_4 = dto.account_number_full.substring(\r\n    dto.account_number_full.size() - 3, \r\n    dto.account_number_full.size()\r\n  )\r\nTechnical constraint:\r\n- The backend MUST implicitly derive account_number_last_4 by taking the exact last 4 characters of the submitted account_number_full."
+      ]
+    },
+    {
+      "row": 175,
+      "cells": [
+        null,
+        "BR-ACC-26: Account update persistence mapping\r\ncontext AccountService::update(\r\n  accountId : Integer,\r\n  userId : Integer,\r\n  dto : UpdateAccountDto\r\n) : UpdatedAccountDto\r\npost BR_ACC_26_StorageMapping:\r\n  Account.allInstances()->exists(a |\r\n    a.account_id = accountId and\r\n    a.bank_name = dto.bank_name and\r\n    a.account_type = dto.account_type and\r\n    (dto.branch_name.oclIsUndefined() implies a.branch_name.oclIsUndefined()) and\r\n    (not dto.branch_name.oclIsUndefined() implies a.branch_name = dto.branch_name) and\r\n    a.account_number_full = dto.account_number_full and\r\n    a.balance = dto.balance\r\n  )"
+      ]
+    },
+    {
+      "row": 176,
+      "cells": [
+        "Related UI",
+        "AccountDetailPage; AccountEditForm; route /accounts/:id"
+      ]
+    },
+    {
+      "row": 177,
+      "cells": [
+        "Related API IDs",
+        "API-ACCOUNT-UPDATE"
+      ]
+    },
+    {
+      "row": 178,
+      "cells": [
+        "Notes",
+        "Clarification: When account_number_full is changed, the new value must remain unique among the authenticated user's accounts."
+      ]
+    },
+    {
+      "row": 181,
+      "cells": []
+    },
+    {
+      "row": 182,
+      "cells": [
+        "UC-08a - Quick edit a bank account"
+      ]
+    },
+    {
+      "row": 183,
+      "cells": [
+        "Use Case ID",
+        "UC-08a"
+      ]
+    },
+    {
+      "row": 184,
+      "cells": [
+        "Use Case Name",
+        "Quick Edit Account"
+      ]
+    },
+    {
+      "row": 185,
+      "cells": [
+        "Description",
+        "As an authenticated account owner, I want to quickly enter an edit mode directly from the Accounts page to modify account details without navigating to the account detail page."
+      ]
+    },
+    {
+      "row": 186,
+      "cells": [
+        "Actor(s)",
+        "Authenticated User"
+      ]
+    },
+    {
+      "row": 187,
+      "cells": [
+        "Priority",
+        "Medium"
+      ]
+    },
+    {
+      "row": 188,
+      "cells": [
+        "Trigger",
+        "The user selects \"Edit Accounts\" on the Account List (Balances) page."
+      ]
+    },
+    {
+      "row": 189,
+      "cells": [
+        "Pre-Condition(s)",
+        "PRE-1: The user is authenticated.\nPRE-2: The Accounts page has been loaded and displays at least one account card."
+      ]
+    },
+    {
+      "row": 190,
+      "cells": [
+        "Post-Condition(s)",
+        "POST-1: On success, the selected account's fields are overwritten with the submitted values.\nPOST-2: account_number_last_4 is implicitly derived by the backend from the submitted account_number_full.\nPOST-3: On success, the system displays a success toast notification (\"\"Update successful\"\"), waits 1500 ms, closes the edit form, and reloads the account list to reflect the updated data.\nPOST-4: On failure or cancellation, the stored account remains unchanged."
+      ]
+    },
+    {
+      "row": 191,
+      "cells": [
+        "Basic Flow",
+        "1. The user opens /accounts and selects \"\"Edit Accounts\"\".\n2. The frontend switches the Accounts page into Edit Mode, displaying a pencil icon on each account card.\n3. The user selects the pencil icon for a specific account.\n4. AccountEditForm is loaded and populated from the loaded account card data.\n5. The user changes bank_name, account_type, optional branch_name, account_number_full, or balance.\n6. The user selects Save Changes.\n7. The frontend validates required fields (bank_name, account_number_full), allowed account_type, valid account_number_full format (8-34 digits), and numeric non-negative balance.\n8. The frontend sends PUT /api/v1/accounts/:id with all update fields (excluding account_number_last_4).\n9. The controller validates that id parses to an integer.\n10. AccountService verifies that the account exists and belongs to userId.\n11. ValidationPipe and AccountService validate the submitted fields.\n12. AccountService derives account_number_last_4, overwrites the account fields, and saves the row.\n13. The frontend displays a success toast, waits 1500ms, and invokes its success callback; the Accounts page reloads account data and exits edit mode."
+      ]
+    },
+    {
+      "row": 192,
+      "cells": [
+        "Alternative Flow",
+        "AF-1: Cancel Edit Mode\n2a. The user toggles \"\"Edit Accounts\"\" again to exit edit mode.\n2b. The frontend hides the pencil icons and exits edit mode.\n\nAF-2: Optional branch omitted\n5a. The user clears branch_name.\n12a. The backend stores branchName as undefined/null.\n\nAF-3: Cancel Form\n6a. The user selects Cancel on the AccountEditForm.\n6b. The frontend closes the form without sending an update request, and the Accounts page remains in Edit Mode."
+      ]
+    },
+    {
+      "row": 193,
+      "cells": [
+        "Exception Flow",
+        "Identical to UC-08 (EF-1 through EF-4)"
+      ]
+    },
+    {
+      "row": 194,
+      "cells": [
+        "UML Model",
+        "Identical to UC-08"
+      ]
+    },
+    {
+      "row": 195,
+      "cells": [
+        "Business Rules",
+        "Identical to UC-08 (BR-ACC-19 through BR-ACC-26)."
+      ]
+    },
+    {
+      "row": 196,
+      "cells": [
+        "Related UI",
+        "AccountListPage; AccountEditForm; route /accounts"
+      ]
+    },
+    {
+      "row": 197,
+      "cells": [
+        "Related API IDs",
+        "API-ACCOUNT-UPDATE"
+      ]
+    },
+    {
+      "row": 198,
+      "cells": [
+        "Notes",
+        "Rationale: This is a UI-level quick-edit variant of UC-08. It reuses the UC-08 account-update API and renders AccountEditForm within AccountListPage; no separate backend operation is required."
+      ]
+    },
+    {
+      "row": 199,
+      "cells": []
+    },
+    {
+      "row": 200,
+      "cells": []
+    },
+    {
+      "row": 201,
+      "cells": []
+    },
+    {
+      "row": 202,
+      "cells": [
+        "UC-09 - Delete a Bank Account"
+      ]
+    },
+    {
+      "row": 203,
+      "cells": [
+        "Use Case ID",
+        "UC-09"
+      ]
+    },
+    {
+      "row": 204,
+      "cells": [
+        "Use Case Name",
+        "Delete a Bank Account"
+      ]
+    },
+    {
+      "row": 205,
+      "cells": [
+        "Description",
+        "As an authenticated account owner, I want to permanently delete an account and its related transactions."
+      ]
+    },
+    {
+      "row": 206,
+      "cells": [
+        "Actor(s)",
+        "Authenticated User"
+      ]
+    },
+    {
+      "row": 207,
+      "cells": [
+        "Priority",
+        "Not Specified"
+      ]
+    },
+    {
+      "row": 208,
+      "cells": [
+        "Trigger",
+        "The user selects Delete from an account card or account detail page."
+      ]
+    },
+    {
+      "row": 209,
+      "cells": [
+        "Pre-Condition(s)",
+        "PRE-1: The user is authenticated.\nPRE-2: The account exists and is owned by the authenticated user."
+      ]
+    },
+    {
+      "row": 210,
+      "cells": [
+        "Post-Condition(s)",
+        "POST-1: On confirmed success, all Transaction rows with the accountId and the Account row are deleted in one database transaction.\nPOST-2: On confirmed success, the system displays a success dialog, waits 1500ms, and then refreshes the account list or navigates to /accounts.\nPOST-3: On cancellation or rollback, no deletion is committed."
+      ]
+    },
+    {
+      "row": 211,
+      "cells": [
+        "Basic Flow",
+        "1. The user selects Delete for an account.\n2. Delete Account Modal displays the bank name, final four account digits, and a warning that all related transactions will be deleted.\n3. The user selects Confirm Delete.\n4. The frontend sends DELETE /api/v1/accounts/:id.\n5. The controller validates that id parses to an integer.\n6. AccountService starts a database transaction, loads the account, and verifies ownership.\n7. AccountService deletes related Transaction rows.\n8. AccountService deletes the Account row and commits the transaction.\n9. The frontend closes the modal, displays a success dialog, waits 1500ms, and then refreshes the list or navigates to /accounts."
+      ]
+    },
+    {
+      "row": 212,
+      "cells": [
+        "Alternative Flow",
+        "AF-1: Cancel deletion\n3a. The user selects Cancel or closes the modal.\n3b. No API request is sent and no data changes."
+      ]
+    },
+    {
+      "row": 213,
+      "cells": [
+        "Exception Flow",
+        "EF-1: Invalid account ID\n5a. The controller returns HTTP 400.\n\nEF-2: Missing or non-owned account\n6a. The service rolls back and returns HTTP 404 using the same message for both cases.\n\nEF-3: Database deletion failure\n7a. The service rolls back the transaction and returns HTTP 500."
+      ]
+    },
+    {
+      "row": 214,
+      "cells": [
+        "UML Model",
+        "@startuml\r\n\r\nclass User <<Entity>> {\r\n  user_id: Integer [1]\r\n  full_name: String [1]\r\n  email: String [1]\r\n  username: String [1]\r\n  password: String [1]\r\n  phone_number: String [1]\r\n  profile_picture_url: String [1]\r\n  total_balance: Decimal [1]\r\n}\r\n\r\nclass Account <<Entity>> {\r\n  account_id: Integer [1]\r\n  user_id: Integer [1]\r\n  bank_name: String [1]\r\n  account_type: AccountType [1]\r\n  branch_name: String [0..1]\r\n  account_number_full: String [1]\r\n  account_number_last_4: String [1]\r\n  balance: Decimal [1]\r\n}\r\n\r\nclass Transaction <<Entity>> {\r\n  transaction_id: Integer [1]\r\n  account_id: Integer [1]\r\n  transaction_date: Date [1]\r\n  type: TransactionType [1]\r\n  item_description: String [1]\r\n  shop_name: String [0..1]\r\n  amount: Decimal [1]\r\n  payment_method: String [0..1]\r\n  status: TransactionStatus [1]\r\n  receipt_id: String [0..1]\r\n  category_id: Integer [0..1]\r\n}\r\n\r\nenum AccountType {\r\n  Checking\r\n  Credit_Card\r\n  Savings\r\n  Investment\r\n  Loan\r\n}\r\n\r\nenum TransactionType {\r\n  Revenue\r\n  Expense\r\n}\r\n\r\nenum TransactionStatus {\r\n  Complete\r\n  Pending\r\n  Failed\r\n}\r\n\r\nclass DeleteAccountResponseDto <<DTO>> {\r\n  message: String [1]\r\n  deleted_account_id: Integer [1]\r\n}\r\n\r\nclass AccountService <<Service>> {\r\n  delete(accountId: Integer, userId: Integer): DeleteAccountResponseDto\r\n}\r\n\r\nUser \"1\" -- \"0..*\" Account : owns\r\nAccount \"1\" -- \"0..*\" Transaction : contains\r\nAccountService ..> DeleteAccountResponseDto\r\nAccountService ..> Account : deletes\r\nAccountService ..> Transaction : deletes cascade\r\n\r\n@enduml",
+        "  "
+      ]
+    },
+    {
+      "row": 215,
+      "cells": [
+        "Business Rules",
+        "BR-ACC-27: Account deletion ownership validation\ncontext AccountService::delete(accountId : Integer, userId : Integer) : DeleteAccountResponseDto\npre BR_ACC_27_MustOwnAccount:\n  Account.allInstances()->exists(a | a.account_id = accountId and a.user_id = userId)\nTechnical constraint:\n- If the account does not exist or does not belong to the user, the backend intentionally throws a 404 NotFoundException to prevent data \nenumeration."
+      ]
+    },
+    {
+      "row": 216,
+      "cells": [
+        null,
+        "BR-ACC-28: Account deletion data integrity (Cascading)\r\ncontext AccountService::delete(accountId : Integer, userId : Integer) : DeleteAccountResponseDto\r\npost BR_ACC_28_AtomicDeletion:\r\n  not Account.allInstances()->exists(a | a.account_id = accountId) and\r\n  not Transaction.allInstances()->exists(t | t.account_id = accountId)\r\nTechnical constraint:\r\n- The backend MUST execute the deletion of all related Transaction rows and the Account row within a single atomic database transaction (using QueryRunner). If any step fails, the entire transaction rolls back."
+      ]
+    },
+    {
+      "row": 217,
+      "cells": [
+        "Related UI",
+        "AccountListPage; AccountDetailPage; DeleteAccountModal"
+      ]
+    },
+    {
+      "row": 218,
+      "cells": [
+        "Related API IDs",
+        "API-ACCOUNT-DELETE"
+      ]
+    },
+    {
+      "row": 219,
+      "cells": [
+        "Notes",
+        "Security rationale: An account that does not exist and an account not owned by the authenticated user are both reported as HTTP 404, rather than 403, to avoid disclosing the existence of another user's account."
+      ]
+    },
+    {
+      "row": 220,
+      "cells": []
+    },
+    {
+      "row": 221,
+      "cells": [
+        "UC-10 - View Monthly Expense Summary"
+      ]
+    },
+    {
+      "row": 222,
+      "cells": [
+        "Use Case ID",
+        "UC-10"
+      ]
+    },
+    {
+      "row": 223,
+      "cells": [
+        "Use Case Name",
+        "View Monthly Expense Summary"
+      ]
+    },
+    {
+      "row": 224,
+      "cells": [
+        "Description",
+        "As an authenticated user, I want to view a monthly expense comparison so that I can understand my spending over time."
+      ]
+    },
+    {
+      "row": 225,
+      "cells": [
+        "Actor(s)",
+        "Authenticated User"
+      ]
+    },
+    {
+      "row": 226,
+      "cells": [
+        "Priority",
+        "Not Specified"
+      ]
+    },
+    {
+      "row": 227,
+      "cells": [
+        "Trigger",
+        "The user opens the Expenses page."
+      ]
+    },
+    {
+      "row": 228,
+      "cells": [
+        "Pre-Condition(s)",
+        "PRE-1: The user is authenticated."
+      ]
+    },
+    {
+      "row": 229,
+      "cells": [
+        "Post-Condition(s)",
+        "POST-1: If expense summary data is available, the monthly expense comparison is displayed.\n\nPOST-2: If no expense summary data is available, the no-data state is displayed.\n\nPOST-3: The operation does not intentionally modify financial data."
+      ]
+    },
+    {
+      "row": 230,
+      "cells": [
+        "Basic Flow",
+        "1. The user opens the Expenses page.\n2. The frontend requests the user's monthly expense summary.\n3. The backend authenticates the request.\n4. The backend retrieves and aggregates the relevant expense data.\n5. The backend returns the monthly expense summary.\n6. The frontend prepares the returned data for visualization.\n7. The frontend displays the monthly expense comparison chart."
+      ]
+    },
+    {
+      "row": 231,
+      "cells": [
+        "Alternative Flow",
+        "AF-1: No expense summary data\n5a. The backend returns an empty summary.\n6a. The frontend does not prepare chart data.\n7a. The frontend displays the no-data state.\n\nAF-2: Partial monthly data\n5b. The backend returns the available monthly summary data.\n6b. The frontend prepares the data according to the applicable business rules.\n7b. The frontend displays the resulting chart."
+      ]
+    },
+    {
+      "row": 232,
+      "cells": [
+        "Exception Flow",
+        "EF-1: Authentication failure\n3a. Authentication fails.\n3b. The backend returns HTTP 401.\n3c. The frontend applies the application's authentication-error handling.\n\nEF-2: Retrieval or aggregation failure\n4a. An unexpected retrieval or aggregation error occurs.\n4b. The backend returns HTTP 500.\n4c. The frontend displays its expense-loading error state."
+      ]
+    },
+    {
+      "row": 233,
+      "cells": [
+        "UML Model",
+        "@startuml\n\nclass Account <<Entity>> {\n  accountId: Integer [1]\n  userId: Integer [1]\n}\n\nclass Transaction <<Entity>> {\n  transactionId: Integer [1]\n  accountId: Integer [1]\n  transactionDate: Date [1]\n  type: TransactionType [1]\n  amount: Decimal [1]\n  status: TransactionStatus [1]\n}\n\nenum TransactionType {\n  Revenue\n  Expense\n}\n\nclass AuthenticatedRequest <<DTO>> {\n  userId: Integer [1]\n}\n\nclass ExpenseSummaryItem <<DTO>> {\n  month: String [1]\n  totalExpense: Decimal [1]\n}\n\nclass ExpenseSummaryResponseDto <<DTO>> {\n  data: ExpenseSummaryItem [0..*]\n}\n\nclass JwtAuthGuard <<Guard>> {\n  validate(token: BearerJWT): AuthenticatedRequest\n}\n\nclass ExpensesController <<Controller>> {\n  getExpenseSummary(request: AuthenticatedRequest): ExpenseSummaryResponseDto\n}\n\nclass ExpensesService <<Service>> {\n  getExpenseSummary(userId: Integer): Sequence(ExpenseSummaryItem)\n}\n\nAccount \"1\" -- \"0..*\" Transaction : contains\nExpensesController ..> JwtAuthGuard : protected by\nExpensesController ..> ExpensesService\nExpensesController ..> ExpenseSummaryResponseDto : returns\nExpensesService ..> Account\nExpensesService ..> Transaction\nExpenseSummaryResponseDto --> ExpenseSummaryItem\n\n@enduml"
+      ]
+    },
+    {
+      "row": 234,
+      "cells": [
+        "Business Rules",
+        "BR-EXP-01: Ownership scope\n\ncontext ExpensesService::getExpenseSummary(\n  userId : Integer\n) : Sequence(ExpenseSummaryItem)\n\npre BR_EXP_01_AuthenticatedIdentity:\n  not userId.oclIsUndefined()\n\npost BR_EXP_01_OwnedTransactionsOnly:\n  let ownedAccountIds : Set(Integer) =\n    Account.allInstances()\n      ->select(a |\n        a.userId = userId\n      )\n      ->collect(a |\n        a.accountId\n      )\n      ->asSet()\n  in\n    result->forAll(item |\n      Transaction.allInstances()->forAll(t |\n        contributesTo(t, item)\n        implies\n        ownedAccountIds->includes(t.accountId)\n      )\n    )\n\nTechnical constraints:\n- Only transactions associated with accounts owned by the authenticated user may contribute to the expense summary.\n- The aggregation userId shall come from the validated JWT and shall not be supplied or overridden by the client.\n\nBR-EXP-02: Expense eligibility\n\ncontext ExpensesService::getExpenseSummary(\n  userId : Integer\n) : Sequence(ExpenseSummaryItem)\n\npost BR_EXP_02_ExpenseOnly:\n  result->forAll(item |\n    Transaction.allInstances()\n      ->select(t |\n        monthOf(t.transactionDate) =\n          monthNumber(item.month)\n      )\n      ->forAll(t |\n        contributesTo(t, item)\n        implies\n        t.type = TransactionType::Expense\n      )\n  )\n\nTechnical constraints:\n- Only transactions with `type = Expense` contribute to the summary.\n- Revenue transactions shall not contribute to any monthly expense total.\n\nBR-EXP-03: Reporting period\n\ncontext ExpensesService::getExpenseSummary(\n  userId : Integer\n) : Sequence(ExpenseSummaryItem)\n\npost BR_EXP_03_CurrentCalendarYearOnly:\n  result->forAll(item |\n    Transaction.allInstances()\n      ->select(t |\n        monthOf(t.transactionDate) =\n          monthNumber(item.month)\n      )\n      ->forAll(t |\n        contributesTo(t, item)\n        implies\n        yearOf(t.transactionDate) = currentYear()\n      )\n  )\n\nTechnical constraints:\n- Only transactions whose `transactionDate` falls in the backend server's current calendar year are included.\n- The endpoint does not accept a year parameter."
+      ]
+    },
+    {
+      "row": 235,
+      "cells": [
+        null,
+        "BR-EXP-04: Monthly attribution\n\ncontext ExpensesService::getExpenseSummary(\n  userId : Integer\n) : Sequence(ExpenseSummaryItem)\n\npost BR_EXP_04_TransactionDateDeterminesMonth:\n  result->forAll(item |\n    Transaction.allInstances()->forAll(t |\n      contributesTo(t, item)\n      implies\n      monthOf(t.transactionDate) =\n        monthNumber(item.month)\n    )\n  )\n\nTechnical constraints:\n- A transaction belongs to the month represented by its `transactionDate`, not another system timestamp.\n\nBR-EXP-05: Monthly aggregation\n\ncontext ExpensesService::getExpenseSummary(\n  userId : Integer\n) : Sequence(ExpenseSummaryItem)\n\npost BR_EXP_05_MonthlyExpenseTotal:\n  let ownedAccountIds : Set(Integer) =\n    Account.allInstances()\n      ->select(a |\n        a.userId = userId\n      )\n      ->collect(a |\n        a.accountId\n      )\n      ->asSet()\n  in\n    result->forAll(item |\n      item.totalExpense =\n        Transaction.allInstances()\n          ->select(t |\n            ownedAccountIds->includes(t.accountId) and\n            t.type = TransactionType::Expense and\n            yearOf(t.transactionDate) = currentYear() and\n            monthOf(t.transactionDate) =\n              monthNumber(item.month)\n          )\n          ->collect(t |\n            t.amount\n          )\n          ->sum()\n    )\n\nTechnical constraints:\n- A month's `totalExpense` equals the sum of `amount` for all eligible transactions assigned to that month."
+      ]
+    },
+    {
+      "row": 236,
+      "cells": [
+        null,
+        "BR-EXP-06: Backend result semantics\n\ncontext ExpensesService::getExpenseSummary(\n  userId : Integer\n) : Sequence(ExpenseSummaryItem)\n\npost BR_EXP_06_UniqueMonth:\n  result->isUnique(item |\n    item.month\n  )\n\npost BR_EXP_06_ValidMonth:\n  result->forAll(item |\n    monthNumber(item.month) >= 1 and\n    monthNumber(item.month) <= 12\n  )\n\npost BR_EXP_06_ChronologicalOrder:\n  result->size() <= 1 or\n  Sequence{1..result->size() - 1}->forAll(i |\n    monthNumber(result->at(i).month) <\n    monthNumber(result->at(i + 1).month)\n  )\n\nTechnical constraints:\n- The backend returns only months containing eligible expense data.\n- Each returned month shall appear at most once and results shall be ordered chronologically.\n- `month` shall use Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, or Dec.\n- The backend shall not generate zero-valued entries solely to fill missing calendar months.\n\nBR-EXP-07: Missing-month normalization\n\ncontext ExpenseSummaryChart::buildChartData(\n  summaryData : Sequence(ExpenseSummaryItem)\n) : Sequence(ExpenseChartItem)\n\npre BR_EXP_07_HasSummaryData:\n  summaryData->notEmpty()\n\npost BR_EXP_07_TwelveMonths:\n  result->size() = 12\n\npost BR_EXP_07_UniqueMonth:\n  result->isUnique(item |\n    item.month\n  )\n\npost BR_EXP_07_AllCalendarMonths:\n  Set{'Jan', 'Feb', 'Mar', 'Apr',\n      'May', 'Jun', 'Jul', 'Aug',\n      'Sep', 'Oct', 'Nov', 'Dec'}\n  =\n  result->collect(item |\n    item.month\n  )->asSet()\n\npost BR_EXP_07_PreserveReturnedTotals:\n  summaryData->forAll(source |\n    result->one(item |\n      item.month = source.month and\n      item.totalExpense = source.totalExpense\n    )\n  )\n\npost BR_EXP_07_MissingMonthIsZero:\n  result->forAll(item |\n    summaryData->forAll(source |\n      source.month <> item.month\n    )\n    implies\n      item.totalExpense = 0\n  )\n\nTechnical constraints:\n- When at least one monthly result exists, the frontend constructs Jan–Dec and assigns `0` to missing months."
+      ]
+    },
+    {
+      "row": 237,
+      "cells": [
+        "Related UI",
+        "ExpensesPage; ExpenseSummaryChart; route /expenses"
+      ]
+    },
+    {
+      "row": 238,
+      "cells": [
+        "Related API IDs",
+        "API-EXPENSE-SUMMARY"
+      ]
+    },
+    {
+      "row": 239,
+      "cells": [
+        "Notes",
+        "Experiment classification:\n- BR-EXP-01 through BR-EXP-07 are the treatment-sensitive Business Rules used for the core Business Rule effectiveness score.\n- The current-month color treatment is a Figma-derived UI requirement and is not a core Business Rule.\n- Read-only behavior is redundantly constrained by the GET method.\n- The successful response envelope is project-constrained by PROJECT_CONTEXT.md and AGENTS.md."
+      ]
+    },
+    {
+      "row": 240,
+      "cells": []
+    },
+    {
+      "row": 241,
+      "cells": [
+        "UC-11 - View Expenses by Category"
+      ]
+    },
+    {
+      "row": 242,
+      "cells": [
+        "Use Case ID",
+        "UC-11"
+      ]
+    },
+    {
+      "row": 243,
+      "cells": [
+        "Use Case Name",
+        "View Expenses by Category"
+      ]
+    },
+    {
+      "row": 244,
+      "cells": [
+        "Description",
+        "As an authenticated user, I want to view my expenses by category for a selected month so that I can understand how my spending is distributed."
+      ]
+    },
+    {
+      "row": 245,
+      "cells": [
+        "Actor(s)",
+        "Authenticated User"
+      ]
+    },
+    {
+      "row": 246,
+      "cells": [
+        "Priority",
+        "Not Specified"
+      ]
+    },
+    {
+      "row": 247,
+      "cells": [
+        "Trigger",
+        "The user opens the Expenses page or selects another month."
+      ]
+    },
+    {
+      "row": 248,
+      "cells": [
+        "Pre-Condition(s)",
+        "PRE-1: The user is authenticated.\nPRE-2: A selected month is available for the expense-breakdown request."
+      ]
+    },
+    {
+      "row": 249,
+      "cells": [
+        "Post-Condition(s)",
+        "POST-1: After processing, the expense breakdown for the selected month is displayed on /expenses.\nPOST-2: If no breakdown data is available, the page displays its no-data state.\nPOST-3: The operation does not modify stored financial data."
+      ]
+    },
+    {
+      "row": 250,
+      "cells": [
+        "Basic Flow",
+        "1. The user opens the Expenses page.\n2. The frontend determines the selected month for the breakdown request.\n3. The frontend requests the user's expense breakdown for the selected month.\n4. The backend authenticates the request.\n5. The backend retrieves and processes the relevant expense data according to the applicable business rules.\n6. The backend returns the expense breakdown.\n7. The frontend displays the category breakdown on the Expenses page."
+      ]
+    },
+    {
+      "row": 251,
+      "cells": [
+        "Alternative Flow",
+        "AF-1: Select another month\n2a. The user selects a different month.\n3a. The frontend requests the expense breakdown for the new selected month.\n4a. The flow continues from Step 4.\n\nAF-2: No breakdown data\n6a. The backend reports that no breakdown data is available for the selected month.\n7a. The frontend displays its no-data state instead of the category breakdown."
+      ]
+    },
+    {
+      "row": 252,
+      "cells": [
+        "Exception Flow",
+        "EF-1: Authentication failure\n4a. The backend cannot authenticate the request.\n4b. The backend returns HTTP 401.\n4c. The frontend applies the application's authentication-error handling.\n\nEF-2: Invalid month request\n5a. The backend rejects an invalid month request with HTTP 400.\n5b. The frontend displays its request-error state.\n\nEF-3: Retrieval or processing failure\n5a. An unexpected error occurs while retrieving or processing the breakdown data.\n5b. The backend returns HTTP 500.\n5c. The frontend displays its expense-breakdown error state."
+      ]
+    },
+    {
+      "row": 253,
+      "cells": [
+        "UML Model",
+        "@startuml\n\nclass AuthenticatedRequest <<DTO>> {\n  userId: Integer [1]\n}\n\nclass Account <<Entity>> {\n  accountId: Integer [1]\n  userId: Integer [1]\n}\n\nclass Transaction <<Entity>> {\n  transactionId: Integer [1]\n  accountId: Integer [1]\n  transactionDate: Date [1]\n  type: TransactionType [1]\n  itemDescription: String [1]\n  amount: Decimal [1]\n  status: TransactionStatus [1]\n  categoryId: Integer [0..1]\n}\n\nclass Category <<Entity>> {\n  categoryId: Integer [1]\n  categoryName: String [1]\n}\n\nenum TransactionType {\n  Revenue\n  Expense\n}\n\nenum TransactionStatus {\n  Complete\n  Pending\n  Failed\n}\n\nclass ExpenseSubCategory <<DTO>> {\n  item_description: String [1]\n  amount: Number [1]\n  date: String [1]\n}\n\nclass BreakdownResult <<DTO>> {\n  category: String [1]\n  total: Number [1]\n  changePercent: Number [0..1]\n  subCategories: ExpenseSubCategory [1..*] {ordered}\n}\n\nclass ExpenseBreakdownResponse <<DTO>> {\n  success: Boolean [1]\n  message: String [1]\n  data: BreakdownResult [0..*] {ordered}\n}\n\nclass JwtAuthGuard <<Guard>> {\n  validate(token: BearerJWT): AuthenticatedRequest\n}\n\nclass ExpensesController <<Controller>> {\n  getExpensesBreakdown(request: AuthenticatedRequest, month: String): ExpenseBreakdownResponse\n}\n\nclass ExpensesService <<Service>> {\n  getExpensesBreakdown(userId: Integer, month: String): Sequence(BreakdownResult)\n}\n\nclass ExpensesPage <<UI>> {\n  selectedMonth: String [1]\n}\n\nclass ExpensesBreakdown <<UI>> {\n  month: String [1]\n  expensesData: BreakdownResult [*]\n  fetchExpensesBreakdown(month: String)\n}\n\nAccount \"1\" -- \"0..*\" Transaction\nCategory \"0..1\" -- \"0..*\" Transaction\nExpensesController ..> JwtAuthGuard\nExpensesController ..> ExpensesService\nExpensesController ..> ExpenseBreakdownResponse\nExpensesService ..> Account\nExpensesService ..> Transaction\nExpensesService ..> Category\nExpenseBreakdownResponse --> BreakdownResult\nBreakdownResult --> ExpenseSubCategory\nExpensesPage --> ExpensesBreakdown\nExpensesBreakdown ..> ExpenseBreakdownResponse\n\n@enduml"
+      ]
+    },
+    {
+      "row": 254,
+      "cells": [
+        "Business Rules",
+        "BR-EXP-CAT-01: Authenticated ownership scope\n\ncontext ExpensesService::getExpensesBreakdown(userId : Integer, month : String) : Sequence(BreakdownResult)\npre BR_EXP_CAT_01_AuthenticatedIdentity:\n  not userId.oclIsUndefined()\npost BR_EXP_CAT_01_OwnedTransactionsOnly:\n  result->forAll(item |\n    item.subCategories->forAll(detail |\n      Transaction.allInstances()->exists(t |\n        Account.allInstances()->exists(a |\n          a.accountId = t.accountId and a.userId = userId\n        ) and\n        t.itemDescription = detail.item_description and\n        t.amount = detail.amount and\n        toIsoDate(t.transactionDate) = detail.date\n      )\n    )\n  )\n\nTechnical constraints:\n- The userId used for the breakdown shall come from the validated JWT.\n- Transactions belonging to accounts owned by another user shall not contribute to the breakdown.\n\nBR-EXP-CAT-02: Eligible selected-month expenses\n\ncontext ExpensesService::getExpensesBreakdown(userId : Integer, month : String) : Sequence(BreakdownResult)\npost BR_EXP_CAT_02_EligibleRowsOnly:\n  result->forAll(item |\n    item.subCategories->forAll(detail |\n      Transaction.allInstances()->exists(t |\n        Account.allInstances()->exists(a |\n          a.accountId = t.accountId and a.userId = userId\n        ) and\n        t.type = TransactionType::Expense and\n        isWithinInclusiveMonth(t.transactionDate, month) and\n        t.itemDescription = detail.item_description and\n        t.amount = detail.amount and\n        toIsoDate(t.transactionDate) = detail.date\n      )\n    )\n  )\n\nTechnical constraint:\n- Transaction status is not an eligibility predicate; a row is eligible when the ownership, type, and selected-month conditions are satisfied.\n\nBR-EXP-CAT-03: Category classification\n\ncontext ExpensesService::getExpensesBreakdown(userId : Integer, month : String) : Sequence(BreakdownResult)\npost BR_EXP_CAT_03_CategoryDefined:\n  result->forAll(item | not item.category.oclIsUndefined())\n\nTechnical constraints:\n- Eligible transactions shall be grouped by categoryId.\n- A null categoryId shall be classified as Uncategorized.\n- A non-null categoryId that cannot be resolved to a Category shall be classified as Unknown.\n- A resolved categoryId shall use the corresponding Category.categoryName.\n\nBR-EXP-CAT-04: Category totals and detail mapping\n\ncontext ExpensesService::getExpensesBreakdown(userId : Integer, month : String) : Sequence(BreakdownResult)\npost BR_EXP_CAT_04_CategoryTotal:\n  result->forAll(item |\n    item.total = item.subCategories->collect(detail | detail.amount)->sum()\n  )\npost BR_EXP_CAT_04_DetailDefined:\n  result->forAll(item |\n    item.subCategories->forAll(detail |\n      not detail.item_description.oclIsUndefined() and\n      not detail.amount.oclIsUndefined() and\n      not detail.date.oclIsUndefined()\n    )\n  )\n\nTechnical constraint:\n- Each detail item shall map Transaction.itemDescription, amount, and transactionDate to item_description, numeric amount, and an ISO YYYY-MM-DD date string."
+      ]
+    },
+    {
+      "row": 255,
+      "cells": [
+        null,
+        "BR-EXP-CAT-05: Previous-month comparison\n\ncontext ExpensesService::getExpensesBreakdown(userId : Integer, month : String) : Sequence(BreakdownResult)\npost BR_EXP_CAT_05_ChangePercent:\n  result->forAll(item |\n    let previousTotal : Decimal = previousMonthExpenseTotal(userId, month, item.category)\n    in\n      if previousTotal = 0 then\n        if item.total > 0 then item.changePercent = 100\n        else item.changePercent.oclIsUndefined()\n        endif\n      else\n        item.changePercent = ((item.total - previousTotal) / previousTotal) * 100\n      endif\n  )\n\nTechnical constraints:\n- The comparison period is the immediately preceding calendar month.\n- January shall compare with December of the preceding year.\n- Previous-month totals shall use the same ownership, Expense eligibility, selected-period, and category-classification rules as the current month.\n\nBR-EXP-CAT-06: Rounding and deterministic ordering\n\ncontext ExpensesService::getExpensesBreakdown(userId : Integer, month : String) : Sequence(BreakdownResult)\npost BR_EXP_CAT_06_RoundedValues:\n  result->forAll(item |\n    item.total = NumericUtility.round2(item.total) and\n    (item.changePercent.oclIsUndefined() or item.changePercent = NumericUtility.round2(item.changePercent))\n  )\npost BR_EXP_CAT_06_GroupsSortedDescending:\n  Sequence{1..result->size()}->forAll(i |\n    i < result->size() implies result->at(i).total >= result->at(i + 1).total\n  )\npost BR_EXP_CAT_06_DetailsSortedAscending:\n  result->forAll(item |\n    Sequence{1..item.subCategories->size()}->forAll(i |\n      i < item.subCategories->size() implies\n      item.subCategories->at(i).date <= item.subCategories->at(i + 1).date\n    )\n  )\n\nBR-EXP-CAT-07: No-data outcome\n\nTechnical constraints:\n- If the authenticated user owns no accounts, the breakdown has no data for the selected month.\n- If no eligible current-month Expense transaction exists, the breakdown has no data for the selected month.\n- The backend shall return the API's configured no-data response, and the frontend shall display its no-data state."
+      ]
+    },
+    {
+      "row": 256,
+      "cells": [
+        "Related UI",
+        "ExpensesPage; ExpensesBreakdown; month input; route /expenses"
+      ]
+    },
+    {
+      "row": 257,
+      "cells": [
+        "Related API IDs",
+        "API-EXPENSE-BREAKDOWN"
+      ]
+    },
+    {
+      "row": 258,
+      "cells": [
+        "Notes",
+        "Experiment isolation:\n- BR-EXP-CAT-01 through BR-EXP-CAT-07 are the treatment-sensitive Business Rules for UC-11.\n- Description, pre/post-conditions, flows, UML, and non-BR API fields intentionally avoid restating these business semantics.\n- Month syntax/format validation is part of the API interface contract, not a treatment-sensitive Business Rule.\n- Figma layout/styling requirements are UI evidence and are not part of the core Business Rule effectiveness score.\n- Read-only HTTP semantics and the standard success/error response envelope are project-constrained and are not core treatment-sensitive BRs."
+      ]
+    },
+    {
+      "row": 259,
+      "cells": []
+    },
+    {
+      "row": 260,
+      "cells": [
+        "UC-12 - View Upcoming Bills"
+      ]
+    },
+    {
+      "row": 261,
+      "cells": [
+        "Use Case ID",
+        "UC-12"
+      ]
+    },
+    {
+      "row": 262,
+      "cells": [
+        "Use Case Name",
+        "View Upcoming Bills"
+      ]
+    },
+    {
+      "row": 263,
+      "cells": [
+        "Description",
+        "As an authenticated user, I want to view upcoming bills so that I can review bills that require attention in the near term."
+      ]
+    },
+    {
+      "row": 264,
+      "cells": [
+        "Actor(s)",
+        "Authenticated User"
+      ]
+    },
+    {
+      "row": 265,
+      "cells": [
+        "Priority",
+        "Not Specified"
+      ]
+    },
+    {
+      "row": 266,
+      "cells": [
+        "Trigger",
+        "The user opens the Bills page."
+      ]
+    },
+    {
+      "row": 267,
+      "cells": [
+        "Pre-Condition(s)",
+        "PRE-1: The user is authenticated."
+      ]
+    },
+    {
+      "row": 268,
+      "cells": [
+        "Post-Condition(s)",
+        "POST-1: After processing, the applicable upcoming-bill information is displayed on /bills.\nPOST-2: If no applicable bill data is available, the page displays its empty state.\nPOST-3: The operation does not modify stored bill data."
+      ]
+    },
+    {
+      "row": 269,
+      "cells": [
+        "Basic Flow",
+        "1. The user opens the Bills page.\n2. The frontend requests the user's upcoming-bill data.\n3. The backend authenticates the request.\n4. The backend retrieves and processes the relevant bill data according to the applicable business rules.\n5. The backend returns the resulting bill list.\n6. The frontend prepares the returned bill data for display.\n7. The frontend displays the resulting upcoming-bill view on the Bills page."
+      ]
+    },
+    {
+      "row": 270,
+      "cells": [
+        "Alternative Flow",
+        "AF-1: No applicable upcoming bills\n5a. The backend returns an empty bill list.\n6a. The frontend does not prepare bill cards.\n7a. The frontend displays its no-upcoming-bills state.\n\nAF-2: Retry loading\n7b. After a loading error, the user selects the retry action.\n2b. The frontend sends the upcoming-bill request again and the flow continues from Step 3."
+      ]
+    },
+    {
+      "row": 271,
+      "cells": [
+        "Exception Flow",
+        "EF-1: Authentication failure\n3a. The backend cannot authenticate the request.\n3b. The backend returns HTTP 401.\n3c. The frontend applies the application's authentication-error handling.\n\nEF-2: Retrieval or processing failure\n4a. An unexpected error occurs while retrieving or processing bill data.\n4b. The backend returns HTTP 500.\n4c. The frontend displays its bill-loading error state."
+      ]
+    },
+    {
+      "row": 272,
+      "cells": [
+        "UML Model",
+        "@startuml\n\nclass AuthenticatedRequest <<SecurityContext>> {\n  userId: Integer [1]\n}\n\nclass Bill <<Entity>> {\n  billId: Integer [1]\n  userId: Integer [1]\n  dueDate: Date [1]\n  logoUrl: String [0..1]\n  itemDescription: String [1]\n  lastChargeDate: Date [0..1]\n  amount: Decimal [1]\n}\n\nclass BillDto <<DTO>> {\n  billId: Integer [1]\n  userId: Integer [1]\n  itemDescription: String [1]\n  logoUrl: String [0..1]\n  dueDate: String [1]\n  lastChargeDate: String [0..1]\n  amount: Decimal [1]\n}\n\nclass BillsResponseDto <<DTO>> {\n  success: Boolean [1]\n  message: String [1]\n  data: BillDto [*]\n}\n\nclass BillController <<Controller>> {\n  getBills(request: AuthenticatedRequest): BillsResponseDto\n}\n\nclass BillService <<Service>> {\n  findUpcomingBillsByUserId(userId: Integer): Sequence(BillDto)\n}\n\nclass BillsPage <<UI>>\nclass UpcomingBills <<UI>>\n\nBillController ..> AuthenticatedRequest\nBillController ..> BillsResponseDto\nBillController ..> BillService\nBillService ..> Bill\nBillService ..> BillDto\nBillsResponseDto --> BillDto\nBillDto ..> Bill\nBillsPage --> UpcomingBills\nUpcomingBills ..> BillsResponseDto\n\n@enduml"
+      ]
+    },
+    {
+      "row": 273,
+      "cells": [
+        "Business Rules",
+        "BR-BILL-UP-01: Authenticated ownership scope\n\ncontext BillService::findUpcomingBillsByUserId(userId : Integer) : Sequence(BillDto)\n\npre BR_BILL_UP_01_AuthenticatedIdentity:\n  not userId.oclIsUndefined()\n\npost BR_BILL_UP_01_OwnedBillsOnly:\n  result->forAll(dto |\n    Bill.allInstances()->exists(bill |\n      bill.billId = dto.billId and\n      bill.userId = userId\n    )\n  )\n\nTechnical constraints:\n- The userId used for bill retrieval shall come from the validated authenticated request context.\n- A client-supplied user identifier shall not override the authenticated userId.\n- Bills owned by another user shall never contribute to the result.\n\nBR-BILL-UP-02: Near-term eligibility window\n\ncontext BillService::findUpcomingBillsByUserId(userId : Integer) : Sequence(BillDto)\n\npost BR_BILL_UP_02_WithinWindow:\n  result->forAll(dto |\n    Bill.allInstances()->exists(bill |\n      bill.billId = dto.billId and\n      bill.userId = userId and\n      bill.dueDate >= currentDateAtMidnight() and\n      bill.dueDate <= addDays(currentDateAtMidnight(), 30)\n    )\n  )\n\nTechnical constraints:\n- Upcoming eligibility is evaluated against an inclusive 31-day calendar window: today through 30 calendar days after today.\n- currentDateAtMidnight() represents the backend system's current calendar date with hour, minute, second, and millisecond set to zero.\n- Bills due before today are overdue and shall be excluded.\n- Bills due more than 30 calendar days after today shall not appear in the Upcoming Bills result.\n\nBR-BILL-UP-03: Already-charged cycle exclusion\n\ncontext BillService::findUpcomingBillsByUserId(userId : Integer) : Sequence(BillDto)\n\npost BR_BILL_UP_03_NotAlreadyChargedForDueCycle:\n  result->forAll(dto |\n    Bill.allInstances()->exists(bill |\n      bill.billId = dto.billId and\n      (\n        bill.lastChargeDate.oclIsUndefined() or\n        bill.lastChargeDate < bill.dueDate\n      )\n    )\n  )\n\nTechnical constraint:\n- A bill whose lastChargeDate is equal to or later than its dueDate is treated as already charged for that due cycle and shall be excluded from the Upcoming Bills result."
+      ]
+    },
+    {
+      "row": 274,
+      "cells": [
+        null,
+        "BR-BILL-UP-04: Deterministic urgency ordering\n\ncontext BillService::findUpcomingBillsByUserId(userId : Integer) : Sequence(BillDto)\n\npost BR_BILL_UP_04_Ordered:\n  result->size() <= 1 or\n  Sequence{1..result->size() - 1}->forAll(i |\n    let a : BillDto = result->at(i),\n        b : BillDto = result->at(i + 1)\n    in\n      a.dueDate < b.dueDate or\n      (\n        a.dueDate = b.dueDate and\n        (\n          a.amount > b.amount or\n          (a.amount = b.amount and a.billId < b.billId)\n        )\n      )\n  )\n\nTechnical constraints:\n- Bills shall be ordered by dueDate ascending.\n- Bills sharing the same dueDate shall be ordered by amount descending.\n- Bills sharing both dueDate and amount shall be ordered by billId ascending.\n\nBR-BILL-UP-05: Response normalization\n\ncontext BillService::findUpcomingBillsByUserId(userId : Integer) : Sequence(BillDto)\n\npost BR_BILL_UP_05_NormalizedMapping:\n  result->forAll(dto |\n    Bill.allInstances()->exists(bill |\n      bill.billId = dto.billId and\n      dto.userId = bill.userId and\n      dto.itemDescription = trim(bill.itemDescription) and\n      dto.amount = NumericUtility.round2(bill.amount) and\n      dto.dueDate = formatDate(bill.dueDate) and\n      (\n        bill.lastChargeDate.oclIsUndefined()\n        implies dto.lastChargeDate.oclIsUndefined()\n      ) and\n      (\n        not bill.lastChargeDate.oclIsUndefined()\n        implies dto.lastChargeDate = formatDate(bill.lastChargeDate)\n      ) and\n      (\n        (bill.logoUrl.oclIsUndefined() or trim(bill.logoUrl).size() = 0)\n        implies dto.logoUrl.oclIsUndefined()\n      ) and\n      (\n        (not bill.logoUrl.oclIsUndefined() and trim(bill.logoUrl).size() > 0)\n        implies dto.logoUrl = trim(bill.logoUrl)\n      )\n    )\n  )\n\nTechnical constraints:\n- itemDescription shall be trimmed before it is returned.\n- amount shall be rounded to two decimal places.\n- dueDate shall be formatted as YYYY-MM-DD.\n- lastChargeDate shall be formatted as YYYY-MM-DD when present and returned as null when absent.\n- logoUrl shall be trimmed; a missing or blank value shall be returned as null.\n\nBR-BILL-UP-06: Exact coverage, uniqueness, and empty result\n\ncontext BillService::findUpcomingBillsByUserId(userId : Integer) : Sequence(BillDto)\n\npost BR_BILL_UP_06_UniqueBills:\n  result->isUnique(dto | dto.billId)\n\npost BR_BILL_UP_06_AllAndOnlyEligibleBills:\n  let eligible : Set(Bill) =\n    Bill.allInstances()\n      ->select(bill |\n        bill.userId = userId and\n        bill.dueDate >= currentDateAtMidnight() and\n        bill.dueDate <= addDays(currentDateAtMidnight(), 30) and\n        (\n          bill.lastChargeDate.oclIsUndefined() or\n          bill.lastChargeDate < bill.dueDate\n        )\n      )\n      ->asSet()\n  in\n    result->size() = eligible->size() and\n    result->forAll(dto |\n      eligible->exists(bill | bill.billId = dto.billId)\n    )\n\nTechnical constraint:\n- If no eligible bill exists after all business rules are applied, the successful result shall contain an empty data array."
+      ]
+    },
+    {
+      "row": 275,
+      "cells": [
+        "Related UI",
+        "BillsPage; UpcomingBills; route /bills"
+      ]
+    },
+    {
+      "row": 276,
+      "cells": [
+        "Related API IDs",
+        "API-BILL-LIST"
+      ]
+    },
+    {
+      "row": 277,
+      "cells": [
+        "Notes",
+        "Experiment isolation:\n- BR-BILL-UP-01 through BR-BILL-UP-06 are the treatment-sensitive Business Rules for UC-12.\n- Description, pre/post-conditions, flows, UML, and non-BR API fields intentionally avoid restating the eligibility window, charged-cycle exclusion, tie-break ordering, normalization, and exact-coverage semantics.\n- Read-only behavior is redundantly constrained by the GET operation and is not a core treatment-sensitive Business Rule.\n- Authentication failure, retrieval failure, and the project-standard response envelope are API/project concerns rather than core Business Rules.\n- Figma layout/styling requirements remain UI evidence and are not part of the core Business Rule score.\n- \"Pay Now\" behavior remains outside the scope of UC-12."
+      ]
+    },
+    {
+      "row": 278,
+      "cells": []
+    },
+    {
+      "row": 279,
+      "cells": [
+        "UC-13 - View Financial Goals"
+      ]
+    },
+    {
+      "row": 280,
+      "cells": [
+        "Use Case ID",
+        "UC-13"
+      ]
+    },
+    {
+      "row": 281,
+      "cells": [
+        "Use Case Name",
+        "View Financial Goals"
+      ]
+    },
+    {
+      "row": 282,
+      "cells": [
+        "Description",
+        "As an authenticated user, I want to view my financial goals and their progress so that I can understand my current goal status."
+      ]
+    },
+    {
+      "row": 283,
+      "cells": [
+        "Actor(s)",
+        "Authenticated User"
+      ]
+    },
+    {
+      "row": 284,
+      "cells": [
+        "Priority",
+        "Not Specified"
+      ]
+    },
+    {
+      "row": 285,
+      "cells": [
+        "Trigger",
+        "The user opens the Goals page."
+      ]
+    },
+    {
+      "row": 286,
+      "cells": [
+        "Pre-Condition(s)",
+        "PRE-1: The user is authenticated."
+      ]
+    },
+    {
+      "row": 287,
+      "cells": [
+        "Post-Condition(s)",
+        "POST-1: After processing, the applicable financial-goal information and calculated progress are displayed on /goals.\nPOST-2: If no applicable goal data is available, the page displays its no-goals state.\nPOST-3: The operation does not modify stored goal, account, category, or transaction data."
+      ]
+    },
+    {
+      "row": 288,
+      "cells": [
+        "Basic Flow",
+        "1. The user opens the Goals page.\n2. The frontend requests the user's financial-goal data.\n3. The backend authenticates the request.\n4. The backend retrieves and processes the relevant goal and financial data according to the applicable business rules.\n5. The backend returns the resulting goal data.\n6. The frontend prepares the returned data for presentation.\n7. The frontend displays the financial-goal view on the Goals page."
+      ]
+    },
+    {
+      "row": 289,
+      "cells": [
+        "Alternative Flow",
+        "AF-1: No applicable goal data\n5a. The backend returns goal data with no applicable goal items.\n6a. The frontend does not prepare goal cards.\n7a. The frontend displays its no-goals state and the available Create Goal action.\n\nAF-2: Partial goal data\n5b. The backend returns the applicable subset of goal data.\n6b. The frontend prepares only the returned goal sections.\n7b. The frontend displays the available goal sections."
+      ]
+    },
+    {
+      "row": 290,
+      "cells": [
+        "Exception Flow",
+        "EF-1: Authentication failure\n3a. The backend cannot authenticate the request.\n3b. The backend returns HTTP 401.\n3c. The frontend applies the application's authentication-error handling.\n\nEF-2: Retrieval or processing failure\n4a. An unexpected error occurs while retrieving or processing goal data.\n4b. The backend returns HTTP 500.\n4c. The frontend displays its retryable goal-loading error state."
+      ]
+    },
+    {
+      "row": 291,
+      "cells": [
+        "UML Model",
+        "@startuml\n\nenum GoalType {\n  SAVING\n  EXPENSE_LIMIT\n}\n\nenum TransactionType {\n  REVENUE\n  EXPENSE\n}\n\nclass AuthenticatedRequest <<SecurityContext>> {\n  userId: Integer [1]\n}\n\nclass Goal <<Entity>> {\n  goalId: Integer [1]\n  userId: Integer [1]\n  goalType: GoalType [1]\n  categoryId: Integer [0..1]\n  startDate: Date [1]\n  endDate: Date [1]\n  targetAmount: Decimal [1]\n}\n\nclass Account <<Entity>> {\n  accountId: Integer [1]\n  userId: Integer [1]\n}\n\nclass Transaction <<Entity>> {\n  transactionId: Integer [1]\n  accountId: Integer [1]\n  categoryId: Integer [0..1]\n  transactionDate: Date [1]\n  type: TransactionType [1]\n  amount: Decimal [1]\n}\n\nclass Category <<Entity>> {\n  categoryId: Integer [1]\n  categoryName: String [1]\n}\n\nclass SavingGoalDto <<DTO>> {\n  goalId: Integer [1]\n  goalType: GoalType [1]\n  targetAmount: Decimal [1]\n  targetAchieved: Decimal [1]\n  startDate: String [1]\n  endDate: String [1]\n}\n\nclass ExpenseGoalDto <<DTO>> {\n  goalId: Integer [1]\n  category: String [1]\n  targetAmount: Decimal [1]\n  currentExpense: Decimal [1]\n}\n\nclass GoalDataDto <<DTO>> {\n  savingGoal: SavingGoalDto [0..1]\n  expenseGoals: ExpenseGoalDto [*] {ordered}\n}\n\nclass GoalListResponseDto <<DTO>> {\n  success: Boolean [1]\n  message: String [1]\n  data: GoalDataDto [1]\n}\n\nclass GoalController <<Controller>> {\n  getGoals(request: AuthenticatedRequest): GoalListResponseDto\n}\n\nclass GoalService <<Service>> {\n  getGoals(userId: Integer): GoalListResponseDto\n}\n\nclass GoalsPage <<UI>>\n\nGoalController ..> AuthenticatedRequest\nGoalController ..> GoalService\nGoalController ..> GoalListResponseDto\nGoalService ..> Goal\nGoalService ..> Account\nGoalService ..> Transaction\nGoalService ..> Category\nGoalListResponseDto --> GoalDataDto\nGoalDataDto --> SavingGoalDto\nGoalDataDto --> ExpenseGoalDto\nSavingGoalDto ..> Goal\nExpenseGoalDto ..> Goal\nTransaction --> Account\nGoal --> Category : category [0..1]\nTransaction --> Category : category [0..1]\nGoalsPage ..> GoalListResponseDto\n\n@enduml"
+      ]
+    },
+    {
+      "row": 292,
+      "cells": [
+        "Business Rules",
+        "BR-GOAL-VIEW-01: Authenticated ownership scope\n\ncontext GoalService::getGoals(userId : Integer) : GoalListResponseDto\n\npre BR_GOAL_VIEW_01_AuthenticatedIdentity:\n  not userId.oclIsUndefined()\n\npost BR_GOAL_VIEW_01_OwnedGoalsOnly:\n  result.success implies\n    (\n      result.data.savingGoal.oclIsUndefined() or\n      Goal.allInstances()->exists(g |\n        g.goalId = result.data.savingGoal.goalId and\n        g.userId = userId\n      )\n    ) and\n    result.data.expenseGoals->forAll(dto |\n      Goal.allInstances()->exists(g |\n        g.goalId = dto.goalId and\n        g.userId = userId\n      )\n    )\n\nTechnical constraints:\n- The userId used by GoalService shall come from the validated authenticated request context.\n- A client-supplied user identifier shall not override the authenticated userId.\n- Goals, accounts, and transactions owned by another user shall not contribute to any returned goal or calculated progress value.\n\nBR-GOAL-VIEW-02: Deterministic saving-goal selection\n\ncontext GoalService::getGoals(userId : Integer) : GoalListResponseDto\n\npost BR_GOAL_VIEW_02_SavingSelection:\n  let candidates : Set(Goal) =\n    Goal.allInstances()\n      ->select(g |\n        g.userId = userId and\n        g.goalType = GoalType::SAVING and\n        g.startDate <= g.endDate and\n        g.startDate <= currentMonthEnd() and\n        g.endDate >= currentMonthStart()\n      )\n      ->asSet()\n  in\n    if candidates->isEmpty() then\n      result.data.savingGoal.oclIsUndefined()\n    else\n      let latestStart : Date = candidates->collect(g | g.startDate)->max() in\n      let latestStartCandidates : Set(Goal) = candidates->select(g | g.startDate = latestStart)->asSet() in\n      let selectedId : Integer = latestStartCandidates->collect(g | g.goalId)->max() in\n        not result.data.savingGoal.oclIsUndefined() and\n        result.data.savingGoal.goalId = selectedId\n    endif\n\nTechnical constraints:\n- A Saving goal is eligible only when its persisted date range is valid and overlaps the current calendar month.\n- If multiple eligible Saving goals exist, select the one with the latest startDate; if multiple candidates share that startDate, select the one with the highest goalId.\n- For the OCL in UC-13, currentMonthStart() and currentMonthEnd() denote the first and last instants of the backend server's current calendar month.\n\nBR-GOAL-VIEW-03: Expense-limit goal eligibility and exact coverage\n\ncontext GoalService::getGoals(userId : Integer) : GoalListResponseDto\n\npost BR_GOAL_VIEW_03_AllAndOnlyEligibleExpenseGoals:\n  let eligible : Set(Goal) =\n    Goal.allInstances()\n      ->select(g |\n        g.userId = userId and\n        g.goalType = GoalType::EXPENSE_LIMIT and\n        g.startDate <= g.endDate and\n        g.startDate <= currentMonthEnd() and\n        g.endDate >= currentMonthStart()\n      )\n      ->asSet()\n  in\n    result.data.expenseGoals->size() = eligible->size() and\n    result.data.expenseGoals->isUnique(dto | dto.goalId) and\n    result.data.expenseGoals->forAll(dto |\n      eligible->exists(g | g.goalId = dto.goalId)\n    )\n\nTechnical constraints:\n- Expired, not-yet-active, invalid-range, or other-user Expense_Limit goals shall not be returned.\n- Every eligible Expense_Limit goal shall appear exactly once."
+      ]
+    },
+    {
+      "row": 293,
+      "cells": [
+        null,
+        "BR-GOAL-VIEW-04: Saving progress uses the goal/month overlap interval\n\ncontext GoalService::getGoals(userId : Integer) : GoalListResponseDto\n\npost BR_GOAL_VIEW_04_SavingTargetAchieved:\n  not result.data.savingGoal.oclIsUndefined()\n  implies\n    let goal : Goal = Goal.allInstances()->any(g | g.goalId = result.data.savingGoal.goalId) in\n    let periodStart : Date = if goal.startDate > currentMonthStart() then goal.startDate else currentMonthStart() endif in\n    let periodEnd : Date = if goal.endDate < currentMonthEnd() then goal.endDate else currentMonthEnd() endif in\n    let ownedAccountIds : Set(Integer) =\n      Account.allInstances()\n        ->select(a | a.userId = userId)\n        ->collect(a | a.accountId)\n        ->asSet()\n    in\n    let periodTransactions : Set(Transaction) =\n      Transaction.allInstances()\n        ->select(t |\n          ownedAccountIds->includes(t.accountId) and\n          t.transactionDate >= periodStart and\n          t.transactionDate <= periodEnd\n        )\n        ->asSet()\n    in\n    let revenue : Decimal =\n      periodTransactions\n        ->select(t | t.type = TransactionType::REVENUE)\n        ->collect(t | t.amount)\n        ->sum()\n    in\n    let expense : Decimal =\n      periodTransactions\n        ->select(t | t.type = TransactionType::EXPENSE)\n        ->collect(t | t.amount)\n        ->sum()\n    in\n      result.data.savingGoal.targetAchieved = revenue - expense\n\nTechnical constraints:\n- Saving progress is calculated only for the intersection between the selected Saving goal's date interval and the current calendar month.\n- Transactions outside that intersection shall not contribute even if they are in the same calendar month.\n- If no owned account or no matching transaction exists, the corresponding sum is treated as 0.\n- Negative targetAchieved values are allowed and shall not be clamped to zero.\n\nBR-GOAL-VIEW-05: Expense-limit progress uses category and goal/month overlap\n\ncontext GoalService::getGoals(userId : Integer) : GoalListResponseDto\n\npost BR_GOAL_VIEW_05_CurrentExpense:\n  result.data.expenseGoals->forAll(dto |\n    let goal : Goal = Goal.allInstances()->any(g | g.goalId = dto.goalId) in\n    let periodStart : Date = if goal.startDate > currentMonthStart() then goal.startDate else currentMonthStart() endif in\n    let periodEnd : Date = if goal.endDate < currentMonthEnd() then goal.endDate else currentMonthEnd() endif in\n    let ownedAccountIds : Set(Integer) =\n      Account.allInstances()\n        ->select(a | a.userId = userId)\n        ->collect(a | a.accountId)\n        ->asSet()\n    in\n    let expectedExpense : Decimal =\n      Transaction.allInstances()\n        ->select(t |\n          ownedAccountIds->includes(t.accountId) and\n          t.type = TransactionType::EXPENSE and\n          t.categoryId = goal.categoryId and\n          t.transactionDate >= periodStart and\n          t.transactionDate <= periodEnd\n        )\n        ->collect(t | t.amount)\n        ->sum()\n    in\n      dto.currentExpense = expectedExpense\n  )\n\nTechnical constraints:\n- Revenue transactions never contribute to currentExpense.\n- Expense progress is calculated only for the intersection between each Expense_Limit goal's date interval and the current calendar month.\n- Only transactions whose categoryId equals the goal's categoryId contribute.\n- If no owned account or no matching transaction exists, currentExpense is 0."
+      ]
+    },
+    {
+      "row": 294,
+      "cells": [
+        null,
+        "BR-GOAL-VIEW-06: Category resolution and numeric normalization\n\ncontext GoalService::getGoals(userId : Integer) : GoalListResponseDto\n\npost BR_GOAL_VIEW_06_CategoryAndAmounts:\n  result.data.expenseGoals->forAll(dto |\n    let goal : Goal = Goal.allInstances()->any(g | g.goalId = dto.goalId) in\n      dto.targetAmount = NumericUtility.round2(goal.targetAmount) and\n      dto.currentExpense = NumericUtility.round2(dto.currentExpense) and\n      (\n        (goal.categoryId.oclIsUndefined() and dto.category = 'Uncategorized') or\n        (not goal.categoryId.oclIsUndefined() and\n          Category.allInstances()->exists(c |\n            c.categoryId = goal.categoryId and\n            StringNormalizer.trim(c.categoryName).size() > 0 and\n            dto.category = StringNormalizer.trim(c.categoryName)\n          )) or\n        (not goal.categoryId.oclIsUndefined() and\n          not Category.allInstances()->exists(c |\n            c.categoryId = goal.categoryId and\n            StringNormalizer.trim(c.categoryName).size() > 0\n          ) and\n          dto.category = 'Unknown')\n      )\n  )\n\nTechnical constraints:\n- A null categoryId is represented as Uncategorized.\n- A non-null categoryId with no resolvable non-blank category name is represented as Unknown.\n- A resolved category name is trimmed before being returned.\n- Saving and expense monetary values returned by this use case shall be rounded to two decimal places.\n\nBR-GOAL-VIEW-07: Deterministic expense-goal priority ordering\n\ncontext GoalService::getGoals(userId : Integer) : GoalListResponseDto\n\npost BR_GOAL_VIEW_07_ExpenseGoalOrder:\n  result.data.expenseGoals->size() <= 1 or\n  Sequence{1..result.data.expenseGoals->size() - 1}->forAll(i |\n    let a : ExpenseGoalDto = result.data.expenseGoals->at(i),\n        b : ExpenseGoalDto = result.data.expenseGoals->at(i + 1),\n        ga : Goal = Goal.allInstances()->any(g | g.goalId = a.goalId),\n        gb : Goal = Goal.allInstances()->any(g | g.goalId = b.goalId),\n        aExceeded : Boolean = a.currentExpense >= a.targetAmount,\n        bExceeded : Boolean = b.currentExpense >= b.targetAmount\n    in\n      (aExceeded and not bExceeded) or\n      (aExceeded = bExceeded and ga.endDate < gb.endDate) or\n      (aExceeded = bExceeded and ga.endDate = gb.endDate and a.targetAmount < b.targetAmount) or\n      (aExceeded = bExceeded and ga.endDate = gb.endDate and a.targetAmount = b.targetAmount and a.goalId < b.goalId)\n  )\n\nTechnical constraints:\n- Goals that have reached or exceeded their target amount shall be listed before goals still below their limit.\n- Within the same exceeded/not-exceeded group, order by endDate ascending, then targetAmount ascending, then goalId ascending.\n- The ordering shall be deterministic for the same persisted data and calculation date."
+      ]
+    },
+    {
+      "row": 295,
+      "cells": [
+        "Related UI",
+        "GoalsPage; saving and expense goal cards; route /goals"
+      ]
+    },
+    {
+      "row": 296,
+      "cells": [
+        "Related API IDs",
+        "API-GOAL-LIST"
+      ]
+    },
+    {
+      "row": 297,
+      "cells": [
+        "Notes",
+        "Experiment isolation:\n- BR-GOAL-VIEW-01 through BR-GOAL-VIEW-07 are the treatment-sensitive Business Rules for UC-13.\n- Description, pre/post-conditions, flows, UML, and the non-BR API contract intentionally avoid restating saving-goal selection, date-overlap calculation, category fallback, exact-coverage, and priority-ordering semantics.\n- The API contract defines only interface structure, authentication requirements, response fields, and error contracts.\n- Read-only behavior is redundantly constrained by the GET operation and is not a core treatment-sensitive Business Rule.\n- Authentication failure, retrieval failure, and the project-standard response envelope are project/API concerns rather than core Business Rules.\n- Figma layout/styling requirements are UI evidence and are not part of the core Business Rule score."
+      ]
+    },
+    {
+      "row": 298,
+      "cells": []
+    },
+    {
+      "row": 299,
+      "cells": [
+        "UC-14 - Create a Financial Goal"
+      ]
+    },
+    {
+      "row": 300,
+      "cells": [
+        "Use Case ID",
+        "UC-14"
+      ]
+    },
+    {
+      "row": 301,
+      "cells": [
+        "Use Case Name",
+        "Create a Financial Goal"
+      ]
+    },
+    {
+      "row": 302,
+      "cells": [
+        "Description",
+        "As an authenticated user, I want to create a financial goal so that I can track a desired financial outcome."
+      ]
+    },
+    {
+      "row": 303,
+      "cells": [
+        "Actor(s)",
+        "Authenticated User"
+      ]
+    },
+    {
+      "row": 304,
+      "cells": [
+        "Priority",
+        "Not Specified"
+      ]
+    },
+    {
+      "row": 305,
+      "cells": [
+        "Trigger",
+        "The user selects Create Goal on the Goals page."
+      ]
+    },
+    {
+      "row": 306,
+      "cells": [
+        "Pre-Condition(s)",
+        "PRE-1: The user is authenticated."
+      ]
+    },
+    {
+      "row": 307,
+      "cells": [
+        "Post-Condition(s)",
+        "POST-1: After successful processing, the new financial goal is persisted in the database.\nPOST-2: After the goal is created successfully, the Create Goal modal closes and the user remains on /goals with the goal list refreshed.\nPOST-3: The page displays the successful creation feedback."
+      ]
+    },
+    {
+      "row": 308,
+      "cells": [
+        "Basic Flow",
+        "1. The user opens the Create Goal modal.\n2. The frontend prepares the information required by the goal-creation form.\n3. The user enters the financial-goal information.\n4. The user submits the form.\n5. The frontend sends a goal-creation request.\n6. The backend authenticates the request and validates the submitted data according to the applicable business rules.\n7. The backend creates and persists the new goal.\n8. The backend returns the creation result.\n9. The frontend closes the modal, refreshes the goal list, and displays the updated Goals page."
+      ]
+    },
+    {
+      "row": 309,
+      "cells": [
+        "Alternative Flow",
+        "AF-1: Select a different goal type\n3a. The user selects another supported goal type.\n3b. The frontend updates the form fields applicable to the selected type.\n3c. The flow continues from Step 3.\n\nAF-2: Cancel creation\n4a. The user closes or cancels the modal.\n4b. No goal-creation request is sent and the use case ends."
+      ]
+    },
+    {
+      "row": 310,
+      "cells": [
+        "Exception Flow",
+        "EF-1: Submitted data is rejected\n6a. The submitted goal data does not satisfy the applicable validation or business rules.\n6b. The backend returns HTTP 400.\n6c. The modal displays the returned validation message and remains open.\n\nEF-2: Authentication failure\n6a. The backend cannot authenticate the request.\n6b. The backend returns HTTP 401.\n6c. The frontend applies the application's authentication-error handling.\n\nEF-3: Persistence or processing failure\n7a. An unexpected error occurs while creating the goal.\n7b. The backend returns HTTP 500.\n7c. The modal displays its create-goal failure state."
+      ]
+    },
+    {
+      "row": 311,
+      "cells": [
+        "UML Model",
+        "@startuml\n\nenum GoalType {\n  SAVING\n  EXPENSE_LIMIT\n}\n\nclass AuthenticatedRequest <<SecurityContext>> {\n  userId: Integer [1]\n}\n\nclass User <<Entity>> {\n  userId: Integer [1]\n}\n\nclass Category <<Entity>> {\n  categoryId: Integer [1]\n  categoryName: String [1]\n}\n\nclass Goal <<Entity>> {\n  goalId: Integer [1]\n  userId: Integer [1]\n  goalType: GoalType [1]\n  categoryId: Integer [0..1]\n  startDate: Date [1]\n  endDate: Date [1]\n  targetAmount: Decimal [1]\n}\n\nclass CreateGoalDto <<DTO>> {\n  goal_type: GoalType [1]\n  category_id: Integer [0..1]\n  start_date: String [1]\n  end_date: String [1]\n  target_amount: Decimal [1]\n}\n\nclass CreateGoalResponseDto <<DTO>> {\n  message: String [1]\n  goal_id: Integer [1]\n}\n\nclass GoalController <<Controller>> {\n  createGoal(request: AuthenticatedRequest, dto: CreateGoalDto): CreateGoalResponseDto\n}\n\nclass GoalService <<Service>> {\n  createGoal(userId: Integer, dto: CreateGoalDto): Goal\n}\n\nclass GoalsPage <<UI>>\nclass CreateGoalModal <<UI>>\n\nUser \"1\" -- \"0..*\" Goal : owns\nCategory \"0..1\" -- \"0..*\" Goal : categorizes\nGoalController ..> AuthenticatedRequest\nGoalController ..> CreateGoalDto\nGoalController ..> CreateGoalResponseDto\nGoalController ..> GoalService\nGoalService ..> Goal\nGoalService ..> Category\nGoalsPage --> CreateGoalModal\nCreateGoalModal ..> CreateGoalResponseDto\n\n@enduml"
+      ]
+    },
+    {
+      "row": 312,
+      "cells": [
+        "Business Rules",
+        "Specification helper semantics used only by the UC-14 Business Rules:\n- parseIsoDate(s): parses s only when s is a valid calendar date written exactly as YYYY-MM-DD.\n- todayAtMidnight(): returns the backend server's current calendar date with the time component normalized to 00:00:00.000.\n- calendarDaysBetween(a, b): returns the number of calendar-day boundaries from a to b.\n- decimalScale(x): returns the number of fractional decimal digits in x after removing insignificant trailing zeros.\n\nBR-GOAL-CREATE-01: Authenticated ownership is authoritative\n\ncontext GoalService::createGoal(userId : Integer, dto : CreateGoalDto) : Goal\n\npre BR_GOAL_CREATE_01_AuthenticatedIdentity:\n  not userId.oclIsUndefined()\n\npost BR_GOAL_CREATE_01_Ownership:\n  result.userId = userId\n\nTechnical constraints:\n- userId shall come from the validated authentication context.\n- The client shall not provide, select, or override the owner of the created goal.\n- No goal belonging to another user may be modified as part of this operation.\n\nBR-GOAL-CREATE-02: Goal type determines category semantics\n\ncontext GoalService::createGoal(userId : Integer, dto : CreateGoalDto) : Goal\n\npre BR_GOAL_CREATE_02_AllowedType:\n  Set{GoalType::SAVING, GoalType::EXPENSE_LIMIT}->includes(dto.goal_type)\n\npre BR_GOAL_CREATE_02_CategorySemantics:\n  (dto.goal_type = GoalType::SAVING implies dto.category_id.oclIsUndefined()) and\n  (dto.goal_type = GoalType::EXPENSE_LIMIT implies\n    not dto.category_id.oclIsUndefined() and\n    Category.allInstances()->exists(c | c.categoryId = dto.category_id))\n\npost BR_GOAL_CREATE_02_CategoryPersisted:\n  (dto.goal_type = GoalType::SAVING implies result.categoryId.oclIsUndefined()) and\n  (dto.goal_type = GoalType::EXPENSE_LIMIT implies result.categoryId = dto.category_id)\n\nTechnical constraints:\n- A Saving goal request containing a non-null category_id is invalid; the category value shall not be silently discarded.\n- An Expense_Limit goal requires a category_id that resolves to an existing Category.\n\nBR-GOAL-CREATE-03: Target amount precision and positivity\n\ncontext GoalService::createGoal(userId : Integer, dto : CreateGoalDto) : Goal\n\npre BR_GOAL_CREATE_03_TargetDefined:\n  not dto.target_amount.oclIsUndefined()\n\npre BR_GOAL_CREATE_03_TargetPositive:\n  dto.target_amount > 0\n\npre BR_GOAL_CREATE_03_TargetScale:\n  decimalScale(dto.target_amount) <= 2\n\npost BR_GOAL_CREATE_03_TargetPreserved:\n  result.targetAmount = dto.target_amount\n\nTechnical constraints:\n- target_amount shall be a finite decimal value greater than zero.\n- More than two significant fractional decimal digits shall be rejected rather than silently rounded."
+      ]
+    },
+    {
+      "row": 313,
+      "cells": [
+        null,
+        "BR-GOAL-CREATE-04: Prospective bounded date interval\n\ncontext GoalService::createGoal(userId : Integer, dto : CreateGoalDto) : Goal\n\npre BR_GOAL_CREATE_04_StrictDates:\n  parseIsoDate(dto.start_date) is defined and\n  parseIsoDate(dto.end_date) is defined\n\npre BR_GOAL_CREATE_04_ProspectiveInterval:\n  parseIsoDate(dto.start_date) >= todayAtMidnight() and\n  parseIsoDate(dto.end_date) > parseIsoDate(dto.start_date)\n\npre BR_GOAL_CREATE_04_MaxDuration:\n  calendarDaysBetween(parseIsoDate(dto.start_date), parseIsoDate(dto.end_date)) <= 366\n\nTechnical constraints:\n- start_date and end_date shall be valid calendar dates written exactly as YYYY-MM-DD.\n- A goal may start today or in the future, but shall not start before the backend server's current calendar date.\n- end_date shall be strictly later than start_date.\n- A single goal interval shall not exceed 366 calendar days.\n\nBR-GOAL-CREATE-05: Conflicting goal intervals are prohibited\n\ncontext GoalService::createGoal(userId : Integer, dto : CreateGoalDto) : Goal\n\npre BR_GOAL_CREATE_05_NoConflictingOverlap:\n  let newStart : Date = parseIsoDate(dto.start_date),\n      newEnd : Date = parseIsoDate(dto.end_date)\n  in\n    if dto.goal_type = GoalType::SAVING then\n      Goal.allInstances()\n        ->select(g | g.userId = userId and g.goalType = GoalType::SAVING)\n        ->forAll(g | not (g.startDate <= newEnd and g.endDate >= newStart))\n    else\n      Goal.allInstances()\n        ->select(g |\n          g.userId = userId and\n          g.goalType = GoalType::EXPENSE_LIMIT and\n          g.categoryId = dto.category_id\n        )\n        ->forAll(g | not (g.startDate <= newEnd and g.endDate >= newStart))\n    endif\n\nTechnical constraints:\n- Date intervals are inclusive for conflict detection.\n- Two Saving goals owned by the same user shall not have overlapping intervals.\n- Two Expense_Limit goals owned by the same user for the same category shall not have overlapping intervals.\n- Expense_Limit goals for different categories may overlap.\n- Because interval boundaries are inclusive, an existing goal ending on the requested start_date is considered conflicting.\n\nBR-GOAL-CREATE-06: Exact persistence with existing-goal preservation\n\ncontext GoalService::createGoal(userId : Integer, dto : CreateGoalDto) : Goal\n\npost BR_GOAL_CREATE_06_ExactlyOneCreated:\n  Goal.allInstances()->size() = Goal.allInstances()@pre->size() + 1\n\npost BR_GOAL_CREATE_06_PersistedValues:\n  Goal.allInstances()->one(g |\n    g.goalId = result.goalId and\n    g.userId = userId and\n    g.goalType = dto.goal_type and\n    g.startDate = parseIsoDate(dto.start_date) and\n    g.endDate = parseIsoDate(dto.end_date) and\n    g.targetAmount = dto.target_amount and\n    ((dto.goal_type = GoalType::SAVING and g.categoryId.oclIsUndefined()) or\n     (dto.goal_type = GoalType::EXPENSE_LIMIT and g.categoryId = dto.category_id))\n  )\n\nTechnical constraints:\n- A successful operation shall insert exactly one new Goal record.\n- Existing Goal records shall not be updated or deleted by creation.\n- The returned goal_id shall identify the newly persisted Goal record.\n\nBR-GOAL-CREATE-07: Validation, conflict, and persistence failures are atomic\n\nTechnical constraints:\n- Any violation of BR-GOAL-CREATE-01 through BR-GOAL-CREATE-05 shall reject the request with HTTP 400 and shall not persist a Goal record.\n- An unexpected repository or database failure shall return HTTP 500 and shall not leave a partially persisted Goal record.\n- The conflict check in BR-GOAL-CREATE-05 and insertion of the new Goal shall be executed atomically, transactionally, or with an equivalent concurrency-safe mechanism so that two concurrent conflicting requests cannot both succeed.\n- Success shall be reported only after persistence has completed."
+      ]
+    },
+    {
+      "row": 314,
+      "cells": [
+        "Related UI",
+        "GoalsPage; CreateGoalModal"
+      ]
+    },
+    {
+      "row": 315,
+      "cells": [
+        "Related API IDs",
+        "API-GOAL-CREATE; API-CATEGORY-LIST"
+      ]
+    },
+    {
+      "row": 316,
+      "cells": [
+        "Notes",
+        "Experiment isolation:\n- BR-GOAL-CREATE-01 through BR-GOAL-CREATE-07 are the treatment-sensitive Business Rules for UC-14.\n- Description, pre/post-conditions, flows, UML, and the non-BR API contract intentionally avoid restating ownership authority, category semantics, target precision, prospective date limits, overlap conflicts, exact persistence, and atomicity semantics.\n- The API contract defines only endpoint structure, authentication, request/response field shapes, and generic error contracts.\n- The standard response envelope and HTTP transport behavior are project/API concerns and are not part of the core Business Rule effectiveness score.\n- Figma layout/styling requirements are UI evidence and are not part of the core Business Rule score."
+      ]
+    },
+    {
+      "row": 317,
+      "cells": []
+    },
+    {
+      "row": 318,
+      "cells": [
+        "UC-15 - Adjust a Financial Goal"
+      ]
+    },
+    {
+      "row": 319,
+      "cells": [
+        "Use Case ID",
+        "UC-15"
+      ]
+    },
+    {
+      "row": 320,
+      "cells": [
+        "Use Case Name",
+        "Adjust a Financial Goal"
+      ]
+    },
+    {
+      "row": 321,
+      "cells": [
+        "Description",
+        "As an authenticated goal owner, I want to change an existing goal's target amount."
+      ]
+    },
+    {
+      "row": 322,
+      "cells": [
+        "Actor(s)",
+        "Authenticated User"
+      ]
+    },
+    {
+      "row": 323,
+      "cells": [
+        "Priority",
+        "Not Specified"
+      ]
+    },
+    {
+      "row": 324,
+      "cells": [
+        "Trigger",
+        "The user selects Edit on a displayed Saving or Expense_Limit goal."
+      ]
+    },
+    {
+      "row": 325,
+      "cells": [
+        "Pre-Condition(s)",
+        "PRE-1: The user is authenticated.\nPRE-2: The selected goal exists and belongs to the authenticated user."
+      ]
+    },
+    {
+      "row": 326,
+      "cells": [
+        "Post-Condition(s)",
+        "POST-1: On success, only targetAmount is changed.\nPOST-2: The modal closes, a success toast appears, and GoalsPage refreshes.\nPOST-3: On failure, the previous target amount remains stored."
+      ]
+    },
+    {
+      "row": 327,
+      "cells": [
+        "Basic Flow",
+        "1. The user selects Edit for a displayed goal.\n2. AdjustGoalModal opens with the current target amount.\n3. The user enters a new target amount and selects Save.\n4. The frontend requires a numeric amount greater than zero.\n5. The frontend sends PUT /api/v1/goals/:goalId with target_amount.\n6. ValidationPipe validates UpdateGoalDto.\n7. GoalService finds the goal, verifies that goal.userId equals the authenticated userId, and overwrites only targetAmount.\n8. The backend returns the goal ID and updated target amount.\n9. The frontend displays a success toast, closes the modal, and refreshes goals."
+      ]
+    },
+    {
+      "row": 328,
+      "cells": [
+        "Alternative Flow",
+        "AF-1: Cancel\n3a. The user closes or cancels the modal and no update request is sent."
+      ]
+    },
+    {
+      "row": 329,
+      "cells": [
+        "Exception Flow",
+        "EF-1: Invalid target amount\n4a. The frontend displays an input error, or the backend returns HTTP 400.\n\nEF-2: Goal not found\n7a. The backend returns HTTP 404.\n\nEF-3: Goal belongs to another user\n7a. The backend returns HTTP 403.\n\nEF-4: Storage failure\n7a. The backend returns HTTP 500 and the modal displays its save failure message."
+      ]
+    },
+    {
+      "row": 330,
+      "cells": [
+        "UML Model",
+        "@startuml\n\nenum GoalType {\n  SAVING\n  EXPENSE_LIMIT\n}\n\nnote right of GoalType\n  SAVING maps to \"Saving\".\n  EXPENSE_LIMIT maps to \"Expense_Limit\".\nend note\n\nclass AuthenticatedRequest <<SecurityContext>> {\n  userId: Integer [1]\n}\n\nclass User <<Entity>> {\n  userId: Integer [1]\n}\n\nclass Goal <<Entity>> {\n  goalId: Integer [1]\n  userId: Integer [1]\n  goalType: GoalType [1]\n  categoryId: Integer [0..1]\n  startDate: Date [1]\n  endDate: Date [1]\n  targetAmount: Decimal [1]\n}\n\nclass UpdateGoalDto <<DTO>> {\n  target_amount: Decimal [1]\n}\n\nclass UpdatedGoalDto <<DTO>> {\n  goal_id: Integer [1]\n  target_amount: Decimal [1]\n}\n\nclass UpdateGoalResponseDto <<DTO>> {\n  message: String [1]\n  updated_goal: UpdatedGoalDto [1]\n}\n\nclass GoalController <<Controller>> {\n  updateGoal(\n    request: AuthenticatedRequest,\n    goalId: Integer,\n    dto: UpdateGoalDto\n  ): UpdateGoalResponseDto\n}\n\nclass GoalService <<Service>> {\n  updateGoal(\n    userId: Integer,\n    goalId: Integer,\n    dto: UpdateGoalDto\n  ): Goal\n}\n\nUser \"1\" -- \"0..*\" Goal : owns\n\nGoalController ..> AuthenticatedRequest\nGoalController ..> UpdateGoalDto\nGoalController ..> UpdateGoalResponseDto\nGoalController ..> GoalService\n\nGoalService ..> Goal\nGoalService ..> UpdateGoalDto\n\nUpdateGoalResponseDto --> UpdatedGoalDto\nUpdatedGoalDto ..> Goal : maps from\n\n@enduml"
+      ]
+    },
+    {
+      "row": 331,
+      "cells": [
+        "Business Rules",
+        "BR-GOAL-12: Positive updated target amount\n\ncontext GoalService::updateGoal(\n  userId : Integer,\n  goalId : Integer,\n  dto : UpdateGoalDto\n) : Goal\n\npre BR_GOAL_12_TargetDefined:\n  not dto.target_amount.oclIsUndefined()\n\npre BR_GOAL_12_TargetPositive:\n  dto.target_amount > 0\n\n\nBR-GOAL-13: Existing goal required\n\ncontext GoalService::updateGoal(\n  userId : Integer,\n  goalId : Integer,\n  dto : UpdateGoalDto\n) : Goal\n\npre BR_GOAL_13_GoalExists:\n  Goal.allInstances()->exists(g |\n    g.goalId = goalId\n  )\n\nTechnical constraint:\n- If no Goal exists with goalId, the backend shall return HTTP 404 Not Found with message \"Goal does not exist.\"\n\n\nBR-GOAL-14: Authenticated goal ownership\n\ncontext GoalService::updateGoal(\n  userId : Integer,\n  goalId : Integer,\n  dto : UpdateGoalDto\n) : Goal\n\npre BR_GOAL_14_OwnedByAuthenticatedUser:\n  Goal.allInstances()->exists(g |\n    g.goalId = goalId and\n    g.userId = userId\n  )\n\nTechnical constraints:\n- userId shall be obtained from the validated JWT.\n- If the goal belongs to another user, the backend shall return HTTP 403 Forbidden with message \"You do not have permission to edit this goal.\"\n\n\nBR-GOAL-15: Target-only goal update\n\ncontext GoalService::updateGoal(\n  userId : Integer,\n  goalId : Integer,\n  dto : UpdateGoalDto\n) : Goal\n\npost BR_GOAL_15_NoGoalCreatedOrDeleted:\n  Goal.allInstances()->size() =\n    Goal.allInstances()@pre->size()\n\npost BR_GOAL_15_OnlyTargetAmountChanged:\n  let original : Goal =\n    Goal.allInstances()@pre->any(g |\n      g.goalId = goalId\n    )\n  in\n  let updated : Goal =\n    Goal.allInstances()->any(g |\n      g.goalId = goalId\n    )\n  in\n    updated.targetAmount = dto.target_amount and\n    updated.userId = original.userId and\n    updated.goalType = original.goalType and\n    updated.startDate = original.startDate and\n    updated.endDate = original.endDate and\n    updated.categoryId.oclIsUndefined() =\n      original.categoryId.oclIsUndefined() and\n    (\n      not original.categoryId.oclIsUndefined()\n      implies updated.categoryId = original.categoryId\n    )\n\n\nBR-GOAL-16: Successful update response\n\ncontext GoalController::updateGoal(\n  request : AuthenticatedRequest,\n  goalId : Integer,\n  dto : UpdateGoalDto\n) : UpdateGoalResponseDto\n\npost BR_GOAL_16_Response:\n  result.message = 'Goal updated successfully' and\n  result.updated_goal.goal_id = goalId and\n  result.updated_goal.target_amount = dto.target_amount and\n  Goal.allInstances()->exists(g |\n    g.goalId = goalId and\n    g.userId = request.userId and\n    g.targetAmount = dto.target_amount\n  )\n\n\nBR-GOAL-17: Update failure handling\n\nTechnical constraints:\n- An invalid or non-positive target_amount shall result in HTTP 400 Bad Request.\n- A failed or rejected update shall not persist a changed targetAmount.\n- If the goal does not exist, the backend shall return HTTP 404 Not Found.\n- If the goal belongs to another user, the backend shall return HTTP 403 Forbidden.\n- An unexpected repository/database failure while saving shall result in HTTP 500 Internal Server Error with message \"Unable to save changes at this time. Please try again later.\"\n- The controller parses goalId with parseInt(goalId, 10) and does not explicitly reject NaN before calling the service."
+      ]
+    },
+    {
+      "row": 332,
+      "cells": [
+        "Related UI",
+        "GoalsPage; AdjustGoalModal"
+      ]
+    },
+    {
+      "row": 333,
+      "cells": [
+        "Related API IDs",
+        "API-GOAL-UPDATE"
+      ]
+    },
+    {
+      "row": 334,
+      "cells": [
+        "Notes"
+      ]
+    },
+    {
+      "row": 335,
+      "cells": []
+    },
+    {
+      "row": 336,
+      "cells": [
+        "UC-16 - View Savings Summary"
+      ]
+    },
+    {
+      "row": 337,
+      "cells": [
+        "Use Case ID",
+        "UC-16"
+      ]
+    },
+    {
+      "row": 338,
+      "cells": [
+        "Use Case Name",
+        "View Savings Summary"
+      ]
+    },
+    {
+      "row": 339,
+      "cells": [
+        "Description",
+        "As an authenticated user, I want to compare monthly net savings for a selected year with the previous year."
+      ]
+    },
+    {
+      "row": 340,
+      "cells": [
+        "Actor(s)",
+        "Authenticated User"
+      ]
+    },
+    {
+      "row": 341,
+      "cells": [
+        "Priority",
+        "Not Specified"
+      ]
+    },
+    {
+      "row": 342,
+      "cells": [
+        "Trigger",
+        "The user opens the Goals page or changes the year selector in Saving Summary."
+      ]
+    },
+    {
+      "row": 343,
+      "cells": [
+        "Pre-Condition(s)",
+        "PRE-1: The user is authenticated.\nPRE-2: The frontend initializes selectedYear to the current year."
+      ]
+    },
+    {
+      "row": 344,
+      "cells": [
+        "Post-Condition(s)",
+        "POST-1: The API returns exactly 12 monthly rows for the selected year and 12 for the preceding year.\nPOST-2: Each amount equals monthly Revenue minus monthly Expense across the user's accounts.\nPOST-3: The frontend displays a two-line chart when either yearly series contains a non-zero value."
+      ]
+    },
+    {
+      "row": 345,
+      "cells": [
+        "Basic Flow",
+        "1. GoalsPage renders SavingsSummaryChart.\n2. The component initializes selectedYear to the current year and sends GET /api/v1/savings/summary?year=selectedYear.\n3. The controller parses year with parseInt; missing, NaN, less than 1900, or greater than 2100 resolves to the current year.\n4. SavingsService loads account IDs owned by userId.\n5. For each month 01-12 in the selected year, the service sums Revenue, sums Expense, and calculates amount = Revenue - Expense.\n6. The service repeats the calculation for selectedYear - 1.\n7. Monthly amounts are rounded to two decimals and returned in ordered 12-row arrays.\n8. The frontend maps month numbers to Jan-Dec and displays this year and last year as two lines."
+      ]
+    },
+    {
+      "row": 346,
+      "cells": [
+        "Alternative Flow",
+        "AF-1: Select another year\n2a. The user selects one of the current year and previous ten years.\n2b. The component requests the selected year again.\n\nAF-2: No owned accounts\n4a. The service returns zero-valued 12-month arrays for both years.\n\nAF-3: Both returned series contain only zero\n8a. The frontend displays its no-transaction-data message instead of the chart."
+      ]
+    },
+    {
+      "row": 347,
+      "cells": [
+        "Exception Flow",
+        "EF-1: Unauthorized request\n2a. HTTP 401 is handled by the Axios interceptor.\n\nEF-2: Calculation failure\n5a. The backend returns HTTP 500 and the chart displays its general load error."
+      ]
+    },
+    {
+      "row": 348,
+      "cells": [
+        "UML Model",
+        "@startuml\n\nenum TransactionType {\n  REVENUE\n  EXPENSE\n}\n\nenum SavingsSeries {\n  THIS_YEAR\n  LAST_YEAR\n}\n\nclass AuthenticatedRequest <<SecurityContext>> {\n  userId: Integer [1]\n}\n\nclass User <<Entity>> {\n  userId: Integer [1]\n}\n\nclass Account <<Entity>> {\n  accountId: Integer [1]\n  userId: Integer [1]\n}\n\nclass Transaction <<Entity>> {\n  transactionId: Integer [1]\n  accountId: Integer [1]\n  transactionDate: Date [1]\n  type: TransactionType [1]\n  amount: Decimal [1]\n}\n\nclass SavingsSummaryQueryDto <<DTO>> {\n  year: String [0..1]\n}\n\nclass MonthlySavingsDto <<DTO>> {\n  month: String [1]\n  amount: Decimal [1]\n}\n\nclass SavingsSummaryDataDto <<DTO>> {\n  this_year: MonthlySavingsDto [12]\n  last_year: MonthlySavingsDto [12]\n}\n\nclass SavingsSummaryResponseDto <<DTO>> {\n  user_id: Integer [1]\n  year: Integer [1]\n  summary: SavingsSummaryDataDto [1]\n}\n\nclass SavingsController <<Controller>> {\n  getSavingsSummary(\n    request: AuthenticatedRequest,\n    year: String\n  ): SavingsSummaryResponseDto\n\n  resolveYear(year: String): Integer\n}\n\nclass SavingsService <<Service>> {\n  getSavingsSummary(\n    userId: Integer,\n    year: Integer\n  ): SavingsSummaryResponseDto\n\n  calculateMonthlySavings(\n    userId: Integer,\n    year: Integer\n  ): MonthlySavingsDto [12]\n}\n\nclass SavingsTooltip <<UIModel>> {\n  visible: Boolean [1]\n  month: String [0..1]\n  amount: Decimal [0..1]\n}\n\nclass SavingsSummaryChart <<UIComponent>> {\n  isChartVisible: Boolean [1]\n  hoverPoint(\n    series: SavingsSeries,\n    month: String\n  ): SavingsTooltip\n  leavePoint(): void\n}\n\nUser \"1\" -- \"0..*\" Account : owns\nAccount \"1\" -- \"0..*\" Transaction : contains\n\nSavingsSummaryChart ..> SavingsSummaryResponseDto\nSavingsSummaryChart ..> SavingsTooltip\nSavingsSummaryChart ..> SavingsSeries\n\nSavingsController ..> AuthenticatedRequest\nSavingsController ..> SavingsSummaryQueryDto\nSavingsController ..> SavingsService\nSavingsController ..> SavingsSummaryResponseDto\n\nSavingsService ..> Account\nSavingsService ..> Transaction\nSavingsService ..> SavingsSummaryResponseDto\n\nSavingsSummaryResponseDto --> SavingsSummaryDataDto\nSavingsSummaryDataDto --> MonthlySavingsDto\n\n@enduml"
+      ]
+    },
+    {
+      "row": 349,
+      "cells": [
+        "Business Rules",
+        "BR-SAV-01: Authenticated user data scope\n\ncontext SavingsService::getSavingsSummary(\n  userId : Integer,\n  year : Integer\n) : SavingsSummaryResponseDto\n\npost BR_SAV_01_UserIdentity:\n  result.user_id = userId\n\npost BR_SAV_01_OwnedAccountsOnly:\n  Transaction.allInstances()\n    ->select(t |\n      Account.allInstances()->exists(a |\n        a.accountId = t.accountId and\n        a.userId = userId\n      )\n    )\n    ->includesAll(\n      Transaction.allInstances()\n        ->select(t |\n          Account.allInstances()->exists(a |\n            a.accountId = t.accountId and\n            a.userId = userId\n          )\n        )\n    )\n\nTechnical constraints:\n- userId shall be obtained from the validated JWT.\n- Transactions from accounts owned by other users shall not contribute to the savings summary.\n\n\nBR-SAV-02: Savings summary year resolution\n\ncontext SavingsController::getSavingsSummary(\n  request : AuthenticatedRequest,\n  year : String\n) : SavingsSummaryResponseDto\n\npost BR_SAV_02_ValidYearUsed:\n  let parsedYear : Integer = parseInt(year, 10)\n  in\n    (\n      not isNaN(parsedYear) and\n      parsedYear >= 1900 and\n      parsedYear <= 2100\n    )\n    implies\n      result.year = parsedYear\n\npost BR_SAV_02_InvalidYearDefaultsToCurrentYear:\n  let parsedYear : Integer = parseInt(year, 10)\n  in\n    (\n      year.oclIsUndefined() or\n      isNaN(parsedYear) or\n      parsedYear < 1900 or\n      parsedYear > 2100\n    )\n    implies\n      result.year = currentYear()\n\nTechnical constraint:\n- The implementation uses JavaScript parseInt(year, 10).\n- Therefore, a value such as \"2025abc\" resolves to 2025 rather than defaulting to the current year."
+      ]
+    },
+    {
+      "row": 350,
+      "cells": [
+        null,
+        "BR-SAV-03: Complete monthly summary\n\ncontext SavingsService::getSavingsSummary(\n  userId : Integer,\n  year : Integer\n) : SavingsSummaryResponseDto\n\npost BR_SAV_03_TwelveMonthsThisYear:\n  result.summary.this_year->size() = 12\n\npost BR_SAV_03_TwelveMonthsLastYear:\n  result.summary.last_year->size() = 12\n\npost BR_SAV_03_ThisYearMonthOrder:\n  Sequence{1..12}->forAll(i |\n    result.summary.this_year->at(i).month =\n      padTwoDigits(i)\n  )\n\npost BR_SAV_03_LastYearMonthOrder:\n  Sequence{1..12}->forAll(i |\n    result.summary.last_year->at(i).month =\n      padTwoDigits(i)\n  )\n\nTechnical constraint:\n- Month values shall be returned as two-digit strings from \"01\" through \"12\" in ascending order.\n\n\nBR-SAV-04: Monthly net savings calculation\n\ncontext SavingsService::getSavingsSummary(\n  userId : Integer,\n  year : Integer\n) : SavingsSummaryResponseDto\n\npost BR_SAV_04_ThisYearAmounts:\n  result.summary.this_year->forAll(dto |\n    let monthNumber : Integer =\n      dto.month.toInteger()\n    in\n    let ownedAccountIds : Set(Integer) =\n      Account.allInstances()\n        ->select(a | a.userId = userId)\n        ->collect(a | a.accountId)\n        ->asSet()\n    in\n    let monthlyTransactions : Set(Transaction) =\n      Transaction.allInstances()\n        ->select(t |\n          ownedAccountIds->includes(t.accountId) and\n          yearOf(t.transactionDate) = year and\n          monthOf(t.transactionDate) = monthNumber\n        )\n        ->asSet()\n    in\n    let revenue : Decimal =\n      monthlyTransactions\n        ->select(t |\n          t.type = TransactionType::REVENUE\n        )\n        ->collect(t | t.amount)\n        ->sum()\n    in\n    let expense : Decimal =\n      monthlyTransactions\n        ->select(t |\n          t.type = TransactionType::EXPENSE\n        )\n        ->collect(t | t.amount)\n        ->sum()\n    in\n      dto.amount = roundToTwoDecimals(\n        revenue - expense\n      )\n  )\n\nTechnical constraint:\n- Monthly savings equals total Revenue minus total Expense across all accounts owned by the authenticated user."
+      ]
+    },
+    {
+      "row": 351,
+      "cells": [
+        null,
+        "BR-SAV-05: Previous-year comparison\n\ncontext SavingsService::getSavingsSummary(\n  userId : Integer,\n  year : Integer\n) : SavingsSummaryResponseDto\n\npost BR_SAV_05_LastYearAmounts:\n  result.summary.last_year->forAll(dto |\n    let monthNumber : Integer =\n      dto.month.toInteger()\n    in\n    let ownedAccountIds : Set(Integer) =\n      Account.allInstances()\n        ->select(a | a.userId = userId)\n        ->collect(a | a.accountId)\n        ->asSet()\n    in\n    let monthlyTransactions : Set(Transaction) =\n      Transaction.allInstances()\n        ->select(t |\n          ownedAccountIds->includes(t.accountId) and\n          yearOf(t.transactionDate) = year - 1 and\n          monthOf(t.transactionDate) = monthNumber\n        )\n        ->asSet()\n    in\n    let revenue : Decimal =\n      monthlyTransactions\n        ->select(t |\n          t.type = TransactionType::REVENUE\n        )\n        ->collect(t | t.amount)\n        ->sum()\n    in\n    let expense : Decimal =\n      monthlyTransactions\n        ->select(t |\n          t.type = TransactionType::EXPENSE\n        )\n        ->collect(t | t.amount)\n        ->sum()\n    in\n      dto.amount = roundToTwoDecimals(\n        revenue - expense\n      )\n  )\n\nTechnical constraint:\n- this_year represents the resolved target year.\n- last_year represents exactly resolvedYear - 1.\n\n\nBR-SAV-06: Missing transaction data\n\ncontext SavingsService::getSavingsSummary(\n  userId : Integer,\n  year : Integer\n) : SavingsSummaryResponseDto\n\npost BR_SAV_06_ZeroForMissingThisYearData:\n  result.summary.this_year->forAll(dto |\n    let monthNumber : Integer =\n      dto.month.toInteger()\n    in\n    let matchingTransactions : Set(Transaction) =\n      Transaction.allInstances()\n        ->select(t |\n          Account.allInstances()->exists(a |\n            a.accountId = t.accountId and\n            a.userId = userId\n          ) and\n          yearOf(t.transactionDate) = year and\n          monthOf(t.transactionDate) = monthNumber\n        )\n        ->asSet()\n    in\n      matchingTransactions->isEmpty()\n      implies\n        dto.amount = 0\n  )\n\npost BR_SAV_06_ZeroForMissingLastYearData:\n  result.summary.last_year->forAll(dto |\n    let monthNumber : Integer =\n      dto.month.toInteger()\n    in\n    let matchingTransactions : Set(Transaction) =\n      Transaction.allInstances()\n        ->select(t |\n          Account.allInstances()->exists(a |\n            a.accountId = t.accountId and\n            a.userId = userId\n          ) and\n          yearOf(t.transactionDate) = year - 1 and\n          monthOf(t.transactionDate) = monthNumber\n        )\n        ->asSet()\n    in\n      matchingTransactions->isEmpty()\n      implies\n        dto.amount = 0\n  )\n\nTechnical constraint:\n- If the user owns no accounts, both returned series shall still contain 12 entries with amount = 0."
+      ]
+    },
+    {
+      "row": 352,
+      "cells": [
+        null,
+        "BR-SAV-07: Savings amount rounding\n\ncontext SavingsService::getSavingsSummary(\n  userId : Integer,\n  year : Integer\n) : SavingsSummaryResponseDto\n\npost BR_SAV_07_ThisYearRounded:\n  result.summary.this_year->forAll(dto |\n    dto.amount =\n      roundToTwoDecimals(dto.amount)\n  )\n\npost BR_SAV_07_LastYearRounded:\n  result.summary.last_year->forAll(dto |\n    dto.amount =\n      roundToTwoDecimals(dto.amount)\n  )\n\nTechnical constraint:\n- Every calculated monthly amount shall be rounded to two decimal places before being returned.\n\n\nBR-SAV-08: Response consistency and read-only behavior\n\ncontext SavingsService::getSavingsSummary(\n  userId : Integer,\n  year : Integer\n) : SavingsSummaryResponseDto\n\npost BR_SAV_08_ResponseConsistency:\n  result.user_id = userId and\n  result.year = year and\n  not result.summary.oclIsUndefined() and\n  result.summary.this_year->size() = 12 and\n  result.summary.last_year->size() = 12\n\npost BR_SAV_08_AccountIdentityUnchanged:\n  Account.allInstances()\n    ->collect(a | a.accountId)\n    ->asSet()\n  =\n  Account.allInstances()@pre\n    ->collect(a | a.accountId)\n    ->asSet()\n\npost BR_SAV_08_TransactionIdentityUnchanged:\n  Transaction.allInstances()\n    ->collect(t | t.transactionId)\n    ->asSet()\n  =\n  Transaction.allInstances()@pre\n    ->collect(t | t.transactionId)\n    ->asSet()\n\nTechnical constraints:\n- Retrieving the savings summary shall not create, update, or delete Account or Transaction records.\n- If the savings calculation fails unexpectedly, the backend shall return HTTP 500 Internal Server Error.\n\nBR-SAV-09: Savings chart point value tooltip\n\ncontext SavingsSummaryChart::hoverPoint(\n  series : SavingsSeries,\n  month : String\n) : SavingsTooltip\n\npre BR_SAV_09_ChartDisplayed:\n  self.isChartVisible = true\n\npre BR_SAV_09_PointExists:\n  (\n    series = SavingsSeries::THIS_YEAR\n    implies\n      self.summary.this_year->exists(p |\n        p.month = month\n      )\n  )\n  and\n  (\n    series = SavingsSeries::LAST_YEAR\n    implies\n      self.summary.last_year->exists(p |\n        p.month = month\n      )\n  )\n\npost BR_SAV_09_TooltipVisible:\n  result.visible = true\n\npost BR_SAV_09_CorrectThisYearValue:\n  series = SavingsSeries::THIS_YEAR\n  implies\n    self.summary.this_year->exists(p |\n      p.month = month and\n      result.month = p.month and\n      result.amount = p.amount\n    )\n\npost BR_SAV_09_CorrectLastYearValue:\n  series = SavingsSeries::LAST_YEAR\n  implies\n    self.summary.last_year->exists(p |\n      p.month = month and\n      result.month = p.month and\n      result.amount = p.amount\n    )\n\ncontext SavingsSummaryChart::leavePoint()\n\npost BR_SAV_09_TooltipHidden:\n  self.tooltip.visible = false\n\nTechnical constraints:\n- Each rendered data point in both yearly series shall be hoverable.\n- The tooltip amount shall exactly match the amount of the hovered monthly data point.\n- Moving the pointer away from the data point shall hide the tooltip."
+      ]
+    },
+    {
+      "row": 353,
+      "cells": [
+        "Related UI",
+        "GoalsPage; SavingsSummaryChart; year selector"
+      ]
+    },
+    {
+      "row": 354,
+      "cells": [
+        "Related API IDs",
+        "API-SAVINGS-SUMMARY"
+      ]
+    },
+    {
+      "row": 355,
+      "cells": [
+        "Notes",
+        "Parsing clarification: The year is resolved from its leading base-10 numeric prefix; for example, “2025abc” resolves to 2025. The current year is used only when the resolved value is missing, non-numeric, below 1900, or above 2100."
+      ]
+    }
+  ]
+}

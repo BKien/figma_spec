@@ -11,7 +11,7 @@ Audit date: 2026-09-24.
 | Policy isolation in conditions and flows | PASS | All 18 interaction sections checked for BR references, predicates, thresholds and policy language; manual prose review also completed |
 | Rule identity and uniqueness | PASS | Correct UC namespace, gap-free rule numbering, and no repeated predicate within an individual use case |
 | Repository validator | PASS | All three Figma packages; package separation and structure preserved |
-| DBML compilation | PASS | 22 tables compiled to PostgreSQL with @dbml/cli 9.1.1 |
+| DBML compilation | PASS | 22 tables compiled to MySQL with @dbml/cli 9.1.1 |
 | UC/API references | PASS | Every relationship checked in both directions |
 | Source-node references | PASS | All UC screen links resolve to the stored 20-frame inventory |
 | Wire objects and examples | PASS | 29 object definitions and 17 JSON request/response examples; field examples also checked |

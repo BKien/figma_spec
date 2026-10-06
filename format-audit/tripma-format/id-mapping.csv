@@ -1,0 +1,858 @@
+﻿Specification,Original identifier,Tripma identifier / locator
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-01-review-join-preview-and-permissions.md,TRG-UC-01-01,UC-01/Trigger
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-01-review-join-preview-and-permissions.md,PRE-UC-01-01,PRE-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-01-review-join-preview-and-permissions.md,POST-UC-01-01,POST-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-01-review-join-preview-and-permissions.md,POST-UC-01-02,POST-2
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-01-review-join-preview-and-permissions.md,AF-UC-01-01,AF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-01-review-join-preview-and-permissions.md,EF-UC-01-01,EF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-02-join-a-session.md,TRG-UC-02-01,UC-02/Trigger
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-02-join-a-session.md,PRE-UC-02-01,PRE-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-02-join-a-session.md,POST-UC-02-01,POST-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-02-join-a-session.md,POST-UC-02-02,POST-2
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-02-join-a-session.md,AF-UC-02-01,AF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-02-join-a-session.md,EF-UC-02-01,EF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-03-start-a-live-stream.md,TRG-UC-03-01,UC-03/Trigger
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-03-start-a-live-stream.md,PRE-UC-03-01,PRE-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-03-start-a-live-stream.md,POST-UC-03-01,POST-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-03-start-a-live-stream.md,POST-UC-03-02,POST-2
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-03-start-a-live-stream.md,AF-UC-03-01,AF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-03-start-a-live-stream.md,EF-UC-03-01,EF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-04-stop-a-live-stream.md,TRG-UC-04-01,UC-04/Trigger
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-04-stop-a-live-stream.md,PRE-UC-04-01,PRE-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-04-stop-a-live-stream.md,POST-UC-04-01,POST-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-04-stop-a-live-stream.md,POST-UC-04-02,POST-2
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-04-stop-a-live-stream.md,AF-UC-04-01,AF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-04-stop-a-live-stream.md,EF-UC-04-01,EF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-05-watch-a-live-stream.md,TRG-UC-05-01,UC-05/Trigger
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-05-watch-a-live-stream.md,PRE-UC-05-01,PRE-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-05-watch-a-live-stream.md,POST-UC-05-01,POST-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-05-watch-a-live-stream.md,AF-UC-05-01,AF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-05-watch-a-live-stream.md,EF-UC-05-01,EF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-06-request-stage-access.md,TRG-UC-06-01,UC-06/Trigger
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-06-request-stage-access.md,PRE-UC-06-01,PRE-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-06-request-stage-access.md,POST-UC-06-01,POST-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-06-request-stage-access.md,POST-UC-06-02,POST-2
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-06-request-stage-access.md,AF-UC-06-01,AF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-06-request-stage-access.md,EF-UC-06-01,EF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-07-respond-to-a-stage-request.md,TRG-UC-07-01,UC-07/Trigger
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-07-respond-to-a-stage-request.md,PRE-UC-07-01,PRE-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-07-respond-to-a-stage-request.md,POST-UC-07-01,POST-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-07-respond-to-a-stage-request.md,AF-UC-07-01,AF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-07-respond-to-a-stage-request.md,EF-UC-07-01,EF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-08-view-session-participants.md,TRG-UC-08-01,UC-08/Trigger
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-08-view-session-participants.md,PRE-UC-08-01,PRE-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-08-view-session-participants.md,POST-UC-08-01,POST-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-08-view-session-participants.md,AF-UC-08-01,AF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-08-view-session-participants.md,EF-UC-08-01,EF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-09-send-a-chat-message.md,TRG-UC-09-01,UC-09/Trigger
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-09-send-a-chat-message.md,PRE-UC-09-01,PRE-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-09-send-a-chat-message.md,POST-UC-09-01,POST-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-09-send-a-chat-message.md,AF-UC-09-01,AF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-09-send-a-chat-message.md,EF-UC-09-01,EF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-10-send-an-emoji-reaction.md,TRG-UC-10-01,UC-10/Trigger
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-10-send-an-emoji-reaction.md,PRE-UC-10-01,PRE-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-10-send-an-emoji-reaction.md,POST-UC-10-01,POST-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-10-send-an-emoji-reaction.md,AF-UC-10-01,AF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-10-send-an-emoji-reaction.md,EF-UC-10-01,EF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-11-share-presentation-content.md,TRG-UC-11-01,UC-11/Trigger
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-11-share-presentation-content.md,PRE-UC-11-01,PRE-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-11-share-presentation-content.md,POST-UC-11-01,POST-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-11-share-presentation-content.md,AF-UC-11-01,AF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-11-share-presentation-content.md,AF-UC-11-02,AF-2
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-11-share-presentation-content.md,EF-UC-11-01,EF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-12-configure-audio-and-video-devices.md,TRG-UC-12-01,UC-12/Trigger
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-12-configure-audio-and-video-devices.md,PRE-UC-12-01,PRE-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-12-configure-audio-and-video-devices.md,POST-UC-12-01,POST-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-12-configure-audio-and-video-devices.md,AF-UC-12-01,AF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-12-configure-audio-and-video-devices.md,EF-UC-12-01,EF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-13-select-a-virtual-background.md,TRG-UC-13-01,UC-13/Trigger
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-13-select-a-virtual-background.md,PRE-UC-13-01,PRE-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-13-select-a-virtual-background.md,POST-UC-13-01,POST-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-13-select-a-virtual-background.md,AF-UC-13-01,AF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-13-select-a-virtual-background.md,EF-UC-13-01,EF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-14-change-session-layout.md,TRG-UC-14-01,UC-14/Trigger
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-14-change-session-layout.md,PRE-UC-14-01,PRE-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-14-change-session-layout.md,POST-UC-14-01,POST-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-14-change-session-layout.md,AF-UC-14-01,AF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-14-change-session-layout.md,AF-UC-14-02,AF-2
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-14-change-session-layout.md,EF-UC-14-01,EF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-15-pin-or-spotlight-a-participant.md,TRG-UC-15-01,UC-15/Trigger
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-15-pin-or-spotlight-a-participant.md,PRE-UC-15-01,PRE-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-15-pin-or-spotlight-a-participant.md,POST-UC-15-01,POST-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-15-pin-or-spotlight-a-participant.md,AF-UC-15-01,AF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-15-pin-or-spotlight-a-participant.md,AF-UC-15-02,AF-2
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-15-pin-or-spotlight-a-participant.md,AF-UC-15-03,AF-3
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-15-pin-or-spotlight-a-participant.md,EF-UC-15-01,EF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-16-control-session-recording.md,TRG-UC-16-01,UC-16/Trigger
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-16-control-session-recording.md,PRE-UC-16-01,PRE-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-16-control-session-recording.md,POST-UC-16-01,POST-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-16-control-session-recording.md,AF-UC-16-01,AF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-16-control-session-recording.md,EF-UC-16-01,EF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-17-leave-a-session.md,TRG-UC-17-01,UC-17/Trigger
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-17-leave-a-session.md,PRE-UC-17-01,PRE-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-17-leave-a-session.md,POST-UC-17-01,POST-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-17-leave-a-session.md,POST-UC-17-02,POST-2
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-17-leave-a-session.md,AF-UC-17-01,AF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-17-leave-a-session.md,EF-UC-17-01,EF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-18-end-a-session-for-everyone.md,TRG-UC-18-01,UC-18/Trigger
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-18-end-a-session-for-everyone.md,PRE-UC-18-01,PRE-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-18-end-a-session-for-everyone.md,POST-UC-18-01,POST-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-18-end-a-session-for-everyone.md,AF-UC-18-01,AF-1
+100ms Video Conferencing and Live Streaming/01-inception/uc/uc-18-end-a-session-for-everyone.md,EF-UC-18-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-01-register-and-verify-email.md,TRG-UC-01-01,UC-01/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-01-register-and-verify-email.md,PRE-UC-01-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-01-register-and-verify-email.md,POST-UC-01-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-01-register-and-verify-email.md,AF-UC-01-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-01-register-and-verify-email.md,EF-UC-01-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-02-sign-in.md,TRG-UC-02-01,UC-02/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-02-sign-in.md,PRE-UC-02-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-02-sign-in.md,POST-UC-02-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-02-sign-in.md,AF-UC-02-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-02-sign-in.md,EF-UC-02-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-03-recover-password.md,TRG-UC-03-01,UC-03/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-03-recover-password.md,PRE-UC-03-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-03-recover-password.md,POST-UC-03-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-03-recover-password.md,AF-UC-03-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-03-recover-password.md,EF-UC-03-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-04-browse-search-filter-products.md,TRG-UC-04-01,UC-04/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-04-browse-search-filter-products.md,PRE-UC-04-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-04-browse-search-filter-products.md,POST-UC-04-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-04-browse-search-filter-products.md,AF-UC-04-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-04-browse-search-filter-products.md,EF-UC-04-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-05-view-product-details.md,TRG-UC-05-01,UC-05/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-05-view-product-details.md,PRE-UC-05-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-05-view-product-details.md,POST-UC-05-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-05-view-product-details.md,AF-UC-05-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-05-view-product-details.md,EF-UC-05-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-06-manage-shopping-cart.md,TRG-UC-06-01,UC-06/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-06-manage-shopping-cart.md,PRE-UC-06-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-06-manage-shopping-cart.md,POST-UC-06-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-06-manage-shopping-cart.md,AF-UC-06-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-06-manage-shopping-cart.md,EF-UC-06-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-07-checkout-and-place-order.md,TRG-UC-07-01,UC-07/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-07-checkout-and-place-order.md,PRE-UC-07-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-07-checkout-and-place-order.md,POST-UC-07-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-07-checkout-and-place-order.md,AF-UC-07-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-07-checkout-and-place-order.md,EF-UC-07-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-08-track-order.md,TRG-UC-08-01,UC-08/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-08-track-order.md,PRE-UC-08-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-08-track-order.md,POST-UC-08-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-08-track-order.md,AF-UC-08-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-08-track-order.md,EF-UC-08-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-09-manage-wishlist.md,TRG-UC-09-01,UC-09/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-09-manage-wishlist.md,PRE-UC-09-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-09-manage-wishlist.md,POST-UC-09-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-09-manage-wishlist.md,AF-UC-09-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-09-manage-wishlist.md,EF-UC-09-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-10-compare-products.md,TRG-UC-10-01,UC-10/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-10-compare-products.md,PRE-UC-10-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-10-compare-products.md,POST-UC-10-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-10-compare-products.md,AF-UC-10-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-10-compare-products.md,EF-UC-10-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-11-manage-account-profile.md,TRG-UC-11-01,UC-11/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-11-manage-account-profile.md,PRE-UC-11-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-11-manage-account-profile.md,POST-UC-11-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-11-manage-account-profile.md,AF-UC-11-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-11-manage-account-profile.md,EF-UC-11-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-12-change-password.md,TRG-UC-12-01,UC-12/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-12-change-password.md,PRE-UC-12-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-12-change-password.md,POST-UC-12-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-12-change-password.md,AF-UC-12-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-12-change-password.md,EF-UC-12-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-13-manage-saved-addresses.md,TRG-UC-13-01,UC-13/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-13-manage-saved-addresses.md,PRE-UC-13-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-13-manage-saved-addresses.md,POST-UC-13-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-13-manage-saved-addresses.md,AF-UC-13-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-13-manage-saved-addresses.md,EF-UC-13-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-14-manage-browsing-history.md,TRG-UC-14-01,UC-14/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-14-manage-browsing-history.md,PRE-UC-14-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-14-manage-browsing-history.md,POST-UC-14-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-14-manage-browsing-history.md,AF-UC-14-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-14-manage-browsing-history.md,EF-UC-14-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-15-view-order-history.md,TRG-UC-15-01,UC-15/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-15-view-order-history.md,PRE-UC-15-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-15-view-order-history.md,POST-UC-15-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-15-view-order-history.md,AF-UC-15-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-15-view-order-history.md,EF-UC-15-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-16-view-order-details.md,TRG-UC-16-01,UC-16/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-16-view-order-details.md,PRE-UC-16-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-16-view-order-details.md,POST-UC-16-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-16-view-order-details.md,AF-UC-16-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-16-view-order-details.md,EF-UC-16-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-17-rate-delivered-order.md,TRG-UC-17-01,UC-17/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-17-rate-delivered-order.md,PRE-UC-17-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-17-rate-delivered-order.md,POST-UC-17-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-17-rate-delivered-order.md,AF-UC-17-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-17-rate-delivered-order.md,EF-UC-17-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-18-browse-help-and-faq.md,TRG-UC-18-01,UC-18/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-18-browse-help-and-faq.md,PRE-UC-18-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-18-browse-help-and-faq.md,POST-UC-18-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-18-browse-help-and-faq.md,AF-UC-18-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-18-browse-help-and-faq.md,EF-UC-18-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-19-submit-support-request.md,TRG-UC-19-01,UC-19/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-19-submit-support-request.md,PRE-UC-19-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-19-submit-support-request.md,POST-UC-19-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-19-submit-support-request.md,AF-UC-19-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-19-submit-support-request.md,EF-UC-19-01,EF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-20-browse-and-read-blog.md,TRG-UC-20-01,UC-20/Trigger
+Clicon Ecommerce Marketplace/01-inception/uc/uc-20-browse-and-read-blog.md,PRE-UC-20-01,PRE-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-20-browse-and-read-blog.md,POST-UC-20-01,POST-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-20-browse-and-read-blog.md,AF-UC-20-01,AF-1
+Clicon Ecommerce Marketplace/01-inception/uc/uc-20-browse-and-read-blog.md,EF-UC-20-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-01-register-job-seeker.md,TRG-UC-01-01,UC-01/Trigger
+DH Dental Recruitment/01-inception/uc/uc-01-register-job-seeker.md,PRE-UC-01-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-01-register-job-seeker.md,POST-UC-01-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-01-register-job-seeker.md,AF-UC-01-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-01-register-job-seeker.md,EF-UC-01-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-02-sign-in.md,TRG-UC-02-01,UC-02/Trigger
+DH Dental Recruitment/01-inception/uc/uc-02-sign-in.md,PRE-UC-02-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-02-sign-in.md,POST-UC-02-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-02-sign-in.md,AF-UC-02-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-02-sign-in.md,EF-UC-02-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-03-search-filter-jobs.md,TRG-UC-03-01,UC-03/Trigger
+DH Dental Recruitment/01-inception/uc/uc-03-search-filter-jobs.md,PRE-UC-03-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-03-search-filter-jobs.md,POST-UC-03-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-03-search-filter-jobs.md,AF-UC-03-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-03-search-filter-jobs.md,EF-UC-03-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-04-view-job-details.md,TRG-UC-04-01,UC-04/Trigger
+DH Dental Recruitment/01-inception/uc/uc-04-view-job-details.md,PRE-UC-04-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-04-view-job-details.md,POST-UC-04-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-04-view-job-details.md,AF-UC-04-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-04-view-job-details.md,EF-UC-04-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-05-manage-basic-profile.md,TRG-UC-05-01,UC-05/Trigger
+DH Dental Recruitment/01-inception/uc/uc-05-manage-basic-profile.md,PRE-UC-05-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-05-manage-basic-profile.md,POST-UC-05-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-05-manage-basic-profile.md,AF-UC-05-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-05-manage-basic-profile.md,EF-UC-05-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-06-manage-job-preferences.md,TRG-UC-06-01,UC-06/Trigger
+DH Dental Recruitment/01-inception/uc/uc-06-manage-job-preferences.md,PRE-UC-06-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-06-manage-job-preferences.md,POST-UC-06-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-06-manage-job-preferences.md,AF-UC-06-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-06-manage-job-preferences.md,EF-UC-06-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-07-view-job-recommendations.md,TRG-UC-07-01,UC-07/Trigger
+DH Dental Recruitment/01-inception/uc/uc-07-view-job-recommendations.md,PRE-UC-07-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-07-view-job-recommendations.md,POST-UC-07-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-07-view-job-recommendations.md,AF-UC-07-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-07-view-job-recommendations.md,EF-UC-07-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-08-manage-work-experience.md,TRG-UC-08-01,UC-08/Trigger
+DH Dental Recruitment/01-inception/uc/uc-08-manage-work-experience.md,PRE-UC-08-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-08-manage-work-experience.md,POST-UC-08-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-08-manage-work-experience.md,AF-UC-08-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-08-manage-work-experience.md,EF-UC-08-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-09-manage-education.md,TRG-UC-09-01,UC-09/Trigger
+DH Dental Recruitment/01-inception/uc/uc-09-manage-education.md,PRE-UC-09-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-09-manage-education.md,POST-UC-09-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-09-manage-education.md,AF-UC-09-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-09-manage-education.md,EF-UC-09-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-10-manage-introduction-video.md,TRG-UC-10-01,UC-10/Trigger
+DH Dental Recruitment/01-inception/uc/uc-10-manage-introduction-video.md,PRE-UC-10-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-10-manage-introduction-video.md,POST-UC-10-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-10-manage-introduction-video.md,AF-UC-10-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-10-manage-introduction-video.md,EF-UC-10-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-11-manage-notification-preferences.md,TRG-UC-11-01,UC-11/Trigger
+DH Dental Recruitment/01-inception/uc/uc-11-manage-notification-preferences.md,PRE-UC-11-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-11-manage-notification-preferences.md,POST-UC-11-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-11-manage-notification-preferences.md,AF-UC-11-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-11-manage-notification-preferences.md,EF-UC-11-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-12-change-password.md,TRG-UC-12-01,UC-12/Trigger
+DH Dental Recruitment/01-inception/uc/uc-12-change-password.md,PRE-UC-12-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-12-change-password.md,POST-UC-12-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-12-change-password.md,AF-UC-12-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-12-change-password.md,EF-UC-12-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-13-sign-out.md,TRG-UC-13-01,UC-13/Trigger
+DH Dental Recruitment/01-inception/uc/uc-13-sign-out.md,PRE-UC-13-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-13-sign-out.md,POST-UC-13-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-13-sign-out.md,AF-UC-13-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-13-sign-out.md,EF-UC-13-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-14-close-account.md,TRG-UC-14-01,UC-14/Trigger
+DH Dental Recruitment/01-inception/uc/uc-14-close-account.md,PRE-UC-14-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-14-close-account.md,POST-UC-14-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-14-close-account.md,AF-UC-14-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-14-close-account.md,EF-UC-14-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-15-browse-faqs.md,TRG-UC-15-01,UC-15/Trigger
+DH Dental Recruitment/01-inception/uc/uc-15-browse-faqs.md,PRE-UC-15-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-15-browse-faqs.md,POST-UC-15-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-15-browse-faqs.md,AF-UC-15-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-15-browse-faqs.md,EF-UC-15-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-16-submit-contact-message.md,TRG-UC-16-01,UC-16/Trigger
+DH Dental Recruitment/01-inception/uc/uc-16-submit-contact-message.md,PRE-UC-16-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-16-submit-contact-message.md,POST-UC-16-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-16-submit-contact-message.md,AF-UC-16-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-16-submit-contact-message.md,EF-UC-16-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-17-manage-public-profile.md,TRG-UC-17-01,UC-17/Trigger
+DH Dental Recruitment/01-inception/uc/uc-17-manage-public-profile.md,PRE-UC-17-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-17-manage-public-profile.md,POST-UC-17-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-17-manage-public-profile.md,AF-UC-17-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-17-manage-public-profile.md,EF-UC-17-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-18-search-public-profiles.md,TRG-UC-18-01,UC-18/Trigger
+DH Dental Recruitment/01-inception/uc/uc-18-search-public-profiles.md,PRE-UC-18-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-18-search-public-profiles.md,POST-UC-18-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-18-search-public-profiles.md,AF-UC-18-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-18-search-public-profiles.md,EF-UC-18-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-19-view-public-profile.md,TRG-UC-19-01,UC-19/Trigger
+DH Dental Recruitment/01-inception/uc/uc-19-view-public-profile.md,PRE-UC-19-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-19-view-public-profile.md,POST-UC-19-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-19-view-public-profile.md,AF-UC-19-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-19-view-public-profile.md,EF-UC-19-01,EF-1
+DH Dental Recruitment/01-inception/uc/uc-20-submit-job-application.md,TRG-UC-20-01,UC-20/Trigger
+DH Dental Recruitment/01-inception/uc/uc-20-submit-job-application.md,PRE-UC-20-01,PRE-1
+DH Dental Recruitment/01-inception/uc/uc-20-submit-job-application.md,POST-UC-20-01,POST-1
+DH Dental Recruitment/01-inception/uc/uc-20-submit-job-application.md,AF-UC-20-01,AF-1
+DH Dental Recruitment/01-inception/uc/uc-20-submit-job-application.md,EF-UC-20-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-01-register-student.md,TRG-UC-01-01,UC-01/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-01-register-student.md,PRE-UC-01-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-01-register-student.md,POST-UC-01-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-01-register-student.md,AF-UC-01-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-01-register-student.md,EF-UC-01-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-02-sign-in.md,TRG-UC-02-01,UC-02/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-02-sign-in.md,PRE-UC-02-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-02-sign-in.md,POST-UC-02-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-02-sign-in.md,AF-UC-02-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-02-sign-in.md,EF-UC-02-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-03-student-onboarding.md,TRG-UC-03-01,UC-03/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-03-student-onboarding.md,PRE-UC-03-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-03-student-onboarding.md,POST-UC-03-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-03-student-onboarding.md,AF-UC-03-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-03-student-onboarding.md,EF-UC-03-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-04-discover-courses.md,TRG-UC-04-01,UC-04/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-04-discover-courses.md,PRE-UC-04-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-04-discover-courses.md,POST-UC-04-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-04-discover-courses.md,AF-UC-04-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-04-discover-courses.md,EF-UC-04-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-05-view-learning-dashboard.md,TRG-UC-05-01,UC-05/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-05-view-learning-dashboard.md,PRE-UC-05-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-05-view-learning-dashboard.md,POST-UC-05-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-05-view-learning-dashboard.md,AF-UC-05-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-05-view-learning-dashboard.md,EF-UC-05-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-06-view-my-courses.md,TRG-UC-06-01,UC-06/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-06-view-my-courses.md,PRE-UC-06-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-06-view-my-courses.md,POST-UC-06-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-06-view-my-courses.md,AF-UC-06-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-06-view-my-courses.md,EF-UC-06-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-07-view-course-content.md,TRG-UC-07-01,UC-07/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-07-view-course-content.md,PRE-UC-07-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-07-view-course-content.md,POST-UC-07-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-07-view-course-content.md,AF-UC-07-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-07-view-course-content.md,EF-UC-07-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-08-watch-video-lesson.md,TRG-UC-08-01,UC-08/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-08-watch-video-lesson.md,PRE-UC-08-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-08-watch-video-lesson.md,POST-UC-08-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-08-watch-video-lesson.md,AF-UC-08-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-08-watch-video-lesson.md,EF-UC-08-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-09-take-course-quiz.md,TRG-UC-09-01,UC-09/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-09-take-course-quiz.md,PRE-UC-09-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-09-take-course-quiz.md,POST-UC-09-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-09-take-course-quiz.md,AF-UC-09-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-09-take-course-quiz.md,EF-UC-09-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-10-update-student-profile.md,TRG-UC-10-01,UC-10/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-10-update-student-profile.md,PRE-UC-10-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-10-update-student-profile.md,POST-UC-10-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-10-update-student-profile.md,AF-UC-10-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-10-update-student-profile.md,EF-UC-10-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-11-manage-learning-preferences.md,TRG-UC-11-01,UC-11/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-11-manage-learning-preferences.md,PRE-UC-11-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-11-manage-learning-preferences.md,POST-UC-11-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-11-manage-learning-preferences.md,AF-UC-11-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-11-manage-learning-preferences.md,EF-UC-11-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-12-manage-notification-preferences.md,TRG-UC-12-01,UC-12/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-12-manage-notification-preferences.md,PRE-UC-12-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-12-manage-notification-preferences.md,POST-UC-12-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-12-manage-notification-preferences.md,AF-UC-12-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-12-manage-notification-preferences.md,EF-UC-12-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-13-change-password.md,TRG-UC-13-01,UC-13/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-13-change-password.md,PRE-UC-13-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-13-change-password.md,POST-UC-13-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-13-change-password.md,AF-UC-13-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-13-change-password.md,EF-UC-13-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-14-recover-password.md,TRG-UC-14-01,UC-14/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-14-recover-password.md,PRE-UC-14-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-14-recover-password.md,POST-UC-14-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-14-recover-password.md,AF-UC-14-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-14-recover-password.md,EF-UC-14-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-15-sign-out.md,TRG-UC-15-01,UC-15/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-15-sign-out.md,PRE-UC-15-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-15-sign-out.md,POST-UC-15-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-15-sign-out.md,AF-UC-15-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-15-sign-out.md,EF-UC-15-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-16-register-instructor.md,TRG-UC-16-01,UC-16/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-16-register-instructor.md,PRE-UC-16-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-16-register-instructor.md,POST-UC-16-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-16-register-instructor.md,AF-UC-16-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-16-register-instructor.md,EF-UC-16-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-17-manage-course-drafts.md,TRG-UC-17-01,UC-17/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-17-manage-course-drafts.md,PRE-UC-17-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-17-manage-course-drafts.md,POST-UC-17-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-17-manage-course-drafts.md,AF-UC-17-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-17-manage-course-drafts.md,EF-UC-17-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-18-publish-and-assign-course.md,TRG-UC-18-01,UC-18/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-18-publish-and-assign-course.md,PRE-UC-18-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-18-publish-and-assign-course.md,POST-UC-18-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-18-publish-and-assign-course.md,AF-UC-18-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-18-publish-and-assign-course.md,EF-UC-18-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-19-inspect-learner-progress.md,TRG-UC-19-01,UC-19/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-19-inspect-learner-progress.md,PRE-UC-19-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-19-inspect-learner-progress.md,POST-UC-19-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-19-inspect-learner-progress.md,AF-UC-19-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-19-inspect-learner-progress.md,EF-UC-19-01,EF-1
+EdTech Education Dashboard/01-inception/uc/uc-20-manage-learning-deadlines.md,TRG-UC-20-01,UC-20/Trigger
+EdTech Education Dashboard/01-inception/uc/uc-20-manage-learning-deadlines.md,PRE-UC-20-01,PRE-1
+EdTech Education Dashboard/01-inception/uc/uc-20-manage-learning-deadlines.md,POST-UC-20-01,POST-1
+EdTech Education Dashboard/01-inception/uc/uc-20-manage-learning-deadlines.md,AF-UC-20-01,AF-1
+EdTech Education Dashboard/01-inception/uc/uc-20-manage-learning-deadlines.md,EF-UC-20-01,EF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-01-explore-storefront.md,TRG-UC-01-01,UC-01/Trigger
+Euphoria Ecommerce Apparels/01-inception/uc/uc-01-explore-storefront.md,PRE-UC-01-01,PRE-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-01-explore-storefront.md,POST-UC-01-01,POST-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-01-explore-storefront.md,AF-UC-01-01,AF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-01-explore-storefront.md,EF-UC-01-01,EF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-02-browse-products.md,TRG-UC-02-01,UC-02/Trigger
+Euphoria Ecommerce Apparels/01-inception/uc/uc-02-browse-products.md,PRE-UC-02-01,PRE-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-02-browse-products.md,POST-UC-02-01,POST-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-02-browse-products.md,AF-UC-02-01,AF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-02-browse-products.md,EF-UC-02-01,EF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-03-filter-products.md,TRG-UC-03-01,UC-03/Trigger
+Euphoria Ecommerce Apparels/01-inception/uc/uc-03-filter-products.md,PRE-UC-03-01,PRE-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-03-filter-products.md,POST-UC-03-01,POST-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-03-filter-products.md,AF-UC-03-01,AF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-03-filter-products.md,EF-UC-03-01,EF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-04-sort-products.md,TRG-UC-04-01,UC-04/Trigger
+Euphoria Ecommerce Apparels/01-inception/uc/uc-04-sort-products.md,PRE-UC-04-01,PRE-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-04-sort-products.md,POST-UC-04-01,POST-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-04-sort-products.md,AF-UC-04-01,AF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-04-sort-products.md,EF-UC-04-01,EF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-05-view-product-details.md,TRG-UC-05-01,UC-05/Trigger
+Euphoria Ecommerce Apparels/01-inception/uc/uc-05-view-product-details.md,PRE-UC-05-01,PRE-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-05-view-product-details.md,POST-UC-05-01,POST-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-05-view-product-details.md,AF-UC-05-01,AF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-05-view-product-details.md,EF-UC-05-01,EF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-06-review-cart.md,TRG-UC-06-01,UC-06/Trigger
+Euphoria Ecommerce Apparels/01-inception/uc/uc-06-review-cart.md,PRE-UC-06-01,PRE-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-06-review-cart.md,POST-UC-06-01,POST-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-06-review-cart.md,AF-UC-06-01,AF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-06-review-cart.md,EF-UC-06-01,EF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-07-review-checkout.md,TRG-UC-07-01,UC-07/Trigger
+Euphoria Ecommerce Apparels/01-inception/uc/uc-07-review-checkout.md,PRE-UC-07-01,PRE-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-07-review-checkout.md,POST-UC-07-01,POST-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-07-review-checkout.md,AF-UC-07-01,AF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-07-review-checkout.md,EF-UC-07-01,EF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-08-place-cash-on-delivery-order.md,TRG-UC-08-01,UC-08/Trigger
+Euphoria Ecommerce Apparels/01-inception/uc/uc-08-place-cash-on-delivery-order.md,PRE-UC-08-01,PRE-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-08-place-cash-on-delivery-order.md,POST-UC-08-01,POST-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-08-place-cash-on-delivery-order.md,AF-UC-08-01,AF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-08-place-cash-on-delivery-order.md,EF-UC-08-01,EF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-09-request-password-reset.md,TRG-UC-09-01,UC-09/Trigger
+Euphoria Ecommerce Apparels/01-inception/uc/uc-09-request-password-reset.md,PRE-UC-09-01,PRE-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-09-request-password-reset.md,POST-UC-09-01,POST-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-09-request-password-reset.md,AF-UC-09-01,AF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-09-request-password-reset.md,EF-UC-09-01,EF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-10-resend-password-reset-email.md,TRG-UC-10-01,UC-10/Trigger
+Euphoria Ecommerce Apparels/01-inception/uc/uc-10-resend-password-reset-email.md,PRE-UC-10-01,PRE-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-10-resend-password-reset-email.md,POST-UC-10-01,POST-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-10-resend-password-reset-email.md,AF-UC-10-01,AF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-10-resend-password-reset-email.md,EF-UC-10-01,EF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-11-view-profile.md,TRG-UC-11-01,UC-11/Trigger
+Euphoria Ecommerce Apparels/01-inception/uc/uc-11-view-profile.md,PRE-UC-11-01,PRE-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-11-view-profile.md,POST-UC-11-01,POST-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-11-view-profile.md,AF-UC-11-01,AF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-11-view-profile.md,EF-UC-11-01,EF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-12-view-address-book.md,TRG-UC-12-01,UC-12/Trigger
+Euphoria Ecommerce Apparels/01-inception/uc/uc-12-view-address-book.md,PRE-UC-12-01,PRE-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-12-view-address-book.md,POST-UC-12-01,POST-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-12-view-address-book.md,AF-UC-12-01,AF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-12-view-address-book.md,EF-UC-12-01,EF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-13-add-address.md,TRG-UC-13-01,UC-13/Trigger
+Euphoria Ecommerce Apparels/01-inception/uc/uc-13-add-address.md,PRE-UC-13-01,PRE-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-13-add-address.md,POST-UC-13-01,POST-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-13-add-address.md,AF-UC-13-01,AF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-13-add-address.md,EF-UC-13-01,EF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-14-view-wishlist.md,TRG-UC-14-01,UC-14/Trigger
+Euphoria Ecommerce Apparels/01-inception/uc/uc-14-view-wishlist.md,PRE-UC-14-01,PRE-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-14-view-wishlist.md,POST-UC-14-01,POST-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-14-view-wishlist.md,AF-UC-14-01,AF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-14-view-wishlist.md,EF-UC-14-01,EF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-15-view-recently-viewed-products.md,TRG-UC-15-01,UC-15/Trigger
+Euphoria Ecommerce Apparels/01-inception/uc/uc-15-view-recently-viewed-products.md,PRE-UC-15-01,PRE-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-15-view-recently-viewed-products.md,POST-UC-15-01,POST-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-15-view-recently-viewed-products.md,AF-UC-15-01,AF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-15-view-recently-viewed-products.md,EF-UC-15-01,EF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-16-view-order-history.md,TRG-UC-16-01,UC-16/Trigger
+Euphoria Ecommerce Apparels/01-inception/uc/uc-16-view-order-history.md,PRE-UC-16-01,PRE-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-16-view-order-history.md,POST-UC-16-01,POST-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-16-view-order-history.md,AF-UC-16-01,AF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-16-view-order-history.md,EF-UC-16-01,EF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-17-filter-order-history.md,TRG-UC-17-01,UC-17/Trigger
+Euphoria Ecommerce Apparels/01-inception/uc/uc-17-filter-order-history.md,PRE-UC-17-01,PRE-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-17-filter-order-history.md,POST-UC-17-01,POST-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-17-filter-order-history.md,AF-UC-17-01,AF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-17-filter-order-history.md,EF-UC-17-01,EF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-18-view-order-detail.md,TRG-UC-18-01,UC-18/Trigger
+Euphoria Ecommerce Apparels/01-inception/uc/uc-18-view-order-detail.md,PRE-UC-18-01,PRE-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-18-view-order-detail.md,POST-UC-18-01,POST-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-18-view-order-detail.md,AF-UC-18-01,AF-1
+Euphoria Ecommerce Apparels/01-inception/uc/uc-18-view-order-detail.md,EF-UC-18-01,EF-1
+Financial Management/01-inception/uc/uc-01-register-an-account.md,TRG-UC-01-01,UC-01/Trigger
+Financial Management/01-inception/uc/uc-01-register-an-account.md,PRE-UC-01-01,PRE-1
+Financial Management/01-inception/uc/uc-01-register-an-account.md,POST-UC-01-01,POST-1
+Financial Management/01-inception/uc/uc-01-register-an-account.md,POST-UC-01-02,POST-2
+Financial Management/01-inception/uc/uc-01-register-an-account.md,AF-UC-01-01,AF-1
+Financial Management/01-inception/uc/uc-01-register-an-account.md,EF-UC-01-01,EF-1
+Financial Management/01-inception/uc/uc-02-log-in.md,TRG-UC-02-01,UC-02/Trigger
+Financial Management/01-inception/uc/uc-02-log-in.md,PRE-UC-02-01,PRE-1
+Financial Management/01-inception/uc/uc-02-log-in.md,POST-UC-02-01,POST-1
+Financial Management/01-inception/uc/uc-02-log-in.md,POST-UC-02-02,POST-2
+Financial Management/01-inception/uc/uc-02-log-in.md,AF-UC-02-01,AF-1
+Financial Management/01-inception/uc/uc-02-log-in.md,EF-UC-02-01,EF-1
+Financial Management/01-inception/uc/uc-03-view-transaction-history.md,TRG-UC-03-01,UC-03/Trigger
+Financial Management/01-inception/uc/uc-03-view-transaction-history.md,PRE-UC-03-01,PRE-1
+Financial Management/01-inception/uc/uc-03-view-transaction-history.md,POST-UC-03-01,POST-1
+Financial Management/01-inception/uc/uc-03-view-transaction-history.md,POST-UC-03-02,POST-2
+Financial Management/01-inception/uc/uc-03-view-transaction-history.md,AF-UC-03-01,AF-1
+Financial Management/01-inception/uc/uc-03-view-transaction-history.md,EF-UC-03-01,EF-1
+Financial Management/01-inception/uc/uc-03-view-transaction-history.md,EF-UC-03-02,EF-2
+Financial Management/01-inception/uc/uc-04-create-a-transaction.md,TRG-UC-04-01,UC-04/Trigger
+Financial Management/01-inception/uc/uc-04-create-a-transaction.md,PRE-UC-04-01,PRE-1
+Financial Management/01-inception/uc/uc-04-create-a-transaction.md,POST-UC-04-01,POST-1
+Financial Management/01-inception/uc/uc-04-create-a-transaction.md,POST-UC-04-02,POST-2
+Financial Management/01-inception/uc/uc-04-create-a-transaction.md,AF-UC-04-01,AF-1
+Financial Management/01-inception/uc/uc-04-create-a-transaction.md,EF-UC-04-01,EF-1
+Financial Management/01-inception/uc/uc-04-create-a-transaction.md,EF-UC-04-02,EF-2
+Financial Management/01-inception/uc/uc-04-create-a-transaction.md,EF-UC-04-03,EF-3
+Financial Management/01-inception/uc/uc-05-view-bank-accounts.md,TRG-UC-05-01,UC-05/Trigger
+Financial Management/01-inception/uc/uc-05-view-bank-accounts.md,PRE-UC-05-01,PRE-1
+Financial Management/01-inception/uc/uc-05-view-bank-accounts.md,POST-UC-05-01,POST-1
+Financial Management/01-inception/uc/uc-05-view-bank-accounts.md,POST-UC-05-02,POST-2
+Financial Management/01-inception/uc/uc-05-view-bank-accounts.md,AF-UC-05-01,AF-1
+Financial Management/01-inception/uc/uc-05-view-bank-accounts.md,EF-UC-05-01,EF-1
+Financial Management/01-inception/uc/uc-05-view-bank-accounts.md,EF-UC-05-02,EF-2
+Financial Management/01-inception/uc/uc-06-add-a-bank-account.md,TRG-UC-06-01,UC-06/Trigger
+Financial Management/01-inception/uc/uc-06-add-a-bank-account.md,PRE-UC-06-01,PRE-1
+Financial Management/01-inception/uc/uc-06-add-a-bank-account.md,POST-UC-06-01,POST-1
+Financial Management/01-inception/uc/uc-06-add-a-bank-account.md,POST-UC-06-02,POST-2
+Financial Management/01-inception/uc/uc-06-add-a-bank-account.md,AF-UC-06-01,AF-1
+Financial Management/01-inception/uc/uc-06-add-a-bank-account.md,EF-UC-06-01,EF-1
+Financial Management/01-inception/uc/uc-06-add-a-bank-account.md,EF-UC-06-02,EF-2
+Financial Management/01-inception/uc/uc-07-view-bank-account-details.md,TRG-UC-07-01,UC-07/Trigger
+Financial Management/01-inception/uc/uc-07-view-bank-account-details.md,PRE-UC-07-01,PRE-1
+Financial Management/01-inception/uc/uc-07-view-bank-account-details.md,POST-UC-07-01,POST-1
+Financial Management/01-inception/uc/uc-07-view-bank-account-details.md,POST-UC-07-02,POST-2
+Financial Management/01-inception/uc/uc-07-view-bank-account-details.md,AF-UC-07-01,AF-1
+Financial Management/01-inception/uc/uc-07-view-bank-account-details.md,EF-UC-07-01,EF-1
+Financial Management/01-inception/uc/uc-07-view-bank-account-details.md,EF-UC-07-02,EF-2
+Financial Management/01-inception/uc/uc-08-edit-a-bank-account.md,TRG-UC-08-01,UC-08/Trigger
+Financial Management/01-inception/uc/uc-08-edit-a-bank-account.md,PRE-UC-08-01,PRE-1
+Financial Management/01-inception/uc/uc-08-edit-a-bank-account.md,POST-UC-08-01,POST-1
+Financial Management/01-inception/uc/uc-08-edit-a-bank-account.md,POST-UC-08-02,POST-2
+Financial Management/01-inception/uc/uc-08-edit-a-bank-account.md,AF-UC-08-01,AF-1
+Financial Management/01-inception/uc/uc-08-edit-a-bank-account.md,EF-UC-08-01,EF-1
+Financial Management/01-inception/uc/uc-08-edit-a-bank-account.md,EF-UC-08-02,EF-2
+Financial Management/01-inception/uc/uc-08-edit-a-bank-account.md,EF-UC-08-03,EF-3
+Financial Management/01-inception/uc/uc-09-delete-a-bank-account.md,TRG-UC-09-01,UC-09/Trigger
+Financial Management/01-inception/uc/uc-09-delete-a-bank-account.md,PRE-UC-09-01,PRE-1
+Financial Management/01-inception/uc/uc-09-delete-a-bank-account.md,POST-UC-09-01,POST-1
+Financial Management/01-inception/uc/uc-09-delete-a-bank-account.md,POST-UC-09-02,POST-2
+Financial Management/01-inception/uc/uc-09-delete-a-bank-account.md,AF-UC-09-01,AF-1
+Financial Management/01-inception/uc/uc-09-delete-a-bank-account.md,EF-UC-09-01,EF-1
+Financial Management/01-inception/uc/uc-09-delete-a-bank-account.md,EF-UC-09-02,EF-2
+Financial Management/01-inception/uc/uc-09-delete-a-bank-account.md,EF-UC-09-03,EF-3
+Financial Management/01-inception/uc/uc-10-view-monthly-expense-summary.md,TRG-UC-10-01,UC-10/Trigger
+Financial Management/01-inception/uc/uc-10-view-monthly-expense-summary.md,PRE-UC-10-01,PRE-1
+Financial Management/01-inception/uc/uc-10-view-monthly-expense-summary.md,POST-UC-10-01,POST-1
+Financial Management/01-inception/uc/uc-10-view-monthly-expense-summary.md,POST-UC-10-02,POST-2
+Financial Management/01-inception/uc/uc-10-view-monthly-expense-summary.md,AF-UC-10-01,AF-1
+Financial Management/01-inception/uc/uc-10-view-monthly-expense-summary.md,EF-UC-10-01,EF-1
+Financial Management/01-inception/uc/uc-10-view-monthly-expense-summary.md,EF-UC-10-02,EF-2
+Financial Management/01-inception/uc/uc-11-view-expenses-by-category.md,TRG-UC-11-01,UC-11/Trigger
+Financial Management/01-inception/uc/uc-11-view-expenses-by-category.md,PRE-UC-11-01,PRE-1
+Financial Management/01-inception/uc/uc-11-view-expenses-by-category.md,POST-UC-11-01,POST-1
+Financial Management/01-inception/uc/uc-11-view-expenses-by-category.md,POST-UC-11-02,POST-2
+Financial Management/01-inception/uc/uc-11-view-expenses-by-category.md,AF-UC-11-01,AF-1
+Financial Management/01-inception/uc/uc-11-view-expenses-by-category.md,EF-UC-11-01,EF-1
+Financial Management/01-inception/uc/uc-11-view-expenses-by-category.md,EF-UC-11-02,EF-2
+Financial Management/01-inception/uc/uc-12-view-upcoming-bills.md,TRG-UC-12-01,UC-12/Trigger
+Financial Management/01-inception/uc/uc-12-view-upcoming-bills.md,PRE-UC-12-01,PRE-1
+Financial Management/01-inception/uc/uc-12-view-upcoming-bills.md,POST-UC-12-01,POST-1
+Financial Management/01-inception/uc/uc-12-view-upcoming-bills.md,POST-UC-12-02,POST-2
+Financial Management/01-inception/uc/uc-12-view-upcoming-bills.md,AF-UC-12-01,AF-1
+Financial Management/01-inception/uc/uc-12-view-upcoming-bills.md,EF-UC-12-01,EF-1
+Financial Management/01-inception/uc/uc-12-view-upcoming-bills.md,EF-UC-12-02,EF-2
+Financial Management/01-inception/uc/uc-13-view-financial-goals.md,TRG-UC-13-01,UC-13/Trigger
+Financial Management/01-inception/uc/uc-13-view-financial-goals.md,PRE-UC-13-01,PRE-1
+Financial Management/01-inception/uc/uc-13-view-financial-goals.md,POST-UC-13-01,POST-1
+Financial Management/01-inception/uc/uc-13-view-financial-goals.md,POST-UC-13-02,POST-2
+Financial Management/01-inception/uc/uc-13-view-financial-goals.md,AF-UC-13-01,AF-1
+Financial Management/01-inception/uc/uc-13-view-financial-goals.md,EF-UC-13-01,EF-1
+Financial Management/01-inception/uc/uc-13-view-financial-goals.md,EF-UC-13-02,EF-2
+Financial Management/01-inception/uc/uc-14-create-a-financial-goal.md,TRG-UC-14-01,UC-14/Trigger
+Financial Management/01-inception/uc/uc-14-create-a-financial-goal.md,PRE-UC-14-01,PRE-1
+Financial Management/01-inception/uc/uc-14-create-a-financial-goal.md,POST-UC-14-01,POST-1
+Financial Management/01-inception/uc/uc-14-create-a-financial-goal.md,POST-UC-14-02,POST-2
+Financial Management/01-inception/uc/uc-14-create-a-financial-goal.md,AF-UC-14-01,AF-1
+Financial Management/01-inception/uc/uc-14-create-a-financial-goal.md,EF-UC-14-01,EF-1
+Financial Management/01-inception/uc/uc-14-create-a-financial-goal.md,EF-UC-14-02,EF-2
+Financial Management/01-inception/uc/uc-15-adjust-a-financial-goal.md,TRG-UC-15-01,UC-15/Trigger
+Financial Management/01-inception/uc/uc-15-adjust-a-financial-goal.md,PRE-UC-15-01,PRE-1
+Financial Management/01-inception/uc/uc-15-adjust-a-financial-goal.md,POST-UC-15-01,POST-1
+Financial Management/01-inception/uc/uc-15-adjust-a-financial-goal.md,POST-UC-15-02,POST-2
+Financial Management/01-inception/uc/uc-15-adjust-a-financial-goal.md,AF-UC-15-01,AF-1
+Financial Management/01-inception/uc/uc-15-adjust-a-financial-goal.md,EF-UC-15-01,EF-1
+Financial Management/01-inception/uc/uc-15-adjust-a-financial-goal.md,EF-UC-15-02,EF-2
+Financial Management/01-inception/uc/uc-15-adjust-a-financial-goal.md,EF-UC-15-03,EF-3
+Financial Management/01-inception/uc/uc-16-view-savings-summary.md,TRG-UC-16-01,UC-16/Trigger
+Financial Management/01-inception/uc/uc-16-view-savings-summary.md,PRE-UC-16-01,PRE-1
+Financial Management/01-inception/uc/uc-16-view-savings-summary.md,POST-UC-16-01,POST-1
+Financial Management/01-inception/uc/uc-16-view-savings-summary.md,POST-UC-16-02,POST-2
+Financial Management/01-inception/uc/uc-16-view-savings-summary.md,AF-UC-16-01,AF-1
+Financial Management/01-inception/uc/uc-16-view-savings-summary.md,EF-UC-16-01,EF-1
+Financial Management/01-inception/uc/uc-16-view-savings-summary.md,EF-UC-16-02,EF-2
+Financial Management/01-inception/uc/uc-17-filter-transaction-history.md,TRG-UC-17-01,UC-17/Trigger
+Financial Management/01-inception/uc/uc-17-filter-transaction-history.md,PRE-UC-17-01,PRE-1
+Financial Management/01-inception/uc/uc-17-filter-transaction-history.md,POST-UC-17-01,POST-1
+Financial Management/01-inception/uc/uc-17-filter-transaction-history.md,POST-UC-17-02,POST-2
+Financial Management/01-inception/uc/uc-17-filter-transaction-history.md,AF-UC-17-01,AF-1
+Financial Management/01-inception/uc/uc-17-filter-transaction-history.md,EF-UC-17-01,EF-1
+Financial Management/01-inception/uc/uc-17-filter-transaction-history.md,EF-UC-17-02,EF-2
+Financial Management/01-inception/uc/uc-18-choose-a-category.md,TRG-UC-18-01,UC-18/Trigger
+Financial Management/01-inception/uc/uc-18-choose-a-category.md,PRE-UC-18-01,PRE-1
+Financial Management/01-inception/uc/uc-18-choose-a-category.md,POST-UC-18-01,POST-1
+Financial Management/01-inception/uc/uc-18-choose-a-category.md,POST-UC-18-02,POST-2
+Financial Management/01-inception/uc/uc-18-choose-a-category.md,AF-UC-18-01,AF-1
+Financial Management/01-inception/uc/uc-18-choose-a-category.md,EF-UC-18-01,EF-1
+Financial Management/01-inception/uc/uc-18-choose-a-category.md,EF-UC-18-02,EF-2
+Table Booking Restaurant Application/01-inception/uc/uc-01-register-account.md,TRG-UC-01-01,UC-01/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-01-register-account.md,PRE-UC-01-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-01-register-account.md,POST-UC-01-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-01-register-account.md,AF-UC-01-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-01-register-account.md,EF-UC-01-01,EF-1
+Table Booking Restaurant Application/01-inception/uc/uc-02-sign-in.md,TRG-UC-02-01,UC-02/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-02-sign-in.md,PRE-UC-02-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-02-sign-in.md,POST-UC-02-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-02-sign-in.md,AF-UC-02-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-02-sign-in.md,EF-UC-02-01,EF-1
+Table Booking Restaurant Application/01-inception/uc/uc-03-browse-home.md,TRG-UC-03-01,UC-03/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-03-browse-home.md,PRE-UC-03-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-03-browse-home.md,POST-UC-03-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-03-browse-home.md,AF-UC-03-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-03-browse-home.md,EF-UC-03-01,EF-1
+Table Booking Restaurant Application/01-inception/uc/uc-04-search-restaurants.md,TRG-UC-04-01,UC-04/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-04-search-restaurants.md,PRE-UC-04-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-04-search-restaurants.md,POST-UC-04-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-04-search-restaurants.md,AF-UC-04-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-04-search-restaurants.md,EF-UC-04-01,EF-1
+Table Booking Restaurant Application/01-inception/uc/uc-05-view-restaurant.md,TRG-UC-05-01,UC-05/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-05-view-restaurant.md,PRE-UC-05-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-05-view-restaurant.md,POST-UC-05-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-05-view-restaurant.md,AF-UC-05-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-05-view-restaurant.md,EF-UC-05-01,EF-1
+Table Booking Restaurant Application/01-inception/uc/uc-06-view-menu.md,TRG-UC-06-01,UC-06/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-06-view-menu.md,PRE-UC-06-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-06-view-menu.md,POST-UC-06-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-06-view-menu.md,AF-UC-06-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-06-view-menu.md,EF-UC-06-01,EF-1
+Table Booking Restaurant Application/01-inception/uc/uc-07-check-availability.md,TRG-UC-07-01,UC-07/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-07-check-availability.md,PRE-UC-07-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-07-check-availability.md,POST-UC-07-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-07-check-availability.md,AF-UC-07-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-07-check-availability.md,EF-UC-07-01,EF-1
+Table Booking Restaurant Application/01-inception/uc/uc-08-book-table.md,TRG-UC-08-01,UC-08/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-08-book-table.md,PRE-UC-08-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-08-book-table.md,POST-UC-08-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-08-book-table.md,AF-UC-08-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-08-book-table.md,EF-UC-08-01,EF-1
+Table Booking Restaurant Application/01-inception/uc/uc-09-view-bookings.md,TRG-UC-09-01,UC-09/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-09-view-bookings.md,PRE-UC-09-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-09-view-bookings.md,POST-UC-09-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-09-view-bookings.md,AF-UC-09-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-09-view-bookings.md,EF-UC-09-01,EF-1
+Table Booking Restaurant Application/01-inception/uc/uc-10-change-booking.md,TRG-UC-10-01,UC-10/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-10-change-booking.md,PRE-UC-10-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-10-change-booking.md,POST-UC-10-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-10-change-booking.md,AF-UC-10-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-10-change-booking.md,EF-UC-10-01,EF-1
+Table Booking Restaurant Application/01-inception/uc/uc-11-cancel-booking.md,TRG-UC-11-01,UC-11/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-11-cancel-booking.md,PRE-UC-11-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-11-cancel-booking.md,POST-UC-11-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-11-cancel-booking.md,AF-UC-11-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-11-cancel-booking.md,EF-UC-11-01,EF-1
+Table Booking Restaurant Application/01-inception/uc/uc-12-view-notifications.md,TRG-UC-12-01,UC-12/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-12-view-notifications.md,PRE-UC-12-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-12-view-notifications.md,POST-UC-12-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-12-view-notifications.md,AF-UC-12-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-12-view-notifications.md,EF-UC-12-01,EF-1
+Table Booking Restaurant Application/01-inception/uc/uc-13-view-profile.md,TRG-UC-13-01,UC-13/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-13-view-profile.md,PRE-UC-13-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-13-view-profile.md,POST-UC-13-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-13-view-profile.md,AF-UC-13-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-13-view-profile.md,EF-UC-13-01,EF-1
+Table Booking Restaurant Application/01-inception/uc/uc-14-contact-support.md,TRG-UC-14-01,UC-14/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-14-contact-support.md,PRE-UC-14-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-14-contact-support.md,POST-UC-14-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-14-contact-support.md,AF-UC-14-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-14-contact-support.md,EF-UC-14-01,EF-1
+Table Booking Restaurant Application/01-inception/uc/uc-15-view-admin-bookings.md,TRG-UC-15-01,UC-15/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-15-view-admin-bookings.md,PRE-UC-15-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-15-view-admin-bookings.md,POST-UC-15-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-15-view-admin-bookings.md,AF-UC-15-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-15-view-admin-bookings.md,EF-UC-15-01,EF-1
+Table Booking Restaurant Application/01-inception/uc/uc-16-update-admin-booking.md,TRG-UC-16-01,UC-16/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-16-update-admin-booking.md,PRE-UC-16-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-16-update-admin-booking.md,POST-UC-16-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-16-update-admin-booking.md,AF-UC-16-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-16-update-admin-booking.md,EF-UC-16-01,EF-1
+Table Booking Restaurant Application/01-inception/uc/uc-17-view-table-layout.md,TRG-UC-17-01,UC-17/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-17-view-table-layout.md,PRE-UC-17-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-17-view-table-layout.md,POST-UC-17-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-17-view-table-layout.md,AF-UC-17-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-17-view-table-layout.md,EF-UC-17-01,EF-1
+Table Booking Restaurant Application/01-inception/uc/uc-18-manage-restaurants.md,TRG-UC-18-01,UC-18/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-18-manage-restaurants.md,PRE-UC-18-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-18-manage-restaurants.md,POST-UC-18-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-18-manage-restaurants.md,AF-UC-18-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-18-manage-restaurants.md,EF-UC-18-01,EF-1
+Table Booking Restaurant Application/01-inception/uc/uc-19-manage-users.md,TRG-UC-19-01,UC-19/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-19-manage-users.md,PRE-UC-19-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-19-manage-users.md,POST-UC-19-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-19-manage-users.md,AF-UC-19-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-19-manage-users.md,EF-UC-19-01,EF-1
+Table Booking Restaurant Application/01-inception/uc/uc-20-view-reports.md,TRG-UC-20-01,UC-20/Trigger
+Table Booking Restaurant Application/01-inception/uc/uc-20-view-reports.md,PRE-UC-20-01,PRE-1
+Table Booking Restaurant Application/01-inception/uc/uc-20-view-reports.md,POST-UC-20-01,POST-1
+Table Booking Restaurant Application/01-inception/uc/uc-20-view-reports.md,AF-UC-20-01,AF-1
+Table Booking Restaurant Application/01-inception/uc/uc-20-view-reports.md,EF-UC-20-01,EF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-01-register-an-account.md,TRG-UC-01-01,UC-01/Trigger
+Travel Booking App Web & Mobile/01-inception/uc/uc-01-register-an-account.md,PRE-UC-01-01,PRE-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-01-register-an-account.md,POST-UC-01-01,POST-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-01-register-an-account.md,POST-UC-01-02,POST-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-01-register-an-account.md,AF-UC-01-01,AF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-01-register-an-account.md,AF-UC-01-02,AF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-01-register-an-account.md,EF-UC-01-01,EF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-02-log-in.md,TRG-UC-02-01,UC-02/Trigger
+Travel Booking App Web & Mobile/01-inception/uc/uc-02-log-in.md,PRE-UC-02-01,PRE-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-02-log-in.md,POST-UC-02-01,POST-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-02-log-in.md,POST-UC-02-02,POST-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-02-log-in.md,AF-UC-02-01,AF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-02-log-in.md,AF-UC-02-02,AF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-02-log-in.md,EF-UC-02-01,EF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-03-view-the-home-page.md,TRG-UC-03-01,UC-03/Trigger
+Travel Booking App Web & Mobile/01-inception/uc/uc-03-view-the-home-page.md,PRE-UC-03-01,PRE-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-03-view-the-home-page.md,POST-UC-03-01,POST-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-03-view-the-home-page.md,POST-UC-03-02,POST-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-03-view-the-home-page.md,AF-UC-03-01,AF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-03-view-the-home-page.md,AF-UC-03-02,AF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-03-view-the-home-page.md,AF-UC-03-03,AF-3
+Travel Booking App Web & Mobile/01-inception/uc/uc-03-view-the-home-page.md,EF-UC-03-01,EF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-03-view-the-home-page.md,EF-UC-03-02,EF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-04-search-for-stays.md,TRG-UC-04-01,UC-04/Trigger
+Travel Booking App Web & Mobile/01-inception/uc/uc-04-search-for-stays.md,PRE-UC-04-01,PRE-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-04-search-for-stays.md,POST-UC-04-01,POST-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-04-search-for-stays.md,POST-UC-04-02,POST-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-04-search-for-stays.md,AF-UC-04-01,AF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-04-search-for-stays.md,AF-UC-04-02,AF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-04-search-for-stays.md,EF-UC-04-01,EF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-04-search-for-stays.md,EF-UC-04-02,EF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-05-view-stay-results.md,TRG-UC-05-01,UC-05/Trigger
+Travel Booking App Web & Mobile/01-inception/uc/uc-05-view-stay-results.md,PRE-UC-05-01,PRE-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-05-view-stay-results.md,POST-UC-05-01,POST-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-05-view-stay-results.md,POST-UC-05-02,POST-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-05-view-stay-results.md,AF-UC-05-01,AF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-05-view-stay-results.md,AF-UC-05-02,AF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-05-view-stay-results.md,EF-UC-05-01,EF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-05-view-stay-results.md,EF-UC-05-02,EF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-06-filter-and-sort-stay-results.md,TRG-UC-06-01,UC-06/Trigger
+Travel Booking App Web & Mobile/01-inception/uc/uc-06-filter-and-sort-stay-results.md,PRE-UC-06-01,PRE-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-06-filter-and-sort-stay-results.md,POST-UC-06-01,POST-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-06-filter-and-sort-stay-results.md,POST-UC-06-02,POST-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-06-filter-and-sort-stay-results.md,AF-UC-06-01,AF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-06-filter-and-sort-stay-results.md,AF-UC-06-02,AF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-06-filter-and-sort-stay-results.md,EF-UC-06-01,EF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-07-view-stay-details.md,TRG-UC-07-01,UC-07/Trigger
+Travel Booking App Web & Mobile/01-inception/uc/uc-07-view-stay-details.md,PRE-UC-07-01,PRE-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-07-view-stay-details.md,POST-UC-07-01,POST-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-07-view-stay-details.md,POST-UC-07-02,POST-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-07-view-stay-details.md,AF-UC-07-01,AF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-07-view-stay-details.md,AF-UC-07-02,AF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-07-view-stay-details.md,EF-UC-07-01,EF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-08-book-a-stay.md,TRG-UC-08-01,UC-08/Trigger
+Travel Booking App Web & Mobile/01-inception/uc/uc-08-book-a-stay.md,PRE-UC-08-01,PRE-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-08-book-a-stay.md,POST-UC-08-01,POST-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-08-book-a-stay.md,POST-UC-08-02,POST-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-08-book-a-stay.md,AF-UC-08-01,AF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-08-book-a-stay.md,AF-UC-08-02,AF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-08-book-a-stay.md,EF-UC-08-01,EF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-09-search-for-taxis.md,TRG-UC-09-01,UC-09/Trigger
+Travel Booking App Web & Mobile/01-inception/uc/uc-09-search-for-taxis.md,PRE-UC-09-01,PRE-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-09-search-for-taxis.md,POST-UC-09-01,POST-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-09-search-for-taxis.md,POST-UC-09-02,POST-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-09-search-for-taxis.md,AF-UC-09-01,AF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-09-search-for-taxis.md,AF-UC-09-02,AF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-09-search-for-taxis.md,EF-UC-09-01,EF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-09-search-for-taxis.md,EF-UC-09-02,EF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-10-view-taxi-results.md,TRG-UC-10-01,UC-10/Trigger
+Travel Booking App Web & Mobile/01-inception/uc/uc-10-view-taxi-results.md,PRE-UC-10-01,PRE-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-10-view-taxi-results.md,POST-UC-10-01,POST-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-10-view-taxi-results.md,POST-UC-10-02,POST-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-10-view-taxi-results.md,AF-UC-10-01,AF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-10-view-taxi-results.md,AF-UC-10-02,AF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-10-view-taxi-results.md,EF-UC-10-01,EF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-10-view-taxi-results.md,EF-UC-10-02,EF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-11-filter-and-sort-taxi-results.md,TRG-UC-11-01,UC-11/Trigger
+Travel Booking App Web & Mobile/01-inception/uc/uc-11-filter-and-sort-taxi-results.md,PRE-UC-11-01,PRE-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-11-filter-and-sort-taxi-results.md,POST-UC-11-01,POST-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-11-filter-and-sort-taxi-results.md,POST-UC-11-02,POST-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-11-filter-and-sort-taxi-results.md,AF-UC-11-01,AF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-11-filter-and-sort-taxi-results.md,AF-UC-11-02,AF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-11-filter-and-sort-taxi-results.md,EF-UC-11-01,EF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-12-view-taxi-and-driver-details.md,TRG-UC-12-01,UC-12/Trigger
+Travel Booking App Web & Mobile/01-inception/uc/uc-12-view-taxi-and-driver-details.md,PRE-UC-12-01,PRE-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-12-view-taxi-and-driver-details.md,POST-UC-12-01,POST-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-12-view-taxi-and-driver-details.md,POST-UC-12-02,POST-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-12-view-taxi-and-driver-details.md,AF-UC-12-01,AF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-12-view-taxi-and-driver-details.md,AF-UC-12-02,AF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-12-view-taxi-and-driver-details.md,EF-UC-12-01,EF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-13-book-a-taxi.md,TRG-UC-13-01,UC-13/Trigger
+Travel Booking App Web & Mobile/01-inception/uc/uc-13-book-a-taxi.md,PRE-UC-13-01,PRE-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-13-book-a-taxi.md,POST-UC-13-01,POST-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-13-book-a-taxi.md,POST-UC-13-02,POST-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-13-book-a-taxi.md,AF-UC-13-01,AF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-13-book-a-taxi.md,AF-UC-13-02,AF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-13-book-a-taxi.md,AF-UC-13-03,AF-3
+Travel Booking App Web & Mobile/01-inception/uc/uc-13-book-a-taxi.md,EF-UC-13-01,EF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-13-book-a-taxi.md,EF-UC-13-02,EF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-14-search-for-flights.md,TRG-UC-14-01,UC-14/Trigger
+Travel Booking App Web & Mobile/01-inception/uc/uc-14-search-for-flights.md,PRE-UC-14-01,PRE-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-14-search-for-flights.md,POST-UC-14-01,POST-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-14-search-for-flights.md,POST-UC-14-02,POST-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-14-search-for-flights.md,AF-UC-14-01,AF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-14-search-for-flights.md,AF-UC-14-02,AF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-14-search-for-flights.md,EF-UC-14-01,EF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-14-search-for-flights.md,EF-UC-14-02,EF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-15-view-filter-and-sort-flight-results.md,TRG-UC-15-01,UC-15/Trigger
+Travel Booking App Web & Mobile/01-inception/uc/uc-15-view-filter-and-sort-flight-results.md,PRE-UC-15-01,PRE-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-15-view-filter-and-sort-flight-results.md,POST-UC-15-01,POST-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-15-view-filter-and-sort-flight-results.md,POST-UC-15-02,POST-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-15-view-filter-and-sort-flight-results.md,AF-UC-15-01,AF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-15-view-filter-and-sort-flight-results.md,AF-UC-15-02,AF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-15-view-filter-and-sort-flight-results.md,AF-UC-15-03,AF-3
+Travel Booking App Web & Mobile/01-inception/uc/uc-15-view-filter-and-sort-flight-results.md,EF-UC-15-01,EF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-15-view-filter-and-sort-flight-results.md,EF-UC-15-02,EF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-16-browse-budget-trips.md,TRG-UC-16-01,UC-16/Trigger
+Travel Booking App Web & Mobile/01-inception/uc/uc-16-browse-budget-trips.md,PRE-UC-16-01,PRE-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-16-browse-budget-trips.md,POST-UC-16-01,POST-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-16-browse-budget-trips.md,POST-UC-16-02,POST-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-16-browse-budget-trips.md,AF-UC-16-01,AF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-16-browse-budget-trips.md,AF-UC-16-02,AF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-16-browse-budget-trips.md,EF-UC-16-01,EF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-16-browse-budget-trips.md,EF-UC-16-02,EF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-17-view-budget-trip-details.md,TRG-UC-17-01,UC-17/Trigger
+Travel Booking App Web & Mobile/01-inception/uc/uc-17-view-budget-trip-details.md,PRE-UC-17-01,PRE-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-17-view-budget-trip-details.md,POST-UC-17-01,POST-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-17-view-budget-trip-details.md,POST-UC-17-02,POST-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-17-view-budget-trip-details.md,AF-UC-17-01,AF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-17-view-budget-trip-details.md,AF-UC-17-02,AF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-17-view-budget-trip-details.md,EF-UC-17-01,EF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-18-view-traveller-reviews.md,TRG-UC-18-01,UC-18/Trigger
+Travel Booking App Web & Mobile/01-inception/uc/uc-18-view-traveller-reviews.md,PRE-UC-18-01,PRE-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-18-view-traveller-reviews.md,POST-UC-18-01,POST-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-18-view-traveller-reviews.md,POST-UC-18-02,POST-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-18-view-traveller-reviews.md,AF-UC-18-01,AF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-18-view-traveller-reviews.md,AF-UC-18-02,AF-2
+Travel Booking App Web & Mobile/01-inception/uc/uc-18-view-traveller-reviews.md,EF-UC-18-01,EF-1
+Travel Booking App Web & Mobile/01-inception/uc/uc-18-view-traveller-reviews.md,EF-UC-18-02,EF-2

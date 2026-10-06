@@ -1,6 +1,6 @@
 # Figma Specification Repository
 
-This repository stores multiple independent Figma-derived specification packages.
+This repository stores independent specification packages derived from Figma designs or supplied product specifications.
 
 ## Repository Layout
 
@@ -15,11 +15,12 @@ figma_spec/
     ├── ASSUMPTIONS.md
     ├── coverage-report.md
     ├── schema.dbml
-    ├── uc/
-    └── api/
+    └── 01-inception/
+        ├── uc/
+        └── api/
 ```
 
-Each direct child directory other than `skills` is a self-contained specification package for one Figma file or one explicitly scoped Figma product.
+Each direct child directory other than `skills` is a self-contained specification package for one Figma file or one explicitly scoped product source. Every package stores use-case and API contracts under `01-inception/`, and its DBML persistence specification targets MySQL.
 
 ## Packages
 
@@ -32,6 +33,7 @@ Each direct child directory other than `skills` is a self-contained specificatio
 | [Clicon Ecommerce Marketplace](Clicon%20Ecommerce%20Marketplace/) | Ecommerce marketplace specification with 20 normalized use cases and all 22 supplied source specifications preserved with checksums. |
 | [DH Dental Recruitment](DH%20Dental%20Recruitment/) | Dental recruitment specification with all 20 supplied use cases normalized and preserved. |
 | [EdTech Education Dashboard](EdTech%20Education%20Dashboard/) | Student and instructor learning specification with 20 normalized use cases and all 21 supplied source specifications preserved with checksums. |
+| [Financial Management](Financial%20Management/) | Personal financial tracking specification from the supplied Google spreadsheet: 18 use cases, 18 API contracts, local UML/OCL, MySQL DBML, preserved source and documented consistency repairs. |
 
 ## Shared Skill
 

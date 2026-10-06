@@ -5,9 +5,9 @@ An English specification package for the user-supplied Euphoria Figma copy, audi
 ## Read first
 
 1. [Scope and coverage](coverage-report.md): supported goals, partial/missing flows, and design discrepancies.
-2. [Use cases](uc/README.md): observable activities and isolated domain constraints.
-3. [API contracts](api/README.md): sequential wire contracts and reusable object definitions.
-4. [Domain glossary](CONTEXT.md), [shared UML model](uc/shared-domain-model.md), and [database schema](schema.dbml).
+2. [Use cases](01-inception/uc/): observable activities and isolated domain constraints.
+3. [API contracts](01-inception/api/): sequential wire contracts and reusable object definitions.
+4. [Domain glossary](CONTEXT.md) and [database schema](schema.dbml).
 5. [Assumptions](ASSUMPTIONS.md), [Figma source manifest](FIGMA.md), and [validation report](validation-report.md).
 
 ## Authoring requirements

@@ -1,0 +1,26 @@
+[
+  {
+    "gate": "source-and-cross-artifact",
+    "exitCode": 0,
+    "status": "PASS",
+    "log": "source-and-cross-artifact.txt"
+  },
+  {
+    "gate": "package-validation",
+    "exitCode": 0,
+    "status": "PASS",
+    "log": "package-validation.txt"
+  },
+  {
+    "gate": "schema-compilation",
+    "exitCode": 0,
+    "status": "PASS",
+    "log": "schema-compilation.txt"
+  },
+  {
+    "gate": "repository-validation",
+    "exitCode": 1,
+    "status": "FAIL",
+    "log": "repository-validation.txt"
+  }
+]

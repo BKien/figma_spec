@@ -56,7 +56,7 @@ The package contains 156 OCL Business Rules. Every use case contains at least se
 
 - Package structure and traceability validator: 18 UC files, 16 sequential API files, 139 coded conditions and branch flows, 189 numbered flow activities, and 156 unique OCL rules.
 - Additional audit checker: rule count and sequencing, OCL delimiter balance, qualified-name and direct-property resolution, duplicate rule bodies, policy isolation, fences, and local links passed.
-- `schema.dbml` compiled successfully to PostgreSQL SQL with `@dbml/cli`.
+- `schema.dbml` compiles to MySQL SQL with the pinned `@dbml/cli` command below.
 - `git diff --check` passed.
 
 The static checks are not a complete OCL theorem proof. Hidden provider behavior, timeout values, credential policies, concurrency behavior and other nonvisual product decisions remain explicitly marked as assumptions.
@@ -68,5 +68,5 @@ From the repository root:
 ```powershell
 python '.\Travel Booking App Web & Mobile\scripts\validate_audit.py'
 pwsh -NoProfile -File 'C:\Users\User\.codex\skills\figma-to-ocl-specs\scripts\validate_specs.ps1' -Root '.\Travel Booking App Web & Mobile' -SkipDbmlCompile
-npx --yes --package @dbml/cli dbml2sql '.\Travel Booking App Web & Mobile\schema.dbml' --postgres -o "$env:TEMP\travel-booking-schema.sql"
+npm exec --yes --package @dbml/cli@9.1.1 -- dbml2sql '.\Travel Booking App Web & Mobile\schema.dbml' --mysql -o "$env:TEMP\travel-booking-schema.sql"
 ```

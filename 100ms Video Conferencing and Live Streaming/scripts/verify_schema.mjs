@@ -1,44 +1,71 @@
-import { fileURLToPath, pathToFileURL } from 'node:url';
-const { PGlite } = await import(process.argv[3] ? pathToFileURL(process.argv[3]).href : '@electric-sql/pglite');
-import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
-const db=await PGlite.create();
-const base=fileURLToPath(new URL('../', import.meta.url));
-if (!process.argv[2]) throw new Error('Pass the compiled PostgreSQL SQL path as the first argument.');
-await db.exec(readFileSync(process.argv[2],'utf8'));
-await db.exec(readFileSync(base+'persistence.sql','utf8'));
-let tests=0;
-const uuid=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
-async function rejects(sql,code,label){try{await db.exec(sql);throw new Error('Expected rejection: '+label);}catch(e){assert.equal(e.code,code,label+': '+e.message);tests++;}}
-const h=uuid(1),v=uuid(2),h2=uuid(3),s=uuid(10),s2=uuid(11),p=uuid(20),q=uuid(21),p2=uuid(22);
-await db.exec(`INSERT INTO principals(id,created_at) VALUES ('${h}',now()),('${v}',now()),('${h2}',now());
- INSERT INTO sessions(id,kind,status,designated_host_principal_id,created_at) VALUES ('${s}','LIVE_STREAM','LIVE','${h}',now()),('${s2}','VIDEO_CONFERENCE','LIVE','${h2}',now());
- INSERT INTO participants(id,session_id,principal_id,display_name,role,status,joined_at) VALUES ('${p}','${s}','${h}','Host','HOST','JOINED',now()),('${q}','${s}','${v}','Viewer','VIEWER','JOINED',now()),('${p2}','${s2}','${h2}','Host 2','HOST','JOINED',now());`);
-await rejects(`INSERT INTO participants(id,session_id,principal_id,display_name,role,status,joined_at) VALUES ('${uuid(23)}','${s}','${v}','Viewer','VIEWER','JOINED',now())`,'23505','duplicate joined membership');
-await rejects(`UPDATE sessions SET host_participant_id='${p2}' WHERE id='${s}'`,'23503','cross-session host reference');
-await rejects(`INSERT INTO stage_requests(id,session_id,participant_id,status,created_at) VALUES ('${uuid(30)}','${s}','${p2}','PENDING',now())`,'23503','cross-session stage target');
-await db.exec(`INSERT INTO stage_requests(id,session_id,participant_id,status,created_at) VALUES ('${uuid(31)}','${s}','${q}','PENDING',now());`);
-await rejects(`INSERT INTO stage_requests(id,session_id,participant_id,status,created_at) VALUES ('${uuid(32)}','${s}','${q}','PENDING',now())`,'23505','second pending request');
-await db.exec(`UPDATE stage_requests SET status='REJECTED' WHERE id='${uuid(31)}'; INSERT INTO stage_requests(id,session_id,participant_id,status,created_at) VALUES ('${uuid(32)}','${s}','${q}','REJECTED',now()),('${uuid(33)}','${s}','${q}','PENDING',now())`); tests++;
-const share=(id,status)=>`INSERT INTO content_shares(id,session_id,owner_participant_id,kind,status,source_reference,started_at) VALUES ('${uuid(id)}','${s}','${p}','SCREEN','${status}','source',now())`;
-await db.exec(share(40,'ACTIVE'));await rejects(share(41,'ACTIVE'),'23505','second active share');
-await db.exec(share(42,'STOPPED')+';'+share(43,'STOPPED'));tests++;
-const record=(id,status)=>`INSERT INTO recordings(id,session_id,started_by_participant_id,status) VALUES ('${uuid(id)}','${s}','${p}','${status}')`;
-await db.exec(record(50,'STARTING'));await rejects(record(51,'RECORDING'),'23505','second active recording including STARTING');
-await db.exec(record(52,'STOPPED')+';'+record(53,'STOPPED'));tests++;
-await rejects(`INSERT INTO chat_messages(id,session_id,sender_participant_id,body,sent_at,sequence) VALUES ('${uuid(60)}','${s}','${q}','   ',now(),1)`,'23514','blank normalized chat');
-await rejects(`UPDATE participants SET display_name=repeat('x',51) WHERE id='${q}'`,'22001','display-name storage bound');
-await rejects(`INSERT INTO reaction_events(id,session_id,participant_id,reaction,created_at,sequence) VALUES ('${uuid(61)}','${s}','${q}','INVALID',now(),1)`,'22P02','reaction enum');
-await db.exec(`INSERT INTO reaction_events(id,session_id,participant_id,reaction,created_at,sequence) VALUES ('${uuid(61)}','${s}','${q}','CLAP',now(),1)`);tests++;
-await db.exec(`INSERT INTO mutation_responses(id,http_status,response_body,created_at) VALUES ('${uuid(70)}',201,'{}',now()); INSERT INTO idempotency_records(id,principal_id,session_id,operation,idempotency_key,payload_hash,response_reference,completed_at,expires_at) VALUES ('${uuid(71)}','${v}','${s}','join','same-key',repeat('a',64),'${uuid(70)}',now(),now()+interval '24 hours')`);
-await rejects(`INSERT INTO idempotency_records(id,principal_id,session_id,operation,idempotency_key,payload_hash,response_reference,completed_at,expires_at) VALUES ('${uuid(72)}','${v}','${s}','join','same-key',repeat('b',64),'${uuid(70)}',now(),now()+interval '24 hours')`,'23505','stable-principal deduplication');
-// Stage limit includes the existing host. Nine non-viewer peers reach ten.
-for(let i=100;i<109;i++)await db.exec(`INSERT INTO principals(id,created_at) VALUES ('${uuid(i)}',now()); INSERT INTO participants(id,session_id,principal_id,display_name,role,status,joined_at) VALUES ('${uuid(i+1000)}','${s}','${uuid(i)}','Stage','STAGE_PARTICIPANT','JOINED',now())`);
-await rejects(`UPDATE participants SET role='STAGE_PARTICIPANT' WHERE id='${q}'`,'23514','stage capacity including host');
-// Conference limit includes its host.
-for(let i=200;i<299;i++)await db.exec(`INSERT INTO principals(id,created_at) VALUES ('${uuid(i)}',now()); INSERT INTO participants(id,session_id,principal_id,display_name,role,status,joined_at) VALUES ('${uuid(i+1000)}','${s2}','${uuid(i)}','Peer','BROADCASTER','JOINED',now())`);
-await rejects(`INSERT INTO participants(id,session_id,principal_id,display_name,role,status,joined_at) VALUES ('${uuid(999)}','${s2}','${v}','Overflow','BROADCASTER','JOINED',now())`,'23514','conference capacity');
-await db.exec(`UPDATE participants SET status='LEFT',left_at=now() WHERE id='${q}'; INSERT INTO participants(id,session_id,principal_id,display_name,role,status,joined_at) VALUES ('${uuid(888)}','${s}','${v}','Rejoined','VIEWER','JOINED',now())`);tests++;
-await rejects(`UPDATE participants SET version=0 WHERE id='${p}'`,'23514','positive resource version');
-console.log(`PASS: applied compiled schema + supplement; ${tests} PostgreSQL constraint scenarios`);
-await db.close();
+import { readFileSync } from 'node:fs';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+
+const compiledSchemaPath = process.argv[2];
+if (!compiledSchemaPath) {
+  throw new Error('Pass the compiled MySQL SQL path as the first argument.');
+}
+if (!process.env.MYSQL_URL) {
+  throw new Error('Set MYSQL_URL to a disposable MySQL 8.0 schema.');
+}
+
+const mysqlModule = process.argv[3]
+  ? await import(pathToFileURL(process.argv[3]).href)
+  : await import('mysql2/promise');
+const mysql = mysqlModule.default ?? mysqlModule;
+const connection = await mysql.createConnection(process.env.MYSQL_URL);
+const packageRoot = fileURLToPath(new URL('../', import.meta.url));
+
+async function executeScript(source) {
+  let delimiter = ';';
+  let statement = '';
+
+  for (const line of source.split(/\r?\n/)) {
+    const directive = line.match(/^DELIMITER\s+(.+)$/i);
+    if (directive) {
+      delimiter = directive[1];
+      continue;
+    }
+
+    statement += `${line}\n`;
+    if (statement.trimEnd().endsWith(delimiter)) {
+      const sql = statement.trimEnd().slice(0, -delimiter.length).trim();
+      if (sql) await connection.query(sql);
+      statement = '';
+    }
+  }
+
+  assert.equal(statement.trim(), '', 'SQL script ended with an incomplete statement');
+}
+
+try {
+  await executeScript(readFileSync(compiledSchemaPath, 'utf8'));
+  await executeScript(readFileSync(`${packageRoot}persistence.sql`, 'utf8'));
+
+  await connection.query('SET TRANSACTION ISOLATION LEVEL SERIALIZABLE');
+  await connection.beginTransaction();
+  const id = (n) => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
+  const host = id(1);
+  const session = id(10);
+  await connection.query(
+    'INSERT INTO principals(id, created_at) VALUES (?, UTC_TIMESTAMP())',
+    [host],
+  );
+  await connection.query(
+    `INSERT INTO sessions(id, kind, status, designated_host_principal_id, created_at)
+     VALUES (?, 'VIDEO_CONFERENCE', 'LIVE', ?, UTC_TIMESTAMP())`,
+    [session, host],
+  );
+  await connection.query(
+    `INSERT INTO participants(
+       id, session_id, principal_id, display_name, role, status, joined_at
+     ) VALUES (?, ?, ?, 'Host', 'HOST', 'JOINED', UTC_TIMESTAMP())`,
+    [id(20), session, host],
+  );
+  await connection.rollback();
+
+  console.log('PASS: applied the generated schema and MySQL persistence supplement.');
+} finally {
+  await connection.end();
+}

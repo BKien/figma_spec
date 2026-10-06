@@ -1,0 +1,2207 @@
+{
+  "sheet": "API contract",
+  "rows": [
+    {
+      "row": 1,
+      "cells": [
+        "API CONTRACT"
+      ]
+    },
+    {
+      "row": 2,
+      "cells": []
+    },
+    {
+      "row": 3,
+      "cells": [
+        "API-AUTH-LOGIN - Login"
+      ]
+    },
+    {
+      "row": 4,
+      "cells": [
+        "API ID",
+        "API-AUTH-LOGIN"
+      ]
+    },
+    {
+      "row": 5,
+      "cells": [
+        "API Name",
+        "User Login"
+      ]
+    },
+    {
+      "row": 6,
+      "cells": [
+        "Related Use Case IDs",
+        "UC-02"
+      ]
+    },
+    {
+      "row": 7,
+      "cells": [
+        "Method",
+        "POST"
+      ]
+    },
+    {
+      "row": 8,
+      "cells": [
+        "Path",
+        "/api/auth/login"
+      ]
+    },
+    {
+      "row": 9,
+      "cells": [
+        "Description",
+        "Authenticate a registered user and issue a JWT access token."
+      ]
+    },
+    {
+      "row": 10,
+      "cells": [
+        "Authentication",
+        "Public"
+      ]
+    },
+    {
+      "row": 11,
+      "cells": [
+        "Authorization",
+        "None"
+      ]
+    },
+    {
+      "row": 12,
+      "cells": [
+        "Business Rules / Validation Constraints",
+        "BR-LOG-01 - Valid login email:\nThe login email shall be defined, non-empty, and have a valid email format.\n\nBR-LOG-02 - Non-empty login password:\nThe login password shall be defined and non-empty.\n\nBR-LOG-03 - Existing login account:\nLogin can succeed only if a user account corresponding to the submitted email exists in the system.\n\nBR-LOG-04 - Credential verification:\nLogin can succeed only if the submitted password matches the stored password hash of the user corresponding to the submitted email.\n\nBR-LOG-05 - Invalid credential handling:\nIf the submitted email does not correspond to an existing user or the submitted password does not match the stored password hash, the login attempt shall be rejected.\n\nBR-LOG-06 - Successful login:\nWhen the submitted credentials are valid, the system shall authenticate the user, issue a JWT access token, and return the authenticated user's basic information."
+      ]
+    },
+    {
+      "row": 13,
+      "cells": [
+        "Request Header(s)",
+        "• headers.Content-Type\n  Type: string; Format: MIME type; Required: Yes; Nullable: No\n  Default: application/json\n  Allowed values: application/json\n  Validation: Request body must be JSON.\n  Trigger: Every request containing a JSON body.\n  Description: Declares the request body format.\n  Example: application/json"
+      ]
+    },
+    {
+      "row": 14,
+      "cells": [
+        "Request Body",
+        "• email\n  Type: string; Format: email; Required: Yes; Nullable: No\n  Validation: Must be a valid email address and must not be empty.\n  Trigger: Login request.\n  Description: Registered email address.\n  Example: user@example.com\n\n• password\n  Type: string; Format: password; Required: Yes; Nullable: No\n  Validation: Must be a non-empty string.\n  Trigger: Login request.\n  Description: User password.\n  Example: P@ssw0rd!"
+      ]
+    },
+    {
+      "row": 15,
+      "cells": [
+        "Success Response — HTTP 200",
+        "• success\n  Type: boolean; Required: Yes; Nullable: No\n  Trigger: Credentials are valid.\n  Description: Indicates whether authentication succeeded.\n  Example: true\n\n• message\n  Type: string; Required: Yes; Nullable: No\n  Trigger: Credentials are valid.\n  Description: Human-readable success message.\n  Example: Successful Login\n\n• data.accessToken\n  Type: string; Required: Yes; Nullable: No\n  Trigger: Credentials are valid.\n  Description: JWT access token.\n  Example: eyJhbGciOiJIUzI1NiIs...\n\n• data.user.id\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: Credentials are valid.\n  Description: Authenticated user identifier.\n  Example: 1\n\n• data.user.fullName\n  Type: string; Required: Yes; Nullable: No\n  Trigger: Credentials are valid.\n  Description: Authenticated user's full name.\n  Example: John Doe\n\n• data.user.email\n  Type: string; Required: Yes; Nullable: No\n  Trigger: Credentials are valid.\n  Description: Authenticated user's email address.\n  Example: user@example.com"
+      ]
+    },
+    {
+      "row": 16,
+      "cells": [
+        "Error Response — HTTP 400",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: Email is invalid, a required field is empty, or an undeclared field is supplied.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: [\"Email không hợp lệ\"]\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 17,
+      "cells": [
+        "Error Response — HTTP 401",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The email is not registered or the password is incorrect.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Email or password is incorrect.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 18,
+      "cells": [
+        "Error Response — HTTP 500",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: An unexpected authentication or database error occurs.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Internal Server Error\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 19,
+      "cells": [
+        "Notes"
+      ]
+    },
+    {
+      "row": 20,
+      "cells": []
+    },
+    {
+      "row": 21,
+      "cells": [
+        "API-AUTH-REGISTER - Register An Account"
+      ]
+    },
+    {
+      "row": 22,
+      "cells": [
+        "API ID",
+        "API-AUTH-REGISTER"
+      ]
+    },
+    {
+      "row": 23,
+      "cells": [
+        "API Name",
+        "User Registration"
+      ]
+    },
+    {
+      "row": 24,
+      "cells": [
+        "Related Use Case IDs",
+        "UC-01"
+      ]
+    },
+    {
+      "row": 25,
+      "cells": [
+        "Method",
+        "POST"
+      ]
+    },
+    {
+      "row": 26,
+      "cells": [
+        "Path",
+        "/api/auth/register"
+      ]
+    },
+    {
+      "row": 27,
+      "cells": [
+        "Description",
+        "Create a new user account and issue a JWT token."
+      ]
+    },
+    {
+      "row": 28,
+      "cells": [
+        "Authentication",
+        "Public"
+      ]
+    },
+    {
+      "row": 29,
+      "cells": [
+        "Authorization",
+        "None"
+      ]
+    },
+    {
+      "row": 30,
+      "cells": [
+        "Business Rules / Validation Constraints",
+        "BR-REG-01 - Valid registration full name: `fullName` shall not be null, undefined, empty, or whitespace-only; it shall be normalized using Unicode NFC and `trim()`, contain between 4 and 25 characters, and contain only Unicode letters separated by single spaces.\n\nBR-REG-02 - Valid registration email: `email` shall be non-empty, trimmed, no longer than 255 characters, and satisfy `class-validator` `IsEmail`; it shall be converted to lowercase before storage and comparison.\n\nBR-REG-03 - Unique registration email: A registration email shall not already identify a stored User, regardless of letter case; uniqueness shall be enforced at both the service and database layers.\n\nBR-REG-04 - Valid registration password: `password` shall be between 8 and 64 characters, contain no whitespace, and include at least one lowercase letter, one uppercase letter, one digit, and one permitted special character.\n\nBR-REG-05 - Permitted password characters: A registration password shall contain only Latin letters, digits, and the permitted special characters `! @ # $ % ^ & * ( ) { } - _ + = [ ] , . / < > ? \\\\ | : ;`.\n\nBR-REG-06 - Matching registration passwords: `confirmPassword` shall be non-empty and shall exactly equal `password`, including letter case.\n\nBR-REG-07 - Confirm password handling: `confirmPassword` shall not be stored in the database or written to application logs.\n\nBR-REG-08 - Invalid registration handling: If any registration field violates a validation or business rule, the system shall reject the request and shall not create a User record.\n\nBR-REG-09 - Bcrypt password storage: A registered password shall be hashed with bcrypt using 10 salt rounds before the User record is saved; the plaintext password shall not be stored, logged, or returned.\n\nBR-REG-10 - Concurrent registration conflict handling: If concurrent registration requests use the same normalized email, exactly one User record shall be created. Each conflicting request shall be rejected with HTTP 409 Conflict; no JWT shall be issued and no authenticated session shall be established for the rejected request.\n\nBR-REG-11 - Successful registration: After successful registration, the system shall create the User, issue a JWT access token, establish an authenticated session, and redirect the user to the home page."
+      ]
+    },
+    {
+      "row": 31,
+      "cells": [
+        "Request Header(s)",
+        "• headers.Content-Type\n  Type: string; Format: MIME type; Required: Yes; Nullable: No\n  Default: application/json\n  Allowed values: application/json\n  Validation: Request body must be JSON.\n  Trigger: Every request containing a JSON body.\n  Description: Declares the request body format.\n  Example: application/json"
+      ]
+    },
+    {
+      "row": 32,
+      "cells": [
+        "Request Body",
+        "• fullName\n  Type: string; Required: Yes; Nullable: No\n  Validation: Must be a non-empty string.\n  Trigger: Registration request.\n  Description: User's full name.\n  Example: John Doe\n\n• email\n  Type: string; Format: email; Required: Yes; Nullable: No\n  Validation: Must be a valid, non-empty email address.\n  Trigger: Registration request.\n  Description: Unique email address.\n  Example: user@example.com\n\n• password\n  Type: string; Format: password; Required: Yes; Nullable: No\n  Validation: Must be a non-empty string.\n  Trigger: Registration request.\n  Description: New password.\n  Example: P@ssw0rd!\n\n• confirmPassword\n  Type: string; Format: password; Required: Yes; Nullable: No\n  Validation: Must be a non-empty string and equal password.\n  Trigger: Registration request.\n  Description: Password confirmation.\n  Example: P@ssw0rd!"
+      ]
+    },
+    {
+      "row": 33,
+      "cells": [
+        "Success Response - HTTP 201",
+        "• success\n  Type: boolean; Required: Yes; Nullable: No\n  Trigger: The account is created successfully.\n  Description: Indicates that registration succeeded.\n  Example: true\n\n• message\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The account is created successfully.\n  Description: Human-readable registration success message.\n  Example: Registration successful\n\n• data.accessToken\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The account is created successfully.\n  Description: JWT access token issued for the created user.\n  Example: eyJhbGciOiJIUzI1NiIs...\n\n• data.user.id\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: The account is created successfully.\n  Description: Created user identifier.\n  Example: 1\n\n• data.user.fullName\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The account is created successfully.\n  Description: Normalized full name of the created user.\n  Example: John Doe\n\n• data.user.email\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The account is created successfully.\n  Description: Normalized email address of the created user.\n  Example: user@example.com"
+      ]
+    },
+    {
+      "row": 34,
+      "cells": [
+        "Error Response - HTTP 400",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: Input validation fails or password and confirmPassword do not match.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Bad Request / Passwords do not match.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 35,
+      "cells": [
+        "Error Response - HTTP 409",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The email address is already registered.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Conflict / This email is already registered.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 36,
+      "cells": [
+        "Error Response - HTTP 500",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The user record or token cannot be created.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Internal Server Error\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 37,
+      "cells": [
+        "Notes"
+      ]
+    },
+    {
+      "row": 38,
+      "cells": []
+    },
+    {
+      "row": 39,
+      "cells": [
+        "API-ACCOUNT-LIST — List User Accounts"
+      ]
+    },
+    {
+      "row": 40,
+      "cells": [
+        "API ID",
+        "API-ACCOUNT-LIST"
+      ]
+    },
+    {
+      "row": 41,
+      "cells": [
+        "API Name",
+        "List User Accounts"
+      ]
+    },
+    {
+      "row": 42,
+      "cells": [
+        "Related Use Case IDs",
+        "UC-05"
+      ]
+    },
+    {
+      "row": 43,
+      "cells": [
+        "Method",
+        "GET"
+      ]
+    },
+    {
+      "row": 44,
+      "cells": [
+        "Path",
+        "/api/v1/accounts"
+      ]
+    },
+    {
+      "row": 45,
+      "cells": [
+        "Description",
+        "Return all bank accounts owned by the authenticated user."
+      ]
+    },
+    {
+      "row": 46,
+      "cells": [
+        "Authentication",
+        "Bearer JWT"
+      ]
+    },
+    {
+      "row": 47,
+      "cells": [
+        "Authorization",
+        "Authenticated user"
+      ]
+    },
+    {
+      "row": 48,
+      "cells": [
+        "Request Header(s)",
+        "• headers.Authorization\n  Type: string; Format: Bearer <JWT>; Required: Yes; Nullable: No\n  Trigger: Every protected request.\n  Description: Authenticates the current user.\n  Example: Bearer eyJhbGciOiJIUzI1NiIs...\n  Note: Added by the frontend Axios interceptor."
+      ]
+    },
+    {
+      "row": 49,
+      "cells": [
+        "Request Body",
+        "None"
+      ]
+    },
+    {
+      "row": 50,
+      "cells": [
+        "Success Response — HTTP 200",
+        "• success\n  Type: boolean; Required: Yes; Nullable: No\n  Trigger: The user is authenticated.\n  Description: Indicates successful retrieval.\n  Example: true\n\n• message\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The user is authenticated.\n  Description: Human-readable success message.\n  Example: Account list retrieved successfully.\n\n• data.user_id\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: The user is authenticated.\n  Description: Authenticated user identifier.\n  Example: 1\n\n• data.accounts\n  Type: array<object>; Required: Yes; Nullable: No\n  Trigger: The user is authenticated.\n  Description: Array of accounts. May be empty.\n  Example: []\n\n• data.accounts[].id\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: The user is authenticated.\n  Description: Account identifier.\n  Example: 3\n\n• data.accounts[].bank_name\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The user is authenticated.\n  Description: Bank or financial institution name.\n  Example: Vietcombank\n\n• data.accounts[].account_type\n  Type: string; Required: Yes; Nullable: No\n  Allowed values: Checking; Credit Card; Savings; Investment; Loan\n  Trigger: The user is authenticated.\n  Description: Account type.\n  Example: Checking\n\n• data.accounts[].branch_name\n  Type: string; Required: Yes; Nullable: Yes\n  Trigger: The user is authenticated.\n  Description: Branch name.\n  Example: Hanoi Branch\n\n• data.accounts[].account_number_last_4\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The user is authenticated.\n  Description: Last four digits of the account number.\n  Example: 0123\n\n• data.accounts[].balance\n  Type: number; Required: Yes; Nullable: No\n  Trigger: The user is authenticated.\n  Description: Current account balance.\n  Example: 4500000"
+      ]
+    },
+    {
+      "row": 51,
+      "cells": [
+        "Error Response — HTTP 401",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The JWT is missing, invalid, or expired.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Unauthorized\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 52,
+      "cells": [
+        "Error Response — HTTP 500",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: Account retrieval fails.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: system error occurred. Please try again later.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 53,
+      "cells": [
+        "Notes"
+      ]
+    },
+    {
+      "row": 54,
+      "cells": []
+    },
+    {
+      "row": 55,
+      "cells": [
+        "API-ACCOUNT-CREATE — Create Bank Account"
+      ]
+    },
+    {
+      "row": 56,
+      "cells": [
+        "API ID",
+        "API-ACCOUNT-CREATE"
+      ]
+    },
+    {
+      "row": 57,
+      "cells": [
+        "API Name",
+        "Create Bank Account"
+      ]
+    },
+    {
+      "row": 58,
+      "cells": [
+        "Related Use Case IDs",
+        "UC-06"
+      ]
+    },
+    {
+      "row": 59,
+      "cells": [
+        "Method",
+        "POST"
+      ]
+    },
+    {
+      "row": 60,
+      "cells": [
+        "Path",
+        "/api/v1/accounts"
+      ]
+    },
+    {
+      "row": 61,
+      "cells": [
+        "Description",
+        "Create a new bank account owned by the authenticated user."
+      ]
+    },
+    {
+      "row": 62,
+      "cells": [
+        "Authentication",
+        "Bearer JWT"
+      ]
+    },
+    {
+      "row": 63,
+      "cells": [
+        "Authorization",
+        "Authenticated user"
+      ]
+    },
+    {
+      "row": 64,
+      "cells": [
+        "Request Header(s)",
+        "• headers.Authorization\n Type: string; Format: Bearer <JWT>; Required: Yes; Nullable: No\n Trigger: Every protected request.\n Description: Authenticates the current user.\n Example: Bearer eyJhbGciOiJIUzI1NiIs...\n Note: Added by the frontend Axios interceptor.\n\n• headers.Content-Type\n Type: string; Format: MIME type; Required: Yes; Nullable: No\r\n Default: application/json\r\n Allowed values: application/json\r\n Trigger: Every request containing a JSON body.\r\n Description: Declares the request body format.\r\n Example: application/json"
+      ]
+    },
+    {
+      "row": 65,
+      "cells": [
+        "Request Body",
+        "• bank_name\n  Type: string; Required: Yes; Nullable: No\r\n  Trigger: Account creation request.\r\n  Description: Bank name.\r\n  Example: Vietcombank\n\n• account_type\n  Type: string; Required: Yes; Nullable: No\r\n  Allowed values: Checking; Credit Card; Savings; Investment; Loan\r\n  Trigger: Account creation request.\r\n  Description: Account type.\r\n  Example: Checking\n\n• branch_name\n  Type: string; Required: No; Nullable: Yes\r\n  Trigger: Account creation request.\r\n  Description: Optional branch name.\r\n  Example: Hanoi Branch\n\n• account_number_full\n  Type: string; Required: Yes; Nullable: No\r\n  Trigger: Account creation request.\r\n  Description: Full account number.\r\n  Example: 9704221234567890123\n\n• balance\n  Type: number; Format: decimal; Required: Yes; Nullable: No\r\n  Trigger: Account creation request.\r\n  Description: Initial balance.\r\n  Example: 4500000"
+      ]
+    },
+    {
+      "row": 66,
+      "cells": [
+        "Success Response — HTTP 201",
+        "• message\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The account is created.\n  Description: Creation success message.\n  Example: Account created successfully\n\n• account.id\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: The account is created.\n  Description: Created account identifier.\n  Example: 3\n\n• account.user_id\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: The account is created.\n  Description: Owner user identifier.\n  Example: 1\n\n• account.bank_name\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The account is created.\n  Description: Bank name.\n  Example: Vietcombank\n\n• account.account_type\n  Type: string; Required: Yes; Nullable: No\n  Allowed values: Checking; Credit Card; Savings; Investment; Loan\n  Trigger: The account is created.\n  Description: Account type.\n  Example: Checking\n\n• account.branch_name\n  Type: string; Required: Yes; Nullable: Yes\n  Trigger: The account is created.\n  Description: Branch name.\n  Example: Hanoi Branch\n\n• account.account_number_last_4\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The account is created.\n  Description: Derived last four digits.\n  Example: 0123\n\n• account.balance\n  Type: number; Required: Yes; Nullable: No\n  Trigger: The account is created.\n  Description: Stored account balance.\n  Example: 4500000"
+      ]
+    },
+    {
+      "row": 67,
+      "cells": [
+        "Error Response — HTTP 400",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\r\n  Trigger: Request validation fails due to malformed payload or missing required fields.\r\n  Description: Error description returned by the global HTTP exception filter.\r\n  Example: Invalid input formatting or missing required parameters.\r\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 68,
+      "cells": [
+        "Error Response — HTTP 401",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The JWT is missing, invalid, or expired.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Unauthorized access. Please log in again.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 69,
+      "cells": [
+        "Error Response — HTTP 403",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The authenticated user is denied access to perform the requested operation on this resource.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Forbidden. You do not have sufficient privileges to execute this action.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 70,
+      "cells": [
+        "Error Response — HTTP 409",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\r\n  Trigger: A unique constraint violation occurred during data insertion.\r\n  Description: Error description returned by the global HTTP exception filter.\r\n  Example: The submitted resource conflicts with an existing record in the system.\r\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 71,
+      "cells": [
+        "Error Response — HTTP 500",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\r\n  Trigger: An unexpected server error prevents the resource from being saved.\r\n  Description: Error description returned by the global HTTP exception filter.\r\n  Example: An internal server error occurred while processing your request. Please try again later.\r\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 72,
+      "cells": [
+        "Notes"
+      ]
+    },
+    {
+      "row": 73,
+      "cells": []
+    },
+    {
+      "row": 74,
+      "cells": [
+        "API-ACCOUNT-DETAIL — Get Account Details"
+      ]
+    },
+    {
+      "row": 75,
+      "cells": [
+        "API ID",
+        "API-ACCOUNT-DETAIL"
+      ]
+    },
+    {
+      "row": 76,
+      "cells": [
+        "API Name",
+        "Get Account Details"
+      ]
+    },
+    {
+      "row": 77,
+      "cells": [
+        "Related Use Case IDs",
+        "UC-07"
+      ]
+    },
+    {
+      "row": 78,
+      "cells": [
+        "Method",
+        "GET"
+      ]
+    },
+    {
+      "row": 79,
+      "cells": [
+        "Path",
+        "/api/v1/accounts/:id"
+      ]
+    },
+    {
+      "row": 80,
+      "cells": [
+        "Description",
+        "Return one owned account and its five most recent transactions."
+      ]
+    },
+    {
+      "row": 81,
+      "cells": [
+        "Authentication",
+        "Bearer JWT"
+      ]
+    },
+    {
+      "row": 82,
+      "cells": [
+        "Authorization",
+        "Account owner"
+      ]
+    },
+    {
+      "row": 83,
+      "cells": [
+        "Business Rules / Validation Constraints",
+        "BR-AUTH-01 — JWT-protected operation: Protected controllers require JwtAuthGuard and obtain userId from the validated JWT payload.\n\nBR-ACC-15 — Account existence and ownership: Account detail operations shall succeed only when account.userId equals the authenticated userId.\n\r\nBR-ACC-16 — Five most recent account transactions: Account detail shall include at most five transactions ordered by transaction_date descending.\n\r\nBR-ACC-17 — Response rows map to persisted data with signed amounts: Response fields must exactly match the persisted Account and Transaction data. Expense amounts are negated (returned as negative) while Revenue amounts remain positive.\n\r\nBR-ACC-18 — Viewing details is read-only: Listing account details shall not create, update, or delete any Account, Transaction, User, or Category records."
+      ]
+    },
+    {
+      "row": 84,
+      "cells": [
+        "Request Header(s)",
+        "• headers.Authorization\n  Type: string; Format: Bearer <JWT>; Required: Yes; Nullable: No\n  Validation: Must contain a valid, unexpired JWT access token.\n  Trigger: Every protected request.\n  Description: Authenticates the current user.\n  Example: Bearer eyJhbGciOiJIUzI1NiIs...\n  Note: Added by the frontend Axios interceptor."
+      ]
+    },
+    {
+      "row": 85,
+      "cells": [
+        "Path Parameter(s)",
+        "• path.id\n  Type: integer; Required: Yes; Nullable: No\n  Validation: Must parse as an integer account identifier.\n  Trigger: Account detail request.\n  Description: Account identifier.\n  Example: 3"
+      ]
+    },
+    {
+      "row": 86,
+      "cells": [
+        "Request Body",
+        "None"
+      ]
+    },
+    {
+      "row": 87,
+      "cells": [
+        "Success Response — HTTP 200",
+        "• id\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: The account exists and is owned by the user.\n  Description: Account identifier.\n  Example: 3\n\n• bank_name\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The account exists and is owned by the user.\n  Description: Bank name.\n  Example: Vietcombank\n\n• account_type\n  Type: string; Required: Yes; Nullable: No\n  Allowed values: Checking; Credit Card; Savings; Investment; Loan\n  Trigger: The account exists and is owned by the user.\n  Description: Account type.\n  Example: Checking\n\n• branch_name\n  Type: string; Required: Yes; Nullable: Yes\n  Trigger: The account exists and is owned by the user.\n  Description: Branch name.\n  Example: Hanoi Branch\n\n• account_number_full\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The account exists and is owned by the user.\n  Description: Full account number.\n  Example: 9704221234567890123\n\n• balance\n  Type: number; Required: Yes; Nullable: No\n  Trigger: The account exists and is owned by the user.\n  Description: Current balance.\n  Example: 4500000\n\n• recent_transactions\n  Type: array<object>; Required: Yes; Nullable: No\n  Trigger: The account exists and is owned by the user.\n  Description: Up to five most recent transactions.\n  Example: []\n\n• recent_transactions[].date\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The account exists and is owned by the user.\n  Description: Transaction date.\n  Example: 2025-11-01\n\n• recent_transactions[].amount\n  Type: number; Required: Yes; Nullable: No\n  Trigger: The account exists and is owned by the user.\n  Description: Signed amount; expenses are returned as negative values.\n  Example: -150000\n\n• recent_transactions[].description\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The account exists and is owned by the user.\n  Description: Transaction description.\n  Example: Movie Ticket\n\n• recent_transactions[].status\n  Type: string; Required: Yes; Nullable: No\n  Allowed values: Complete; Pending; Failed\n  Trigger: The account exists and is owned by the user.\n  Description: Transaction status.\n  Example: Complete\n\n• recent_transactions[].receipt_id\n  Type: string; Required: Yes; Nullable: Yes\n  Trigger: The account exists and is owned by the user.\n  Description: Receipt identifier.\n  Example: null\n\n• recent_transactions[].type\n  Type: string; Required: Yes; Nullable: No\n  Allowed values: Revenue; Expense\n  Trigger: The account exists and is owned by the user.\n  Description: Transaction type.\n  Example: Expense"
+      ]
+    },
+    {
+      "row": 88,
+      "cells": [
+        "Error Response — HTTP 400",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The path parameter is not a valid integer.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Invalid account ID.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 89,
+      "cells": [
+        "Error Response — HTTP 401",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The JWT is missing, invalid, or expired.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Unable to authenticate the user. Please log in again.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 90,
+      "cells": [
+        "Error Response — HTTP 403",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The account belongs to another user.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: You are not authorized to view this account information.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 91,
+      "cells": [
+        "Error Response — HTTP 404",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The account does not exist.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: This account was not found.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 92,
+      "cells": [
+        "Error Response — HTTP 500",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: Account or transaction retrieval fails.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: A system error occurred while retrieving the account details. Please try again later.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 93,
+      "cells": [
+        "Notes"
+      ]
+    },
+    {
+      "row": 94,
+      "cells": []
+    },
+    {
+      "row": 95,
+      "cells": [
+        "API-ACCOUNT-UPDATE — Update Bank Account"
+      ]
+    },
+    {
+      "row": 96,
+      "cells": [
+        "API ID",
+        "API-ACCOUNT-UPDATE"
+      ]
+    },
+    {
+      "row": 97,
+      "cells": [
+        "API Name",
+        "Update Bank Account"
+      ]
+    },
+    {
+      "row": 98,
+      "cells": [
+        "Related Use Case IDs",
+        "UC-08, UC-08.1"
+      ]
+    },
+    {
+      "row": 99,
+      "cells": [
+        "Method",
+        "PUT"
+      ]
+    },
+    {
+      "row": 100,
+      "cells": [
+        "Path",
+        "/api/v1/accounts/:id"
+      ]
+    },
+    {
+      "row": 101,
+      "cells": [
+        "Description",
+        "Update an account owned by the authenticated user."
+      ]
+    },
+    {
+      "row": 102,
+      "cells": [
+        "Authentication",
+        "Bearer JWT"
+      ]
+    },
+    {
+      "row": 103,
+      "cells": [
+        "Authorization",
+        "Account owner"
+      ]
+    },
+    {
+      "row": 104,
+      "cells": [
+        "Business Rules / Validation Constraints",
+        "BR-AUTH-01 — JWT-protected operation: Protected controllers require JwtAuthGuard and obtain userId from the validated JWT payload.\n\r\nBR-ACC-19 — Account ownership validation for update: The account must exist and belong to the authenticated user.\r\nBR-ACC-20 — Allowed account types for update: The submitted account_type must strictly belong to the allowed enumeration.\n\r\nBR-ACC-21 — Required account text fields for update: The payload must include non-empty strings for bank_name and account_number_full.\n\r\nBR-ACC-22 — Account number format and length for update: The account_number_full must contain only numeric digits and its length must be between 8 and 34 characters.\n\r\nBR-ACC-23 — Numeric non-negative account balance for update: The balance must be a valid numeric type and cannot be negative.\n\r\nBR-ACC-24 — Optional branch name handling during update: The branch_name field is optional and may be saved as null or undefined.\n\r\nBR-ACC-25 — Derive final four account characters for update: The backend MUST implicitly derive account_number_last_4 by taking the exact last 4 characters of the submitted account_number_full.\n\r\nBR-ACC-26 — Account update persistence mapping: The submitted fields overwrite the existing account data and map directly to persisted database records."
+      ]
+    },
+    {
+      "row": 105,
+      "cells": [
+        "Request Header(s)",
+        "• headers.Authorization\n  Type: string; Format: Bearer <JWT>; Required: Yes; Nullable: No\n  Validation: Must contain a valid, unexpired JWT access token.\n  Trigger: Every protected request.\n  Description: Authenticates the current user.\n  Example: Bearer eyJhbGciOiJIUzI1NiIs...\n  Note: Added by the frontend Axios interceptor.\n\n• headers.Content-Type\n  Type: string; Format: MIME type; Required: Yes; Nullable: No\n  Default: application/json\n  Allowed values: application/json\n  Validation: Request body must be JSON.\n  Trigger: Every request containing a JSON body.\n  Description: Declares the request body format.\n  Example: application/json"
+      ]
+    },
+    {
+      "row": 106,
+      "cells": [
+        "Path Parameter(s)",
+        "• path.id\n  Type: integer; Required: Yes; Nullable: No\n  Validation: Must parse as an integer account identifier.\n  Trigger: Account update request.\n  Description: Account identifier.\n  Example: 3"
+      ]
+    },
+    {
+      "row": 107,
+      "cells": [
+        "Request Body",
+        "• bank_name\n  Type: string; Required: Yes; Nullable: No\n  Validation: Must be a non-empty string.\n  Trigger: Account update request.\n  Description: Updated bank name.\n  Example: Vietcombank\n\n• account_type\n  Type: string; Required: Yes; Nullable: No\n  Allowed values: Checking; Credit Card; Savings; Investment; Loan\n  Validation: Must be an allowed account type.\n  Trigger: Account update request.\n  Description: Updated account type.\n  Example: Checking\n\n• branch_name\n  Type: string; Required: No; Nullable: Yes\n  Validation: If supplied, must be a string.\n  Trigger: Account update request.\n  Description: Updated branch name.\n  Example: Hanoi Branch\n\n• account_number_full\n  Type: string; Required: Yes; Nullable: No\n  Validation: Must be a non-empty string.\n  Trigger: Account update request.\n  Description: Updated full account number.\n  Example: 9704221234567890123\n\n• balance\n  Type: number; Format: decimal; Required: Yes; Nullable: No\n  Validation: Must be greater than or equal to 0.\n  Trigger: Account update request.\n  Description: Updated balance.\n  Example: 4500000"
+      ]
+    },
+    {
+      "row": 108,
+      "cells": [
+        "Success Response — HTTP 200",
+        "• message\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The account is updated.\n  Description: Update success message.\n  Example: Account updated successfully\n\n• account.account_id\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: The account is updated.\n  Description: Updated account identifier.\n  Example: 3\n\n• account.user_id\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: The account is updated.\n  Description: Owner identifier.\n  Example: 1\n\n• account.bank_name\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The account is updated.\n  Description: Updated bank name.\n  Example: Vietcombank\n\n• account.account_type\n  Type: string; Required: Yes; Nullable: No\n  Allowed values: Checking; Credit Card; Savings; Investment; Loan\n  Trigger: The account is updated.\n  Description: Updated account type.\n  Example: Checking\n\n• account.branch_name\n  Type: string; Required: Yes; Nullable: Yes\n  Trigger: The account is updated.\n  Description: Updated branch name.\n  Example: Hanoi Branch\n\n• account.account_number_full\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The account is updated.\n  Description: Updated full account number.\n  Example: 9704221234567890123\n\n• account.account_number_last_4\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The account is updated.\n  Description: Updated final four digits.\n  Example: 0123\n\n• account.balance\n  Type: number; Required: Yes; Nullable: No\n  Trigger: The account is updated.\n  Description: Updated balance.\n  Example: 4500000"
+      ]
+    },
+    {
+      "row": 109,
+      "cells": [
+        "Error Response — HTTP 400",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The path ID or request body is invalid.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Balance must not be less than 0\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 110,
+      "cells": [
+        "Error Response — HTTP 401",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The JWT is missing, invalid, or expired.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Unable to authenticate the user. Please log in again.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 111,
+      "cells": [
+        "Error Response — HTTP 403",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The account belongs to another user.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: You do not have permission to edit this account information.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 112,
+      "cells": [
+        "Error Response — HTTP 404",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The account does not exist.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: This account could not be found.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 113,
+      "cells": [
+        "Error Response — HTTP 500",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The updated account cannot be stored.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: An error occurred while saving the data. Please try again later.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 114,
+      "cells": [
+        "Notes"
+      ]
+    },
+    {
+      "row": 115,
+      "cells": []
+    },
+    {
+      "row": 116,
+      "cells": [
+        "API-ACCOUNT-DELETE — Delete Bank Account"
+      ]
+    },
+    {
+      "row": 117,
+      "cells": [
+        "API ID",
+        "API-ACCOUNT-DELETE"
+      ]
+    },
+    {
+      "row": 118,
+      "cells": [
+        "API Name",
+        "Delete Bank Account"
+      ]
+    },
+    {
+      "row": 119,
+      "cells": [
+        "Related Use Case IDs",
+        "UC-09"
+      ]
+    },
+    {
+      "row": 120,
+      "cells": [
+        "Method",
+        "DELETE"
+      ]
+    },
+    {
+      "row": 121,
+      "cells": [
+        "Path",
+        "/api/v1/accounts/:id"
+      ]
+    },
+    {
+      "row": 122,
+      "cells": [
+        "Description",
+        "Delete an owned account and all transactions related to it."
+      ]
+    },
+    {
+      "row": 123,
+      "cells": [
+        "Authentication",
+        "Bearer JWT"
+      ]
+    },
+    {
+      "row": 124,
+      "cells": [
+        "Authorization",
+        "Account owner"
+      ]
+    },
+    {
+      "row": 125,
+      "cells": [
+        "Business Rules / Validation Constraints",
+        "BR-AUTH-01 — JWT-protected operation: Protected controllers require JwtAuthGuard and obtain userId from the validated JWT payload.\n\nBR-ACC-27 — Account deletion ownership validation: Delete succeeds only for an owned account. A missing account and a non-owned account both produce the same HTTP 404 exception.\n\nBR-ACC-28 — Account deletion data integrity (Cascading): Related Transaction rows and the Account row shall be deleted within one TypeORM query-runner transaction."
+      ]
+    },
+    {
+      "row": 126,
+      "cells": [
+        "Request Header(s)",
+        "• headers.Authorization\n  Type: string; Format: Bearer <JWT>; Required: Yes; Nullable: No\n  Validation: Must contain a valid, unexpired JWT access token.\n  Trigger: Every protected request.\n  Description: Authenticates the current user.\n  Example: Bearer eyJhbGciOiJIUzI1NiIs...\n  Note: Added by the frontend Axios interceptor."
+      ]
+    },
+    {
+      "row": 127,
+      "cells": [
+        "Path Parameter(s)",
+        "• path.id\n  Type: integer; Required: Yes; Nullable: No\n  Validation: Must parse as an integer account identifier.\n  Trigger: Account deletion request.\n  Description: Account identifier.\n  Example: 3"
+      ]
+    },
+    {
+      "row": 128,
+      "cells": [
+        "Request Body",
+        "None"
+      ]
+    },
+    {
+      "row": 129,
+      "cells": [
+        "Success Response — HTTP 200",
+        "• message\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The account exists and is owned by the user.\n  Description: Deletion success message.\n  Example: Account deleted successfully\n\n• deleted_account_id\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: The account exists and is owned by the user.\n  Description: Deleted account identifier.\n  Example: 3"
+      ]
+    },
+    {
+      "row": 130,
+      "cells": [
+        "Error Response — HTTP 400",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The path ID is not a valid integer.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Invalid account ID.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 131,
+      "cells": [
+        "Error Response — HTTP 401",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The JWT is missing, invalid, or expired.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Unable to authenticate the user. Please log in again.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 132,
+      "cells": [
+        "Error Response — HTTP 404",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The account does not exist or is not owned by the current user.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Account not found or not owned by current user\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 133,
+      "cells": [
+        "Error Response — HTTP 500",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: Deleting the account or related transactions fails.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: A system error occurred. The account and related transactions could not be deleted.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 134,
+      "cells": [
+        "Notes"
+      ]
+    },
+    {
+      "row": 135,
+      "cells": []
+    },
+    {
+      "row": 136,
+      "cells": [
+        "API-TRANSACTION-LIST — List Transactions"
+      ]
+    },
+    {
+      "row": 137,
+      "cells": [
+        "API ID",
+        "API-TRANSACTION-LIST"
+      ]
+    },
+    {
+      "row": 138,
+      "cells": [
+        "API Name",
+        "List Transactions"
+      ]
+    },
+    {
+      "row": 139,
+      "cells": [
+        "Related Use Case IDs",
+        "UC-03"
+      ]
+    },
+    {
+      "row": 140,
+      "cells": [
+        "Method",
+        "GET"
+      ]
+    },
+    {
+      "row": 141,
+      "cells": [
+        "Path",
+        "/api/v1/transactions"
+      ]
+    },
+    {
+      "row": 142,
+      "cells": [
+        "Description",
+        "Return the authenticated user's transactions with filtering and pagination."
+      ]
+    },
+    {
+      "row": 143,
+      "cells": [
+        "Authentication",
+        "Bearer JWT"
+      ]
+    },
+    {
+      "row": 144,
+      "cells": [
+        "Authorization",
+        "Authenticated user"
+      ]
+    },
+    {
+      "row": 145,
+      "cells": [
+        "Business Rules / Validation Constraints",
+        "BR-AUTH-01 — JWT-protected operation: JwtAuthGuard shall validate the bearer JWT and provide the authenticated identifier corresponding to Users.user_id.\n\nBR-TXN-01 — Transaction ownership scope: Every returned Transactions row shall have account_id referencing an Accounts row whose user_id equals the authenticated Users.user_id.\n\nBR-TXN-02 — Allowed transaction filter: query.type shall be All, Revenue, or Expense. All is a query/UI sentinel only and shall never be stored in Transactions.type; persisted type values are Revenue or Expense.\n\nBR-TXN-03 — Pagination and ordering: limit defaults to 10 and must be > 0; offset defaults to 0 and must be >= 0; matching rows are ordered by Transactions.transaction_date descending; hasMore = offset + returnedCount < total.\n\nBR-TXN-04 — Relationship integrity: Transactions.account_id shall reference Accounts.account_id. Transactions.category_id may be null; when present it shall reference Categories.category_id.\n\nBR-TXN-05 — Empty result consistency: When no transaction matches the authenticated ownership scope and selected filter, data shall be [], total shall be 0, and hasMore shall be false.\n\nBR-TXN-06 — Response persistence mapping: Every transaction DTO returned by the endpoint shall correspond to a persisted Transactions row with matching transaction_id, account_id, transaction_date, type, item_description, shop_name, amount, payment_method, and status.\n\nBR-TXN-07 — Read-only operation: Listing transaction history shall not create, update, or delete Transactions or Accounts records."
+      ]
+    },
+    {
+      "row": 146,
+      "cells": [
+        "Request Header(s)",
+        "• headers.Authorization\n  Type: string; Format: Bearer <JWT>; Required: Yes; Nullable: No\n  Validation: Must contain a valid, unexpired JWT access token.\n  Trigger: Every protected request.\n  Description: Authenticates the current user.\n  Example: Bearer eyJhbGciOiJIUzI1NiIs...\n  Note: Added by the frontend Axios interceptor."
+      ]
+    },
+    {
+      "row": 147,
+      "cells": [
+        "Query Parameter(s)",
+        "• query.type\n  Type: string; Required: Yes; Nullable: No\n  Allowed values: All; Revenue; Expense\n  Validation: Must be All, Revenue, or Expense. All is a filtering sentinel and is not a persisted Transactions.type value.\n  Trigger: Transaction list request.\n  Description: Transaction type filter.\n  Example: All\n\n• query.limit\n  Type: integer; Required: No; Nullable: No\n  Default: 10\n  Validation: Must parse as an integer and must be greater than 0.\n  Trigger: Transaction list request.\n  Description: Maximum number of returned records.\n  Example: 10\n\n• query.offset\n  Type: integer; Required: No; Nullable: No\n  Default: 0\n  Validation: Must parse as an integer and must be greater than or equal to 0.\n  Trigger: Transaction list request.\n  Description: Zero-based pagination offset.\n  Example: 0"
+      ]
+    },
+    {
+      "row": 148,
+      "cells": [
+        "Request Body",
+        "None"
+      ]
+    },
+    {
+      "row": 149,
+      "cells": [
+        "Success Response — HTTP 200",
+        "• data\n  Type: array<object>; Required: Yes; Nullable: No\n  Trigger: The query is valid.\n  Description: Transaction array. May be empty.\n  Example: []\n\n• data[].transaction_id\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: The query is valid.\n  Description: Transactions.transaction_id.\n  Example: 8\n\n• data[].account_id\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: The query is valid.\n  Description: Transactions.account_id; references an account owned by the authenticated user.\n  Example: 3\n\n• data[].transaction_date\n  Type: string; Format: date; Required: Yes; Nullable: No\n  Trigger: The query is valid.\n  Description: Transactions.transaction_date.\n  Example: 2025-11-01\n\n• data[].type\n  Type: string; Required: Yes; Nullable: No\n  Allowed values: Revenue; Expense\n  Trigger: The query is valid.\n  Description: Transactions.type. All is never returned as a stored type.\n  Example: Expense\n\n• data[].item_description\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The query is valid.\n  Description: Transactions.item_description.\n  Example: Movie Ticket\n\n• data[].shop_name\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The query is valid.\n  Description: Transactions.shop_name.\n  Example: Cinema\n\n• data[].amount\n  Type: number; Required: Yes; Nullable: No\n  Trigger: The query is valid.\n  Description: Transactions.amount.\n  Example: 150000\n\n• data[].payment_method\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The query is valid.\n  Description: Transactions.payment_method.\n  Example: Credit Card\n\n• data[].status\n  Type: string; Required: Yes; Nullable: No\n  Allowed values: Complete; Pending; Failed\n  Trigger: The query is valid.\n  Description: Transactions.status.\n  Example: Complete\n\n• total\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: The query is valid.\n  Description: Total records matching the ownership scope and selected filter.\n  Example: 25\n\n• hasMore\n  Type: boolean; Required: Yes; Nullable: No\n  Trigger: The query is valid.\n  Description: Whether another page exists; computed as offset + returnedCount < total.\n  Example: true"
+      ]
+    },
+    {
+      "row": 150,
+      "cells": [
+        "Error Response — HTTP 400",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: type is not All, Revenue, or Expense; limit cannot be parsed or is less than or equal to 0; or offset cannot be parsed or is less than 0.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Invalid transaction query parameter\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 151,
+      "cells": [
+        "Error Response — HTTP 401",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The JWT is missing, invalid, or expired.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Unauthorized\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 152,
+      "cells": [
+        "Error Response — HTTP 500",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: Transaction retrieval fails.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Đã xảy ra lỗi hệ thống khi lấy danh sách giao dịch. Vui lòng thử lại sau.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 153,
+      "cells": [
+        "Notes"
+      ]
+    },
+    {
+      "row": 154,
+      "cells": []
+    },
+    {
+      "row": 155,
+      "cells": [
+        "API-TRANSACTION-CREATE - Create Transaction"
+      ]
+    },
+    {
+      "row": 156,
+      "cells": [
+        "API ID",
+        "API-TRANSACTION-CREATE"
+      ]
+    },
+    {
+      "row": 157,
+      "cells": [
+        "API Name",
+        "Create Transaction"
+      ]
+    },
+    {
+      "row": 158,
+      "cells": [
+        "Related Use Case IDs",
+        "UC-04"
+      ]
+    },
+    {
+      "row": 159,
+      "cells": [
+        "Method",
+        "POST"
+      ]
+    },
+    {
+      "row": 160,
+      "cells": [
+        "Path",
+        "/api/v1/transactions"
+      ]
+    },
+    {
+      "row": 161,
+      "cells": [
+        "Description",
+        "Create a revenue or expense transaction and update the account balance atomically."
+      ]
+    },
+    {
+      "row": 162,
+      "cells": [
+        "Authentication",
+        "Bearer JWT"
+      ]
+    },
+    {
+      "row": 163,
+      "cells": [
+        "Authorization",
+        "Owner of the referenced account"
+      ]
+    },
+    {
+      "row": 164,
+      "cells": [
+        "Business Rules / Validation Constraints",
+        "BR-AUTH-01 - JWT-protected operation\nJwtAuthGuard shall validate the bearer JWT and provide the authenticated identifier corresponding to Users.user_id.\n\nBR-TXN-08 - Required transaction data\naccountId, transactionDate, type, itemDescription, shopName, paymentMethod, and amount shall be present. itemDescription, shopName, and paymentMethod shall be non-empty strings; amount shall be at least 0.01. shopName maps to Transactions.shop_name and paymentMethod maps to Transactions.payment_method; neither may be null or empty.\n\nBR-TXN-09 - Allowed type and status \nType shall be Revenue or Expense. status, when supplied, shall be Complete, Pending, or Failed; when omitted, the stored status shall default to Complete.\n\nBR-TXN-10 - Optional category\ncategory_id is optional/nullable. When supplied, it shall reference an existing Categories.category_id; when omitted, Transactions.category_id shall be null.\n\nBR-TXN-11 - Account ownership\naccountId shall reference an Accounts.account_id whose Accounts.user_id equals the authenticated Users.user_id.\n\nBR-TXN-12 - Sufficient Expense balance\nFor type = Expense, the owned account's balance before creation shall be greater than or equal to amount.\n\nBR-TXN-13 - Account balance adjustment\nRevenue increases Accounts.balance by amount; Expense decreases Accounts.balance by amount.\n\nBR-TXN-14 - Transaction persistence mapping\nOn success exactly one new Transactions row shall be created and shall map accountId -> account_id, transactionDate -> transaction_date, itemDescription -> item_description, shopName -> shop_name, paymentMethod -> payment_method, plus type, amount, status, and optional category_id.\n\nBR-TXN-15 - Atomic creation\nThe Transactions insert and Accounts.balance update shall commit in one database transaction. If creation fails before commit, both changes shall be rolled back."
+      ]
+    },
+    {
+      "row": 165,
+      "cells": [
+        "Request Header(s)",
+        "• headers.Authorization\n  Type: string; Format: Bearer <JWT>; Required: Yes; Nullable: No\n  Validation: Must contain a valid, unexpired JWT access token.\n  Trigger: Every protected request.\n  Description: Authenticates the current user.\n  Example: Bearer eyJhbGciOiJIUzI1NiIs...\n  Note: Added by the frontend Axios interceptor.\n\n• headers.Content-Type\n  Type: string; Format: MIME type; Required: Yes; Nullable: No\n  Default: application/json\n  Allowed values: application/json\n  Validation: Request body must be JSON.\n  Trigger: Every request containing a JSON body.\n  Description: Declares the request body format.\n  Example: application/json"
+      ]
+    },
+    {
+      "row": 166,
+      "cells": [
+        "Request Body",
+        "• accountId\n  Type: integer; Required: Yes; Nullable: No\n  Validation: Must reference Accounts.account_id owned by the authenticated Users.user_id.\n  Trigger: Transaction creation request.\n  Description: Account identifier.\n  Example: 3\n\n• transactionDate\n  Type: string; Format: date; Required: Yes; Nullable: No\n  Validation: Must be a valid ISO date string.\n  Trigger: Transaction creation request.\n  Description: Maps to Transactions.transaction_date.\n  Example: 2025-11-01\n\n• type\n  Type: string; Required: Yes; Nullable: No\n  Allowed values: Revenue; Expense\n  Validation: Must be Revenue or Expense.\n  Trigger: Transaction creation request.\n  Description: Maps to Transactions.type.\n  Example: Expense\n\n• itemDescription\n  Type: string; Required: Yes; Nullable: No\n  Validation: Must be a non-empty string.\n  Trigger: Transaction creation request.\n  Description: Maps to Transactions.item_description.\n  Example: Movie Ticket\n\n• category_id\n  Type: integer; Required: No; Nullable: Yes\n  Validation: When supplied, must reference an existing Categories.category_id.\n  Trigger: Transaction creation request.\n  Description: Optional transaction category; maps to Transactions.category_id.\n  Example: 3\n  Note: The request is valid when category_id is omitted/null.\n\n• shopName\n  Type: string; Required: Yes; Nullable: No\n  Validation: Must be a non-empty string.\n  Trigger: Transaction creation request.\n  Description: Maps to Transactions.shop_name.\n  Example: Cinema\n\n• amount\n  Type: number; Format: decimal; Required: Yes; Nullable: No\n  Validation: Must be at least 0.01. For Expense, must not exceed the selected account balance.\n  Trigger: Transaction creation request.\n  Description: Maps to Transactions.amount.\n  Example: 150000\n\n• paymentMethod\n  Type: string; Required: Yes; Nullable: No\n  Validation: Must be a non-empty string.\n  Trigger: Transaction creation request.\n  Description: Maps to Transactions.payment_method.\n  Example: Credit Card\n\n• status\n  Type: string; Required: No; Nullable: No\n  Default: Complete\n  Allowed values: Complete; Pending; Failed\n  Validation: When supplied, must be an allowed status.\n  Trigger: Transaction creation request.\n  Description: Maps to Transactions.status.\n  Example: Complete"
+      ]
+    },
+    {
+      "row": 167,
+      "cells": [
+        "Success Response — HTTP 201",
+        "• message\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The transaction and account balance are committed.\n  Description: Creation success message.\n  Example: Transaction created successfully\n\n• data.transactionId\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: The transaction and account balance are committed.\n  Description: Created transaction identifier.\n  Example: 8\n\n• data.accountId\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: The transaction and account balance are committed.\n  Description: Related account identifier.\n  Example: 3\n\n• data.transactionDate\n  Type: string; Format: date-time; Required: Yes; Nullable: No\n  Trigger: The transaction and account balance are committed.\n  Description: Stored transaction date.\n\n• data.type\n  Type: string; Required: Yes; Nullable: No\n  Allowed values: Revenue; Expense\n  Trigger: The transaction and account balance are committed.\n  Description: Stored transaction type.\n  Example: Expense\n\n• data.itemDescription\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The transaction and account balance are committed.\n  Description: Stored description.\n  Example: Movie Ticket\n\n• data.shopName\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The transaction and account balance are committed.\n  Description: Stored merchant name from Transactions.shop_name.\n  Example: Cinema\n\n• data.amount\n  Type: number; Required: Yes; Nullable: No\n  Trigger: The transaction and account balance are committed.\n  Description: Stored amount.\n  Example: 150000\n\n• data.paymentMethod\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The transaction and account balance are committed.\n  Description: Stored payment method from Transactions.payment_method.\n  Example: Credit Card\n\n• data.status\n  Type: string; Required: Yes; Nullable: No\n  Allowed values: Complete; Pending; Failed\n  Trigger: The transaction and account balance are committed.\n  Description: Stored status.\n  Example: Complete\n\n• data.receiptId\n  Type: string; Required: Yes; Nullable: Yes\n  Trigger: The transaction and account balance are committed.\n  Description: Receipt identifier.\n  Example: null\n\n• data.createdAt\n  Type: string; Format: date-time; Required: Yes; Nullable: No\n  Trigger: The transaction and account balance are committed.\n  Description: Response-time timestamp generated with new Date(); it is not read from a persisted Transaction entity column.\n\n• data.category_id\n  Type: integer; Required: Yes; Nullable: Yes\n  Trigger: The transaction and account balance are committed.\n  Description: Stored optional category identifier.\n  Example: 3"
+      ]
+    },
+    {
+      "row": 168,
+      "cells": [
+        "Error Response — HTTP 400",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: Required input is missing/invalid; shopName or paymentMethod is empty/missing; a supplied category_id does not exist; accountId is not owned by the authenticated user; type/status is invalid; or an Expense exceeds the account balance.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Invalid or missing transaction data\n  Note: Omitting category_id by itself is not an error because Transactions.category_id is nullable. The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 169,
+      "cells": [
+        "Error Response — HTTP 401",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The JWT is missing, invalid, or expired.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Unauthorized\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 170,
+      "cells": [
+        "Error Response — HTTP 500",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The database transaction fails.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Error when creating transaction. Try it again later.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 171,
+      "cells": [
+        "Notes"
+      ]
+    },
+    {
+      "row": 172,
+      "cells": []
+    },
+    {
+      "row": 173,
+      "cells": [
+        "API-CATEGORY-LIST — List Categories"
+      ]
+    },
+    {
+      "row": 174,
+      "cells": [
+        "API ID",
+        "API-CATEGORY-LIST"
+      ]
+    },
+    {
+      "row": 175,
+      "cells": [
+        "API Name",
+        "List Categories"
+      ]
+    },
+    {
+      "row": 176,
+      "cells": [
+        "Related Use Case IDs",
+        "UC-04; UC-11; UC-14"
+      ]
+    },
+    {
+      "row": 177,
+      "cells": [
+        "Method",
+        "GET"
+      ]
+    },
+    {
+      "row": 178,
+      "cells": [
+        "Path",
+        "/api/categories"
+      ]
+    },
+    {
+      "row": 179,
+      "cells": [
+        "Description",
+        "Return all available transaction and goal categories."
+      ]
+    },
+    {
+      "row": 180,
+      "cells": [
+        "Authentication",
+        "Public"
+      ]
+    },
+    {
+      "row": 181,
+      "cells": [
+        "Authorization",
+        "None"
+      ]
+    },
+    {
+      "row": 182,
+      "cells": [
+        "Business Rules / Validation Constraints",
+        "BR-CAT-01 — Alphabetical category list: Categories shall be returned ordered by categoryName ascending."
+      ]
+    },
+    {
+      "row": 183,
+      "cells": [
+        "Request Body",
+        "None"
+      ]
+    },
+    {
+      "row": 184,
+      "cells": [
+        "Success Response — HTTP 200",
+        "• success\n  Type: boolean; Required: Yes; Nullable: No\n  Trigger: Categories are retrieved.\n  Description: Indicates successful retrieval.\n  Example: true\n\n• message\n  Type: string; Required: Yes; Nullable: No\n  Trigger: Categories are retrieved.\n  Description: Human-readable success message.\n  Example: Lấy danh sách danh mục thành công\n\n• data\n  Type: array<object>; Required: Yes; Nullable: No\n  Trigger: Categories are retrieved.\n  Description: Category array. May be empty.\n  Example: []\n\n• data[].category_id\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: Categories are retrieved.\n  Description: Category identifier.\n  Example: 3\n\n• data[].category_name\n  Type: string; Required: Yes; Nullable: No\n  Trigger: Categories are retrieved.\n  Description: Category name.\n  Example: Entertainment"
+      ]
+    },
+    {
+      "row": 185,
+      "cells": [
+        "Error Response — HTTP 500",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: Category retrieval fails.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Đã xảy ra lỗi hệ thống khi lấy danh sách danh mục. Vui lòng thử lại sau.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 186,
+      "cells": [
+        "Notes"
+      ]
+    },
+    {
+      "row": 187,
+      "cells": []
+    },
+    {
+      "row": 188,
+      "cells": [
+        "API-CATEGORY-DETAIL — Get Category Details"
+      ]
+    },
+    {
+      "row": 189,
+      "cells": [
+        "API ID",
+        "API-CATEGORY-DETAIL"
+      ]
+    },
+    {
+      "row": 190,
+      "cells": [
+        "API Name",
+        "Get Category Details"
+      ]
+    },
+    {
+      "row": 191,
+      "cells": [
+        "Related Use Case IDs"
+      ]
+    },
+    {
+      "row": 192,
+      "cells": [
+        "Method",
+        "GET"
+      ]
+    },
+    {
+      "row": 193,
+      "cells": [
+        "Path",
+        "/api/categories/:id"
+      ]
+    },
+    {
+      "row": 194,
+      "cells": [
+        "Description",
+        "Return one category by identifier."
+      ]
+    },
+    {
+      "row": 195,
+      "cells": [
+        "Authentication",
+        "Public"
+      ]
+    },
+    {
+      "row": 196,
+      "cells": [
+        "Authorization",
+        "None"
+      ]
+    },
+    {
+      "row": 197,
+      "cells": [
+        "Business Rules / Validation Constraints",
+        "BR-CAT-02 — Unique category name: Category.categoryName is declared unique in the database entity mapping."
+      ]
+    },
+    {
+      "row": 198,
+      "cells": [
+        "Path Parameter(s)",
+        "• path.id\n  Type: integer; Required: Yes; Nullable: No\n  Validation: Must parse as an integer.\n  Trigger: Category detail request.\n  Description: Category identifier.\n  Example: 3"
+      ]
+    },
+    {
+      "row": 199,
+      "cells": [
+        "Request Body",
+        "None"
+      ]
+    },
+    {
+      "row": 200,
+      "cells": [
+        "Success Response — HTTP 200",
+        "• success\n  Type: boolean; Required: Yes; Nullable: No\n  Trigger: The category exists.\n  Description: Indicates successful retrieval.\n  Example: true\n\n• message\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The category exists.\n  Description: Human-readable success message.\n  Example: Lấy chi tiết danh mục thành công\n\n• data.category_id\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: The category exists.\n  Description: Category identifier.\n  Example: 3\n\n• data.category_name\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The category exists.\n  Description: Category name.\n  Example: Entertainment"
+      ]
+    },
+    {
+      "row": 201,
+      "cells": [
+        "Error Response — HTTP 400",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The path ID cannot be parsed as an integer.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Validation failed\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 202,
+      "cells": [
+        "Error Response — HTTP 404",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The category does not exist.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Category không tồn tại\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 203,
+      "cells": [
+        "Error Response — HTTP 500",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: Category retrieval fails.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Đã xảy ra lỗi hệ thống khi lấy chi tiết danh mục. Vui lòng thử lại sau.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 204,
+      "cells": [
+        "Notes"
+      ]
+    },
+    {
+      "row": 205,
+      "cells": []
+    },
+    {
+      "row": 206,
+      "cells": [
+        "API-EXPENSE-SUMMARY — Get Monthly Expense Summary"
+      ]
+    },
+    {
+      "row": 207,
+      "cells": [
+        "API ID",
+        "API-EXPENSE-SUMMARY"
+      ]
+    },
+    {
+      "row": 208,
+      "cells": [
+        "API Name",
+        "Get Monthly Expense Summary"
+      ]
+    },
+    {
+      "row": 209,
+      "cells": [
+        "Related Use Case IDs",
+        "UC-10"
+      ]
+    },
+    {
+      "row": 210,
+      "cells": [
+        "Method",
+        "GET"
+      ]
+    },
+    {
+      "row": 211,
+      "cells": [
+        "Path",
+        "/api/v1/expenses/summary"
+      ]
+    },
+    {
+      "row": 212,
+      "cells": [
+        "Description",
+        "Return a monthly expense summary for visualization."
+      ]
+    },
+    {
+      "row": 213,
+      "cells": [
+        "Authentication",
+        "Bearer JWT"
+      ]
+    },
+    {
+      "row": 214,
+      "cells": [
+        "Authorization",
+        "Authenticated user"
+      ]
+    },
+    {
+      "row": 215,
+      "cells": [
+        "Request Header(s)",
+        "• headers.Authorization\n  Type: string; Format: Bearer <JWT>; Required: Yes; Nullable: No\n  Validation: Must contain a valid, unexpired JWT access token.\n  Trigger: Every protected request.\n  Description: Authenticates the current user.\n  Example: Bearer eyJhbGciOiJIUzI1NiIs...\n  Note: Added by the frontend Axios interceptor."
+      ]
+    },
+    {
+      "row": 216,
+      "cells": [
+        "Request Body",
+        "None"
+      ]
+    },
+    {
+      "row": 217,
+      "cells": [
+        "Success Response — HTTP 200",
+        "{\n  \"success\": true,\n  \"message\": string,\n  \"data\": [\n    {\n      \"month\": string,\n      \"totalExpense\": number\n    }\n  ]\n}\n\n• data\n  Type: array<object>; Required: Yes; Nullable: No\n  Description: Monthly expense summary data.\n  Example: []\n\n• data[].month\n  Type: string; Required: Yes; Nullable: No\n  Example: Aug\n\n• data[].totalExpense\n  Type: number; Required: Yes; Nullable: No\n  Description: Expense amount represented for the returned month.\n  Example: 160000"
+      ]
+    },
+    {
+      "row": 218,
+      "cells": [
+        "Error Response — HTTP 401",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The JWT is missing, invalid, or expired.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Unauthorized\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 219,
+      "cells": [
+        "Error Response — HTTP 500",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: Expense aggregation fails.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Cannot get expenses data.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 220,
+      "cells": [
+        "Notes",
+        "Experiment classification:\n- BR-EXP-01 through BR-EXP-07 are the treatment-sensitive Business Rules used for the core Business Rule effectiveness score.\n- The current-month color treatment is a Figma-derived UI requirement and is not a core Business Rule.\n- Read-only behavior is redundantly constrained by the GET method.\n- The successful response envelope is project-constrained by PROJECT_CONTEXT.md and AGENTS.md."
+      ]
+    },
+    {
+      "row": 221,
+      "cells": []
+    },
+    {
+      "row": 222,
+      "cells": [
+        "API-EXPENSE-BREAKDOWN — Get Expense Breakdown by Category"
+      ]
+    },
+    {
+      "row": 223,
+      "cells": [
+        "API ID",
+        "API-EXPENSE-BREAKDOWN"
+      ]
+    },
+    {
+      "row": 224,
+      "cells": [
+        "API Name",
+        "Get Expense Breakdown by Category"
+      ]
+    },
+    {
+      "row": 225,
+      "cells": [
+        "Related Use Case IDs",
+        "UC-11"
+      ]
+    },
+    {
+      "row": 226,
+      "cells": [
+        "Method",
+        "GET"
+      ]
+    },
+    {
+      "row": 227,
+      "cells": [
+        "Path",
+        "/api/v1/expenses/breakdown"
+      ]
+    },
+    {
+      "row": 228,
+      "cells": [
+        "Description",
+        "Return the authenticated user's expense breakdown by category for a selected month."
+      ]
+    },
+    {
+      "row": 229,
+      "cells": [
+        "Authentication",
+        "Bearer JWT"
+      ]
+    },
+    {
+      "row": 230,
+      "cells": [
+        "Authorization",
+        "Authenticated user"
+      ]
+    },
+    {
+      "row": 231,
+      "cells": [
+        "Business Rules / Validation Constraints",
+        "BR-EXP-CAT-01: Authenticated ownership scope\nOnly transactions associated with accounts owned by the authenticated user may contribute to the breakdown. The userId used for the operation must come from the validated JWT and must not be supplied or overridden by the client.\n\nBR-EXP-CAT-02: Eligible selected-month expenses\nOnly transactions with type = Expense and transactionDate within the selected calendar month are eligible. Transaction status is not used as an eligibility condition.\n\nBR-EXP-CAT-03: Category classification\nEligible transactions are grouped by categoryId. A null categoryId is classified as Uncategorized; an unresolved non-null categoryId is classified as Unknown; a resolved categoryId uses the corresponding Category.categoryName.\n\nBR-EXP-CAT-04: Category totals and detail mapping\nFor each category group, total equals the sum of the eligible transaction amounts in that group. Each returned detail maps itemDescription, amount, and transactionDate to item_description, numeric amount, and an ISO YYYY-MM-DD date.\n\nBR-EXP-CAT-05: Previous-month comparison\nchangePercent compares the current category total with the immediately preceding calendar month using ((currentTotal - previousTotal) / previousTotal) * 100. If previousTotal = 0, changePercent is 100 when currentTotal > 0 and null otherwise. January compares with December of the preceding year.\n\nBR-EXP-CAT-06: Rounding and deterministic ordering\nEach total and non-null changePercent is rounded to two decimal places. Category groups are ordered by total descending, and transaction details within each category are ordered by transaction date ascending.\n\nBR-EXP-CAT-07: No-data outcome\nIf the authenticated user owns no accounts or no eligible Expense transaction exists for the selected month, the endpoint produces its configured no-data response and the frontend displays its no-data state.\n\nInterface validation (not a core treatment-sensitive BR):\n- query.month is required and must use YYYY-MM format.\n- Missing or syntactically invalid month values return HTTP 400.\n- A syntactically valid month whose MM portion is outside 01..12 follows the endpoint's configured invalid-month/no-data handling."
+      ]
+    },
+    {
+      "row": 232,
+      "cells": [
+        "Request Header(s)",
+        "• headers.Authorization\n  Type: string; Format: Bearer <JWT>; Required: Yes; Nullable: No\n  Validation: Must contain a valid, unexpired JWT access token.\n  Trigger: Every protected request.\n  Description: Authenticates the current user.\n  Example: Bearer eyJhbGciOiJIUzI1NiIs...\n  Note: Added by the frontend Axios interceptor."
+      ]
+    },
+    {
+      "row": 233,
+      "cells": [
+        "Query Parameter(s)",
+        "• query.month\n  Type: string; Format: YYYY-MM; Required: Yes; Nullable: No\n  Validation: Must match YYYY-MM and identify the selected month for the breakdown request.\n  Trigger: Expense breakdown request.\n  Description: Month selected by the user.\n  Example: 2025-11"
+      ]
+    },
+    {
+      "row": 234,
+      "cells": [
+        "Request Body",
+        "None"
+      ]
+    },
+    {
+      "row": 235,
+      "cells": [
+        "Success Response — HTTP 200",
+        "• success\n  Type: boolean; Required: Yes; Nullable: No\n  Description: Indicates a successful request.\n  Example: true\n\n• message\n  Type: string; Required: Yes; Nullable: No\n  Description: Success message following the project-wide API response convention.\n  Example: Expense breakdown retrieved successfully\n\n• data\n  Type: array<object>; Required: Yes; Nullable: No\n  Description: Expense breakdown results for the selected month.\n  Example: []\n\n• data[].category\n  Type: string; Required: Yes; Nullable: No\n  Description: Category label for the group.\n  Example: Entertainment\n\n• data[].total\n  Type: number; Required: Yes; Nullable: No\n  Description: Total expense amount for the category group.\n  Example: 1500000\n\n• data[].changePercent\n  Type: number; Required: Yes; Nullable: Yes\n  Description: Percentage change compared with the previous month.\n  Example: 25.5\n\n• data[].subCategories\n  Type: array<object>; Required: Yes; Nullable: No\n  Description: Underlying transaction details for the category group.\n  Example: []\n\n• data[].subCategories[].item_description\n  Type: string; Required: Yes; Nullable: No\n  Description: Transaction description.\n  Example: Movie Ticket\n\n• data[].subCategories[].amount\n  Type: number; Required: Yes; Nullable: No\n  Description: Transaction amount.\n  Example: 150000\n\n• data[].subCategories[].date\n  Type: string; Format: date; Required: Yes; Nullable: No\n  Description: Transaction date.\n  Example: 2025-11-01"
+      ]
+    },
+    {
+      "row": 236,
+      "cells": [
+        "Error Response — HTTP 400",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: month is missing or does not satisfy the request format.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Tham số month không hợp lệ. Vui lòng sử dụng định dạng YYYY-MM (ví dụ: 2025-11)\n  Note: The project error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 237,
+      "cells": [
+        "Error Response — HTTP 401",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The JWT is missing, invalid, or expired.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Unauthorized\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 238,
+      "cells": [
+        "Error Response — HTTP 404",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: No expense-breakdown data is available for the selected month under the applicable business rules, or the endpoint applies its configured invalid-month/no-data handling.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Không có dữ liệu chi tiêu cho tháng này.\n  Note: The project error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 239,
+      "cells": [
+        "Error Response — HTTP 500",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: Breakdown calculation fails.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Không thể lấy dữ liệu breakdown chi tiêu.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 240,
+      "cells": [
+        "Notes",
+        "Experiment classification:\n- BR-EXP-CAT-01 through BR-EXP-CAT-07 are the treatment-sensitive Business Rules used for UC-11's core Business Rule effectiveness score.\n- Month input syntax is part of the API interface contract and is not a core treatment-sensitive BR.\n- Figma presentation requirements are UI evidence and are not part of the core Business Rule score.\n- Read-only behavior is redundantly constrained by the GET method.\n- The standard successful/error response envelope is project-constrained by the project-level API convention."
+      ]
+    },
+    {
+      "row": 241,
+      "cells": []
+    },
+    {
+      "row": 242,
+      "cells": [
+        "API-BILL-LIST — List Upcoming Bills"
+      ]
+    },
+    {
+      "row": 243,
+      "cells": [
+        "API ID",
+        "API-BILL-LIST"
+      ]
+    },
+    {
+      "row": 244,
+      "cells": [
+        "API Name",
+        "List Upcoming Bills"
+      ]
+    },
+    {
+      "row": 245,
+      "cells": [
+        "Related Use Case IDs",
+        "UC-12"
+      ]
+    },
+    {
+      "row": 246,
+      "cells": [
+        "Method",
+        "GET"
+      ]
+    },
+    {
+      "row": 247,
+      "cells": [
+        "Path",
+        "/api/v1/bills"
+      ]
+    },
+    {
+      "row": 248,
+      "cells": [
+        "Description",
+        "Return bill data for the authenticated user's Upcoming Bills view."
+      ]
+    },
+    {
+      "row": 249,
+      "cells": [
+        "Authentication",
+        "Bearer JWT"
+      ]
+    },
+    {
+      "row": 250,
+      "cells": [
+        "Authorization",
+        "Authenticated user"
+      ]
+    },
+    {
+      "row": 251,
+      "cells": [
+        "Request Header(s)",
+        "• headers.Authorization\n  Type: string; Format: Bearer <JWT>; Required: Yes; Nullable: No\n  Validation: Must contain a valid, unexpired JWT access token.\n  Trigger: Every protected request.\n  Description: Authenticates the current user.\n  Example: Bearer eyJhbGciOiJIUzI1NiIs...\n  Note: Added by the frontend Axios interceptor."
+      ]
+    },
+    {
+      "row": 252,
+      "cells": [
+        "Request Body",
+        "None"
+      ]
+    },
+    {
+      "row": 253,
+      "cells": [
+        "Success Response — HTTP 200",
+        "• success\n  Type: boolean; Required: Yes; Nullable: No\n  Description: Indicates a successful request.\n  Example: true\n\n• message\n  Type: string; Required: Yes; Nullable: No\n  Description: Success message following the project-wide API response convention.\n  Example: Bills retrieved successfully\n\n• data\n  Type: array<object>; Required: Yes; Nullable: No\n  Description: Bill items returned for the Upcoming Bills view.\n  Example: []\n\n• data[].billId\n  Type: integer; Required: Yes; Nullable: No\n  Description: Bill identifier.\n  Example: 7\n\n• data[].userId\n  Type: integer; Required: Yes; Nullable: No\n  Description: Owner user identifier.\n  Example: 1\n\n• data[].itemDescription\n  Type: string; Required: Yes; Nullable: No\n  Description: Bill description.\n  Example: Netflix\n\n• data[].logoUrl\n  Type: string; Required: Yes; Nullable: Yes\n  Description: Optional bill logo URL.\n  Example: https://example.com/netflix.png\n\n• data[].dueDate\n  Type: string; Format: date; Required: Yes; Nullable: No\n  Description: Bill due date.\n  Example: 2025-11-15\n\n• data[].lastChargeDate\n  Type: string; Format: date; Required: Yes; Nullable: Yes\n  Description: Most recent charge date when available.\n  Example: 2025-10-15\n\n• data[].amount\n  Type: number; Required: Yes; Nullable: No\n  Description: Bill amount.\n  Example: 260000"
+      ]
+    },
+    {
+      "row": 254,
+      "cells": [
+        "Error Response — HTTP 401",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The JWT is missing, invalid, or expired.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Unauthorized\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 255,
+      "cells": [
+        "Error Response — HTTP 500",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: Bill retrieval or response processing fails.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Failed to fetch bills\n  Note: The project error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 256,
+      "cells": [
+        "Notes",
+        "Experiment classification:\n- The API contract intentionally contains only interface structure, authentication requirements, response fields, and error contracts.\n- UC-12 Business Rules are defined only in the Use cases sheet and are intentionally omitted from this API contract for ablation isolation.\n- The project-standard successful/error response envelope remains authoritative at the API level."
+      ]
+    },
+    {
+      "row": 257,
+      "cells": []
+    },
+    {
+      "row": 258,
+      "cells": [
+        "API-GOAL-LIST — List Financial Goals"
+      ]
+    },
+    {
+      "row": 259,
+      "cells": [
+        "API ID",
+        "API-GOAL-LIST"
+      ]
+    },
+    {
+      "row": 260,
+      "cells": [
+        "API Name",
+        "List Financial Goals"
+      ]
+    },
+    {
+      "row": 261,
+      "cells": [
+        "Related Use Case IDs",
+        "UC-13"
+      ]
+    },
+    {
+      "row": 262,
+      "cells": [
+        "Method",
+        "GET"
+      ]
+    },
+    {
+      "row": 263,
+      "cells": [
+        "Path",
+        "/api/v1/goals"
+      ]
+    },
+    {
+      "row": 264,
+      "cells": [
+        "Description",
+        "Return financial-goal data for the authenticated user's Goals view."
+      ]
+    },
+    {
+      "row": 265,
+      "cells": [
+        "Authentication",
+        "Bearer JWT"
+      ]
+    },
+    {
+      "row": 266,
+      "cells": [
+        "Authorization",
+        "Authenticated user"
+      ]
+    },
+    {
+      "row": 267,
+      "cells": [
+        "Request Header(s)",
+        "• headers.Authorization\n  Type: string; Format: Bearer <JWT>; Required: Yes; Nullable: No\n  Validation: Must contain a valid, unexpired JWT access token.\n  Trigger: Every protected request.\n  Description: Authenticates the current user.\n  Example: Bearer eyJhbGciOiJIUzI1NiIs...\n  Note: Added by the frontend Axios interceptor."
+      ]
+    },
+    {
+      "row": 268,
+      "cells": [
+        "Request Body",
+        "None"
+      ]
+    },
+    {
+      "row": 269,
+      "cells": [
+        "Success Response — HTTP 200",
+        "• success\n  Type: boolean; Required: Yes; Nullable: No\n  Description: Indicates a successful request.\n  Example: true\n\n• message\n  Type: string; Required: Yes; Nullable: No\n  Description: Success message following the project-wide API response convention.\n  Example: Lấy danh sách mục tiêu thành công\n\n• data.savingGoal\n  Type: object; Required: Yes; Nullable: Yes\n  Description: Saving-goal data when available.\n  Example: null\n\n• data.savingGoal.goal_id\n  Type: integer; Required: Yes; Nullable: No\n  Description: Saving goal identifier.\n  Example: 2\n\n• data.savingGoal.goal_type\n  Type: string; Required: Yes; Nullable: No\n  Allowed values: Saving\n  Description: Saving goal type.\n  Example: Saving\n\n• data.savingGoal.target_amount\n  Type: number; Required: Yes; Nullable: No\n  Description: Saving target amount.\n  Example: 10000000\n\n• data.savingGoal.target_achieved\n  Type: number; Required: Yes; Nullable: No\n  Description: Calculated achieved amount for the saving goal.\n  Example: 3500000\n\n• data.savingGoal.start_date\n  Type: string; Format: date; Required: Yes; Nullable: No\n  Description: Saving goal start date.\n  Example: 2025-11-01\n\n• data.savingGoal.end_date\n  Type: string; Format: date; Required: Yes; Nullable: No\n  Description: Saving goal end date.\n  Example: 2025-11-30\n\n• data.expenseGoals\n  Type: array<object>; Required: Yes; Nullable: No\n  Description: Expense-goal items returned for the Goals view.\n  Example: []\n\n• data.expenseGoals[].goal_id\n  Type: integer; Required: Yes; Nullable: No\n  Description: Expense goal identifier.\n  Example: 5\n\n• data.expenseGoals[].category\n  Type: string; Required: Yes; Nullable: No\n  Description: Category label for the expense goal.\n  Example: Food\n\n• data.expenseGoals[].target_amount\n  Type: number; Required: Yes; Nullable: No\n  Description: Expense-goal target amount.\n  Example: 3000000\n\n• data.expenseGoals[].current_expense\n  Type: number; Required: Yes; Nullable: No\n  Description: Calculated expense amount for the expense goal.\n  Example: 1200000"
+      ]
+    },
+    {
+      "row": 270,
+      "cells": [
+        "Error Response — HTTP 401",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The JWT is missing, invalid, or expired.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Unauthorized\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 271,
+      "cells": [
+        "Error Response — HTTP 500",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: Goal retrieval or response processing fails.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Đã xảy ra lỗi hệ thống khi tải mục tiêu, vui lòng thử lại sau.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 272,
+      "cells": [
+        "Notes",
+        "Experiment classification:\n- The API contract intentionally contains only interface structure, authentication requirements, response fields, and error contracts.\n- UC-13 Business Rules are defined only in the Use cases sheet and are intentionally omitted from this API contract for ablation isolation.\n- The project-standard successful/error response envelope remains authoritative at the API level.\n- Response-field descriptions intentionally avoid restating calculation, selection, filtering, fallback, and ordering semantics defined by UC-13 Business Rules."
+      ]
+    },
+    {
+      "row": 273,
+      "cells": []
+    },
+    {
+      "row": 274,
+      "cells": [
+        "API-GOAL-CREATE — Create Financial Goal"
+      ]
+    },
+    {
+      "row": 275,
+      "cells": [
+        "API ID",
+        "API-GOAL-CREATE"
+      ]
+    },
+    {
+      "row": 276,
+      "cells": [
+        "API Name",
+        "Create Financial Goal"
+      ]
+    },
+    {
+      "row": 277,
+      "cells": [
+        "Related Use Case IDs",
+        "UC-14"
+      ]
+    },
+    {
+      "row": 278,
+      "cells": [
+        "Method",
+        "POST"
+      ]
+    },
+    {
+      "row": 279,
+      "cells": [
+        "Path",
+        "/api/v1/goals"
+      ]
+    },
+    {
+      "row": 280,
+      "cells": [
+        "Description",
+        "Create financial-goal data for the authenticated user's Goals workflow."
+      ]
+    },
+    {
+      "row": 281,
+      "cells": [
+        "Authentication",
+        "Bearer JWT"
+      ]
+    },
+    {
+      "row": 282,
+      "cells": [
+        "Authorization",
+        "Authenticated user"
+      ]
+    },
+    {
+      "row": 283,
+      "cells": [
+        "Request Header(s)",
+        "• headers.Authorization\n  Type: string; Format: Bearer <JWT>; Required: Yes; Nullable: No\n  Validation: Must contain a valid, unexpired JWT access token.\n  Trigger: Every protected request.\n  Description: Authenticates the current user.\n  Example: Bearer eyJhbGciOiJIUzI1NiIs...\n  Note: Added by the frontend Axios interceptor.\n\n• headers.Content-Type\n  Type: string; Format: MIME type; Required: Yes; Nullable: No\n  Default: application/json\n  Allowed values: application/json\n  Validation: Request body must be JSON.\n  Trigger: Every request containing a JSON body.\n  Description: Declares the request body format.\n  Example: application/json"
+      ]
+    },
+    {
+      "row": 284,
+      "cells": [
+        "Request Body",
+        "• goal_type\n  Type: string; Required: Yes; Nullable: No\n  Allowed values: Saving; Expense_Limit\n  Description: Goal type supplied by the client.\n  Example: Saving\n\n• category_id\n  Type: integer; Required: No; Nullable: Yes\n  Description: Optional category identifier supplied with the goal request.\n  Example: 3\n\n• start_date\n  Type: string; Format: YYYY-MM-DD; Required: Yes; Nullable: No\n  Description: Goal start date supplied by the client.\n  Example: 2025-11-01\n\n• end_date\n  Type: string; Format: YYYY-MM-DD; Required: Yes; Nullable: No\n  Description: Goal end date supplied by the client.\n  Example: 2025-11-30\n\n• target_amount\n  Type: number; Format: decimal; Required: Yes; Nullable: No\n  Description: Goal target amount supplied by the client.\n  Example: 10000000"
+      ]
+    },
+    {
+      "row": 285,
+      "cells": [
+        "Success Response — HTTP 201",
+        "• message\n  Type: string; Required: Yes; Nullable: No\n  Description: Creation success message.\n  Example: Goal created successfully\n\n• goal_id\n  Type: integer; Required: Yes; Nullable: No\n  Description: Identifier returned for the created goal.\n  Example: 5"
+      ]
+    },
+    {
+      "row": 286,
+      "cells": [
+        "Error Response — HTTP 400",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The submitted request is rejected as invalid under the applicable validation or business rules.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Invalid goal data.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 287,
+      "cells": [
+        "Error Response — HTTP 401",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The JWT is missing, invalid, or expired.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Unauthorized\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 288,
+      "cells": [
+        "Error Response — HTTP 500",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: Goal creation cannot be completed because of an unexpected server, repository, or database failure.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Không thể tạo mục tiêu lúc này. Vui lòng thử lại sau.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 289,
+      "cells": [
+        "Notes",
+        "Experiment classification:\n- The API contract intentionally contains only endpoint structure, authentication requirements, request/response field shapes, and generic error contracts.\n- UC-14 Business Rules are defined only in the Use cases sheet and are intentionally omitted from this API contract for ablation isolation.\n- Request-field descriptions intentionally avoid restating category dependency, monetary precision, date-boundary, overlap-conflict, persistence, and atomicity semantics.\n- The project-standard success/error response convention remains authoritative at the API level."
+      ]
+    },
+    {
+      "row": 290,
+      "cells": []
+    },
+    {
+      "row": 291,
+      "cells": [
+        "API-GOAL-UPDATE — Update Financial Goal"
+      ]
+    },
+    {
+      "row": 292,
+      "cells": [
+        "API ID",
+        "API-GOAL-UPDATE"
+      ]
+    },
+    {
+      "row": 293,
+      "cells": [
+        "API Name",
+        "Update Financial Goal"
+      ]
+    },
+    {
+      "row": 294,
+      "cells": [
+        "Related Use Case IDs",
+        "UC-15"
+      ]
+    },
+    {
+      "row": 295,
+      "cells": [
+        "Method",
+        "PUT"
+      ]
+    },
+    {
+      "row": 296,
+      "cells": [
+        "Path",
+        "/api/v1/goals/:goalId"
+      ]
+    },
+    {
+      "row": 297,
+      "cells": [
+        "Description",
+        "Update the target amount of a goal owned by the authenticated user."
+      ]
+    },
+    {
+      "row": 298,
+      "cells": [
+        "Authentication",
+        "Bearer JWT"
+      ]
+    },
+    {
+      "row": 299,
+      "cells": [
+        "Authorization",
+        "Goal owner"
+      ]
+    },
+    {
+      "row": 300,
+      "cells": [
+        "Request Header(s)",
+        "• headers.Authorization\n  Type: string; Format: Bearer <JWT>; Required: Yes; Nullable: No\n  Validation: Must contain a valid, unexpired JWT access token.\n  Trigger: Every protected request.\n  Description: Authenticates the current user.\n  Example: Bearer eyJhbGciOiJIUzI1NiIs...\n  Note: Added by the frontend Axios interceptor.\n\n• headers.Content-Type\n  Type: string; Format: MIME type; Required: Yes; Nullable: No\n  Default: application/json\n  Allowed values: application/json\n  Validation: Request body must be JSON.\n  Trigger: Every request containing a JSON body.\n  Description: Declares the request body format.\n  Example: application/json"
+      ]
+    },
+    {
+      "row": 301,
+      "cells": [
+        "Path Parameter(s)",
+        "• path.goalId\n  Type: integer; Required: Yes; Nullable: No\n  Validation: The controller applies parseInt(goalId, 10) and does not explicitly reject NaN before calling the service.\n  Trigger: Every goal update request.\n  Description: Goal identifier as parsed by the controller.\n  Example: 5"
+      ]
+    },
+    {
+      "row": 302,
+      "cells": [
+        "Request Body",
+        "• target_amount\n  Type: number; Format: decimal; Required: Yes; Nullable: No\n  Validation: Must be greater than 0.\n  Trigger: Goal update request.\n  Description: New target amount.\n  Example: 12000000"
+      ]
+    },
+    {
+      "row": 303,
+      "cells": [
+        "Success Response — HTTP 200",
+        "• message\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The goal is updated.\n  Description: Update success message.\n  Example: Goal updated successfully\n\n• updated_goal.goal_id\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: The goal is updated.\n  Description: Updated goal identifier.\n  Example: 5\n\n• updated_goal.target_amount\n  Type: number; Required: Yes; Nullable: No\n  Trigger: The goal is updated.\n  Description: Updated target amount.\n  Example: 12000000"
+      ]
+    },
+    {
+      "row": 304,
+      "cells": [
+        "Error Response — HTTP 400",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: target_amount fails UpdateGoalDto validation.\n  Description: Validation errors for the request body.\n  Example: [\"target_amount must be a positive number\"]\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 305,
+      "cells": [
+        "Error Response — HTTP 401",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The JWT is missing, invalid, or expired.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Unauthorized\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 306,
+      "cells": [
+        "Error Response — HTTP 403",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The goal belongs to another user.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Bạn không có quyền chỉnh sửa mục tiêu này.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 307,
+      "cells": [
+        "Error Response — HTTP 404",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The goal does not exist.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Mục tiêu không tồn tại.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 308,
+      "cells": [
+        "Error Response — HTTP 500",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The goal update cannot be saved.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Không thể lưu thay đổi lúc này. Vui lòng thử lại sau.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 309,
+      "cells": [
+        "Notes"
+      ]
+    },
+    {
+      "row": 310,
+      "cells": []
+    },
+    {
+      "row": 311,
+      "cells": [
+        "API-SAVINGS-SUMMARY - Get Savings Summary"
+      ]
+    },
+    {
+      "row": 312,
+      "cells": [
+        "API ID",
+        "API-SAVINGS-SUMMARY"
+      ]
+    },
+    {
+      "row": 313,
+      "cells": [
+        "API Name",
+        "Get Savings Summary"
+      ]
+    },
+    {
+      "row": 314,
+      "cells": [
+        "Related Use Case IDs",
+        "UC-16"
+      ]
+    },
+    {
+      "row": 315,
+      "cells": [
+        "Method",
+        "GET"
+      ]
+    },
+    {
+      "row": 316,
+      "cells": [
+        "Path",
+        "/api/v1/savings/summary"
+      ]
+    },
+    {
+      "row": 317,
+      "cells": [
+        "Description",
+        "Return monthly net savings for a selected year and the preceding year."
+      ]
+    },
+    {
+      "row": 318,
+      "cells": [
+        "Authentication",
+        "Bearer JWT"
+      ]
+    },
+    {
+      "row": 319,
+      "cells": [
+        "Authorization",
+        "Authenticated user"
+      ]
+    },
+    {
+      "row": 320,
+      "cells": [
+        "Business Rules / Validation Constraints",
+        "BR-SAV-01: Authenticated User Data Scope\nThe savings summary shall be calculated only from transactions belonging to accounts owned by the authenticated user. The user identity shall be obtained from the validated JWT and not from client-supplied data.\n\nBR-SAV-02: Savings Summary Year Resolution\nThe requested year shall be parsed as an integer. If the year is missing, cannot be parsed, is less than 1900, or is greater than 2100, the current year shall be used. Because the current implementation uses JavaScript parseInt, a value beginning with a valid numeric prefix, such as 2025abc, is resolved as 2025.\n\nBR-SAV-03: Complete Monthly Summary\nThe response shall contain exactly 12 monthly entries for the resolved year and exactly 12 monthly entries for the preceding year. Months shall represent January through December in ascending order using two-digit values from 01 to 12.\n\nBR-SAV-04: Monthly Net Savings Calculation\nFor each month, the savings amount shall equal the total Revenue minus the total Expense for that month across all accounts owned by the authenticated user.\n\nBR-SAV-05: Previous-Year Comparison\nThe this_year series shall represent the resolved requested year, while the last_year series shall represent exactly the preceding year, calculated as resolvedYear - 1.\n\nBR-SAV-06: Missing Transaction Data\nIf the authenticated user has no accounts, or if a month contains no matching transactions, the savings amount for that month shall be 0. Missing data shall not cause monthly entries to be omitted.\n\nBR-SAV-07: Savings Amount Rounding\nEach calculated monthly savings amount shall be rounded to two decimal places before being included in the API response.\n\nBR-SAV-08: Savings Summary Response and Failure Handling\nA successful response shall contain the authenticated user_id, the resolved year, and both 12-month savings series. If the savings calculation fails unexpectedly, the backend shall return HTTP 500. Retrieving the savings summary shall not create, update, or delete Account or Transaction records.\n\nBR-SAV-09: Savings Chart Point Value Tooltip\nWhen the savings chart is displayed, hovering the pointer over a data point in either the selected-year or previous-year series shall display a tooltip showing the savings amount represented by that point. The displayed value shall correspond exactly to the monthly savings amount returned for that month and series. The tooltip shall disappear when the pointer is no longer hovering over the data point."
+      ]
+    },
+    {
+      "row": 321,
+      "cells": [
+        "Request Header(s)",
+        "• headers.Authorization\n  Type: string; Format: Bearer <JWT>; Required: Yes; Nullable: No\n  Validation: Must contain a valid, unexpired JWT access token.\n  Trigger: Every protected request.\n  Description: Authenticates the current user.\n  Example: Bearer eyJhbGciOiJIUzI1NiIs...\n  Note: Added by the frontend Axios interceptor."
+      ]
+    },
+    {
+      "row": 322,
+      "cells": [
+        "Query Parameter(s)",
+        "• query.year\n  Type: integer; Format: YYYY; Required: No; Nullable: No\n  Default: Current year\n  Validation: The controller applies parseInt(year, 10). Missing, NaN, <1900, or >2100 values use the current year. A leading numeric prefix is accepted by parseInt.\n  Trigger: Savings summary request.\n  Description: Optional target year resolved by the controller.\n  Example: 2025"
+      ]
+    },
+    {
+      "row": 323,
+      "cells": [
+        "Request Body",
+        "None"
+      ]
+    },
+    {
+      "row": 324,
+      "cells": [
+        "Success Response — HTTP 200",
+        "• user_id\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: The summary is calculated; missing data produces zero-valued months.\n  Description: Authenticated user identifier.\n  Example: 1\n\n• year\n  Type: integer; Required: Yes; Nullable: No\n  Trigger: The summary is calculated; missing data produces zero-valued months.\n  Description: Resolved target year.\n  Example: 2025\n\n• summary.this_year\n  Type: array<object>; Required: Yes; Nullable: No\n  Trigger: The summary is calculated; missing data produces zero-valued months.\n  Description: Twelve monthly savings values for the selected year.\n  Example: []\n\n• summary.this_year[].month\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The summary is calculated; missing data produces zero-valued months.\n  Description: Two-digit month number.\n  Example: 01\n\n• summary.this_year[].amount\n  Type: number; Required: Yes; Nullable: No\n  Trigger: The summary is calculated; missing data produces zero-valued months.\n  Description: Revenue minus expense for the month.\n  Example: 1500000\n\n• summary.last_year\n  Type: array<object>; Required: Yes; Nullable: No\n  Trigger: The summary is calculated; missing data produces zero-valued months.\n  Description: Twelve monthly savings values for the previous year.\n  Example: []\n\n• summary.last_year[].month\n  Type: string; Required: Yes; Nullable: No\n  Trigger: The summary is calculated; missing data produces zero-valued months.\n  Description: Two-digit month number.\n  Example: 01\n\n• summary.last_year[].amount\n  Type: number; Required: Yes; Nullable: No\n  Trigger: The summary is calculated; missing data produces zero-valued months.\n  Description: Revenue minus expense for the month.\n  Example: 1200000"
+      ]
+    },
+    {
+      "row": 325,
+      "cells": [
+        "Error Response — HTTP 401",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: The JWT is missing, invalid, or expired.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: Không thể xác thực người dùng. Vui lòng đăng nhập lại.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 326,
+      "cells": [
+        "Error Response — HTTP 500",
+        "• message\n  Type: string | string[]; Required: Yes; Nullable: No\n  Trigger: Savings calculation fails.\n  Description: Error description returned by the global HTTP exception filter.\n  Example: An internal server error occurred while processing the savings summary.\n  Note: The error envelope also contains success=false and may contain an error field."
+      ]
+    },
+    {
+      "row": 327,
+      "cells": [
+        "Notes"
+      ]
+    }
+  ]
+}

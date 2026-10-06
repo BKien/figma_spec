@@ -1,6 +1,11 @@
+Project travel_booking {
+  database_type: 'MySQL'
+  Note: 'MySQL 8.0 persistence contract. All datetime values are UTC. Apply persistence-constraints.sql after the generated schema.'
+}
+
 // Domain operations are constrained by use-case OCL. This file describes persistence.
-// PostgreSQL exclusion constraints are in persistence-constraints.sql.
-// Public opaque IDs encode UUID primary keys. Snapshot JSON contains no credentials.
+// MySQL concurrency triggers and additional checks are in persistence-constraints.sql.
+// Public opaque IDs encode char(36) values stored as char(36) primary keys. Snapshot JSON contains no credentials.
 
 Enum flight_journey_direction {
   OUTBOUND
@@ -76,28 +81,28 @@ Enum offer_status {
 }
 
 Table users {
-  id uuid [pk]
+  id char(36) [pk]
   full_name text [not null]
   email varchar(255) [not null, unique]
   password_hash varchar(255) [not null]
   active boolean [not null, default: true]
-  created_at timestamptz [not null]
-  updated_at timestamptz [not null]
+  created_at datetime [not null]
+  updated_at datetime [not null]
 }
 
 Table sessions {
-  id uuid [pk]
-  user_id uuid [not null, ref: > users.id]
+  id char(36) [pk]
+  user_id char(36) [not null, ref: > users.id]
   token_hash varchar(255) [not null, unique]
-  expires_at timestamptz [not null]
-  revoked_at timestamptz
-  created_at timestamptz [not null]
+  expires_at datetime [not null]
+  revoked_at datetime
+  created_at datetime [not null]
 
   indexes { (user_id, expires_at) }
 }
 
 Table locations {
-  id uuid [pk]
+  id char(36) [pk]
   name text [not null]
   normalized_name text [not null]
   country_code char(2) [not null]
@@ -108,12 +113,12 @@ Table locations {
   indexes { (normalized_name, country_code) }
 time_zone varchar(80) [not null]
   air_travel boolean [not null, default: false]
-  service_area_id uuid [ref: > service_areas.id]
+  service_area_id char(36) [ref: > service_areas.id]
 }
 
 Table stays {
-  id uuid [pk]
-  location_id uuid [not null, ref: > locations.id]
+  id char(36) [pk]
+  location_id char(36) [not null, ref: > locations.id]
   name text [not null]
   description text [not null]
   address text [not null]
@@ -122,20 +127,20 @@ Table stays {
   contact_email varchar(255)
   contact_phone varchar(40)
   active boolean [not null, default: true]
-  created_at timestamptz [not null]
-  updated_at timestamptz [not null]
+  created_at datetime [not null]
+  updated_at datetime [not null]
 }
 
 Table stay_amenities {
-  stay_id uuid [not null, ref: > stays.id]
+  stay_id char(36) [not null, ref: > stays.id]
   amenity_code varchar(80) [not null]
 
   indexes { (stay_id, amenity_code) [pk] }
 }
 
 Table stay_media {
-  id uuid [pk]
-  stay_id uuid [not null, ref: > stays.id]
+  id char(36) [pk]
+  stay_id char(36) [not null, ref: > stays.id]
   media_url text [not null]
   sort_order int [not null]
 
@@ -143,8 +148,8 @@ Table stay_media {
 }
 
 Table stay_offers {
-  id uuid [pk]
-  stay_id uuid [not null, ref: > stays.id]
+  id char(36) [pk]
+  stay_id char(36) [not null, ref: > stays.id]
   provider_offer_ref varchar(255) [not null]
   check_in date [not null]
   check_out date [not null]
@@ -154,7 +159,7 @@ Table stay_offers {
   total_amount decimal(14,2) [not null]
   currency char(3) [not null]
   status offer_status [not null]
-  expires_at timestamptz [not null]
+  expires_at datetime [not null]
   version int [not null, default: 1]
 
   indexes {
@@ -164,46 +169,46 @@ Table stay_offers {
 }
 
 Table stay_quotes {
-  id uuid [pk]
-  user_id uuid [not null, ref: > users.id]
-  offer_id uuid [not null, ref: > stay_offers.id]
+  id char(36) [pk]
+  user_id char(36) [not null, ref: > users.id]
+  offer_id char(36) [not null, ref: > stay_offers.id]
   total_amount decimal(14,2) [not null]
   currency char(3) [not null]
   status quote_status [not null]
   offer_version int [not null]
-  expires_at timestamptz [not null]
-  created_at timestamptz [not null]
+  expires_at datetime [not null]
+  created_at datetime [not null]
 
   indexes { (user_id, expires_at) }
 }
 
 Table payment_references {
-  id uuid [pk]
+  id char(36) [pk]
   provider varchar(80) [not null]
   provider_reference varchar(255) [not null, unique]
   token_fingerprint varchar(255) [not null]
   status payment_status [not null]
-  created_at timestamptz [not null]
+  created_at datetime [not null]
 }
 
 
 Table saved_payment_methods {
-  id uuid [pk]
-  user_id uuid [not null, ref: > users.id]
+  id char(36) [pk]
+  user_id char(36) [not null, ref: > users.id]
   provider varchar(80) [not null]
   provider_reference varchar(255) [not null, unique]
   display_label varchar(120)
-  created_at timestamptz [not null]
+  created_at datetime [not null]
 
   indexes { (user_id, created_at) }
 }
 
 Table stay_bookings {
-  id uuid [pk]
-  user_id uuid [not null, ref: > users.id]
-  quote_id uuid [not null, unique, ref: > stay_quotes.id]
-  payment_reference_id uuid [ref: > payment_references.id]
-  saved_payment_method_id uuid [ref: > saved_payment_methods.id]
+  id char(36) [pk]
+  user_id char(36) [not null, ref: > users.id]
+  quote_id char(36) [not null, unique, ref: > stay_quotes.id]
+  payment_reference_id char(36) [ref: > payment_references.id]
+  saved_payment_method_id char(36) [ref: > saved_payment_methods.id]
   idempotency_key varchar(255) [not null]
   guest_first_name text [not null]
   guest_last_name text [not null]
@@ -216,17 +221,17 @@ Table stay_bookings {
   total_amount decimal(14,2) [not null]
   currency char(3) [not null]
   status booking_status [not null]
-  created_at timestamptz [not null]
-  updated_at timestamptz [not null]
+  created_at datetime [not null]
+  updated_at datetime [not null]
 
   indexes { (user_id, idempotency_key) [unique] }
 request_fingerprint varchar(255) [not null]
   provider_reservation_ref varchar(255) [not null, unique]
-  completed_at timestamptz
+  completed_at datetime
 }
 
 Table drivers {
-  id uuid [pk]
+  id char(36) [pk]
   full_name text [not null]
   phone varchar(40) [not null]
   image_url text
@@ -234,7 +239,7 @@ Table drivers {
 }
 
 Table vehicles {
-  id uuid [pk]
+  id char(36) [pk]
   display_name text [not null]
   registration_number varchar(80) [not null, unique]
   category vehicle_category [not null]
@@ -248,13 +253,13 @@ Table vehicles {
 }
 
 Table taxi_offers {
-  id uuid [pk]
-  location_id uuid [not null, ref: > locations.id]
-  driver_id uuid [not null, ref: > drivers.id]
-  vehicle_id uuid [not null, ref: > vehicles.id]
+  id char(36) [pk]
+  location_id char(36) [not null, ref: > locations.id]
+  driver_id char(36) [not null, ref: > drivers.id]
+  vehicle_id char(36) [not null, ref: > vehicles.id]
   provider_offer_ref varchar(255) [not null, unique]
-  pickup_at timestamptz [not null]
-  dropoff_at timestamptz [not null]
+  pickup_at datetime [not null]
+  dropoff_at datetime [not null]
   passengers int [not null]
   distance_from_center_km decimal(10,2) [not null]
   mileage_allowance_km decimal(10,2) [not null]
@@ -264,37 +269,37 @@ Table taxi_offers {
   rating decimal(2,1) [not null]
   payment_mode payment_mode [not null]
   status offer_status [not null]
-  expires_at timestamptz [not null]
+  expires_at datetime [not null]
   version int [not null, default: 1]
 
   indexes { (location_id, pickup_at, dropoff_at) }
 }
 
 Table taxi_quotes {
-  id uuid [pk]
-  user_id uuid [not null, ref: > users.id]
-  offer_id uuid [not null, ref: > taxi_offers.id]
+  id char(36) [pk]
+  user_id char(36) [not null, ref: > users.id]
+  offer_id char(36) [not null, ref: > taxi_offers.id]
   total_amount decimal(14,2) [not null]
   deposit_amount decimal(14,2) [not null]
   currency char(3) [not null]
   payment_mode payment_mode [not null]
   status quote_status [not null]
   offer_version int [not null]
-  expires_at timestamptz [not null]
-  created_at timestamptz [not null]
+  expires_at datetime [not null]
+  created_at datetime [not null]
 
   indexes { (user_id, expires_at) }
 }
 
 Table taxi_bookings {
-  id uuid [pk]
-  user_id uuid [not null, ref: > users.id]
-  quote_id uuid [not null, unique, ref: > taxi_quotes.id]
-  offer_id uuid [not null, ref: > taxi_offers.id]
-  driver_id uuid [not null, ref: > drivers.id]
-  vehicle_id uuid [not null, ref: > vehicles.id]
-  payment_reference_id uuid [ref: > payment_references.id]
-  saved_payment_method_id uuid [ref: > saved_payment_methods.id]
+  id char(36) [pk]
+  user_id char(36) [not null, ref: > users.id]
+  quote_id char(36) [not null, unique, ref: > taxi_quotes.id]
+  offer_id char(36) [not null, ref: > taxi_offers.id]
+  driver_id char(36) [not null, ref: > drivers.id]
+  vehicle_id char(36) [not null, ref: > vehicles.id]
+  payment_reference_id char(36) [ref: > payment_references.id]
+  saved_payment_method_id char(36) [ref: > saved_payment_methods.id]
   idempotency_key varchar(255) [not null]
   guest_first_name text [not null]
   guest_last_name text [not null]
@@ -307,37 +312,37 @@ Table taxi_bookings {
   total_amount decimal(14,2) [not null]
   currency char(3) [not null]
   status booking_status [not null]
-  created_at timestamptz [not null]
-  updated_at timestamptz [not null]
+  created_at datetime [not null]
+  updated_at datetime [not null]
 
   indexes {
     (user_id, idempotency_key) [unique]
     (offer_id, status)
   }
 request_fingerprint varchar(255) [not null]
-  completed_at timestamptz
+  completed_at datetime
 }
 
 Table flight_providers {
-  id uuid [pk]
+  id char(36) [pk]
   code varchar(40) [not null, unique]
   name text [not null]
   active boolean [not null, default: true]
 }
 
 Table flight_offers {
-  id uuid [pk]
-  provider_id uuid [not null, ref: > flight_providers.id]
+  id char(36) [pk]
+  provider_id char(36) [not null, ref: > flight_providers.id]
   provider_offer_ref varchar(255) [not null]
-  origin_location_id uuid [not null, ref: > locations.id]
-  destination_location_id uuid [not null, ref: > locations.id]
+  origin_location_id char(36) [not null, ref: > locations.id]
+  destination_location_id char(36) [not null, ref: > locations.id]
   passengers int [not null]
   duration_minutes int [not null]
   total_amount decimal(14,2) [not null]
   currency char(3) [not null]
   status offer_status [not null]
-  expires_at timestamptz [not null]
-  retrieved_at timestamptz [not null]
+  expires_at datetime [not null]
+  retrieved_at datetime [not null]
 
   indexes {
     (provider_id, provider_offer_ref) [unique]
@@ -352,51 +357,51 @@ fare_fingerprint varchar(255) [not null]
 }
 
 Table flight_segments {
-  id uuid [pk]
-  flight_offer_id uuid [not null, ref: > flight_offers.id]
+  id char(36) [pk]
+  flight_offer_id char(36) [not null, ref: > flight_offers.id]
   segment_order int [not null]
   origin_code varchar(12) [not null]
   destination_code varchar(12) [not null]
   carrier_code varchar(12) [not null]
-  departure_at timestamptz [not null]
-  arrival_at timestamptz [not null]
+  departure_at datetime [not null]
+  arrival_at datetime [not null]
 
   indexes { (flight_offer_id, journey_direction, segment_order) [unique] }
 journey_direction flight_journey_direction [not null]
-  origin_location_id uuid [not null, ref: > locations.id]
-  destination_location_id uuid [not null, ref: > locations.id]
+  origin_location_id char(36) [not null, ref: > locations.id]
+  destination_location_id char(36) [not null, ref: > locations.id]
 }
 
 Table budget_trips {
-  id uuid [pk]
-  destination_location_id uuid [not null, ref: > locations.id]
+  id char(36) [pk]
+  destination_location_id char(36) [not null, ref: > locations.id]
   title text [not null]
   description text [not null]
   starting_amount decimal(14,2) [not null]
   currency char(3) [not null]
   active boolean [not null, default: true]
-  created_at timestamptz [not null]
-  updated_at timestamptz [not null]
-publish_from timestamptz [not null]
-  publish_until timestamptz
+  created_at datetime [not null]
+  updated_at datetime [not null]
+publish_from datetime [not null]
+  publish_until datetime
   editorial_rank int [not null]
 }
 
 Table budget_trip_attractions {
-  id uuid [pk]
-  budget_trip_id uuid [not null, ref: > budget_trips.id]
+  id char(36) [pk]
+  budget_trip_id char(36) [not null, ref: > budget_trips.id]
   name text [not null]
   description text
   sort_order int [not null]
 
   indexes { (budget_trip_id, sort_order) [unique] }
-destination_location_id uuid [not null, ref: > locations.id]
+destination_location_id char(36) [not null, ref: > locations.id]
   published boolean [not null, default: false]
 }
 
 Table budget_trip_media {
-  id uuid [pk]
-  budget_trip_id uuid [not null, ref: > budget_trips.id]
+  id char(36) [pk]
+  budget_trip_id char(36) [not null, ref: > budget_trips.id]
   media_url text [not null]
   sort_order int [not null]
 
@@ -404,75 +409,75 @@ Table budget_trip_media {
 }
 
 Table reviews {
-  id uuid [pk]
+  id char(36) [pk]
   author_name text [not null]
   rating int [not null]
   comment text [not null]
   published boolean [not null, default: false]
-  published_at timestamptz
-  created_at timestamptz [not null]
+  published_at datetime
+  created_at datetime [not null]
 
   indexes { (published, published_at) }
-author_id uuid [ref: > users.id]
-  stay_id uuid [ref: > stays.id]
-  stay_booking_id uuid [ref: > stay_bookings.id]
-  taxi_booking_id uuid [ref: > taxi_bookings.id]
+author_id char(36) [ref: > users.id]
+  stay_id char(36) [ref: > stays.id]
+  stay_booking_id char(36) [ref: > stay_bookings.id]
+  taxi_booking_id char(36) [ref: > taxi_bookings.id]
   moderation_status moderation_status [not null, default: 'PENDING']
   featured_rank int
 }
 
 Table idempotency_records {
-  id uuid [pk]
-  user_id uuid [not null, ref: > users.id]
+  id char(36) [pk]
+  user_id char(36) [not null, ref: > users.id]
   operation text [not null]
   idempotency_key varchar(255) [not null]
   request_fingerprint varchar(255) [not null]
   resource_type varchar(80)
-  resource_id uuid
-  expires_at timestamptz [not null]
-  created_at timestamptz [not null]
+  resource_id char(36)
+  expires_at datetime [not null]
+  created_at datetime [not null]
 
   indexes { (user_id, operation, idempotency_key) [unique] }
 }
 
 
 Table service_areas {
-  id uuid [pk]
+  id char(36) [pk]
   name text [not null]
   active boolean [not null, default: true]
 }
 
 Table budget_trip_price_evidence {
-  id uuid [pk]
-  budget_trip_id uuid [not null, ref: > budget_trips.id]
+  id char(36) [pk]
+  budget_trip_id char(36) [not null, ref: > budget_trips.id]
   amount decimal(14,2) [not null]
   currency char(3) [not null]
   active boolean [not null, default: true]
-  observed_at timestamptz [not null]
+  observed_at datetime [not null]
   indexes { (budget_trip_id, currency, observed_at) }
 }
 
 Table search_snapshots {
-  id uuid [not null]
+  id char(36) [not null]
   version int [not null]
   kind search_kind [not null]
   currency char(3) [not null]
   criteria_fingerprint text [not null]
   refinement_fingerprint text [not null]
-  captured_at timestamptz [not null]
-  valid_until timestamptz [not null]
-  criteria jsonb [not null]
+  captured_at datetime [not null]
+  valid_until datetime [not null]
+  criteria json [not null]
   indexes { (id, version) [pk] }
 }
 
 Table search_snapshot_items {
-  search_context_id uuid [not null]
+  search_context_id char(36) [not null]
   snapshot_version int [not null]
   rank int [not null]
-  stay_offer_id uuid [ref: > stay_offers.id]
-  taxi_offer_id uuid [ref: > taxi_offers.id]
-  flight_offer_id uuid [ref: > flight_offers.id]
-  observed_offer jsonb [not null]
+  stay_offer_id char(36) [ref: > stay_offers.id]
+  taxi_offer_id char(36) [ref: > taxi_offers.id]
+  flight_offer_id char(36) [ref: > flight_offers.id]
+  observed_offer json [not null]
   indexes {
     (search_context_id, snapshot_version, rank) [pk]
     (search_context_id, snapshot_version, stay_offer_id) [unique]
@@ -486,11 +491,11 @@ Ref: search_snapshot_items.(search_context_id, snapshot_version) > search_snapsh
 // Active resource claims are inserted with PENDING/CONFIRMED bookings and released
 // with FAILED/CANCELLED outcomes in the same transaction. Keep booking history.
 Table taxi_allocations {
-  booking_id uuid [pk, ref: > taxi_bookings.id]
-  driver_id uuid [not null, ref: > drivers.id]
-  vehicle_id uuid [not null, ref: > vehicles.id]
-  pickup_at timestamptz [not null]
-  dropoff_at timestamptz [not null]
+  booking_id char(36) [pk, ref: > taxi_bookings.id]
+  driver_id char(36) [not null, ref: > drivers.id]
+  vehicle_id char(36) [not null, ref: > vehicles.id]
+  pickup_at datetime [not null]
+  dropoff_at datetime [not null]
   indexes {
     (driver_id, pickup_at, dropoff_at)
     (vehicle_id, pickup_at, dropoff_at)

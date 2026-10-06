@@ -1,0 +1,1201 @@
+{
+  "scope": "Source preservation and cross-artifact structure; no formal OCL or live database execution.",
+  "useCases": 18,
+  "apis": 18,
+  "oclRules": 183,
+  "checks": [
+    {
+      "check": "Source SHA-256: use-cases.json",
+      "passed": true
+    },
+    {
+      "check": "Source SHA-256: use-cases.md",
+      "passed": true
+    },
+    {
+      "check": "Source SHA-256: api-contract.json",
+      "passed": true
+    },
+    {
+      "check": "Source SHA-256: api-contract.md",
+      "passed": true
+    },
+    {
+      "check": "All 18 supplied endpoints are present",
+      "passed": true
+    },
+    {
+      "check": "18 normalized use cases",
+      "passed": true
+    },
+    {
+      "check": "All source use-case entries accounted for",
+      "passed": true
+    },
+    {
+      "check": "api-account-create.md enum account_type",
+      "passed": true
+    },
+    {
+      "check": "api-account-create.md enum data.account_type",
+      "passed": true
+    },
+    {
+      "check": "api-account-create.md body has no domain validation",
+      "passed": true
+    },
+    {
+      "check": "api-account-delete.md body has no domain validation",
+      "passed": true
+    },
+    {
+      "check": "api-account-detail.md enum data.account_type",
+      "passed": true
+    },
+    {
+      "check": "api-account-detail.md enum data.recent_transactions[].status",
+      "passed": true
+    },
+    {
+      "check": "api-account-detail.md body has no domain validation",
+      "passed": true
+    },
+    {
+      "check": "api-account-list.md enum data.accounts[].account_type",
+      "passed": true
+    },
+    {
+      "check": "api-account-list.md body has no domain validation",
+      "passed": true
+    },
+    {
+      "check": "api-account-update.md enum account_type",
+      "passed": true
+    },
+    {
+      "check": "api-account-update.md enum data.account_type",
+      "passed": true
+    },
+    {
+      "check": "api-account-update.md body has no domain validation",
+      "passed": true
+    },
+    {
+      "check": "api-auth-login.md body has no domain validation",
+      "passed": true
+    },
+    {
+      "check": "api-auth-register.md body has no domain validation",
+      "passed": true
+    },
+    {
+      "check": "api-bill-list.md body has no domain validation",
+      "passed": true
+    },
+    {
+      "check": "api-category-detail.md body has no domain validation",
+      "passed": true
+    },
+    {
+      "check": "api-category-list.md body has no domain validation",
+      "passed": true
+    },
+    {
+      "check": "api-expense-breakdown.md body has no domain validation",
+      "passed": true
+    },
+    {
+      "check": "api-expense-summary.md body has no domain validation",
+      "passed": true
+    },
+    {
+      "check": "api-goal-create.md enum goal_type",
+      "passed": true
+    },
+    {
+      "check": "api-goal-create.md body has no domain validation",
+      "passed": true
+    },
+    {
+      "check": "api-goal-list.md enum data.savingGoal.goal_type",
+      "passed": true
+    },
+    {
+      "check": "api-goal-list.md body has no domain validation",
+      "passed": true
+    },
+    {
+      "check": "api-goal-update.md body has no domain validation",
+      "passed": true
+    },
+    {
+      "check": "api-savings-summary.md body has no domain validation",
+      "passed": true
+    },
+    {
+      "check": "api-transaction-create.md enum status",
+      "passed": true
+    },
+    {
+      "check": "api-transaction-create.md enum data.status",
+      "passed": true
+    },
+    {
+      "check": "api-transaction-create.md body has no domain validation",
+      "passed": true
+    },
+    {
+      "check": "api-transaction-list.md enum data[].status",
+      "passed": true
+    },
+    {
+      "check": "api-transaction-list.md body has no domain validation",
+      "passed": true
+    },
+    {
+      "check": "All persistent concepts have tables",
+      "passed": true
+    },
+    {
+      "check": "Only decimal money columns",
+      "passed": true
+    },
+    {
+      "check": "Protected account number persistence",
+      "passed": true
+    },
+    {
+      "check": "Owner-scoped number uniqueness",
+      "passed": true
+    },
+    {
+      "check": "Goal overlap index is not misrepresented as unique",
+      "passed": true
+    },
+    {
+      "check": "API-TRANSACTION-CREATE version input",
+      "passed": true
+    },
+    {
+      "check": "API-ACCOUNT-UPDATE version input",
+      "passed": true
+    },
+    {
+      "check": "API-GOAL-UPDATE version input",
+      "passed": true
+    },
+    {
+      "check": "Delete version header",
+      "passed": true
+    },
+    {
+      "check": "uc-01-register-an-account.md exact rule set",
+      "passed": true
+    },
+    {
+      "check": "uc-01-register-an-account.md no identity-only frame condition",
+      "passed": true
+    },
+    {
+      "check": "uc-01-register-an-account.md typed local closure",
+      "passed": true
+    },
+    {
+      "check": "uc-02-log-in.md exact rule set",
+      "passed": true
+    },
+    {
+      "check": "uc-02-log-in.md no identity-only frame condition",
+      "passed": true
+    },
+    {
+      "check": "uc-02-log-in.md typed local closure",
+      "passed": true
+    },
+    {
+      "check": "uc-03-view-transaction-history.md exact rule set",
+      "passed": true
+    },
+    {
+      "check": "uc-03-view-transaction-history.md no identity-only frame condition",
+      "passed": true
+    },
+    {
+      "check": "uc-03-view-transaction-history.md typed local closure",
+      "passed": true
+    },
+    {
+      "check": "uc-04-create-a-transaction.md exact rule set",
+      "passed": true
+    },
+    {
+      "check": "uc-04-create-a-transaction.md no identity-only frame condition",
+      "passed": true
+    },
+    {
+      "check": "uc-04-create-a-transaction.md typed local closure",
+      "passed": true
+    },
+    {
+      "check": "uc-05-view-bank-accounts.md exact rule set",
+      "passed": true
+    },
+    {
+      "check": "uc-05-view-bank-accounts.md no identity-only frame condition",
+      "passed": true
+    },
+    {
+      "check": "uc-05-view-bank-accounts.md typed local closure",
+      "passed": true
+    },
+    {
+      "check": "uc-06-add-a-bank-account.md exact rule set",
+      "passed": true
+    },
+    {
+      "check": "uc-06-add-a-bank-account.md no identity-only frame condition",
+      "passed": true
+    },
+    {
+      "check": "uc-06-add-a-bank-account.md typed local closure",
+      "passed": true
+    },
+    {
+      "check": "uc-07-view-bank-account-details.md exact rule set",
+      "passed": true
+    },
+    {
+      "check": "uc-07-view-bank-account-details.md no identity-only frame condition",
+      "passed": true
+    },
+    {
+      "check": "uc-07-view-bank-account-details.md typed local closure",
+      "passed": true
+    },
+    {
+      "check": "uc-08-edit-a-bank-account.md exact rule set",
+      "passed": true
+    },
+    {
+      "check": "uc-08-edit-a-bank-account.md no identity-only frame condition",
+      "passed": true
+    },
+    {
+      "check": "uc-08-edit-a-bank-account.md typed local closure",
+      "passed": true
+    },
+    {
+      "check": "uc-09-delete-a-bank-account.md exact rule set",
+      "passed": true
+    },
+    {
+      "check": "uc-09-delete-a-bank-account.md no identity-only frame condition",
+      "passed": true
+    },
+    {
+      "check": "uc-09-delete-a-bank-account.md typed local closure",
+      "passed": true
+    },
+    {
+      "check": "uc-10-view-monthly-expense-summary.md exact rule set",
+      "passed": true
+    },
+    {
+      "check": "uc-10-view-monthly-expense-summary.md no identity-only frame condition",
+      "passed": true
+    },
+    {
+      "check": "uc-10-view-monthly-expense-summary.md typed local closure",
+      "passed": true
+    },
+    {
+      "check": "uc-11-view-expenses-by-category.md exact rule set",
+      "passed": true
+    },
+    {
+      "check": "uc-11-view-expenses-by-category.md no identity-only frame condition",
+      "passed": true
+    },
+    {
+      "check": "uc-11-view-expenses-by-category.md typed local closure",
+      "passed": true
+    },
+    {
+      "check": "uc-12-view-upcoming-bills.md exact rule set",
+      "passed": true
+    },
+    {
+      "check": "uc-12-view-upcoming-bills.md no identity-only frame condition",
+      "passed": true
+    },
+    {
+      "check": "uc-12-view-upcoming-bills.md typed local closure",
+      "passed": true
+    },
+    {
+      "check": "uc-13-view-financial-goals.md exact rule set",
+      "passed": true
+    },
+    {
+      "check": "uc-13-view-financial-goals.md no identity-only frame condition",
+      "passed": true
+    },
+    {
+      "check": "uc-13-view-financial-goals.md typed local closure",
+      "passed": true
+    },
+    {
+      "check": "uc-14-create-a-financial-goal.md exact rule set",
+      "passed": true
+    },
+    {
+      "check": "uc-14-create-a-financial-goal.md no identity-only frame condition",
+      "passed": true
+    },
+    {
+      "check": "uc-14-create-a-financial-goal.md typed local closure",
+      "passed": true
+    },
+    {
+      "check": "uc-15-adjust-a-financial-goal.md exact rule set",
+      "passed": true
+    },
+    {
+      "check": "uc-15-adjust-a-financial-goal.md no identity-only frame condition",
+      "passed": true
+    },
+    {
+      "check": "uc-15-adjust-a-financial-goal.md typed local closure",
+      "passed": true
+    },
+    {
+      "check": "uc-16-view-savings-summary.md exact rule set",
+      "passed": true
+    },
+    {
+      "check": "uc-16-view-savings-summary.md no identity-only frame condition",
+      "passed": true
+    },
+    {
+      "check": "uc-16-view-savings-summary.md typed local closure",
+      "passed": true
+    },
+    {
+      "check": "uc-17-filter-transaction-history.md exact rule set",
+      "passed": true
+    },
+    {
+      "check": "uc-17-filter-transaction-history.md no identity-only frame condition",
+      "passed": true
+    },
+    {
+      "check": "uc-17-filter-transaction-history.md typed local closure",
+      "passed": true
+    },
+    {
+      "check": "uc-18-choose-a-category.md exact rule set",
+      "passed": true
+    },
+    {
+      "check": "uc-18-choose-a-category.md no identity-only frame condition",
+      "passed": true
+    },
+    {
+      "check": "uc-18-choose-a-category.md typed local closure",
+      "passed": true
+    },
+    {
+      "check": "Rule count matches authoring data",
+      "passed": true
+    },
+    {
+      "check": "Local link ASSUMPTIONS.md -> consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link ASSUMPTIONS.md -> coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link consistency-review.md -> source/README.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/uc/uc-01-register-an-account.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/uc/uc-02-log-in.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/uc/uc-03-view-transaction-history.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/uc/uc-04-create-a-transaction.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/uc/uc-05-view-bank-accounts.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/uc/uc-06-add-a-bank-account.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/uc/uc-07-view-bank-account-details.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/uc/uc-08-edit-a-bank-account.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/uc/uc-09-delete-a-bank-account.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/uc/uc-10-view-monthly-expense-summary.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/uc/uc-11-view-expenses-by-category.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/uc/uc-12-view-upcoming-bills.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/uc/uc-13-view-financial-goals.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/uc/uc-14-create-a-financial-goal.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/uc/uc-15-adjust-a-financial-goal.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/uc/uc-16-view-savings-summary.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/uc/uc-17-filter-transaction-history.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/uc/uc-18-choose-a-category.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> ASSUMPTIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/api/api-auth-login.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/api/api-auth-register.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/api/api-account-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/api/api-account-create.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/api/api-account-detail.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/api/api-account-update.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/api/api-account-delete.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/api/api-transaction-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/api/api-transaction-create.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/api/api-category-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/api/api-category-detail.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/api/api-expense-summary.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/api/api-expense-breakdown.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/api/api-bill-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/api/api-goal-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/api/api-goal-create.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/api/api-goal-update.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> 01-inception/api/api-savings-summary.md",
+      "passed": true
+    },
+    {
+      "check": "Local link coverage-report.md -> validation-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link FIGMA.md -> coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link FIGMA.md -> consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link FIGMA.md -> source/README.md",
+      "passed": true
+    },
+    {
+      "check": "Local link README.md -> FIGMA.md",
+      "passed": true
+    },
+    {
+      "check": "Local link README.md -> CONTEXT.md",
+      "passed": true
+    },
+    {
+      "check": "Local link README.md -> ASSUMPTIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link README.md -> coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link README.md -> consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link README.md -> 01-inception/uc/README.md",
+      "passed": true
+    },
+    {
+      "check": "Local link README.md -> 01-inception/api/README.md",
+      "passed": true
+    },
+    {
+      "check": "Local link README.md -> 01-inception/api/common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link README.md -> OCL-UTILITY-DEFINITIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link README.md -> schema.dbml",
+      "passed": true
+    },
+    {
+      "check": "Local link README.md -> persistence.sql",
+      "passed": true
+    },
+    {
+      "check": "Local link README.md -> source/README.md",
+      "passed": true
+    },
+    {
+      "check": "Local link README.md -> validation-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link README.md -> consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link validation-report.md -> evidence/package-checks.json",
+      "passed": true
+    },
+    {
+      "check": "Local link validation-report.md -> evidence/schema.mysql.sql",
+      "passed": true
+    },
+    {
+      "check": "Local link validation-report.md -> evidence/validation-results.json",
+      "passed": true
+    },
+    {
+      "check": "Local link validation-report.md -> evidence/package-validation.txt",
+      "passed": true
+    },
+    {
+      "check": "Local link validation-report.md -> evidence/repository-validation.txt",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\api-account-create.md -> common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\api-account-delete.md -> common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\api-account-detail.md -> common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\api-account-list.md -> common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\api-account-update.md -> common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\api-auth-login.md -> common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\api-auth-register.md -> common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\api-bill-list.md -> common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\api-category-detail.md -> common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\api-category-list.md -> common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\api-expense-breakdown.md -> common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\api-expense-summary.md -> common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\api-goal-create.md -> common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\api-goal-list.md -> common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\api-goal-update.md -> common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\api-savings-summary.md -> common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\api-transaction-create.md -> common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\api-transaction-list.md -> common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\README.md -> common-contract.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\README.md -> api-auth-login.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\README.md -> api-auth-register.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\README.md -> api-account-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\README.md -> api-account-create.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\README.md -> api-account-detail.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\README.md -> api-account-update.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\README.md -> api-account-delete.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\README.md -> api-transaction-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\README.md -> api-transaction-create.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\README.md -> api-category-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\README.md -> api-category-detail.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\README.md -> api-expense-summary.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\README.md -> api-expense-breakdown.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\README.md -> api-bill-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\README.md -> api-goal-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\README.md -> api-goal-create.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\README.md -> api-goal-update.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\api\\README.md -> api-savings-summary.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\README.md -> uc-01-register-an-account.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\README.md -> uc-02-log-in.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\README.md -> uc-03-view-transaction-history.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\README.md -> uc-04-create-a-transaction.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\README.md -> uc-05-view-bank-accounts.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\README.md -> uc-06-add-a-bank-account.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\README.md -> uc-07-view-bank-account-details.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\README.md -> uc-08-edit-a-bank-account.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\README.md -> uc-09-delete-a-bank-account.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\README.md -> uc-10-view-monthly-expense-summary.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\README.md -> uc-11-view-expenses-by-category.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\README.md -> uc-12-view-upcoming-bills.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\README.md -> uc-13-view-financial-goals.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\README.md -> uc-14-create-a-financial-goal.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\README.md -> uc-15-adjust-a-financial-goal.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\README.md -> uc-16-view-savings-summary.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\README.md -> uc-17-filter-transaction-history.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\README.md -> uc-18-choose-a-category.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-01-register-an-account.md -> ../api/api-auth-register.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-01-register-an-account.md -> ../../coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-01-register-an-account.md -> ../../consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-01-register-an-account.md -> ../../ASSUMPTIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-02-log-in.md -> ../api/api-auth-login.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-02-log-in.md -> ../../coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-02-log-in.md -> ../../consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-02-log-in.md -> ../../ASSUMPTIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-03-view-transaction-history.md -> ../api/api-transaction-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-03-view-transaction-history.md -> ../../coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-03-view-transaction-history.md -> ../../consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-03-view-transaction-history.md -> ../../ASSUMPTIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-04-create-a-transaction.md -> ../api/api-transaction-create.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-04-create-a-transaction.md -> ../api/api-account-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-04-create-a-transaction.md -> ../api/api-category-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-04-create-a-transaction.md -> ../../coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-04-create-a-transaction.md -> ../../consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-04-create-a-transaction.md -> ../../ASSUMPTIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-05-view-bank-accounts.md -> ../api/api-account-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-05-view-bank-accounts.md -> ../../coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-05-view-bank-accounts.md -> ../../consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-05-view-bank-accounts.md -> ../../ASSUMPTIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-06-add-a-bank-account.md -> ../api/api-account-create.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-06-add-a-bank-account.md -> ../../coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-06-add-a-bank-account.md -> ../../consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-06-add-a-bank-account.md -> ../../ASSUMPTIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-07-view-bank-account-details.md -> ../api/api-account-detail.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-07-view-bank-account-details.md -> ../../coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-07-view-bank-account-details.md -> ../../consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-07-view-bank-account-details.md -> ../../ASSUMPTIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-08-edit-a-bank-account.md -> ../api/api-account-detail.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-08-edit-a-bank-account.md -> ../api/api-account-update.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-08-edit-a-bank-account.md -> ../../coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-08-edit-a-bank-account.md -> ../../consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-08-edit-a-bank-account.md -> ../../ASSUMPTIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-09-delete-a-bank-account.md -> ../api/api-account-delete.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-09-delete-a-bank-account.md -> ../../coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-09-delete-a-bank-account.md -> ../../consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-09-delete-a-bank-account.md -> ../../ASSUMPTIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-10-view-monthly-expense-summary.md -> ../api/api-expense-summary.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-10-view-monthly-expense-summary.md -> ../../coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-10-view-monthly-expense-summary.md -> ../../consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-10-view-monthly-expense-summary.md -> ../../ASSUMPTIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-11-view-expenses-by-category.md -> ../api/api-expense-breakdown.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-11-view-expenses-by-category.md -> ../../coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-11-view-expenses-by-category.md -> ../../consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-11-view-expenses-by-category.md -> ../../ASSUMPTIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-12-view-upcoming-bills.md -> ../api/api-bill-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-12-view-upcoming-bills.md -> ../../coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-12-view-upcoming-bills.md -> ../../consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-12-view-upcoming-bills.md -> ../../ASSUMPTIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-13-view-financial-goals.md -> ../api/api-goal-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-13-view-financial-goals.md -> ../../coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-13-view-financial-goals.md -> ../../consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-13-view-financial-goals.md -> ../../ASSUMPTIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-14-create-a-financial-goal.md -> ../api/api-goal-create.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-14-create-a-financial-goal.md -> ../api/api-category-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-14-create-a-financial-goal.md -> ../../coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-14-create-a-financial-goal.md -> ../../consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-14-create-a-financial-goal.md -> ../../ASSUMPTIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-15-adjust-a-financial-goal.md -> ../api/api-goal-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-15-adjust-a-financial-goal.md -> ../api/api-goal-update.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-15-adjust-a-financial-goal.md -> ../../coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-15-adjust-a-financial-goal.md -> ../../consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-15-adjust-a-financial-goal.md -> ../../ASSUMPTIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-16-view-savings-summary.md -> ../api/api-savings-summary.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-16-view-savings-summary.md -> ../../coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-16-view-savings-summary.md -> ../../consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-16-view-savings-summary.md -> ../../ASSUMPTIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-17-filter-transaction-history.md -> ../api/api-transaction-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-17-filter-transaction-history.md -> ../../coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-17-filter-transaction-history.md -> ../../consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-17-filter-transaction-history.md -> ../../ASSUMPTIONS.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-18-choose-a-category.md -> ../api/api-category-list.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-18-choose-a-category.md -> ../api/api-category-detail.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-18-choose-a-category.md -> ../../coverage-report.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-18-choose-a-category.md -> ../../consistency-review.md",
+      "passed": true
+    },
+    {
+      "check": "Local link 01-inception\\uc\\uc-18-choose-a-category.md -> ../../ASSUMPTIONS.md",
+      "passed": true
+    }
+  ],
+  "failures": []
+}

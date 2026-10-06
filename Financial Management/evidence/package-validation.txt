@@ -1,0 +1,1 @@
+PASS: 18 UC files, 18 sequential API files, 128 coded conditions and branch flows, 237 numbered flow activities, 183 unique UC OCL rules.

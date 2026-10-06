@@ -1,0 +1,139 @@
+Project financial_management {
+  database_type: 'MySQL'
+  Note: 'Reviewed personal financial tracking specification. MySQL 8.0.16+. All financial values are in one configured currency, VND. Use exact DECIMAL arithmetic. See persistence.sql for executable CHECK constraints and consistency-review.md for transactional requirements.'
+}
+
+Enum account_type {
+  Checking
+  "Credit Card"
+  Savings
+  Investment
+  Loan
+}
+Enum transaction_type {
+  Revenue
+  Expense
+}
+Enum transaction_status {
+  Complete
+  Pending
+  Failed
+}
+Enum goal_type {
+  Saving
+  Expense_Limit
+}
+
+Table users {
+  id bigint [pk, increment]
+  full_name varchar(100) [not null]
+  email varchar(255) [not null, unique, note: 'Lowercase trimmed email; uniqueness checked on this stored representation.']
+  username varchar(255) [not null, unique, note: 'Server-generated email-prefix name with collision suffix; no public username input.']
+  password_hash varchar(100) [not null, note: 'Bcrypt, cost 10. No plaintext or confirmation column.']
+  version bigint [not null, default: 0]
+  created_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  Note: 'Lock this row to serialize goal interval conflict checks for this user. JWTs are issued externally and not persisted as raw tokens.'
+}
+
+Table accounts {
+  id bigint [pk, increment]
+  user_id bigint [not null]
+  bank_name varchar(255) [not null]
+  account_type account_type [not null]
+  branch_name varchar(255)
+  number_ciphertext varbinary(512) [not null, note: 'Authenticated encryption under an external encryption key; never plain account number.']
+  number_fingerprint binary(32) [not null, note: 'Keyed HMAC-SHA-256 of the exact digit sequence; external HMAC key. Leading zeros retained.']
+  last4 char(4) [not null]
+  balance decimal(18,2) [not null]
+  version bigint [not null, default: 0, note: 'Increment every account update or transaction creation, including Pending/Failed creation.']
+  created_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  indexes {
+    (user_id, number_fingerprint) [unique, name: 'uq_account_owner_number']
+    (user_id, id) [name: 'ix_accounts_owner']
+    (id, user_id) [unique, name: 'uq_account_owner_pair']
+  }
+  Note: 'Manually tracked asset balance. Credit Card and Loan labels do not define debt/credit-limit semantics. No balance sign change or currency conversion is inferred.'
+}
+
+Table categories {
+  id bigint [pk, increment]
+  name varchar(255) [not null]
+  Note: 'Global read-only catalogue managed outside this package; names are not identifiers. Do not delete referenced categories.'
+}
+
+Table transactions {
+  id bigint [pk, increment]
+  account_id bigint [not null]
+  category_id bigint
+  transaction_date date [not null]
+  type transaction_type [not null]
+  status transaction_status [not null, default: 'Complete']
+  item_description varchar(255) [not null]
+  shop_name varchar(255) [not null]
+  payment_method varchar(100) [not null]
+  amount decimal(18,2) [not null, note: 'Positive magnitude; type determines direction. Only Complete changes balances and contributes to reports.']
+  receipt_id varchar(255)
+  created_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  indexes {
+    (account_id, transaction_date, id) [name: 'ix_transactions_history']
+    (account_id, type, status, transaction_date) [name: 'ix_transactions_reports']
+    (category_id, transaction_date) [name: 'ix_transactions_category']
+  }
+  Note: 'Append-only within this product boundary. Deleting the account cascades recorded transactions, so all derived reports change. No transaction edit, status transition, payment execution or transfer endpoint is specified.'
+}
+
+Table balance_adjustments {
+  id bigint [pk, increment]
+  account_id bigint [not null]
+  user_id bigint [not null]
+  old_balance decimal(18,2) [not null]
+  new_balance decimal(18,2) [not null]
+  account_version bigint [not null]
+  created_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  indexes {
+    (account_id, account_version) [unique, name: 'uq_adjustment_version']
+    (user_id, created_at) [name: 'ix_adjustment_owner_time']
+  }
+  Note: 'Audit record created in the same transaction as a manual balance change. It is excluded from expense and savings reports. Deleted with its account, consistently with permanent deletion scope.'
+}
+
+Table bills {
+  id bigint [pk, increment]
+  user_id bigint [not null]
+  item_description varchar(255) [not null]
+  logo_url varchar(2048)
+  due_date date [not null]
+  last_charge_date date
+  amount decimal(18,2) [not null]
+  indexes {
+    (user_id, due_date, id) [name: 'ix_bills_upcoming']
+  }
+  Note: 'Read-only obligation data populated externally; Pay Now and bill creation are outside scope. Due cycle is identified by the stored due_date.'
+}
+
+Table goals {
+  id bigint [pk, increment]
+  user_id bigint [not null]
+  goal_type goal_type [not null]
+  category_id bigint
+  start_date date [not null]
+  end_date date [not null]
+  target_amount decimal(18,2) [not null]
+  version bigint [not null, default: 0]
+  created_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  indexes {
+    (user_id, goal_type, category_id, start_date, end_date) [name: 'ix_goals_conflicts']
+    (user_id, start_date, end_date) [name: 'ix_goals_month']
+  }
+  Note: 'Date intervals are inclusive. Serialize check-plus-insert using a users row lock. MySQL cannot enforce non-overlap via this index. Progress is derived, never persisted.'
+}
+
+Ref: accounts.user_id > users.id [delete: restrict]
+Ref: transactions.account_id > accounts.id [delete: cascade]
+Ref: transactions.category_id > categories.id [delete: restrict]
+Ref: balance_adjustments.(account_id, user_id) > accounts.(id, user_id) [delete: cascade]
+Ref: bills.user_id > users.id [delete: restrict]
+Ref: goals.user_id > users.id [delete: restrict]
+Ref: goals.category_id > categories.id [delete: restrict]

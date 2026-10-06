@@ -1,0 +1,37 @@
+{
+  "retrievedDate": "2026-09-30",
+  "timezone": "Asia/Saigon",
+  "spreadsheetId": "1b6nG8slHLf2CtXZwVHHsNrogvhHNg3lceK6f3B7mKIM",
+  "title": "[VibeTesting] Financial_Management_Specification",
+  "representation": "Exact values returned by connector reads; JSON preserves row/column positions. This is not a byte-for-byte native workbook export.",
+  "sheets": [
+    {
+      "title": "Use cases",
+      "gid": 0,
+      "readRange": "A1:X1080"
+    },
+    {
+      "title": "API contract",
+      "gid": 439687549,
+      "readRange": "A1:Y993"
+    }
+  ],
+  "files": [
+    {
+      "path": "use-cases.json",
+      "sha256": "3d8ecf90c6b2b6e70f373023098d86e8485398a2304a73cb83150cdc31a3d072"
+    },
+    {
+      "path": "use-cases.md",
+      "sha256": "08b2580ca9403aee0d96b62810e92bd83dfde27bd6bef1410957421133ecd71a"
+    },
+    {
+      "path": "api-contract.json",
+      "sha256": "0cc2ff33668d39ab9dce5c6098731d793eb4a73bfd64d2bcb9510d1ed5094558"
+    },
+    {
+      "path": "api-contract.md",
+      "sha256": "c150ba91a5a47bb9acdc0815235a25861d013f3821b58db1e5cdc7667acfaa81"
+    }
+  ]
+}
