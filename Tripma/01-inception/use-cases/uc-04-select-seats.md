@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-04
 uc_name: "Select Seats"
 ---
@@ -36,12 +36,15 @@ The visitor enters the Tripma seat-selection experience from the passenger-infor
 ### Pre-Condition(s)
 
 PRE-1: A prepared passenger-information context is available.
+
 PRE-2: The related flight-selection context can be accessed.
 
 ### Post-Condition(s)
 
 POST-1: When the selection is accepted, Tripma makes a completed seat-selection context available to the payment experience.
+
 POST-2: Tripma preserves the preceding booking-workflow contexts.
+
 POST-3: When the selection cannot be accepted, Tripma keeps the visitor in the seat-selection experience and reports the outcome.
 
 ### Basic Flow
@@ -64,60 +67,88 @@ POST-3: When the selection cannot be accepted, Tripma keeps the visitor in the s
 ### Alternative Flow
 
 AF-1: Change a seat choice
-6a. The visitor chooses a different seat for the current selection position.
-6b. Tripma updates the selection according to the Business Rules.
-6c. The Basic Flow resumes at step 8.
+
+6a: The visitor chooses a different seat for the current selection position.
+
+6b: Tripma updates the selection according to the Business Rules.
+
+6c: The Basic Flow resumes at step 8.
 
 AF-2: Confirm a prompted seat change
-7a. Tripma presents a confirmation requested by the Business Rules.
-7b. The visitor confirms the change.
-7c. Tripma applies the pending selection.
-7d. The Basic Flow resumes at step 8.
+
+7a: Tripma presents a confirmation requested by the Business Rules.
+
+7b: The visitor confirms the change.
+
+7c: Tripma applies the pending selection.
+
+7d: The Basic Flow resumes at step 8.
 
 AF-3: Cancel a prompted seat change
-7e. The visitor cancels the pending change.
-7f. Tripma preserves the preceding selection.
-7g. The Basic Flow resumes at step 8.
+
+7e: The visitor cancels the pending change.
+
+7f: Tripma preserves the preceding selection.
+
+7g: The Basic Flow resumes at step 8.
 
 AF-4: Continue to another selection position
-8a. The visitor moves to another position offered by the seat-selection experience.
-8b. Tripma presents its current seat information.
-8c. The Basic Flow resumes at step 6.
+
+8a: The visitor moves to another position offered by the seat-selection experience.
+
+8b: Tripma presents its current seat information.
+
+8c: The Basic Flow resumes at step 6.
 
 AF-5: Save and close the in-progress selection
-10a. The visitor chooses Save and Close.
-10b. Tripma processes the current state according to the Business Rules.
-10c. The use case ends without entering the payment experience.
+
+10a: The visitor chooses Save and Close.
+
+10b: Tripma processes the current state according to the Business Rules.
+
+10c: The use case ends without entering the payment experience.
 
 AF-6: Resume an in-progress selection
-1a. Tripma finds a previously saved seat selection.
-1b. Tripma evaluates and restores it according to the Business Rules.
-1c. The Basic Flow resumes at step 2.
+
+1a: Tripma finds a previously saved seat selection.
+
+1b: Tripma evaluates and restores it according to the Business Rules.
+
+1c: The Basic Flow resumes at step 2.
 
 ### Exception Flow
 
 EF-1: No seat options returned
-4a. If the service returns no seat options, Tripma presents an informational empty state.
-4b. The visitor remains in the seat-selection experience.
+
+4a: If the service returns no seat options, Tripma presents an informational empty state.
+
+4b: The visitor remains in the seat-selection experience.
 
 EF-2: Current selection cannot be accepted
-12a. If continuation processing rejects part of the current selection, Tripma identifies the affected position.
-12b. Tripma keeps the visitor in the seat-selection experience and returns to step 5.
+
+12a: If continuation processing rejects part of the current selection, Tripma identifies the affected position.
+
+12b: Tripma keeps the visitor in the seat-selection experience and returns to step 5.
 
 EF-3: Seat request cannot be completed
-2a. If Tripma cannot complete an API-SEATS-LIST request, it presents a recoverable error state.
-2b. Tripma does not open the payment experience.
+
+2a: If Tripma cannot complete an API-SEATS-LIST request, it presents a recoverable error state.
+
+2b: Tripma does not open the payment experience.
 
 EF-4: Selection is not ready to continue
-10d. If the current state does not satisfy the Business Rules, Tripma identifies the incomplete selection activity.
-10e. The continuation action remains unavailable.
+
+10d: If the current state does not satisfy the Business Rules, Tripma identifies the incomplete selection activity.
+
+10e: The continuation action remains unavailable.
 
 EF-5: In-progress selection cannot be saved or restored
-10f. If Tripma cannot process the in-progress selection, it preserves the current usable state and presents a recoverable outcome.
+
+10f: If Tripma cannot process the in-progress selection, it preserves the current usable state and presents a recoverable outcome.
 
 ### Related UI
 
-Seat-selection step of the booking page (`/booking`); seat map; seat-class information; selection details; confirmation overlay; Save and Close action; payment action
+Seat-selection step of the booking page (/booking); seat map; seat-class information; selection details; confirmation overlay; Save and Close action; payment action
 
 ### Related API IDs
 
@@ -278,7 +309,7 @@ SeatChoiceDto --> "1" FlightLeg : flightLeg
 The following rules are authoritative for Prompt E. OCL is preserved where applicable; technical or non-OCL constraints remain authoritative natural-language requirements.
 
 ~~~text
-BR-SEAT-001: Listed seats belong to the requested flight
+BR-SEAT-001 - Listed seats belong to the requested flight
 context SeatService::listAvailableSeats(
   flightId : UUID
 ) : SeatListResponseDto
@@ -289,7 +320,7 @@ post BR_SEAT_001_RequestedFlight:
     result.data.economySeats->forAll(seat | seat.flightId = flightId)
 
 
-BR-SEAT-002: Only available seats are listed
+BR-SEAT-002 - Only available seats are listed
 context SeatService::listAvailableSeats(
   flightId : UUID
 ) : SeatListResponseDto
@@ -299,7 +330,7 @@ post BR_SEAT_002_AvailableSeats:
     result.data.economySeats->forAll(seat | seat.available = true)
 
 
-BR-SEAT-003: Seats are grouped by class
+BR-SEAT-003 - Seats are grouped by class
 context SeatService::listAvailableSeats(
   flightId : UUID
 ) : SeatListResponseDto
@@ -311,7 +342,7 @@ post BR_SEAT_003_SeatClasses:
       seat.seatClass = SeatClass::ECONOMY)
 
 
-BR-SEAT-004: Seats are ordered by seat number
+BR-SEAT-004 - Seats are ordered by seat number
 context SeatService::listAvailableSeats(
   flightId : UUID
 ) : SeatListResponseDto
@@ -321,7 +352,7 @@ post BR_SEAT_004_AscendingOrder:
     isSeatNumberAscending(result.data.economySeats)
 
 
-BR-SEAT-005: One choice per passenger and flight
+BR-SEAT-005 - One choice per passenger and flight
 context SeatSelectionService::selectSeat(
   state : SeatSelectionState,
   passengerRef : String,
@@ -342,7 +373,7 @@ post BR_SEAT_005_SingleChoice:
       choice.flightId = seat.flightId)
 
 
-BR-SEAT-006: A seat cannot be shared on the same flight
+BR-SEAT-006 - A seat cannot be shared on the same flight
 context SeatSelectionState
 inv BR_SEAT_006_UniqueSeatPerFlight:
   choices->isUnique(choice |
@@ -353,7 +384,7 @@ inv BR_SEAT_006_UniqueSeatPerFlight:
   )
 
 
-BR-SEAT-007: Business upgrade requires confirmation
+BR-SEAT-007 - Business upgrade requires confirmation
 context SeatSelectionService::selectSeat(
   state : SeatSelectionState,
   passengerRef : String,
@@ -374,7 +405,7 @@ post BR_SEAT_007_UpgradePending:
     result.choices = state.choices
 
 
-BR-SEAT-008: Other seat changes apply immediately
+BR-SEAT-008 - Other seat changes apply immediately
 context SeatSelectionService::selectSeat(
   state : SeatSelectionState,
   passengerRef : String,
@@ -398,7 +429,7 @@ post BR_SEAT_008_ImmediateSelection:
       choice.seat = seat
 
 
-BR-SEAT-009: Upgrade amount
+BR-SEAT-009 - Upgrade amount
 context SeatSelectionService::selectSeat(
   state : SeatSelectionState,
   passengerRef : String,
@@ -423,7 +454,7 @@ post BR_SEAT_009_UpgradeAmount:
       result.pendingUpgrade.currency = seat.currency
 
 
-BR-SEAT-010: Confirm a pending upgrade
+BR-SEAT-010 - Confirm a pending upgrade
 context SeatSelectionService::confirmUpgrade(
   state : SeatSelectionState
 ) : SeatSelectionState
@@ -439,7 +470,7 @@ post BR_SEAT_010_UpgradeApplied:
     result.pendingUpgrade.oclIsUndefined()
 
 
-BR-SEAT-011: Cancel a pending upgrade
+BR-SEAT-011 - Cancel a pending upgrade
 context SeatSelectionService::cancelUpgrade(
   state : SeatSelectionState
 ) : SeatSelectionState
@@ -450,7 +481,7 @@ post BR_SEAT_011_SelectionPreserved:
   result.pendingUpgrade.oclIsUndefined()
 
 
-BR-SEAT-012: Required seat coverage
+BR-SEAT-012 - Required seat coverage
 context SeatSelectionService::canContinue(
   state : SeatSelectionState
 ) : Boolean
@@ -458,7 +489,7 @@ post BR_SEAT_012_Result:
   result = hasCompleteSeatCoverage(state)
 
 
-BR-SEAT-013: Selected seats remain available
+BR-SEAT-013 - Selected seats remain available
 context SeatSelectionService::createContext(
   state : SeatSelectionState
 ) : SeatSelectionContextDto
@@ -470,10 +501,10 @@ pre BR_SEAT_013_CurrentAvailability:
         seat.id = choice.seat.id and seat.available = true))
   )
 Technical constraints:
-- Seat information must be refreshed before this precondition is evaluated; an earlier list response is not treated as a reservation.
+Seat information must be refreshed before this precondition is evaluated; an earlier list response is not treated as a reservation.
 
 
-BR-SEAT-014: Completed seat-selection context
+BR-SEAT-014 - Completed seat-selection context
 context SeatSelectionService::createContext(
   state : SeatSelectionState
 ) : SeatSelectionContextDto
@@ -491,7 +522,7 @@ post BR_SEAT_014_Context:
   not result.preparedAt.oclIsUndefined()
 
 
-BR-SEAT-015: Save the current seat selection
+BR-SEAT-015 - Save the current seat selection
 context SeatSelectionService::saveSelection(
   state : SeatSelectionState
 ) : SavedSeatSelectionDto
@@ -501,7 +532,7 @@ post BR_SEAT_015_SavedSelection:
   not result.savedAt.oclIsUndefined()
 
 
-BR-SEAT-016: Restore a saved seat selection
+BR-SEAT-016 - Restore a saved seat selection
 context SeatSelectionService::restoreSelection(
   state : SeatSelectionState,
   saved : SavedSeatSelectionDto
@@ -517,15 +548,15 @@ post BR_SEAT_016_RestoredChoices:
   ) and
   result.pendingUpgrade.oclIsUndefined()
 Technical constraints:
-- Saved choices must use protected, time-limited storage and must be discarded when their passenger or flight-selection context changes.
+Saved choices must use protected, time-limited storage and must be discarded when their passenger or flight-selection context changes.
 
 
-BR-SEAT-017: Seat selection has no reservation side effects
+BR-SEAT-017 - Seat selection has no reservation side effects
 Selecting or preparing seats shall not create, update, or delete Booking,
 PassengerInfo, SeatAssignment, Flight, or Seat records.
 
 
-BR-SEAT-018: Seat-list currency consistency
+BR-SEAT-018 - Seat-list currency consistency
 context SeatService::listAvailableSeats(
   flightId : UUID
 ) : SeatListResponseDto
@@ -537,10 +568,10 @@ post BR_SEAT_018_Currency:
     result.data.economySeats->forAll(seat |
       seat.currency = result.data.currency)
 Technical constraints:
-- Currency uses an ISO 4217 code, and monetary calculations use the approved fixed-precision rounding policy.
+Currency uses an ISO 4217 code, and monetary calculations use the approved fixed-precision rounding policy.
 
 
-BR-SEAT-019: Eligible seat choice
+BR-SEAT-019 - Eligible seat choice
 context SeatSelectionService::selectSeat(
   state : SeatSelectionState,
   passengerRef : String,
@@ -559,5 +590,4 @@ pre BR_SEAT_019_EligibleChoice:
     seatList.flightId = seat.flightId and
     (seatList.businessSeats->union(seatList.economySeats))->exists(candidate |
       candidate.id = seat.id and candidate.available = true))
-
 ~~~

@@ -1,6 +1,6 @@
 ---
 artifact_type: api-contract
-status: Draft
+status: Frozen
 api_id: API-LIVE-STREAM-VIEW
 related_uc_id: UC-05
 ---
@@ -11,7 +11,7 @@ related_uc_id: UC-05
 
 ### API ID
 
-`API-LIVE-STREAM-VIEW`
+API-LIVE-STREAM-VIEW
 
 ### API Name
 
@@ -19,15 +19,15 @@ View a Live Stream
 
 ### Related Use Case IDs
 
-- `UC-05`
+- UC-05
 
 ### Method
 
-`GET`
+GET
 
 ### Path
 
-`/api/v1/sessions/{sessionId}/live-stream/view`
+/api/v1/sessions/{sessionId}/live-stream/view
 
 ### Description
 
@@ -43,32 +43,43 @@ Required.
 
 ## Request Header(s)
 
-### Authorization
+### headers.Authorization
 
-Type: string
-Required: Yes
-Nullable: No
+Type: string; Format: Bearer token; Required: Yes; Nullable: No
+
+Trigger: Every GET request to this endpoint.
+
 Description: Bearer session access token.
-Example: `Bearer <session-access-token>`
 
-### Accept
+Example: Bearer <session-access-token>
 
-Type: string
-Required: Yes
-Nullable: No
-Allowed values: `application/json`
+Note: Uses the HTTP Bearer authentication scheme.
+
+### headers.Accept
+
+Type: string; Format: HTTP media type; Required: Yes; Nullable: No
+
+Trigger: Every GET request to this endpoint.
+
 Description: HTTP media-type header.
-Example: `application/json`
+
+Example: application/json
+
+Note: Identifies the requested response media type.
+
+Allowed values: application/json
 
 ## Path Parameter(s)
 
-### sessionId
+### path.sessionId
 
-Type: string
-Required: Yes
-Nullable: No
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Every request using the sessionId path segment.
+
 Description: UUID identifier.
-Example: `11111111-1111-4111-8111-111111111111`
+
+Example: 11111111-1111-4111-8111-111111111111
 
 ## Query Parameter(s)
 
@@ -84,112 +95,132 @@ Inherits the success envelope and named object definitions in [Common Contract](
 
 ### data.sessionId
 
-Type: string
-Required: Yes
-Nullable: No
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data object or array item is present and non-null.
+
 Description: UUID identifier.
-Example: `11111111-1111-4111-8111-111111111111`
+
+Example: 11111111-1111-4111-8111-111111111111
 
 ### data.participantId
 
-Type: string
-Required: Yes
-Nullable: No
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data object or array item is present and non-null.
+
 Description: UUID identifier.
-Example: `11111111-1111-4111-8111-111111111111`
+
+Example: 11111111-1111-4111-8111-111111111111
 
 ### data.viewerRole
 
-Type: string
-Required: Yes
-Nullable: No
-Allowed values: `VIEWER`, `STAGE_PARTICIPANT`
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data object or array item is present and non-null.
+
 Description: viewerRole value.
-Example: `VIEWER`
+
+Example: VIEWER
+
+Allowed values: VIEWER, STAGE_PARTICIPANT
 
 ### data.streamStatus
 
-Type: string
-Required: Yes
-Nullable: No
-Allowed values: `READY`, `STARTING`, `LIVE`, `ENDED`
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data object or array item is present and non-null.
+
 Description: streamStatus value.
-Example: `READY`
+
+Example: READY
+
+Allowed values: READY, STARTING, LIVE, ENDED
 
 ### data.streamVersion
 
-Type: integer
-Required: Yes
-Nullable: No
+Type: integer; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data object or array item is present and non-null.
+
 Description: streamVersion value.
-Example: `1`
+
+Example: 1
 
 ### data.sessionVersion
 
-Type: integer
-Required: Yes
-Nullable: No
+Type: integer; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data object or array item is present and non-null.
+
 Description: sessionVersion value.
-Example: `1`
+
+Example: 1
 
 ### data.canPlayMedia
 
-Type: boolean
-Required: Yes
-Nullable: No
+Type: boolean; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data object or array item is present and non-null.
+
 Description: canPlayMedia value.
-Example: `false`
+
+Example: false
 
 ### data.canPublishMedia
 
-Type: boolean
-Required: Yes
-Nullable: No
+Type: boolean; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data object or array item is present and non-null.
+
 Description: canPublishMedia value.
-Example: `false`
+
+Example: false
 
 ### data.initialAudioMuted
 
-Type: boolean
-Required: Yes
-Nullable: No
+Type: boolean; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data object or array item is present and non-null.
+
 Description: initialAudioMuted value.
-Example: `false`
+
+Example: false
 
 ## Error Response — HTTP 400
 
-- Code: `INVALID_REQUEST`
+- Code: INVALID_REQUEST
 Trigger: The request cannot be decoded or does not match the declared wire schema.
 Description: Uses the common error envelope.
-- Example message: `The request could not be completed.`
+- Example message: The request could not be completed.
 
 ## Error Response — HTTP 401
 
-- Code: `AUTHENTICATION_REJECTED`
+- Code: AUTHENTICATION_REJECTED
 Trigger: The authentication context is rejected.
 Description: Uses the common error envelope.
-- Example message: `The request could not be completed.`
+- Example message: The request could not be completed.
 
 ## Error Response — HTTP 403
 
-- Code: `ACCESS_REJECTED`
+- Code: ACCESS_REJECTED
 Trigger: The operation is rejected for the supplied access context.
 Description: Uses the common error envelope.
-- Example message: `The request could not be completed.`
+- Example message: The request could not be completed.
 
 ## Error Response — HTTP 404
 
-- Code: `RESOURCE_UNAVAILABLE`
+- Code: RESOURCE_UNAVAILABLE
 Trigger: The requested resource is unavailable.
 Description: Uses the common error envelope.
-- Example message: `The request could not be completed.`
+- Example message: The request could not be completed.
 
 ## Error Response — HTTP 503
 
-- Code: `SERVICE_UNAVAILABLE`
+- Code: SERVICE_UNAVAILABLE
 Trigger: A required service is temporarily unavailable.
 Description: Uses the common error envelope.
-- Example message: `The request could not be completed.`
+- Example message: The request could not be completed.
 
 ## Notes
 

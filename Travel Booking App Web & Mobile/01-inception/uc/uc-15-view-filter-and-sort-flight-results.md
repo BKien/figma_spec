@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-15
 uc_name: "View, Filter, and Sort Flight Results"
 ---
@@ -40,6 +40,7 @@ PRE-1: A flight-search result context is available to the client.
 ### Post-Condition(s)
 
 POST-1: The client displays the flight-result outcome returned by the system.
+
 POST-2: The search context remains available for another result interaction.
 
 ### Basic Flow
@@ -53,35 +54,35 @@ POST-2: The search context remains available for another result interaction.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Clear Flight Result Refinements
 
-1. The traveller clears the displayed refinements and requests the base result view.
+3a: The traveller clears the displayed refinements and requests the base result view.
 
-AF-2:
+AF-2: Switch Flight Sort Views
 
-1. The traveller switches among the available sort views.
+3b: The traveller switches among the available sort views.
 
-AF-3:
+AF-3: Dismiss Pending Flight Filters
 
-1. On mobile, the traveller dismisses pending filter changes without applying them.
+3c: On mobile, the traveller dismisses pending filter changes without applying them.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Flight Result Refresh Failure
 
-1. If refreshed results cannot be loaded, the client keeps the previously displayed result state.
+5a: If refreshed results cannot be loaded, the client keeps the previously displayed result state.
 
-EF-2:
+EF-2: Unusable Flight Search Context
 
-1. If the system returns an unusable-context outcome, the client presents the supplied recovery action.
+5b: If the system returns an unusable-context outcome, the client presents the supplied recovery action.
 
 ### Related UI
 
-`flight details`; `flight list`; `flight filters mobile`.
+flight details; flight list; flight filters mobile.
 
 ### Related API IDs
 
-`API-FLIGHT-SEARCH`.
+API-FLIGHT-SEARCH.
 
 ### Notes
 
@@ -151,19 +152,19 @@ FlightOffer --> "1" Money : total
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-15-01
--- Source: Assumption
+~~~text
+BR-FLIGHT-RESULTS-01 - Refinement Cannot Escape The Accepted Search
+Source: Assumption
 context FlightService::search(criteria: FlightSearchCriteria): Sequence(FlightOffer)
-post BR_UC_15_01_RefinementCannotEscapeTheAcceptedSearch:
+post BR_FLIGHT_RESULTS_01_RefinementCannotEscapeTheAcceptedSearch:
   result->forAll(o | (criteria.searchContextId = null or o.searchContextId = criteria.searchContextId))
 ~~~
 
-~~~ocl
--- BR-UC-15-02
--- Source: Assumption
+~~~text
+BR-FLIGHT-RESULTS-02 - All Accepted Filters Apply Together
+Source: Assumption
 context FlightService::search(criteria: FlightSearchCriteria): Sequence(FlightOffer)
-post BR_UC_15_02_AllAcceptedFiltersApplyTogether:
+post BR_FLIGHT_RESULTS_02_AllAcceptedFiltersApplyTogether:
   result->forAll(o |
     (criteria.minPrice = null or o.total.amount >= criteria.minPrice) and
     (criteria.maxPrice = null or o.total.amount <= criteria.maxPrice) and
@@ -172,19 +173,19 @@ post BR_UC_15_02_AllAcceptedFiltersApplyTogether:
       criteria.providerIds->includes(o.providerId)))
 ~~~
 
-~~~ocl
--- BR-UC-15-03
--- Source: Assumption
+~~~text
+BR-FLIGHT-RESULTS-03 - Result Page Has No Duplicate Commercial Offer
+Source: Assumption
 context FlightService::search(criteria: FlightSearchCriteria): Sequence(FlightOffer)
-post BR_UC_15_03_ResultPageHasNoDuplicateCommercialOffer:
+post BR_FLIGHT_RESULTS_03_ResultPageHasNoDuplicateCommercialOffer:
   result->isUnique(o | o.id)
 ~~~
 
-~~~ocl
--- BR-UC-15-04
--- Source: Assumption
+~~~text
+BR-FLIGHT-RESULTS-04 - Cheapest Order Uses Duration And Identifier As Tie Breakers
+Source: Assumption
 context FlightService::search(criteria: FlightSearchCriteria): Sequence(FlightOffer)
-post BR_UC_15_04_CheapestOrderUsesDurationAndIdentifierAsTieBreakers:
+post BR_FLIGHT_RESULTS_04_CheapestOrderUsesDurationAndIdentifierAsTieBreakers:
   criteria.sort = FlightSort::CHEAPEST implies
     (result->size() <= 1 or
       Sequence{1..result->size() - 1}->forAll(i |
@@ -195,11 +196,11 @@ post BR_UC_15_04_CheapestOrderUsesDurationAndIdentifierAsTieBreakers:
             result->at(i).id < result->at(i + 1).id)))))
 ~~~
 
-~~~ocl
--- BR-UC-15-05
--- Source: Assumption
+~~~text
+BR-FLIGHT-RESULTS-05 - Quickest Order Uses Stops Price And Identifier As Tie Breakers
+Source: Assumption
 context FlightService::search(criteria: FlightSearchCriteria): Sequence(FlightOffer)
-post BR_UC_15_05_QuickestOrderUsesStopsPriceAndIdentifierAsTieBreakers:
+post BR_FLIGHT_RESULTS_05_QuickestOrderUsesStopsPriceAndIdentifierAsTieBreakers:
   criteria.sort = FlightSort::QUICKEST implies
     (result->size() <= 1 or
       Sequence{1..result->size() - 1}->forAll(i |
@@ -212,11 +213,11 @@ post BR_UC_15_05_QuickestOrderUsesStopsPriceAndIdentifierAsTieBreakers:
                  result->at(i).id < result->at(i + 1).id)))))))
 ~~~
 
-~~~ocl
--- BR-UC-15-06
--- Source: Assumption
+~~~text
+BR-FLIGHT-RESULTS-06 - Best Order Uses Published Score With Stable Tie Break
+Source: Assumption
 context FlightService::search(criteria: FlightSearchCriteria): Sequence(FlightOffer)
-post BR_UC_15_06_BestOrderUsesPublishedScoreWithStableTieBreak:
+post BR_FLIGHT_RESULTS_06_BestOrderUsesPublishedScoreWithStableTieBreak:
   criteria.sort = FlightSort::BEST implies
     (result->size() <= 1 or
       Sequence{1..result->size() - 1}->forAll(i |
@@ -225,11 +226,11 @@ post BR_UC_15_06_BestOrderUsesPublishedScoreWithStableTieBreak:
           result->at(i).id < result->at(i + 1).id)))
 ~~~
 
-~~~ocl
--- BR-UC-15-07
--- Source: Assumption
+~~~text
+BR-FLIGHT-RESULTS-07 - Optional Filter Bounds Are Coherent
+Source: Assumption
 context FlightService::search(criteria: FlightSearchCriteria): Sequence(FlightOffer)
-pre BR_UC_15_07_OptionalFilterBoundsAreCoherent:
+pre BR_FLIGHT_RESULTS_07_OptionalFilterBoundsAreCoherent:
   (criteria.minPrice = null or criteria.minPrice >= 0) and
   (criteria.maxPrice = null or criteria.maxPrice >= 0) and
   (criteria.minPrice = null or criteria.maxPrice = null or criteria.minPrice <= criteria.maxPrice) and
@@ -238,11 +239,11 @@ pre BR_UC_15_07_OptionalFilterBoundsAreCoherent:
   (SearchSnapshot::refinementChanged(criteria) implies criteria.offset = 0)
 ~~~
 
-~~~ocl
--- BR-UC-15-08
--- Source: Assumption
+~~~text
+BR-FLIGHT-RESULTS-08 - Continuation References A Usable Snapshot
+Source: Assumption
 context FlightService::search(criteria: FlightSearchCriteria): Sequence(FlightOffer)
-pre BR_UC_15_08_ContinuationReferencesAUsableSnapshot:
+pre BR_FLIGHT_RESULTS_08_ContinuationReferencesAUsableSnapshot:
   (criteria.searchContextId = null and criteria.snapshotVersion = null) or
   (criteria.searchContextId <> null and criteria.snapshotVersion <> null and
    SearchSnapshot::accepts(criteria, RequestContext::startedAt))

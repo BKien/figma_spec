@@ -2,6 +2,8 @@
 
 This repository stores independent specification packages derived from Figma designs or supplied product specifications.
 
+Active specifications follow the supplied templates and the current [presentation and naming standard](FORMAT-STANDARD.md). Use-case files use uc-NN-function-name.md, API files use their descriptive uppercase API ID as the filename, and BR IDs use a shortened use-case name. The [template completion audit](format-audit/template-completion/REPORT.md) records the identifier mapping, completed metadata, and preservation checks.
+
 ## Repository Layout
 
 ```text

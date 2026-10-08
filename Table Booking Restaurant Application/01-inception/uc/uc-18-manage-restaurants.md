@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-18
 uc_name: "Manage Restaurants"
 ---
@@ -52,25 +52,25 @@ POST-1: The client displays the saved restaurant result.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Close Restaurant Form
 
-1. The admin closes the form and returns to the restaurant list.
+3a: The admin closes the form and returns to the restaurant list.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Restaurant Save Error
 
-1. The client displays the returned save error and keeps form data visible.
+5a: The client displays the returned save error and keeps form data visible.
 
 ### Related UI
 
-- [Restaurant edit/add](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=1000-3691) (`1000:3691`)
-- [Super admin section](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=1000-4522) (`1000:4522`)
+- [Restaurant edit/add](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=1000-3691) (1000:3691)
+- [Super admin section](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=1000-4522) (1000:4522)
 
 ### Related API IDs
 
-- [API-ADMIN-RESTAURANT-SAVE](../api/api-admin-restaurant-save.md)
-- [API-ADMIN-RESTAURANT-CREATE](../api/api-admin-restaurant-create.md)
+- [API-ADMIN-RESTAURANT-SAVE](../api/API-ADMIN-RESTAURANT-SAVE.md)
+- [API-ADMIN-RESTAURANT-CREATE](../api/API-ADMIN-RESTAURANT-CREATE.md)
 
 ### Notes
 
@@ -141,66 +141,66 @@ RequestContext --> "1" Role : role
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-18-01
--- Source: Assumption
+~~~text
+BR-MANAGE-RESTAURANTS-01 - Only Super Admin May Save Restaurant
+Source: Assumption
 context AdminService::saveRestaurant(command: RestaurantCommand): Restaurant
-pre BR_UC_18_01_OnlySuperAdminMaySaveRestaurant:
+pre BR_MANAGE_RESTAURANTS_01_OnlySuperAdminMaySaveRestaurant:
   RequestContext::role = Role::SUPER_ADMIN
 ~~~
-~~~ocl
--- BR-UC-18-02
--- Source: Assumption
+~~~text
+BR-MANAGE-RESTAURANTS-02 - Restaurant Version Matches For Edit
+Source: Assumption
 context AdminService::saveRestaurant(command: RestaurantCommand): Restaurant
-pre BR_UC_18_02_RestaurantVersionMatchesForEdit:
+pre BR_MANAGE_RESTAURANTS_02_RestaurantVersionMatchesForEdit:
   Restaurant.allInstances()->exists(r | r.id = command.restaurantId and r.version = command.version)
 ~~~
-~~~ocl
--- BR-UC-18-03
--- Source: Assumption
+~~~text
+BR-MANAGE-RESTAURANTS-03 - Saved Restaurant Version Advances
+Source: Assumption
 context AdminService::saveRestaurant(command: RestaurantCommand): Restaurant
-post BR_UC_18_03_SavedRestaurantVersionAdvances:
+post BR_MANAGE_RESTAURANTS_03_SavedRestaurantVersionAdvances:
   result.id = command.restaurantId and result.version = command.version + 1
 ~~~
-~~~ocl
--- BR-UC-18-04
--- Source: Assumption
+~~~text
+BR-MANAGE-RESTAURANTS-04 - Only Super Admin May Create Restaurant
+Source: Assumption
 context AdminService::createRestaurant(command: CreateRestaurantCommand): Restaurant
-pre BR_UC_18_04_OnlySuperAdminMayCreateRestaurant:
+pre BR_MANAGE_RESTAURANTS_04_OnlySuperAdminMayCreateRestaurant:
   RequestContext::role = Role::SUPER_ADMIN
 ~~~
-~~~ocl
--- BR-UC-18-05
--- Source: Assumption
+~~~text
+BR-MANAGE-RESTAURANTS-05 - New Restaurant Starts Draft
+Source: Assumption
 context AdminService::createRestaurant(command: CreateRestaurantCommand): Restaurant
-post BR_UC_18_05_NewRestaurantStartsDraft:
+post BR_MANAGE_RESTAURANTS_05_NewRestaurantStartsDraft:
   result.status = RestaurantStatus::DRAFT and result.version = 1
 ~~~
-~~~ocl
--- BR-UC-18-06
--- Source: Assumption
+~~~text
+BR-MANAGE-RESTAURANTS-06 - Edited Restaurant Fields Are Saved
+Source: Assumption
 context AdminService::saveRestaurant(command: RestaurantCommand): Restaurant
-post BR_UC_18_06_EditedRestaurantFieldsAreSaved:
+post BR_MANAGE_RESTAURANTS_06_EditedRestaurantFieldsAreSaved:
   result.name = command.name and result.city = command.city and result.address = command.address and result.cuisine = command.cuisine
 ~~~
-~~~ocl
--- BR-UC-18-07
--- Source: Assumption
+~~~text
+BR-MANAGE-RESTAURANTS-07 - Created Restaurant Fields Are Saved
+Source: Assumption
 context AdminService::createRestaurant(command: CreateRestaurantCommand): Restaurant
-post BR_UC_18_07_CreatedRestaurantFieldsAreSaved:
+post BR_MANAGE_RESTAURANTS_07_CreatedRestaurantFieldsAreSaved:
   result.name = command.name and result.city = command.city and result.address = command.address and result.cuisine = command.cuisine
 ~~~
-~~~ocl
--- BR-UC-18-08
--- Source: Assumption
+~~~text
+BR-MANAGE-RESTAURANTS-08 - Edited Restaurant Timezone Is Derived
+Source: Assumption
 context AdminService::saveRestaurant(command: RestaurantCommand): Restaurant
-post BR_UC_18_08_EditedRestaurantTimezoneIsDerived:
+post BR_MANAGE_RESTAURANTS_08_EditedRestaurantTimezoneIsDerived:
   result.timezone = GeoTimeZone::forAddress(command.address)
 ~~~
-~~~ocl
--- BR-UC-18-09
--- Source: Assumption
+~~~text
+BR-MANAGE-RESTAURANTS-09 - Created Restaurant Timezone Is Derived
+Source: Assumption
 context AdminService::createRestaurant(command: CreateRestaurantCommand): Restaurant
-post BR_UC_18_09_CreatedRestaurantTimezoneIsDerived:
+post BR_MANAGE_RESTAURANTS_09_CreatedRestaurantTimezoneIsDerived:
   result.timezone = GeoTimeZone::forAddress(command.address)
 ~~~

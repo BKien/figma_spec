@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-01
 uc_name: "Search Flights"
 ---
@@ -36,13 +36,17 @@ The visitor starts a flight search from a Tripma search entry point.
 ### Pre-Condition(s)
 
 PRE-1: A Tripma flight-search entry point is accessible.
+
 PRE-2: The data required to render the search controls can be retrieved.
 
 ### Post-Condition(s)
 
 POST-1: When the search is accepted, Tripma presents the corresponding flight-search experience.
+
 POST-2: When search data is returned, Tripma makes the result set and supporting fare information available to the results interface.
+
 POST-3: When the search cannot be accepted, Tripma informs the visitor and does not start that search.
+
 POST-4: When the results interface has no search context, Tripma presents an informational empty state.
 
 ### Basic Flow
@@ -64,33 +68,46 @@ POST-4: When the results interface has no search context, Tripma presents an inf
 ### Alternative Flow
 
 AF-1: Refine displayed flights
-13a. The visitor chooses one or more refinements offered by the results interface.
-13b. Tripma refreshes the displayed flight options using the selected refinements.
+
+13a: The visitor chooses one or more refinements offered by the results interface.
+
+13b: Tripma refreshes the displayed flight options using the selected refinements.
 
 AF-2: Clear flight filters
-13c. The visitor clears the active refinements.
-13d. Tripma restores the result presentation for the current search context.
+
+13c: The visitor clears the active refinements.
+
+13d: Tripma restores the result presentation for the current search context.
 
 AF-3: Change search criteria
-13e. The visitor edits the current travel criteria.
-13f. The visitor submits the revised search.
-13g. The Basic Flow resumes at step 7.
+
+13e: The visitor edits the current travel criteria.
+
+13f: The visitor submits the revised search.
+
+13g: The Basic Flow resumes at step 7.
 
 ### Exception Flow
 
 EF-1: No flights available
-11a. If the search service has no flight options to return, it returns a successful response with empty flight collections.
-11b. Tripma presents a contextual no-results state and any supporting fare information supplied by the response.
+
+11a: If the search service has no flight options to return, it returns a successful response with empty flight collections.
+
+11b: Tripma presents a contextual no-results state and any supporting fare information supplied by the response.
 
 EF-2: Client-side validation failure
-7a. If the submitted search does not satisfy the Business Rules, Tripma identifies the affected input and does not send the flight-search request.
+
+7a: If the submitted search does not satisfy the Business Rules, Tripma identifies the affected input and does not send the flight-search request.
 
 EF-3: Invalid backend request
-10a. If the request is rejected by the search service, the service returns the API-FLIGHTS-SEARCH client-error response.
-10b. Tripma informs the visitor that the search needs attention.
+
+10a: If the request is rejected by the search service, the service returns the API-FLIGHTS-SEARCH client-error response.
+
+10b: Tripma informs the visitor that the search needs attention.
 
 EF-4: Network/Server error
-9a. If Tripma cannot complete the request because of a technical failure, it presents a recoverable error state.
+
+9a: If Tripma cannot complete the request because of a technical failure, it presents a recoverable error state.
 
 ### Related UI
 
@@ -248,7 +265,7 @@ end note
 The following rules are authoritative for Prompt E. OCL is preserved where supplied; technical or non-OCL constraints remain authoritative natural-language requirements.
 
 ~~~text
-BR-SEARCH-001: Valid passenger count
+BR-SEARCH-001 - Valid passenger count
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -260,7 +277,7 @@ pre BR_SEARCH_001_TotalPassengers:
     totalPassengers > 0
 
 
-BR-SEARCH-002: Sufficient seating capacity
+BR-SEARCH-002 - Sufficient seating capacity
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -271,7 +288,7 @@ post BR_SEARCH_002_CapacityMet:
     result.arrivingFlights->forAll(flight | flight.availableSeats >= totalPassengers)
 
 
-BR-SEARCH-003: Flight date boundaries
+BR-SEARCH-003 - Flight date boundaries
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -284,7 +301,7 @@ post BR_SEARCH_003_ReturningDateRange:
     result.arrivingFlights->forAll(flight |
       isOnLocalDate(flight.date, dto.endDate, dto.toCity)
     )
-BR-SEARCH-004: Return-date presence
+BR-SEARCH-004 - Return-date presence
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -294,7 +311,7 @@ pre BR_SEARCH_004_EndDateOmittedForOneWay:
   dto.type = false implies dto.endDate.oclIsUndefined()
 
 
-BR-SEARCH-005: Returned legs match the trip type
+BR-SEARCH-005 - Returned legs match the trip type
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -306,7 +323,7 @@ post BR_SEARCH_005_TripTypeProjection:
   result.arrivingFlights->forAll(flight | flight.type = dto.type)
 
 
-BR-SEARCH-006: Flight city matching
+BR-SEARCH-006 - Flight city matching
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -321,10 +338,10 @@ post BR_SEARCH_006_ReversedCities:
     lower(trim(arrivingFlight.toCity)) = lower(trim(dto.fromCity))
   )
 Technical constraints:
-- The response must not silently omit a flight that satisfies every applicable eligibility rule for its leg.
+The response must not silently omit a flight that satisfies every applicable eligibility rule for its leg.
 
 
-BR-SEARCH-007: Required and well-formed search input
+BR-SEARCH-007 - Required and well-formed search input
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -337,7 +354,7 @@ pre BR_SEARCH_007_RequiredInput:
   not dto.type.oclIsUndefined()
 
 
-BR-SEARCH-008: Supported cities
+BR-SEARCH-008 - Supported cities
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -346,7 +363,7 @@ pre BR_SEARCH_008_SupportedCities:
   isSupportedCity(dto.toCity)
 
 
-BR-SEARCH-009: Distinct origin and destination
+BR-SEARCH-009 - Distinct origin and destination
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -354,7 +371,7 @@ pre BR_SEARCH_009_DifferentCities:
   lower(trim(dto.fromCity)) <> lower(trim(dto.toCity))
 
 
-BR-SEARCH-010: Future departure date
+BR-SEARCH-010 - Future departure date
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -364,7 +381,7 @@ pre BR_SEARCH_010_NoPastFlights:
   )
 
 
-BR-SEARCH-011: Valid date sequence for round trips
+BR-SEARCH-011 - Valid date sequence for round trips
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -373,7 +390,7 @@ pre BR_SEARCH_011_ValidReturnDate:
     dto.endDate >= dto.startDate
 
 
-BR-SEARCH-012: Unaccompanied minor restriction
+BR-SEARCH-012 - Unaccompanied minor restriction
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -381,7 +398,7 @@ pre BR_SEARCH_012_AdultRequiredForMinors:
   dto.minors > 0 implies dto.adults >= 1
 
 
-BR-SEARCH-013: Maximum passenger limit
+BR-SEARCH-013 - Maximum passenger limit
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -391,7 +408,7 @@ pre BR_SEARCH_013_PassengerCap:
     totalPassengers <= 9
 
 
-BR-SEARCH-014: Advance booking horizon
+BR-SEARCH-014 - Advance booking horizon
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -406,7 +423,7 @@ pre BR_SEARCH_014_MaxFutureEndDate:
     ) + days(330)
 
 
-BR-SEARCH-015: Price-grid date range
+BR-SEARCH-015 - Price-grid date range
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -428,7 +445,7 @@ post BR_SEARCH_015_PriceGridBounds:
   )
 
 
-BR-SEARCH-016: Unique price-grid coordinates
+BR-SEARCH-016 - Unique price-grid coordinates
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -440,10 +457,10 @@ post BR_SEARCH_016_UniqueGridCoordinates:
     }
   )
 Technical constraints:
-- A grid coordinate is present exactly once only when the required eligible flight option or pair exists.
+A grid coordinate is present exactly once only when the required eligible flight option or pair exists.
 
 
-BR-SEARCH-017: Minimum price for each grid coordinate
+BR-SEARCH-017 - Minimum price for each grid coordinate
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -453,7 +470,7 @@ post BR_SEARCH_017_MinimumPrice:
   )
 
 
-BR-SEARCH-018: Price-history date range
+BR-SEARCH-018 - Price-history date range
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -468,7 +485,7 @@ post BR_SEARCH_018_HistoryBounds:
     )
 
 
-BR-SEARCH-019: Price-history sequence
+BR-SEARCH-019 - Price-history sequence
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -481,7 +498,7 @@ post BR_SEARCH_019_ChronologicalOrder:
       result.priceHistory->at(index + 1).recordedDate)
 
 
-BR-SEARCH-020: Fare history and price rating
+BR-SEARCH-020 - Fare history and price rating
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
@@ -515,21 +532,21 @@ post BR_SEARCH_020_PriceRatingAvailability:
   (result.departingFlights->isEmpty() or result.priceHistory->isEmpty())
     implies result.priceRating.oclIsUndefined()
 Technical constraints:
-- A date without an observation is omitted rather than represented by a fabricated zero value.
+A date without an observation is omitted rather than represented by a fabricated zero value.
 
 
-BR-SEARCH-021: Monetary currency consistency
+BR-SEARCH-021 - Monetary currency consistency
 context FlightService::search(
   dto : SearchDto
 ) : SearchResponseDto
 post BR_SEARCH_021_CurrencyDefined:
   not result.currency.oclIsUndefined() and trim(result.currency) <> ''
 Technical constraints:
-- `result.currency` must be an ISO 4217 currency code.
-- Monetary values must be normalized to `result.currency` through the approved conversion and rounding policy before comparison or aggregation.
+result.currency must be an ISO 4217 currency code.
+Monetary values must be normalized to result.currency through the approved conversion and rounding policy before comparison or aggregation.
 
 
-BR-SEARCH-022: Active flight filters
+BR-SEARCH-022 - Active flight filters
 context FlightFilterService::apply(
   flights : Sequence(FlightDto),
   filter : FlightFilterDto
@@ -558,7 +575,7 @@ post BR_SEARCH_022_AllActiveFiltersMatch:
   )
 
 
-BR-SEARCH-023: Filtered result remains a stable subset
+BR-SEARCH-023 - Filtered result remains a stable subset
 context FlightFilterService::apply(
   flights : Sequence(FlightDto),
   filter : FlightFilterDto
@@ -566,7 +583,5 @@ context FlightFilterService::apply(
 post BR_SEARCH_023_ResultSubset:
   result->forAll(flight | flights->includes(flight))
 Technical constraints:
-- Filtering preserves the input order and does not mutate the original search response; clearing filters restores that response order.
-
+Filtering preserves the input order and does not mutate the original search response; clearing filters restores that response order.
 ~~~
-

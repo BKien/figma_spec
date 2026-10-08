@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-10
 uc_name: "View Flight Deals"
 ---
@@ -36,11 +36,13 @@ The visitor opens a Tripma experience that provides flight deals.
 ### Pre-Condition(s)
 
 PRE-1: The Tripma flight-deal experience is available.
+
 PRE-2: Tripma can attempt to retrieve the deal collection.
 
 ### Post-Condition(s)
 
 POST-1: When retrieval succeeds, Tripma presents the returned flight-deal collection.
+
 POST-2: When retrieval cannot be completed, Tripma reports the outcome without changing deal data.
 
 ### Basic Flow
@@ -55,17 +57,22 @@ POST-2: When retrieval cannot be completed, Tripma reports the outcome without c
 ### Alternative Flow
 
 AF-1: View the complete deal collection
-6a. The visitor requests the complete flight-deal collection from the current experience.
-6b. Tripma presents the complete collection returned by API-FLIGHT-DEALS-LIST.
+
+6a: The visitor requests the complete flight-deal collection from the current experience.
+
+6b: Tripma presents the complete collection returned by API-FLIGHT-DEALS-LIST.
 
 AF-2: No flight deals are available
-4a. API-FLIGHT-DEALS-LIST returns an empty collection.
-4b. Tripma presents the empty flight-deal experience.
+
+4a: API-FLIGHT-DEALS-LIST returns an empty collection.
+
+4b: Tripma presents the empty flight-deal experience.
 
 ### Exception Flow
 
 EF-1: Request cannot be completed
-2a. If Tripma cannot complete the request because of a technical failure, it presents a retryable error state.
+
+2a: If Tripma cannot complete the request because of a technical failure, it presents a retryable error state.
 
 ### Related UI
 
@@ -135,7 +142,7 @@ FlightDealService ..> City
 The following rules are authoritative for Prompt E. OCL is preserved where applicable; technical or non-OCL constraints remain authoritative natural-language requirements.
 
 ~~~text
-BR-DEAL-001: Active deals
+BR-DEAL-001 - Active deals
 context FlightDealService::listDeals() : FlightDealsResponseDto
 post BR_DEAL_001_Active:
   result.success implies
@@ -144,7 +151,7 @@ post BR_DEAL_001_Active:
         deal.id = item.id and deal.active = true))
 
 
-BR-DEAL-002: Complete deal collection
+BR-DEAL-002 - Complete deal collection
 context FlightDealService::listDeals() : FlightDealsResponseDto
 post BR_DEAL_002_Complete:
   result.success implies
@@ -153,7 +160,7 @@ post BR_DEAL_002_Complete:
       deal.active = true)->size()
 
 
-BR-DEAL-003: Deal projection
+BR-DEAL-003 - Deal projection
 context FlightDealService::listDeals() : FlightDealsResponseDto
 post BR_DEAL_003_Projection:
   result.success implies
@@ -172,7 +179,7 @@ post BR_DEAL_003_Projection:
         item.description = deal.description)
 
 
-BR-DEAL-004: Deal price
+BR-DEAL-004 - Deal price
 context FlightDealService::listDeals() : FlightDealsResponseDto
 post BR_DEAL_004_Price:
   result.success implies
@@ -182,7 +189,7 @@ post BR_DEAL_004_Price:
       trim(item.currency) <> '')
 
 
-BR-DEAL-005: Display order
+BR-DEAL-005 - Display order
 context FlightDealService::listDeals() : FlightDealsResponseDto
 post BR_DEAL_005_Order:
   result.success implies
@@ -197,15 +204,14 @@ post BR_DEAL_005_Order:
         current.displayOrder <= following.displayOrder)
 
 
-BR-DEAL-006: Empty collection
+BR-DEAL-006 - Empty collection
 context FlightDealService::listDeals() : FlightDealsResponseDto
 post BR_DEAL_006_Empty:
   FlightDeal.allInstances()->select(deal | deal.active = true)->isEmpty()
   implies result.success and result.data->isEmpty()
 
 
-BR-DEAL-007: Read-only retrieval
+BR-DEAL-007 - Read-only retrieval
 Calling API-FLIGHT-DEALS-LIST shall not create, update, or delete City or
 FlightDeal records.
-
 ~~~

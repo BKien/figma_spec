@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-16
 uc_name: "Browse Budget Trips"
 ---
@@ -40,6 +40,7 @@ PRE-1: The traveller can access the budget-trips page.
 ### Post-Condition(s)
 
 POST-1: The client displays the budget-trip page state returned by the system.
+
 POST-2: Available navigation from the displayed content remains accessible.
 
 ### Basic Flow
@@ -52,31 +53,35 @@ POST-2: Available navigation from the displayed content remains accessible.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Display No Budget Trips
 
-1. If no trip content is returned, the client displays the designed empty state.
+4a: If no trip content is returned, the client displays the designed empty state.
 
-AF-2:
+AF-2: Adapt Budget Trips to the Active Layout
 
-1. The client adapts the returned content to the active visual mode or device layout.
+4b: The client adapts the returned content to the active visual mode or device layout.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Additional Budget Trip Page Loading Failure
 
-1. If another page cannot be loaded, the client keeps the displayed content and offers a retry.
+5a: If another page cannot be loaded, the client keeps the displayed content and offers a retry.
 
-EF-2:
+EF-2: Initial Budget Trip Request Failure
 
-1. If the initial request cannot be completed, the client displays the designed unavailable state.
+3a: If the initial request cannot be completed, the client displays the designed unavailable state.
 
 ### Related UI
 
-`budget trips main page`; `budget trips mobile`; `budget trips dark mode`.
+budget trips main page; budget trips mobile; budget trips dark mode.
 
 ### Related API IDs
 
-`API-BUDGET-TRIP-LIST`.
+API-BUDGET-TRIP-LIST.
+
+### Notes
+
+None.
 
 ## UML Model
 
@@ -146,29 +151,29 @@ PriceEvidence --> "1" Money : amount
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-16-01
--- Source: Assumption
+~~~text
+BR-BUDGET-TRIPS-01 - Only Currently Published Editorial Trips Appear
+Source: Assumption
 context TripService::list(limit: Integer, offset: Integer): TripPage
-post BR_UC_16_01_OnlyCurrentlyPublishedEditorialTripsAppear:
+post BR_BUDGET_TRIPS_01_OnlyCurrentlyPublishedEditorialTripsAppear:
   result.items->forAll(t |
     t.active and t.publishFrom <= RequestContext::startedAt and
     (t.publishUntil = null or t.publishUntil > RequestContext::startedAt))
 ~~~
 
-~~~ocl
--- BR-UC-16-02
--- Source: Assumption
+~~~text
+BR-BUDGET-TRIPS-02 - One Editorial Card Per Destination
+Source: Assumption
 context TripService::list(limit: Integer, offset: Integer): TripPage
-post BR_UC_16_02_OneEditorialCardPerDestination:
+post BR_BUDGET_TRIPS_02_OneEditorialCardPerDestination:
   result.items->isUnique(t | t.destinationId)
 ~~~
 
-~~~ocl
--- BR-UC-16-03
--- Source: Assumption
+~~~text
+BR-BUDGET-TRIPS-03 - Indicative Price Uses Recent Evidence In The Same Currency
+Source: Assumption
 context TripService::list(limit: Integer, offset: Integer): TripPage
-post BR_UC_16_03_IndicativePriceUsesRecentEvidenceInTheSameCurrency:
+post BR_BUDGET_TRIPS_03_IndicativePriceUsesRecentEvidenceInTheSameCurrency:
   result.items->forAll(t |
   let eligible = t.priceEvidence->select(e |
     e.active and e.amount.currency = t.startingPrice.currency and
@@ -178,11 +183,11 @@ post BR_UC_16_03_IndicativePriceUsesRecentEvidenceInTheSameCurrency:
   t.startingPrice.amount = eligible->collect(e | e.amount.amount)->min())
 ~~~
 
-~~~ocl
--- BR-UC-16-04
--- Source: Assumption
+~~~text
+BR-BUDGET-TRIPS-04 - Editorial Order Has Stable Tie Break
+Source: Assumption
 context TripService::list(limit: Integer, offset: Integer): TripPage
-post BR_UC_16_04_EditorialOrderHasStableTieBreak:
+post BR_BUDGET_TRIPS_04_EditorialOrderHasStableTieBreak:
   result.items->size() <= 1 or
   Sequence{1..result.items->size() - 1}->forAll(i |
    result.items->at(i).editorialRank < result.items->at(i + 1).editorialRank or
@@ -190,28 +195,28 @@ post BR_UC_16_04_EditorialOrderHasStableTieBreak:
     result.items->at(i).id < result.items->at(i + 1).id))
 ~~~
 
-~~~ocl
--- BR-UC-16-05
--- Source: Assumption
+~~~text
+BR-BUDGET-TRIPS-05 - Page Metadata Matches Its Slice
+Source: Assumption
 context TripService::list(limit: Integer, offset: Integer): TripPage
-post BR_UC_16_05_PageMetadataMatchesItsSlice:
+post BR_BUDGET_TRIPS_05_PageMetadataMatchesItsSlice:
   result.limit = limit and result.offset = offset and result.total >= 0 and
   result.items->size() = (result.total - offset).max(0).min(limit) and
   result.hasMore = (offset + result.items->size() < result.total)
 ~~~
 
-~~~ocl
--- BR-UC-16-06
--- Source: Assumption
+~~~text
+BR-BUDGET-TRIPS-06 - Browsing Editorial Content Is Read Only
+Source: Assumption
 context TripService::list(limit: Integer, offset: Integer): TripPage
-post BR_UC_16_06_BrowsingEditorialContentIsReadOnly:
+post BR_BUDGET_TRIPS_06_BrowsingEditorialContentIsReadOnly:
   ReadState::editorial() = ReadState::editorial()@pre
 ~~~
 
-~~~ocl
--- BR-UC-16-07
--- Source: Assumption
+~~~text
+BR-BUDGET-TRIPS-07 - Page Request Has Usable Bounds
+Source: Assumption
 context TripService::list(limit: Integer, offset: Integer): TripPage
-pre BR_UC_16_07_PageRequestHasUsableBounds:
+pre BR_BUDGET_TRIPS_07_PageRequestHasUsableBounds:
   limit > 0 and offset >= 0
 ~~~

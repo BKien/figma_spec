@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-01
 uc_name: "Register an Account"
 ---
@@ -40,6 +40,7 @@ PRE-1: The application view is open in the client.
 ### Post-Condition(s)
 
 POST-1: On success, the client opens the home page with the returned user session.
+
 POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Basic Flow
@@ -54,18 +55,21 @@ POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Return to Login
 
-1. The visitor returns to the login link.
-2. The client opens the login page.
+4a: The visitor returns to the login link.
+
+4b: The client opens the login page.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Registration Operation Error
 
-1. The system returns an operation error.
-2. The client displays the error message and keeps the current view open.
-3. The actor revises the interaction or retries the request.
+6a: The system returns an operation error.
+
+6b: The client displays the error message and keeps the current view open.
+
+6c: The actor revises the interaction or retries the request.
 
 ### Related UI
 
@@ -73,7 +77,7 @@ EF-1:
 
 ### Related API IDs
 
-- [API-AUTH-REGISTER](../api/api-auth-register.md)
+- [API-AUTH-REGISTER](../api/API-AUTH-REGISTER.md)
 
 ### Notes
 
@@ -154,115 +158,115 @@ ClientSession --> PublicUser : user
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-01-01
--- Source: Product source
+~~~text
+BR-REGISTER-ACCOUNT-01 - Name
+Source: Product source
 context AuthService::register(ctx: RequestContext, cmd: RegisterCommand): AuthResult
-pre BR_UC_01_01_Name:
+pre BR_REGISTER_ACCOUNT_01_Name:
   let n : String = Text::trim(Text::nfc(cmd.fullName)) in n.size() >= 4 and n.size() <= 25 and Text::matches(n, '^[\p{L}]+(?: [\p{L}]+)*$')
 ~~~
 
-~~~ocl
--- BR-UC-01-02
--- Source: Product source
+~~~text
+BR-REGISTER-ACCOUNT-02 - Email
+Source: Product source
 context AuthService::register(ctx: RequestContext, cmd: RegisterCommand): AuthResult
-pre BR_UC_01_02_Email:
+pre BR_REGISTER_ACCOUNT_02_Email:
   Text::email(Text::lower(Text::trim(cmd.email))) and Text::trim(cmd.email).size() <= 255
 ~~~
 
-~~~ocl
--- BR-UC-01-03
--- Source: Product source
+~~~text
+BR-REGISTER-ACCOUNT-03 - Unique Email
+Source: Product source
 context User
-inv BR_UC_01_03_UniqueEmail:
+inv BR_REGISTER_ACCOUNT_03_UniqueEmail:
   User.allInstances()->isUnique(email)
 ~~~
 
-~~~ocl
--- BR-UC-01-04
--- Source: Product source
+~~~text
+BR-REGISTER-ACCOUNT-04 - Username
+Source: Product source
 context User
-inv BR_UC_01_04_Username:
+inv BR_REGISTER_ACCOUNT_04_Username:
   User.allInstances()->isUnique(username)
 ~~~
 
-~~~ocl
--- BR-UC-01-05
--- Source: Product source
+~~~text
+BR-REGISTER-ACCOUNT-05 - Password
+Source: Product source
 context AuthService::register(ctx: RequestContext, cmd: RegisterCommand): AuthResult
-pre BR_UC_01_05_Password:
+pre BR_REGISTER_ACCOUNT_05_Password:
   cmd.password.size() >= 8 and cmd.password.size() <= 64 and Text::matches(cmd.password, '^[A-Za-z0-9!@#$%^&*(){}_+=\[\],./<>?\\|:;\-]+$') and Text::matches(cmd.password, '.*[a-z].*') and Text::matches(cmd.password, '.*[A-Z].*') and Text::matches(cmd.password, '.*[0-9].*') and Text::matches(cmd.password, '.*[^A-Za-z0-9].*')
 ~~~
 
-~~~ocl
--- BR-UC-01-06
--- Source: Product source
+~~~text
+BR-REGISTER-ACCOUNT-06 - Confirmation
+Source: Product source
 context AuthService::register(ctx: RequestContext, cmd: RegisterCommand): AuthResult
-pre BR_UC_01_06_Confirmation:
+pre BR_REGISTER_ACCOUNT_06_Confirmation:
   cmd.confirmPassword = cmd.password
 ~~~
 
-~~~ocl
--- BR-UC-01-07
--- Source: Product source
+~~~text
+BR-REGISTER-ACCOUNT-07 - Created Identity
+Source: Product source
 context AuthService::register(ctx: RequestContext, cmd: RegisterCommand): AuthResult
-post BR_UC_01_07_CreatedIdentity:
+post BR_REGISTER_ACCOUNT_07_CreatedIdentity:
   result.success implies User.allInstances()->one(u | u.id = result.user.id and u.email = Text::lower(Text::trim(cmd.email)) and u.fullName = Text::trim(Text::nfc(cmd.fullName)))
 ~~~
 
-~~~ocl
--- BR-UC-01-08
--- Source: Product source
+~~~text
+BR-REGISTER-ACCOUNT-08 - Password Storage
+Source: Product source
 context AuthService::register(ctx: RequestContext, cmd: RegisterCommand): AuthResult
-post BR_UC_01_08_PasswordStorage:
+post BR_REGISTER_ACCOUNT_08_PasswordStorage:
   result.success implies User.allInstances()->exists(u | u.id = result.user.id and PasswordHasher::matches(cmd.password, u.passwordHash) and PasswordHasher::cost(u.passwordHash) = 10)
 ~~~
 
-~~~ocl
--- BR-UC-01-09
--- Source: Product source
+~~~text
+BR-REGISTER-ACCOUNT-09 - No Secrets
+Source: Product source
 context AuthService::register(ctx: RequestContext, cmd: RegisterCommand): AuthResult
-post BR_UC_01_09_NoSecrets:
+post BR_REGISTER_ACCOUNT_09_NoSecrets:
   result.secretFields->intersection(Set{'password','passwordHash','confirmPassword'})->isEmpty() and result.loggedFields->intersection(Set{'password','passwordHash','confirmPassword','accessToken'})->isEmpty()
 ~~~
 
-~~~ocl
--- BR-UC-01-10
--- Source: Product source
+~~~text
+BR-REGISTER-ACCOUNT-10 - Session
+Source: Product source
 context AuthService::register(ctx: RequestContext, cmd: RegisterCommand): AuthResult
-post BR_UC_01_10_Session:
+post BR_REGISTER_ACCOUNT_10_Session:
   result.success implies not result.accessToken.oclIsUndefined() and result.accessToken.size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-01-11
--- Source: Product source
+~~~text
+BR-REGISTER-ACCOUNT-11 - Atomic Failure
+Source: Product source
 context AuthService::register(ctx: RequestContext, cmd: RegisterCommand): AuthResult
-post BR_UC_01_11_AtomicFailure:
+post BR_REGISTER_ACCOUNT_11_AtomicFailure:
   not result.success implies User.allInstances()->collect(e | Tuple{id = e.id, fullName = e.fullName, email = e.email, username = e.username, passwordHash = e.passwordHash, version = e.version})->asSet() = User.allInstances()@pre->collect(e | Tuple{id = e.id@pre, fullName = e.fullName@pre, email = e.email@pre, username = e.username@pre, passwordHash = e.passwordHash@pre, version = e.version@pre})->asSet() and result.accessToken.oclIsUndefined()
 ~~~
 
-~~~ocl
--- BR-UC-01-12
--- Source: Product source
--- username uses the normalized email prefix, then the first free positive integer suffix on collision. Creation relies on database username/email uniqueness and retries a username collision within the operation.
+~~~text
+BR-REGISTER-ACCOUNT-12 - Generated Username
+Source: Product source
+Note: username uses the normalized email prefix, then the first free positive integer suffix on collision. Creation relies on database username/email uniqueness and retries a username collision within the operation.
 context AuthService::register(ctx: RequestContext, cmd: RegisterCommand): AuthResult
-post BR_UC_01_12_GeneratedUsername:
+post BR_REGISTER_ACCOUNT_12_GeneratedUsername:
   result.success implies User.allInstances()->any(u | u.id = result.user.id).username = Text::username(Text::lower(Text::trim(cmd.email)), User.allInstances()@pre->collect(u | u.username@pre)->asSet())
 ~~~
 
-~~~ocl
--- BR-UC-01-13
--- Source: Product source
+~~~text
+BR-REGISTER-ACCOUNT-13 - Exactly One User
+Source: Product source
 context AuthService::register(ctx: RequestContext, cmd: RegisterCommand): AuthResult
-post BR_UC_01_13_ExactlyOneUser:
+post BR_REGISTER_ACCOUNT_13_ExactlyOneUser:
   result.success implies User.allInstances()->size() = User.allInstances()@pre->size() + 1
 ~~~
 
-~~~ocl
--- BR-UC-01-14
--- Source: Assumption
+~~~text
+BR-REGISTER-ACCOUNT-14 - Memory Session
+Source: Assumption
 context AuthClient::establish(response: AuthResult): ClientSession
-post BR_UC_01_14_MemorySession:
+post BR_REGISTER_ACCOUNT_14_MemorySession:
   response.success implies result.accessToken = response.accessToken and result.user = response.user and result.storage = 'Memory' and result.durableFields->intersection(Set{'accessToken','password','passwordHash','confirmPassword'})->isEmpty()
 ~~~

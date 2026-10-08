@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-14
 uc_name: "Create a Financial Goal"
 ---
@@ -40,6 +40,7 @@ PRE-1: The application view is open in the client.
 ### Post-Condition(s)
 
 POST-1: On success, the client closes the goal dialog and refreshes Goals.
+
 POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Basic Flow
@@ -53,23 +54,27 @@ POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Cancel Goal Creation
 
-1. The user cancels the dialog.
-2. The client closes the dialog and shows Goals.
+3a: The user cancels the dialog.
+
+3b: The client closes the dialog and shows Goals.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Goal Creation Operation Error
 
-1. The system returns an operation error.
-2. The client displays the error message and keeps the current view open.
-3. The actor revises the interaction or retries the request.
+5a: The system returns an operation error.
 
-EF-2:
+5b: The client displays the error message and keeps the current view open.
 
-1. The system returns a rejected authentication context.
-2. The client presents the login entry point.
+5c: The actor revises the interaction or retries the request.
+
+EF-2: Goal Creation Authentication Rejected
+
+5d: The system returns a rejected authentication context.
+
+5e: The client presents the login entry point.
 
 ### Related UI
 
@@ -77,8 +82,8 @@ EF-2:
 
 ### Related API IDs
 
-- [API-GOAL-CREATE](../api/api-goal-create.md)
-- [API-CATEGORY-LIST](../api/api-category-list.md)
+- [API-GOAL-CREATE](../api/API-GOAL-CREATE.md)
+- [API-CATEGORY-LIST](../api/API-CATEGORY-LIST.md)
 
 ### Notes
 
@@ -164,76 +169,76 @@ end note
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-14-01
--- Source: Product source
+~~~text
+BR-CREATE-GOAL-01 - Authenticated Context
+Source: Product source
 context GoalService::create(ctx: RequestContext, cmd: CreateGoalCommand): GoalResult
-pre BR_UC_14_01_AuthenticatedContext:
+pre BR_CREATE_GOAL_01_AuthenticatedContext:
   ctx.authenticated and User.allInstances()->exists(u | u.id = ctx.userId)
 ~~~
 
-~~~ocl
--- BR-UC-14-02
--- Source: Product source
+~~~text
+BR-CREATE-GOAL-02 - Category Semantics
+Source: Product source
 context GoalService::create(ctx: RequestContext, cmd: CreateGoalCommand): GoalResult
-pre BR_UC_14_02_CategorySemantics:
+pre BR_CREATE_GOAL_02_CategorySemantics:
   (cmd.goalType = GoalType::Saving implies cmd.categoryId.oclIsUndefined()) and (cmd.goalType = GoalType::Expense_Limit implies not cmd.categoryId.oclIsUndefined() and Category.allInstances()->exists(c | c.id = cmd.categoryId))
 ~~~
 
-~~~ocl
--- BR-UC-14-03
--- Source: Assumption
--- Exact decimal arithmetic; upper bound matches DECIMAL(18,2). Source positivity and precision are retained.
+~~~text
+BR-CREATE-GOAL-03 - Target Amount
+Source: Assumption
+Note: Exact decimal arithmetic; upper bound matches DECIMAL(18,2). Source positivity and precision are retained.
 context GoalService::create(ctx: RequestContext, cmd: CreateGoalCommand): GoalResult
-pre BR_UC_14_03_TargetAmount:
+pre BR_CREATE_GOAL_03_TargetAmount:
   Numeric::finite(cmd.targetAmount) and cmd.targetAmount > 0 and Numeric::scale(cmd.targetAmount) <= 2 and cmd.targetAmount < 10000000000000000
 ~~~
 
-~~~ocl
--- BR-UC-14-04
--- Source: Product source
+~~~text
+BR-CREATE-GOAL-04 - Prospective Interval
+Source: Product source
 context GoalService::create(ctx: RequestContext, cmd: CreateGoalCommand): GoalResult
-pre BR_UC_14_04_ProspectiveInterval:
+pre BR_CREATE_GOAL_04_ProspectiveInterval:
   cmd.startDate.ordinal >= ctx.today.ordinal and cmd.endDate.ordinal > cmd.startDate.ordinal and cmd.endDate.ordinal - cmd.startDate.ordinal <= 366
 ~~~
 
-~~~ocl
--- BR-UC-14-05
--- Source: Product source
--- Lock the owner User row, then check overlaps and insert within one transaction. MySQL has no exclusion constraint for date intervals.
+~~~text
+BR-CREATE-GOAL-05 - No Overlap
+Source: Product source
+Note: Lock the owner User row, then check overlaps and insert within one transaction. MySQL has no exclusion constraint for date intervals.
 context GoalService::create(ctx: RequestContext, cmd: CreateGoalCommand): GoalResult
-pre BR_UC_14_05_NoOverlap:
+pre BR_CREATE_GOAL_05_NoOverlap:
   not Goal.allInstances()->exists(g | g.userId = ctx.userId and g.goalType = cmd.goalType and (cmd.goalType = GoalType::Saving or g.categoryId = cmd.categoryId) and g.startDate.ordinal <= cmd.endDate.ordinal and g.endDate.ordinal >= cmd.startDate.ordinal)
 ~~~
 
-~~~ocl
--- BR-UC-14-06
--- Source: Product source
+~~~text
+BR-CREATE-GOAL-06 - Exact Persistence
+Source: Product source
 context GoalService::create(ctx: RequestContext, cmd: CreateGoalCommand): GoalResult
-post BR_UC_14_06_ExactPersistence:
+post BR_CREATE_GOAL_06_ExactPersistence:
   result.success implies Goal.allInstances()->one(g | g.id = result.goal.id and g.userId = ctx.userId and g.goalType = cmd.goalType and g.categoryId = cmd.categoryId and g.startDate = cmd.startDate and g.endDate = cmd.endDate and g.targetAmount = cmd.targetAmount and g.version = 0)
 ~~~
 
-~~~ocl
--- BR-UC-14-07
--- Source: Product source
+~~~text
+BR-CREATE-GOAL-07 - Exactly One
+Source: Product source
 context GoalService::create(ctx: RequestContext, cmd: CreateGoalCommand): GoalResult
-post BR_UC_14_07_ExactlyOne:
+post BR_CREATE_GOAL_07_ExactlyOne:
   result.success implies Goal.allInstances()->size() = Goal.allInstances()@pre->size() + 1
 ~~~
 
-~~~ocl
--- BR-UC-14-08
--- Source: Product source
+~~~text
+BR-CREATE-GOAL-08 - Existing Goals Preserved
+Source: Product source
 context GoalService::create(ctx: RequestContext, cmd: CreateGoalCommand): GoalResult
-post BR_UC_14_08_ExistingGoalsPreserved:
+post BR_CREATE_GOAL_08_ExistingGoalsPreserved:
   result.success implies Goal.allInstances()->select(g | g.id <> result.goal.id)->collect(e | Tuple{id = e.id, userId = e.userId, goalType = e.goalType, categoryId = e.categoryId, startDate = e.startDate, endDate = e.endDate, targetAmount = e.targetAmount, version = e.version})->asSet() = Goal.allInstances()@pre->collect(e | Tuple{id = e.id@pre, userId = e.userId@pre, goalType = e.goalType@pre, categoryId = e.categoryId@pre, startDate = e.startDate@pre, endDate = e.endDate@pre, targetAmount = e.targetAmount@pre, version = e.version@pre})->asSet()
 ~~~
 
-~~~ocl
--- BR-UC-14-09
--- Source: Product source
+~~~text
+BR-CREATE-GOAL-09 - Atomic Failure
+Source: Product source
 context GoalService::create(ctx: RequestContext, cmd: CreateGoalCommand): GoalResult
-post BR_UC_14_09_AtomicFailure:
+post BR_CREATE_GOAL_09_AtomicFailure:
   not result.success implies Goal.allInstances()->collect(e | Tuple{id = e.id, userId = e.userId, goalType = e.goalType, categoryId = e.categoryId, startDate = e.startDate, endDate = e.endDate, targetAmount = e.targetAmount, version = e.version})->asSet() = Goal.allInstances()@pre->collect(e | Tuple{id = e.id@pre, userId = e.userId@pre, goalType = e.goalType@pre, categoryId = e.categoryId@pre, startDate = e.startDate@pre, endDate = e.endDate@pre, targetAmount = e.targetAmount@pre, version = e.version@pre})->asSet()
 ~~~

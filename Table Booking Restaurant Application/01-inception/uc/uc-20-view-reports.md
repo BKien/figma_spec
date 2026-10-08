@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-20
 uc_name: "View Reports"
 ---
@@ -50,24 +50,24 @@ POST-1: The client displays the returned report summary.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Change Report Period
 
-1. The manager changes the displayed period and views a refreshed report.
+4a: The manager changes the displayed period and views a refreshed report.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Report Loading Error
 
-1. The client displays a report loading error and retry action.
+3a: The client displays a report loading error and retry action.
 
 ### Related UI
 
-- [Reports](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=1913-2633) (`1913:2633`)
-- [Reports variant](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=1000-1746) (`1000:1746`)
+- [Reports](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=1913-2633) (1913:2633)
+- [Reports variant](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=1000-1746) (1000:1746)
 
 ### Related API IDs
 
-- [API-ADMIN-REPORT-GET](../api/api-admin-report-get.md)
+- [API-ADMIN-REPORT-GET](../api/API-ADMIN-REPORT-GET.md)
 
 ### Notes
 
@@ -133,52 +133,52 @@ RequestContext --> "1" Role : role
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-20-01
--- Source: Assumption
+~~~text
+BR-REPORTS-01 - Report Scope Authorized
+Source: Assumption
 context AdminService::report(command: ReportCriteria): Report
-pre BR_UC_20_01_ReportScopeAuthorized:
+pre BR_REPORTS_01_ReportScopeAuthorized:
   RequestContext::role = Role::SUPER_ADMIN or RequestContext::restaurantId = command.restaurantId
 ~~~
-~~~ocl
--- BR-UC-20-02
--- Source: Assumption
+~~~text
+BR-REPORTS-02 - Report Period Ordered
+Source: Assumption
 context AdminService::report(command: ReportCriteria): Report
-pre BR_UC_20_02_ReportPeriodOrdered:
+pre BR_REPORTS_02_ReportPeriodOrdered:
   command.fromDate <= command.toDate
 ~~~
-~~~ocl
--- BR-UC-20-03
--- Source: Assumption
+~~~text
+BR-REPORTS-03 - Report Counts Are Derived
+Source: Assumption
 context AdminService::report(command: ReportCriteria): Report
-post BR_UC_20_03_ReportCountsAreDerived:
+post BR_REPORTS_03_ReportCountsAreDerived:
   result.bookingCount = Booking.allInstances()->select(b | b.restaurant.id = command.restaurantId and b.createdAt >= command.fromDate and b.createdAt <= command.toDate)->size()
 ~~~
-~~~ocl
--- BR-UC-20-04
--- Source: Assumption
+~~~text
+BR-REPORTS-04 - Cancelled Count Is Derived
+Source: Assumption
 context AdminService::report(command: ReportCriteria): Report
-post BR_UC_20_04_CancelledCountIsDerived:
+post BR_REPORTS_04_CancelledCountIsDerived:
   result.cancelledCount = Booking.allInstances()->select(b | b.restaurant.id = command.restaurantId and b.status = BookingStatus::CANCELLED and b.createdAt >= command.fromDate and b.createdAt <= command.toDate)->size()
 ~~~
-~~~ocl
--- BR-UC-20-05
--- Source: Assumption
+~~~text
+BR-REPORTS-05 - Report Counts Are Nonnegative
+Source: Assumption
 context AdminService::report(command: ReportCriteria): Report
-post BR_UC_20_05_ReportCountsAreNonnegative:
+post BR_REPORTS_05_ReportCountsAreNonnegative:
   result.bookingCount >= 0 and result.cancelledCount >= 0
 ~~~
-~~~ocl
--- BR-UC-20-06
--- Source: Assumption
+~~~text
+BR-REPORTS-06 - Cancellation Count Does Not Exceed Bookings
+Source: Assumption
 context AdminService::report(command: ReportCriteria): Report
-post BR_UC_20_06_CancellationCountDoesNotExceedBookings:
+post BR_REPORTS_06_CancellationCountDoesNotExceedBookings:
   result.cancelledCount <= result.bookingCount
 ~~~
-~~~ocl
--- BR-UC-20-07
--- Source: Assumption
+~~~text
+BR-REPORTS-07 - Report Echoes Scope And Period
+Source: Assumption
 context AdminService::report(command: ReportCriteria): Report
-post BR_UC_20_07_ReportEchoesScopeAndPeriod:
+post BR_REPORTS_07_ReportEchoesScopeAndPeriod:
   result.restaurantId = command.restaurantId and result.fromDate = command.fromDate and result.toDate = command.toDate
 ~~~

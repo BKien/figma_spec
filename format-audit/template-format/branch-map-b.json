@@ -1,0 +1,938 @@
+{
+  "DH Dental Recruitment/01-inception/uc/uc-01-register-job-seeker.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "DH Dental Recruitment/01-inception/uc/uc-02-sign-in.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "DH Dental Recruitment/01-inception/uc/uc-03-search-filter-jobs.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "DH Dental Recruitment/01-inception/uc/uc-04-view-job-details.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "DH Dental Recruitment/01-inception/uc/uc-05-manage-basic-profile.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "DH Dental Recruitment/01-inception/uc/uc-06-manage-job-preferences.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "DH Dental Recruitment/01-inception/uc/uc-07-view-job-recommendations.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "DH Dental Recruitment/01-inception/uc/uc-08-manage-work-experience.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "DH Dental Recruitment/01-inception/uc/uc-09-manage-education.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "DH Dental Recruitment/01-inception/uc/uc-10-manage-introduction-video.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "DH Dental Recruitment/01-inception/uc/uc-11-manage-notification-preferences.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "DH Dental Recruitment/01-inception/uc/uc-12-change-password.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "DH Dental Recruitment/01-inception/uc/uc-13-sign-out.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "DH Dental Recruitment/01-inception/uc/uc-14-close-account.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "DH Dental Recruitment/01-inception/uc/uc-15-browse-faqs.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "DH Dental Recruitment/01-inception/uc/uc-16-submit-contact-message.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "DH Dental Recruitment/01-inception/uc/uc-17-manage-public-profile.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "DH Dental Recruitment/01-inception/uc/uc-18-search-public-profiles.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "DH Dental Recruitment/01-inception/uc/uc-19-view-public-profile.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "DH Dental Recruitment/01-inception/uc/uc-20-submit-job-application.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-01-register-student.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-02-sign-in.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-03-student-onboarding.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-04-discover-courses.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-05-view-learning-dashboard.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-06-view-my-courses.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-07-view-course-content.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-08-watch-video-lesson.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-09-take-course-quiz.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-10-update-student-profile.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-11-manage-learning-preferences.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-12-manage-notification-preferences.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-13-change-password.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-14-recover-password.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-15-sign-out.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-16-register-instructor.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-17-manage-course-drafts.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-18-publish-and-assign-course.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-19-inspect-learner-progress.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "EdTech Education Dashboard/01-inception/uc/uc-20-manage-learning-deadlines.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-01-register-and-verify-email.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-02-sign-in.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-03-recover-password.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-04-browse-search-filter-products.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-05-view-product-details.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-06-manage-shopping-cart.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-07-checkout-and-place-order.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-08-track-order.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-09-manage-wishlist.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-10-compare-products.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-11-manage-account-profile.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-12-change-password.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-13-manage-saved-addresses.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-14-manage-browsing-history.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-15-view-order-history.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-16-view-order-details.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-17-rate-delivered-order.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-18-browse-help-and-faq.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-19-submit-support-request.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Clicon Ecommerce Marketplace/01-inception/uc/uc-20-browse-and-read-blog.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Choose an alternative action",
+      "reason": "The actor chooses an alternative action instead of submitting the interaction at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Unsuccessful interaction outcome",
+      "reason": "The unsuccessful system outcome replaces the returned outcome at Basic Flow 5."
+    }
+  },
+  "Euphoria Ecommerce Apparels/01-inception/uc/uc-01-explore-storefront.md": {
+    "AF-1": {
+      "anchor": 5,
+      "title": "Open a featured product",
+      "reason": "Selecting a featured product replaces choosing an Explore Now category at Basic Flow 5."
+    },
+    "EF-1": {
+      "anchor": 3,
+      "title": "Retry the storefront request",
+      "reason": "A temporary service failure replaces the storefront content returned at Basic Flow 3."
+    }
+  },
+  "Euphoria Ecommerce Apparels/01-inception/uc/uc-02-browse-products.md": {
+    "AF-1": {
+      "anchor": 1,
+      "title": "Browse another category",
+      "reason": "Choosing another category repeats category selection at Basic Flow 1."
+    },
+    "EF-1": {
+      "anchor": 3,
+      "title": "Unavailable product listing",
+      "reason": "An unavailable resource response replaces the listing returned at Basic Flow 3."
+    }
+  },
+  "Euphoria Ecommerce Apparels/01-inception/uc/uc-03-filter-products.md": {
+    "AF-1": {
+      "anchor": 1,
+      "title": "Clear selected filters",
+      "reason": "Clearing selected controls is the alternative to changing filter controls at Basic Flow 1."
+    },
+    "EF-1": {
+      "anchor": 3,
+      "title": "Revise rejected filters",
+      "reason": "A request rejection replaces the listing result at Basic Flow 3."
+    }
+  },
+  "Euphoria Ecommerce Apparels/01-inception/uc/uc-04-sort-products.md": {
+    "AF-1": {
+      "anchor": 1,
+      "title": "Choose Recommended",
+      "reason": "Choosing Recommended replaces choosing New at Basic Flow 1."
+    },
+    "EF-1": {
+      "anchor": 3,
+      "title": "Retry the product listing",
+      "reason": "A temporary service failure replaces the product cards returned at Basic Flow 3."
+    }
+  },
+  "Euphoria Ecommerce Apparels/01-inception/uc/uc-05-view-product-details.md": {
+    "AF-1": {
+      "anchor": 5,
+      "title": "View a similar product",
+      "reason": "After the detail is rendered at step 4, selecting a similar product is an alternative product-detail selection to choosing image and variant at Basic Flow 5."
+    },
+    "EF-1": {
+      "anchor": 3,
+      "title": "Unavailable product",
+      "reason": "An unavailable resource response replaces the product detail returned at Basic Flow 3."
+    }
+  },
+  "Euphoria Ecommerce Apparels/01-inception/uc/uc-06-review-cart.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Empty cart",
+      "reason": "A cart with no lines is the alternative cart result at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 3,
+      "title": "Sign in to view the cart",
+      "reason": "A rejected authentication context replaces the cart response at Basic Flow 3."
+    }
+  },
+  "Euphoria Ecommerce Apparels/01-inception/uc/uc-07-review-checkout.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Edit billing details",
+      "reason": "Returning to and editing billing fields repeats entering billing details at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 6,
+      "title": "Review refreshed checkout summary",
+      "reason": "An operation conflict replaces the checkout summary returned at Basic Flow 6."
+    }
+  },
+  "Euphoria Ecommerce Apparels/01-inception/uc/uc-08-place-cash-on-delivery-order.md": {
+    "AF-1": {
+      "anchor": 2,
+      "title": "Return to billing details",
+      "reason": "Returning to billing details is the alternative to choosing Pay Now at Basic Flow 2 before the order request is submitted."
+    },
+    "EF-1": {
+      "anchor": 4,
+      "title": "Review refreshed checkout summary",
+      "reason": "An operation conflict replaces the order confirmation returned at Basic Flow 4."
+    }
+  },
+  "Euphoria Ecommerce Apparels/01-inception/uc/uc-09-request-password-reset.md": {
+    "AF-1": {
+      "anchor": 4,
+      "title": "Return to login",
+      "reason": "The Back to Login link is presented at Basic Flow 4 and is selected in this branch."
+    },
+    "EF-1": {
+      "anchor": 3,
+      "title": "Retry the reset request",
+      "reason": "A temporary service failure replaces the acknowledgement returned at Basic Flow 3."
+    }
+  },
+  "Euphoria Ecommerce Apparels/01-inception/uc/uc-10-resend-password-reset-email.md": {
+    "AF-1": {
+      "anchor": 1,
+      "title": "Return to login",
+      "reason": "Choosing Back to Login is an alternative action to selecting Click here to resend at Basic Flow 1."
+    },
+    "EF-1": {
+      "anchor": 3,
+      "title": "Retry the resend request",
+      "reason": "A temporary service failure replaces the acknowledgement returned at Basic Flow 3."
+    }
+  },
+  "Euphoria Ecommerce Apparels/01-inception/uc/uc-11-view-profile.md": {
+    "AF-1": {
+      "anchor": 1,
+      "title": "Return to My orders",
+      "reason": "Returning to My orders is an alternative navigation choice to choosing My info at Basic Flow 1."
+    },
+    "EF-1": {
+      "anchor": 3,
+      "title": "Sign in to view the profile",
+      "reason": "A rejected authentication context replaces the profile response at Basic Flow 3."
+    }
+  },
+  "Euphoria Ecommerce Apparels/01-inception/uc/uc-12-view-address-book.md": {
+    "AF-1": {
+      "anchor": 4,
+      "title": "Open Add Address",
+      "reason": "Choosing Add New occurs in the displayed address section at Basic Flow 4."
+    },
+    "EF-1": {
+      "anchor": 3,
+      "title": "Sign in to view addresses",
+      "reason": "A rejected authentication context replaces the address-book response at Basic Flow 3."
+    }
+  },
+  "Euphoria Ecommerce Apparels/01-inception/uc/uc-13-add-address.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Cancel adding an address",
+      "reason": "Choosing Cancel replaces choosing Save at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 5,
+      "title": "Review the refreshed address book",
+      "reason": "An operation conflict replaces the saved address book returned at Basic Flow 5."
+    }
+  },
+  "Euphoria Ecommerce Apparels/01-inception/uc/uc-14-view-wishlist.md": {
+    "AF-1": {
+      "anchor": 3,
+      "title": "Empty wishlist",
+      "reason": "A wishlist with no saved cards is the alternative response at Basic Flow 3."
+    },
+    "EF-1": {
+      "anchor": 3,
+      "title": "Sign in to view the wishlist",
+      "reason": "A rejected authentication context replaces the wishlist response at Basic Flow 3."
+    }
+  },
+  "Euphoria Ecommerce Apparels/01-inception/uc/uc-15-view-recently-viewed-products.md": {
+    "AF-1": {
+      "anchor": 5,
+      "title": "Open the product listing",
+      "reason": "Choosing the Shop entry point is an alternative navigation action to selecting a displayed card at Basic Flow 5."
+    },
+    "EF-1": {
+      "anchor": 3,
+      "title": "Sign in to view recently viewed products",
+      "reason": "A rejected authentication context replaces the recently viewed cards returned at Basic Flow 3."
+    }
+  },
+  "Euphoria Ecommerce Apparels/01-inception/uc/uc-16-view-order-history.md": {
+    "AF-1": {
+      "anchor": 5,
+      "title": "Return to My Info",
+      "reason": "Returning to My Info is an alternative navigation action to opening a displayed order at Basic Flow 5."
+    },
+    "EF-1": {
+      "anchor": 3,
+      "title": "Retry the order list",
+      "reason": "A temporary service failure replaces the order summaries returned at Basic Flow 3."
+    }
+  },
+  "Euphoria Ecommerce Apparels/01-inception/uc/uc-17-filter-order-history.md": {
+    "AF-1": {
+      "anchor": 1,
+      "title": "Choose a different order tab",
+      "reason": "Choosing another tab repeats the tab selection at Basic Flow 1."
+    },
+    "EF-1": {
+      "anchor": 3,
+      "title": "Retry the order list",
+      "reason": "A temporary service failure replaces the order summaries returned at Basic Flow 3."
+    }
+  },
+  "Euphoria Ecommerce Apparels/01-inception/uc/uc-18-view-order-detail.md": {
+    "AF-1": {
+      "anchor": 4,
+      "title": "Return to My orders",
+      "reason": "Returning to My orders occurs from the displayed order detail at Basic Flow 4."
+    },
+    "EF-1": {
+      "anchor": 3,
+      "title": "Unavailable order",
+      "reason": "An unavailable resource response replaces the order detail returned at Basic Flow 3."
+    }
+  }
+}

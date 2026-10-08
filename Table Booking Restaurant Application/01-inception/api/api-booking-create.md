@@ -1,6 +1,6 @@
 ---
 artifact_type: api-contract
-status: Draft
+status: Frozen
 api_id: API-BOOKING-CREATE
 related_uc_id: UC-08
 ---
@@ -11,7 +11,7 @@ related_uc_id: UC-08
 
 ### API ID
 
-`API-BOOKING-CREATE`
+API-BOOKING-CREATE
 
 ### API Name
 
@@ -19,15 +19,15 @@ Book a Table
 
 ### Related Use Case IDs
 
-- `UC-08`
+- UC-08
 
 ### Method
 
-`POST`
+POST
 
 ### Path
 
-`/api/v1/bookings`
+/api/v1/bookings
 
 ### Description
 
@@ -43,36 +43,49 @@ Authenticated customer.
 
 ## Request Header(s)
 
-### Authorization
+### headers.Authorization
 
-Type: string
-Format: bearer token
-Required: Yes
-Nullable: No
-Validation: Must use the `Bearer <access-token>` header syntax.
+Type: string; Format: bearer token; Required: Yes; Nullable: No
+
+Trigger: Every POST request to this endpoint.
+
 Description: Carries the bearer access token.
-Example: `Bearer eyJ...`
 
-### Content-Type
+Example: Bearer eyJ...
 
-Type: string
-Format: MIME type
-Required: Yes
-Nullable: No
-Allowed values: application/json
-Validation: Must identify the `application/json` media type.
+Note: Uses the HTTP Bearer authentication scheme.
+
+Validation: Must use the Bearer <access-token> header syntax.
+
+### headers.Content-Type
+
+Type: string; Format: MIME type; Required: Yes; Nullable: No
+
+Trigger: Every POST request to this endpoint.
+
 Description: Declares the request media type.
-Example: `application/json`
 
-### Idempotency-Key
+Example: application/json
 
-Type: string
-Format: HTTP header
-Required: Yes
-Nullable: No
-Validation: Must be encoded as an HTTP header value.
+Note: Identifies the media type of the submitted request body.
+
+Allowed values: application/json
+
+Validation: Must identify the application/json media type.
+
+### headers.Idempotency-Key
+
+Type: string; Format: HTTP header; Required: Yes; Nullable: No
+
+Trigger: Every POST request to this endpoint.
+
 Description: Carries a client-generated operation key.
-Example: `booking-7e6f`
+
+Example: booking-7e6f
+
+Note: Transmit the command reference as a single header value.
+
+Validation: Must be encoded as an HTTP header value.
 
 ## Path Parameter(s)
 
@@ -86,192 +99,261 @@ None.
 
 ### restaurantId
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Every request body sent to this endpoint.
+
 Description: restaurantId supplied on the wire.
-Example: `rst_123`
+
+Example: rst_123
+
+Validation: Must be encoded as a JSON string.
 
 ### slotId
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Every request body sent to this endpoint.
+
 Description: slotId supplied on the wire.
-Example: `slot_123`
+
+Example: slot_123
+
+Validation: Must be encoded as a JSON string.
 
 ### partySize
 
-Type: integer
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON integer.
+Type: integer; Required: Yes; Nullable: No
+
+Trigger: Every request body sent to this endpoint.
+
 Description: partySize supplied on the wire.
-Example: `2`
+
+Example: 2
+
+Validation: Must be encoded as a JSON integer.
 
 ### contactPhone
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Every request body sent to this endpoint.
+
 Description: contactPhone supplied on the wire.
-Example: `+12025550123`
+
+Example: +12025550123
+
+Validation: Must be encoded as a JSON string.
 
 ### verificationCode
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Every request body sent to this endpoint.
+
 Description: verificationCode supplied on the wire.
-Example: `123456`
+
+Example: 123456
+
+Validation: Must be encoded as a JSON string.
 
 ## Success Response — HTTP 201
 
 ### success
 
-Type: boolean
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON boolean.
+Type: boolean; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 201 success response.
+
 Description: success supplied on the wire.
-Example: `true`
+
+Example: true
+
+Validation: Must be encoded as a JSON boolean.
 
 ### data
 
-Type: object
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON object.
+Type: object; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 201 success response.
+
 Description: data supplied on the wire.
-Example: `{}`
+
+Example: {}
+
+Validation: Must be encoded as a JSON object.
 
 ### data.bookingId
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 201 success response when the containing data object or array item is present and non-null.
+
 Description: data bookingId supplied on the wire.
-Example: `bkg_123`
+
+Example: bkg_123
+
+Validation: Must be encoded as a JSON string.
 
 ### data.status
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 201 success response when the containing data object or array item is present and non-null.
+
 Description: data status supplied on the wire.
-Example: `CONFIRMED`
+
+Example: CONFIRMED
+
+Validation: Must be encoded as a JSON string.
 
 ## Error Response — HTTP 400
 
 ### error
 
-Type: object
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON object.
+Type: object; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 400 error response.
+
 Description: error supplied on the wire.
-Example: `{}`
+
+Example: {}
+
+Note: Field of the JSON error response.
+
+Validation: Must be encoded as a JSON object.
 
 ### error.code
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 400 error response when the containing error object or array item is present and non-null.
+
 Description: Stable public error identifier.
-Example: `MALFORMED_REQUEST`
+
+Example: MALFORMED_REQUEST
+
+Note: Field of the JSON error response; nested requiredness applies when its containing object or array item is present.
+
+Validation: Must be encoded as a JSON string.
 
 ### error.message
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
-Description: Human-readable error summary.
-Example: `The request could not be processed.`
+Type: string; Required: Yes; Nullable: No
 
 Trigger: Malformed wire input.
+
+Description: Human-readable error summary.
+
+Example: The request could not be processed.
+
+Note: Field of the JSON error response; nested requiredness applies when its containing object or array item is present.
+
+Validation: Must be encoded as a JSON string.
 
 ## Error Response — HTTP 503
 
 ### error
 
-Type: object
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON object.
+Type: object; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 503 error response.
+
 Description: error supplied on the wire.
-Example: `{}`
+
+Example: {}
+
+Note: Field of the JSON error response.
+
+Validation: Must be encoded as a JSON object.
 
 ### error.code
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 503 error response when the containing error object or array item is present and non-null.
+
 Description: Stable public error identifier.
-Example: `SERVICE_UNAVAILABLE`
+
+Example: SERVICE_UNAVAILABLE
+
+Note: Field of the JSON error response; nested requiredness applies when its containing object or array item is present.
+
+Validation: Must be encoded as a JSON string.
 
 ### error.message
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
-Description: Human-readable error summary.
-Example: `Please try again later.`
+Type: string; Required: Yes; Nullable: No
 
 Trigger: Temporary service failure.
+
+Description: Human-readable error summary.
+
+Example: Please try again later.
+
+Note: Field of the JSON error response; nested requiredness applies when its containing object or array item is present.
+
+Validation: Must be encoded as a JSON string.
 
 ## Error Response — HTTP 401
 
 ### error
 
-Type: object
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON object.
+Type: object; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 401 error response.
+
 Description: error supplied on the wire.
-Example: `{}`
+
+Example: {}
+
+Note: Field of the JSON error response.
+
+Validation: Must be encoded as a JSON object.
 
 ### error.code
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
-Description: Stable public error identifier.
-Example: `AUTHENTICATION_REQUIRED`
+Type: string; Required: Yes; Nullable: No
 
 Trigger: Rejected authentication context.
+
+Description: Stable public error identifier.
+
+Example: AUTHENTICATION_REQUIRED
+
+Note: Field of the JSON error response; nested requiredness applies when its containing object or array item is present.
+
+Validation: Must be encoded as a JSON string.
 
 ## Error Response — HTTP 409
 
 ### error
 
-Type: object
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON object.
+Type: object; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 409 error response.
+
 Description: error supplied on the wire.
-Example: `{}`
+
+Example: {}
+
+Note: Field of the JSON error response.
+
+Validation: Must be encoded as a JSON object.
 
 ### error.code
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
-Description: Stable public error identifier.
-Example: `OPERATION_CONFLICT`
+Type: string; Required: Yes; Nullable: No
 
 Trigger: Operation conflict response.
+
+Description: Stable public error identifier.
+
+Example: OPERATION_CONFLICT
+
+Note: Field of the JSON error response; nested requiredness applies when its containing object or array item is present.
+
+Validation: Must be encoded as a JSON string.
 
 ## Notes
 

@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-14
 uc_name: "Cancel Booking"
 ---
@@ -36,14 +36,19 @@ The booking holder chooses to cancel an accessible booking.
 ### Pre-Condition(s)
 
 PRE-1: The booking can be accessed through its authenticated owner or its confirmation code.
+
 PRE-2: The booking reference is available.
+
 PRE-3: The booking has cancellation terms recorded from its purchase.
 
 ### Post-Condition(s)
 
 POST-1: On success, the booking is retained with cancelled status and a cancellation record is stored.
+
 POST-2: Seats held by the cancelled booking are released.
+
 POST-3: When a refund is due, it is returned through the original payment path.
+
 POST-4: On failure, the booking remains unchanged and no duplicate refund is created.
 
 ### Basic Flow
@@ -63,40 +68,58 @@ POST-4: On failure, the booking remains unchanged and no duplicate refund is cre
 ### Alternative Flow
 
 AF-1: Keep the booking
-4a. The user does not confirm the cancellation.
-4b. Tripma closes the cancellation confirmation without submitting API-BOOKING-CANCEL.
-4c. The booking remains unchanged.
+
+4a: The user does not confirm the cancellation.
+
+4b: Tripma closes the cancellation confirmation without submitting API-BOOKING-CANCEL.
+
+4c: The booking remains unchanged.
 
 AF-2: No refundable amount
-8a. If the recorded terms produce no refundable amount, Tripma does not submit a provider refund.
-8b. The service records the refund outcome as not required.
-8c. The Basic Flow resumes at step 9.
+
+8a: If the recorded terms produce no refundable amount, Tripma does not submit a provider refund.
+
+8b: The service records the refund outcome as not required.
+
+8c: The Basic Flow resumes at step 9.
 
 AF-3: Retry a completed cancellation request
-6a. If Tripma receives the same completed cancellation request with the same idempotency key, it returns the original outcome.
-6b. Tripma does not create another cancellation or refund.
+
+6a: If Tripma receives the same completed cancellation request with the same idempotency key, it returns the original outcome.
+
+6b: Tripma does not create another cancellation or refund.
 
 ### Exception Flow
 
 EF-1: Booking access is unavailable
-5a. If neither account ownership nor the supplied confirmation code establishes access, API-BOOKING-CANCEL returns the corresponding access outcome.
-5b. The booking remains unchanged.
+
+5a: If neither account ownership nor the supplied confirmation code establishes access, API-BOOKING-CANCEL returns the corresponding access outcome.
+
+5b: The booking remains unchanged.
 
 EF-2: Booking is unavailable
-6a. If the booking reference cannot be resolved, Tripma returns a not-found outcome.
-6b. The booking remains unchanged.
+
+6a: If the booking reference cannot be resolved, Tripma returns a not-found outcome.
+
+6b: The booking remains unchanged.
 
 EF-3: Booking is not cancellable
-6a. If the booking is not confirmed, has already been cancelled, or has passed its recorded cancellation deadline, Tripma returns a conflict outcome.
-6b. No cancellation or refund is created.
+
+6a: If the booking is not confirmed, has already been cancelled, or has passed its recorded cancellation deadline, Tripma returns a conflict outcome.
+
+6b: No cancellation or refund is created.
 
 EF-4: Refund cannot be completed
-8a. If an applicable refund is rejected or cannot be confirmed, Tripma returns a payment outcome.
-8b. The booking remains confirmed and its seats remain assigned.
+
+8a: If an applicable refund is rejected or cannot be confirmed, Tripma returns a payment outcome.
+
+8b: The booking remains confirmed and its seats remain assigned.
 
 EF-5: Cancellation operation fails
-9a. If Tripma cannot complete the state change, it rolls back the cancellation operation.
-9b. Tripma presents a retryable error outcome.
+
+9a: If Tripma cannot complete the state change, it rolls back the cancellation operation.
+
+9b: Tripma presents a retryable error outcome.
 
 ### Related UI
 
@@ -214,7 +237,7 @@ BookingCancellation --> "1" RefundStatus : refundStatus
 The following rules are authoritative for Prompt E. OCL is preserved where applicable; provider, transaction, and non-OCL constraints remain authoritative natural-language requirements.
 
 ~~~text
-BR-CANCEL-001: Optional authenticated account
+BR-CANCEL-001 - Optional authenticated account
 context BookingCancellationService::cancelBooking(
   dto : CancelBookingDto,
   currentUserId : UUID,
@@ -225,7 +248,7 @@ pre BR_CANCEL_001_User:
   User.allInstances()->exists(user | user.id = currentUserId)
 
 
-BR-CANCEL-002: Request identity
+BR-CANCEL-002 - Request identity
 context BookingCancellationService::cancelBooking(
   dto : CancelBookingDto,
   currentUserId : UUID,
@@ -237,7 +260,7 @@ pre BR_CANCEL_002_Identity:
   trim(idempotencyKey) <> ''
 
 
-BR-CANCEL-003: Booking access
+BR-CANCEL-003 - Booking access
 context BookingCancellationService::cancelBooking(
   dto : CancelBookingDto,
   currentUserId : UUID,
@@ -253,7 +276,7 @@ pre BR_CANCEL_003_Booking:
         lower(trim(dto.confirmationCode)))))
 
 
-BR-CANCEL-004: Confirmed booking
+BR-CANCEL-004 - Confirmed booking
 context BookingCancellationService::cancelBooking(
   dto : CancelBookingDto,
   currentUserId : UUID,
@@ -265,7 +288,7 @@ pre BR_CANCEL_004_Status:
     booking.status = BookingStatus::CONFIRMED)
 
 
-BR-CANCEL-005: Recorded cancellation terms
+BR-CANCEL-005 - Recorded cancellation terms
 context BookingCancellationService::cancelBooking(
   dto : CancelBookingDto,
   currentUserId : UUID,
@@ -276,7 +299,7 @@ pre BR_CANCEL_005_Terms:
     term.bookingId = dto.bookingId)
 
 
-BR-CANCEL-006: Cancellation deadline
+BR-CANCEL-006 - Cancellation deadline
 context BookingCancellationService::cancelBooking(
   dto : CancelBookingDto,
   currentUserId : UUID,
@@ -290,7 +313,7 @@ pre BR_CANCEL_006_Deadline:
     now() <= term.cancellationDeadlineAt
 
 
-BR-CANCEL-007: Completed original payment
+BR-CANCEL-007 - Completed original payment
 context BookingCancellationService::cancelBooking(
   dto : CancelBookingDto,
   currentUserId : UUID,
@@ -302,7 +325,7 @@ pre BR_CANCEL_007_Payment:
     payment.status = PaymentStatus::COMPLETED)
 
 
-BR-CANCEL-008: Cancellation-term values
+BR-CANCEL-008 - Cancellation-term values
 context BookingCancellationTerm
 inv BR_CANCEL_008_TermValues:
   not self.policyCode.oclIsUndefined() and
@@ -314,7 +337,7 @@ inv BR_CANCEL_008_TermValues:
   trim(self.currency) <> ''
 
 
-BR-CANCEL-009: Refund calculation
+BR-CANCEL-009 - Refund calculation
 context BookingCancellationService::cancelBooking(
   dto : CancelBookingDto,
   currentUserId : UUID,
@@ -339,7 +362,7 @@ post BR_CANCEL_009_Refund:
         endif
 
 
-BR-CANCEL-010: Monetary consistency
+BR-CANCEL-010 - Monetary consistency
 context BookingCancellationService::cancelBooking(
   dto : CancelBookingDto,
   currentUserId : UUID,
@@ -360,7 +383,7 @@ post BR_CANCEL_010_Currency:
       cancellation.currency = payment.currency
 
 
-BR-CANCEL-011: Refund outcome
+BR-CANCEL-011 - Refund outcome
 context BookingCancellationService::cancelBooking(
   dto : CancelBookingDto,
   currentUserId : UUID,
@@ -380,13 +403,13 @@ post BR_CANCEL_011_RefundStatus:
         cancellation.providerRefundId.oclIsUndefined())
 
 
-BR-CANCEL-012: Original payment path
+BR-CANCEL-012 - Original payment path
 Any positive refund shall be submitted against the provider transaction of the
 booking's completed PaymentInfo. Tripma shall not request replacement payment
 credentials from the user during cancellation.
 
 
-BR-CANCEL-013: Booking state transition
+BR-CANCEL-013 - Booking state transition
 context BookingCancellationService::cancelBooking(
   dto : CancelBookingDto,
   currentUserId : UUID,
@@ -399,39 +422,39 @@ post BR_CANCEL_013_Status:
       booking.status = BookingStatus::CANCELLED)
 
 
-BR-CANCEL-014: One cancellation per booking
+BR-CANCEL-014 - One cancellation per booking
 context BookingCancellation
 inv BR_CANCEL_014_BookingUnique:
   BookingCancellation.allInstances()->isUnique(cancellation |
     cancellation.bookingId)
 
 
-BR-CANCEL-015: Idempotent cancellation
+BR-CANCEL-015 - Idempotent cancellation
 context BookingCancellation
 inv BR_CANCEL_015_Idempotency:
   BookingCancellation.allInstances()->isUnique(cancellation |
     cancellation.idempotencyKey)
 
 
-BR-CANCEL-016: Complete-booking cancellation
+BR-CANCEL-016 - Complete-booking cancellation
 Cancellation applies to the complete booking, including its departing and any
 returning flight. Partial cancellation of a flight leg or passenger is not
 performed by UC-14.
 
 
-BR-CANCEL-017: Seat release
+BR-CANCEL-017 - Seat release
 After a successful cancellation, every SeatAssignment belonging to the booking's
 passengers shall be removed and each corresponding Seat shall become available.
 No seat shall be released when cancellation fails.
 
 
-BR-CANCEL-018: Atomic outcome and audit retention
+BR-CANCEL-018 - Atomic outcome and audit retention
 Refund completion, cancellation creation, booking-status transition, and seat
 release shall form one recoverable operation. The Booking, PaymentInfo, and
 BookingCancellationTerm records shall be retained; UC-14 shall not delete them.
 
 
-BR-CANCEL-019: Flexible 30-day policy
+BR-CANCEL-019 - Flexible 30-day policy
 context BookingCancellationTerm
 inv BR_CANCEL_019_FlexiblePolicy:
   self.policyCode = 'FLEXIBLE_30_DAY'
@@ -444,5 +467,4 @@ inv BR_CANCEL_019_FlexiblePolicy:
       self.cancellationDeadlineAt = departure.departureAt - days(30) and
       self.refundRate = 1 and
       self.cancellationFee = 0
-
 ~~~

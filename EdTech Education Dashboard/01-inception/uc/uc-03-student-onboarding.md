@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-03
 uc_name: "Set Up a Student Learning Profile"
 ---
@@ -20,7 +20,7 @@ Set Up a Student Learning Profile
 ### Description
 
 - Collects the Student's learning goals, interests, current occupation, and education level through the four initial setup screens.
-- Replaces UC-02's `/student/onboarding` integration shell. The four steps belong to one onboarding goal, with saved progress and an explicit completion outcome.
+- Replaces UC-02's /student/onboarding integration shell. The four steps belong to one onboarding goal, with saved progress and an explicit completion outcome.
 - The field choices and selection maxima are supported by Figma. Minimum selections, persistence, API contracts, concurrency behavior, and completion rules below are proposed project requirements, not quotations from a supplied Technical Report.
 - The question Your Current Role describes occupation. It must not change account.role, grant Instructor privileges, or act as an application-role selector.
 
@@ -30,7 +30,7 @@ Authenticated Student with an incomplete learning profile.
 
 ### Priority
 
-Not specified in the supplied source.
+High
 
 ### Trigger
 
@@ -55,17 +55,19 @@ POST-1: The client displays the returned interaction outcome.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Choose an alternative action
 
-1. The actor chooses an available alternative action.
-2. The client displays the returned alternative outcome.
+3a: The actor chooses an available alternative action.
+
+3b: The client displays the returned alternative outcome.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Unsuccessful interaction outcome
 
-1. The system returns an unsuccessful outcome.
-2. The client displays the returned recovery message.
+5a: The system returns an unsuccessful outcome.
+
+5b: The client displays the returned recovery message.
 
 ### Related UI
 
@@ -76,9 +78,9 @@ EF-1:
 
 ### Related API IDs
 
-- [API-UC-03-01](../api/api-uc-03-01.md)
-- [API-UC-03-02](../api/api-uc-03-02.md)
-- [API-UC-03-03](../api/api-uc-03-03.md)
+- [API-STUDENT-ONBOARDING-GET](../api/API-STUDENT-ONBOARDING-GET.md)
+- [API-STUDENT-ONBOARDING-STEP-UPDATE](../api/API-STUDENT-ONBOARDING-STEP-UPDATE.md)
+- [API-STUDENT-ONBOARDING-COMPLETE](../api/API-STUDENT-ONBOARDING-COMPLETE.md)
 
 ### Notes
 
@@ -128,58 +130,58 @@ UseCaseResult --> "1" ExecutionStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-03-01
--- Source: Product source
+~~~text
+BR-STUDENT-ONBOARDING-01 - Actor Is Present
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-pre BR_UC_03_01_ActorIsPresent:
+pre BR_STUDENT_ONBOARDING_01_ActorIsPresent:
   command.actorId <> null and command.actorId.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-03-02
--- Source: Product source
+~~~text
+BR-STUDENT-ONBOARDING-02 - Request Is Present
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-pre BR_UC_03_02_RequestIsPresent:
+pre BR_STUDENT_ONBOARDING_02_RequestIsPresent:
   command.requestId <> null and command.requestId.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-03-03
--- Source: Product source
+~~~text
+BR-STUDENT-ONBOARDING-03 - Payload Is Present
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-pre BR_UC_03_03_PayloadIsPresent:
+pre BR_STUDENT_ONBOARDING_03_PayloadIsPresent:
   command.payload <> null and command.payload.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-03-04
--- Source: Product source
+~~~text
+BR-STUDENT-ONBOARDING-04 - Execution Is Identified
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_03_04_ExecutionIsIdentified:
+post BR_STUDENT_ONBOARDING_04_ExecutionIsIdentified:
   result.executionId <> null and result.executionId.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-03-05
--- Source: Product source
+~~~text
+BR-STUDENT-ONBOARDING-05 - Result Matches Request
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_03_05_ResultMatchesRequest:
+post BR_STUDENT_ONBOARDING_05_ResultMatchesRequest:
   result.actorId = command.actorId and result.requestId = command.requestId
 ~~~
 
-~~~ocl
--- BR-UC-03-06
--- Source: Product source
+~~~text
+BR-STUDENT-ONBOARDING-06 - Result Is Completed
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_03_06_ResultIsCompleted:
+post BR_STUDENT_ONBOARDING_06_ResultIsCompleted:
   result.status = ExecutionStatus::COMPLETED
 ~~~
 
-~~~ocl
--- BR-UC-03-07
--- Source: Product source
+~~~text
+BR-STUDENT-ONBOARDING-07 - Result Is Versioned
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_03_07_ResultIsVersioned:
+post BR_STUDENT_ONBOARDING_07_ResultIsVersioned:
   result.version > 0 and result.createdAt <= DateTime::now()
 ~~~

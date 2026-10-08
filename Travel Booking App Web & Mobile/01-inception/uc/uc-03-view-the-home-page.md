@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-03
 uc_name: "View the Home Page"
 ---
@@ -40,6 +40,7 @@ PRE-1: The actor can open the home route.
 ### Post-Condition(s)
 
 POST-1: The home route displays the returned content state.
+
 POST-2: Available navigation from the displayed sections remains accessible.
 
 ### Basic Flow
@@ -52,36 +53,41 @@ POST-2: Available navigation from the displayed sections remains accessible.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Render an Empty Home Section
 
-1. If a content section is returned empty, the client displays its designed empty presentation while retaining the remaining home content.
+4a: If a content section is returned empty, the client displays its designed empty presentation while retaining the remaining home content.
 
-AF-2:
+AF-2: Render the Actor's Header State
 
-1. The client renders the header state returned for the current actor context.
+4b: The client renders the header state returned for the current actor context.
 
-AF-3:
+AF-3: Open Upcoming-Trip Notifications
 
-1. An authenticated traveller opens the notification control.
-2. The client displays the returned upcoming-trip summary.
+5a: An authenticated traveller opens the notification control.
+
+5b: The client displays the returned upcoming-trip summary.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Home Summary Loading Failure
 
-1. If the home summary cannot be loaded, the client displays the designed retry state.
+3a: If the home summary cannot be loaded, the client displays the designed retry state.
 
-EF-2:
+EF-2: Render Available Home Sections
 
-1. If the response contains an unavailable section, the client renders the remaining returned sections and marks the affected section unavailable.
+4c: If the response contains an unavailable section, the client renders the remaining returned sections and marks the affected section unavailable.
 
 ### Related UI
 
-`Home page`; `Home page after login`; `home page`; notification bell; `Your Next Trip` pop-up.
+Home page; Home page after login; home page; notification bell; Your Next Trip pop-up.
 
 ### Related API IDs
 
-`API-HOME-SUMMARY`; `API-REVIEW-LIST`.
+API-HOME-SUMMARY; API-REVIEW-LIST.
+
+### Notes
+
+None.
 
 ## UML Model
 
@@ -212,32 +218,32 @@ PriceEvidence --> "1" Money : amount
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-03-01
--- Source: Assumption
+~~~text
+BR-HOME-01 - Editorial Destination Set Is Published And Non Repeating
+Source: Assumption
 context HomeService::getSummary(): HomeSummary
-post BR_UC_03_01_EditorialDestinationSetIsPublishedAndNonRepeating:
+post BR_HOME_01_EditorialDestinationSetIsPublishedAndNonRepeating:
   result.destinations->forAll(d |
     d.active and d.publishFrom <= RequestContext::startedAt and
     (d.publishUntil = null or d.publishUntil > RequestContext::startedAt)) and
   result.destinations->isUnique(d | d.destinationId)
 ~~~
 
-~~~ocl
--- BR-UC-03-02
--- Source: Assumption
+~~~text
+BR-HOME-02 - Review Set Is Public At Response Time
+Source: Assumption
 context HomeService::getSummary(): HomeSummary
-post BR_UC_03_02_ReviewSetIsPublicAtResponseTime:
+post BR_HOME_02_ReviewSetIsPublicAtResponseTime:
   result.reviews->forAll(r |
     r.published and r.moderationStatus = ModerationStatus::APPROVED and
     r.publishedAt <= RequestContext::startedAt)
 ~~~
 
-~~~ocl
--- BR-UC-03-03
--- Source: Assumption
+~~~text
+BR-HOME-03 - Editorial Sections Have Deterministic Order
+Source: Assumption
 context HomeService::getSummary(): HomeSummary
-post BR_UC_03_03_EditorialSectionsHaveDeterministicOrder:
+post BR_HOME_03_EditorialSectionsHaveDeterministicOrder:
   (result.destinations->size() <= 1 or
     Sequence{1..result.destinations->size() - 1}->forAll(i |
       result.destinations->at(i).editorialRank < result.destinations->at(i + 1).editorialRank or
@@ -250,46 +256,46 @@ post BR_UC_03_03_EditorialSectionsHaveDeterministicOrder:
        result.reviews->at(i).id < result.reviews->at(i + 1).id)))
 ~~~
 
-~~~ocl
--- BR-UC-03-04
--- Source: Assumption
+~~~text
+BR-HOME-04 - Service Entry Points Are Not Duplicated
+Source: Assumption
 context HomeService::getSummary(): HomeSummary
-post BR_UC_03_04_ServiceEntryPointsAreNotDuplicated:
+post BR_HOME_04_ServiceEntryPointsAreNotDuplicated:
   result.services->isUnique(s | s.toLower())
 ~~~
 
-~~~ocl
--- BR-UC-03-05
--- Source: Assumption
+~~~text
+BR-HOME-05 - Home Composition Is Read Only
+Source: Assumption
 context HomeService::getSummary(): HomeSummary
-post BR_UC_03_05_HomeCompositionIsReadOnly:
+post BR_HOME_05_HomeCompositionIsReadOnly:
   ReadState::editorial() = ReadState::editorial()@pre and
   ReadState::reviews() = ReadState::reviews()@pre
 ~~~
 
-~~~ocl
--- BR-UC-03-06
--- Source: Assumption
+~~~text
+BR-HOME-06 - Home Review Projection Protects Identity And Content
+Source: Assumption
 context HomeService::getSummary(): HomeSummary
-post BR_UC_03_06_HomeReviewProjectionProtectsIdentityAndContent:
+post BR_HOME_06_HomeReviewProjectionProtectsIdentityAndContent:
   result.reviews->forAll(r |
     r.displayedAuthorName = PrivacyMask::personName(r.authorName) and
     ContentSafety::isPublicSafe(r.comment) and r.rating >= 1 and r.rating <= 5)
 ~~~
 
-~~~ocl
--- BR-UC-03-07
--- Source: Assumption
+~~~text
+BR-HOME-07 - Service Entries Stay Within Supported Discovery Scope
+Source: Assumption
 context HomeService::getSummary(): HomeSummary
-post BR_UC_03_07_ServiceEntriesStayWithinSupportedDiscoveryScope:
+post BR_HOME_07_ServiceEntriesStayWithinSupportedDiscoveryScope:
   result.services->forAll(s | Set{'Stays', 'Taxis', 'Flights', 'Budget Trips'}->includes(s))
 ~~~
 
-~~~ocl
--- BR-UC-03-08
--- Source: Assumption
+~~~text
+BR-HOME-08 - Home Prices Use Recent Evidence In The Same Currency
+Source: Assumption
 context HomeService::getSummary(): HomeSummary
-post BR_UC_03_08_HomePricesUseRecentEvidenceInTheSameCurrency:
+post BR_HOME_08_HomePricesUseRecentEvidenceInTheSameCurrency:
   result.destinations->forAll(t |
     let eligible = t.priceEvidence->select(e |
       e.active and e.amount.currency = t.startingPrice.currency and
@@ -300,11 +306,11 @@ post BR_UC_03_08_HomePricesUseRecentEvidenceInTheSameCurrency:
 ~~~
 
 
-~~~ocl
--- BR-UC-03-09
--- Source: Figma
+~~~text
+BR-HOME-09 - Upcoming Trip Notice Belongs To The Authenticated Traveller
+Source: Figma
 context HomeService::getSummary(): HomeSummary
-post BR_UC_03_09_UpcomingTripNoticeBelongsToTheAuthenticatedTraveller:
+post BR_HOME_09_UpcomingTripNoticeBelongsToTheAuthenticatedTraveller:
   result.upcomingTrip = null or
   (result.viewer.authenticated and
    StayBooking.allInstances()->exists(b |

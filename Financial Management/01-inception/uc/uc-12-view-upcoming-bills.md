@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-12
 uc_name: "View Upcoming Bills"
 ---
@@ -40,6 +40,7 @@ PRE-1: The application view is open in the client.
 ### Post-Condition(s)
 
 POST-1: On success, the client displays upcoming bills or the empty-bills view.
+
 POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Basic Flow
@@ -51,23 +52,27 @@ POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Display No Upcoming Bills
 
-1. The system returns no bills.
-2. The client displays the empty-bills state.
+3a: The system returns no bills.
+
+3b: The client displays the empty-bills state.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Upcoming Bills Operation Error
 
-1. The system returns an operation error.
-2. The client displays the error message and keeps the current view open.
-3. The actor revises the interaction or retries the request.
+3c: The system returns an operation error.
 
-EF-2:
+3d: The client displays the error message and keeps the current view open.
 
-1. The system returns a rejected authentication context.
-2. The client presents the login entry point.
+3e: The actor revises the interaction or retries the request.
+
+EF-2: Upcoming Bills Authentication Rejected
+
+3f: The system returns a rejected authentication context.
+
+3g: The client presents the login entry point.
 
 ### Related UI
 
@@ -75,7 +80,7 @@ EF-2:
 
 ### Related API IDs
 
-- [API-BILL-LIST](../api/api-bill-list.md)
+- [API-BILL-LIST](../api/API-BILL-LIST.md)
 
 ### Notes
 
@@ -155,83 +160,83 @@ end note
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-12-01
--- Source: Product source
+~~~text
+BR-UPCOMING-BILLS-01 - Authenticated Context
+Source: Product source
 context BillService::upcoming(ctx: RequestContext): BillResult
-pre BR_UC_12_01_AuthenticatedContext:
+pre BR_UPCOMING_BILLS_01_AuthenticatedContext:
   ctx.authenticated and User.allInstances()->exists(u | u.id = ctx.userId)
 ~~~
 
-~~~ocl
--- BR-UC-12-02
--- Source: Product source
+~~~text
+BR-UPCOMING-BILLS-02 - Owned Bills
+Source: Product source
 context BillService::upcoming(ctx: RequestContext): BillResult
-post BR_UC_12_02_OwnedBills:
+post BR_UPCOMING_BILLS_02_OwnedBills:
   result.bills->forAll(b | b.userId = ctx.userId)
 ~~~
 
-~~~ocl
--- BR-UC-12-03
--- Source: Product source
+~~~text
+BR-UPCOMING-BILLS-03 - Window
+Source: Product source
 context BillService::upcoming(ctx: RequestContext): BillResult
-post BR_UC_12_03_Window:
+post BR_UPCOMING_BILLS_03_Window:
   result.bills->forAll(b | b.dueDate.ordinal >= ctx.today.ordinal and b.dueDate.ordinal <= ctx.today.ordinal + 30)
 ~~~
 
-~~~ocl
--- BR-UC-12-04
--- Source: Product source
+~~~text
+BR-UPCOMING-BILLS-04 - Uncharged Cycle
+Source: Product source
 context BillService::upcoming(ctx: RequestContext): BillResult
-post BR_UC_12_04_UnchargedCycle:
+post BR_UPCOMING_BILLS_04_UnchargedCycle:
   result.bills->forAll(b | b.lastChargeDate.oclIsUndefined() or b.lastChargeDate.ordinal < b.dueDate.ordinal)
 ~~~
 
-~~~ocl
--- BR-UC-12-05
--- Source: Product source
+~~~text
+BR-UPCOMING-BILLS-05 - Exact Coverage
+Source: Product source
 context BillService::upcoming(ctx: RequestContext): BillResult
-post BR_UC_12_05_ExactCoverage:
+post BR_UPCOMING_BILLS_05_ExactCoverage:
   result.success implies result.bills->collect(id)->asSet() = Bill.allInstances()->select(b | b.userId = ctx.userId and b.dueDate.ordinal >= ctx.today.ordinal and b.dueDate.ordinal <= ctx.today.ordinal + 30 and (b.lastChargeDate.oclIsUndefined() or b.lastChargeDate.ordinal < b.dueDate.ordinal))->collect(id)->asSet()
 ~~~
 
-~~~ocl
--- BR-UC-12-06
--- Source: Product source
+~~~text
+BR-UPCOMING-BILLS-06 - No Duplicates
+Source: Product source
 context BillService::upcoming(ctx: RequestContext): BillResult
-post BR_UC_12_06_NoDuplicates:
+post BR_UPCOMING_BILLS_06_NoDuplicates:
   result.bills->isUnique(id)
 ~~~
 
-~~~ocl
--- BR-UC-12-07
--- Source: Product source
+~~~text
+BR-UPCOMING-BILLS-07 - Urgency Order
+Source: Product source
 context BillService::upcoming(ctx: RequestContext): BillResult
-post BR_UC_12_07_UrgencyOrder:
+post BR_UPCOMING_BILLS_07_UrgencyOrder:
   result.bills->size() <= 1 or Sequence{1..result.bills->size()-1}->forAll(i | let a : BillView = result.bills->at(i) in let b : BillView = result.bills->at(i+1) in a.dueDate.ordinal < b.dueDate.ordinal or (a.dueDate.ordinal = b.dueDate.ordinal and (a.amount > b.amount or (a.amount = b.amount and a.id < b.id))))
 ~~~
 
-~~~ocl
--- BR-UC-12-08
--- Source: Product source
+~~~text
+BR-UPCOMING-BILLS-08 - Normalized Mapping
+Source: Product source
 context BillService::upcoming(ctx: RequestContext): BillResult
-post BR_UC_12_08_NormalizedMapping:
+post BR_UPCOMING_BILLS_08_NormalizedMapping:
   result.bills->forAll(v | Bill.allInstances()->exists(b | b.id = v.id and b.userId = v.userId and v.description = Text::trim(b.description) and v.amount = Numeric::round2(b.amount) and v.dueDate = b.dueDate and v.lastChargeDate = b.lastChargeDate and v.logoUrl = (if b.logoUrl.oclIsUndefined() or Text::trim(b.logoUrl).size() = 0 then null else Text::trim(b.logoUrl) endif)))
 ~~~
 
-~~~ocl
--- BR-UC-12-09
--- Source: Assumption
+~~~text
+BR-UPCOMING-BILLS-09 - Amounts
+Source: Assumption
 context BillService::upcoming(ctx: RequestContext): BillResult
-post BR_UC_12_09_Amounts:
+post BR_UPCOMING_BILLS_09_Amounts:
   result.bills->forAll(b | Numeric::finite(b.amount) and b.amount >= 0 and b.amount = Numeric::round2(b.amount))
 ~~~
 
-~~~ocl
--- BR-UC-12-10
--- Source: Product source
--- Equality denotes the complete persistent value snapshot, including every property, not object identity alone.
+~~~text
+BR-UPCOMING-BILLS-10 - Bill Unchanged
+Source: Product source
+Note: Equality denotes the complete persistent value snapshot, including every property, not object identity alone.
 context BillService::upcoming(ctx: RequestContext): BillResult
-post BR_UC_12_10_BillUnchanged:
+post BR_UPCOMING_BILLS_10_BillUnchanged:
   Bill.allInstances()->collect(e | Tuple{id = e.id, userId = e.userId, description = e.description, logoUrl = e.logoUrl, dueDate = e.dueDate, lastChargeDate = e.lastChargeDate, amount = e.amount})->asSet() = Bill.allInstances()@pre->collect(e | Tuple{id = e.id@pre, userId = e.userId@pre, description = e.description@pre, logoUrl = e.logoUrl@pre, dueDate = e.dueDate@pre, lastChargeDate = e.lastChargeDate@pre, amount = e.amount@pre})->asSet()
 ~~~

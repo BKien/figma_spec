@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-08
 uc_name: "Book a Stay"
 ---
@@ -40,6 +40,7 @@ PRE-1: The traveller is viewing checkout for a selected stay-offer context.
 ### Post-Condition(s)
 
 POST-1: The client displays the checkout outcome returned by the system.
+
 POST-2: The interface exposes the continuation supplied with that outcome.
 
 ### Basic Flow
@@ -55,29 +56,35 @@ POST-2: The interface exposes the continuation supplied with that outcome.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Review a Refreshed Stay Checkout Summary
 
-1. If a refreshed checkout summary is returned, the client presents it for review before confirmation.
+4a: If a refreshed checkout summary is returned, the client presents it for review before confirmation.
 
-AF-2:
+AF-2: Use Stay Booking Recovery Actions
 
-1. After a recoverable outcome, the traveller uses one of the displayed recovery actions.
+8a: After a recoverable outcome, the traveller uses one of the displayed recovery actions.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Retry Stay Booking Confirmation
 
-1. If the client receives no confirmation response, it displays a retry state.
-2. The traveller chooses retry and the client resubmits the confirmation request.
-3. The client displays the returned booking outcome.
+7a: If the client receives no confirmation response, it displays a retry state.
+
+7b: The traveller chooses retry and the client resubmits the confirmation request.
+
+7c: The client displays the returned booking outcome.
 
 ### Related UI
 
-`hotel reservation page`; `stay checkoutmobile`; `Your Selection`; `Your Details`; `Final Step`; `Home Address`; `Who are you booking for?`; `Are you travelling for work?`; `Save card details`; `Book now`.
+hotel reservation page; stay checkoutmobile; Your Selection; Your Details; Final Step; Home Address; Who are you booking for?; Are you travelling for work?; Save card details; Book now.
 
 ### Related API IDs
 
-`API-STAY-QUOTE`; `API-STAY-BOOKING-CREATE`.
+API-STAY-QUOTE; API-STAY-BOOKING-CREATE.
+
+### Notes
+
+None.
 
 ## UML Model
 
@@ -252,11 +259,11 @@ StayBooking --> "1" Money : total
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-08-01
--- Source: Assumption
+~~~text
+BR-BOOK-STAY-01 - New Booking Uses Live Quote Or Replays Existing Intent
+Source: Assumption
 context StayService::book(command: StayBookingCommand): StayBooking
-pre BR_UC_08_01_NewBookingUsesLiveQuoteOrReplaysExistingIntent:
+pre BR_BOOK_STAY_01_NewBookingUsesLiveQuoteOrReplaysExistingIntent:
   let prior = StayBooking.allInstances()->select(b |
     b.user.id = RequestContext::authenticatedUserId and b.idempotencyKey = command.idempotencyKey) in
   if prior->notEmpty() then
@@ -271,11 +278,11 @@ pre BR_UC_08_01_NewBookingUsesLiveQuoteOrReplaysExistingIntent:
   endif
 ~~~
 
-~~~ocl
--- BR-UC-08-02
--- Source: Assumption
+~~~text
+BR-BOOK-STAY-02 - Fingerprint Is Server Derived And Key Matches Intent
+Source: Assumption
 context StayService::book(command: StayBookingCommand): StayBooking
-pre BR_UC_08_02_FingerprintIsServerDerivedAndKeyMatchesIntent:
+pre BR_BOOK_STAY_02_FingerprintIsServerDerivedAndKeyMatchesIntent:
   command.idempotencyKey.trim().size() > 0 and
   command.requestFingerprint = RequestFingerprint::of(command) and
   StayBooking.allInstances()->select(b |
@@ -283,43 +290,43 @@ pre BR_UC_08_02_FingerprintIsServerDerivedAndKeyMatchesIntent:
     ->forAll(b | b.requestFingerprint = command.requestFingerprint)
 ~~~
 
-~~~ocl
--- BR-UC-08-03
--- Source: Assumption
+~~~text
+BR-BOOK-STAY-03 - Booking Is Owned And Bound To One Quote
+Source: Assumption
 context StayService::book(command: StayBookingCommand): StayBooking
-post BR_UC_08_03_BookingIsOwnedAndBoundToOneQuote:
+post BR_BOOK_STAY_03_BookingIsOwnedAndBoundToOneQuote:
   result.user.id = RequestContext::authenticatedUserId and
   result.quote.id = command.quoteId and
   StayBooking.allInstances()->select(b |
     b.quote.id = command.quoteId)->size() = 1
 ~~~
 
-~~~ocl
--- BR-UC-08-04
--- Source: Assumption
+~~~text
+BR-BOOK-STAY-04 - Persisted Commercial Terms Come From The Quote
+Source: Assumption
 context StayService::book(command: StayBookingCommand): StayBooking
-post BR_UC_08_04_PersistedCommercialTermsComeFromTheQuote:
+post BR_BOOK_STAY_04_PersistedCommercialTermsComeFromTheQuote:
   result.offer = result.quote.offer and
   result.total.amount = result.quote.total.amount and
   result.total.currency = result.quote.total.currency
 ~~~
 
-~~~ocl
--- BR-UC-08-05
--- Source: Assumption
+~~~text
+BR-BOOK-STAY-05 - Quote Is Consumed Atomically With Booking Creation
+Source: Assumption
 context StayService::book(command: StayBookingCommand): StayBooking
-post BR_UC_08_05_QuoteIsConsumedAtomicallyWithBookingCreation:
+post BR_BOOK_STAY_05_QuoteIsConsumedAtomicallyWithBookingCreation:
   result.quote.status = QuoteStatus::CONSUMED and
   StayBooking.allInstances()->select(b |
     b.user.id = RequestContext::authenticatedUserId and
     b.idempotencyKey = command.idempotencyKey)->size() = 1
 ~~~
 
-~~~ocl
--- BR-UC-08-06
--- Source: Assumption
+~~~text
+BR-BOOK-STAY-06 - Initial State Reflects Payment Authorization
+Source: Assumption
 context StayService::book(command: StayBookingCommand): StayBooking
-post BR_UC_08_06_InitialStateReflectsPaymentAuthorization:
+post BR_BOOK_STAY_06_InitialStateReflectsPaymentAuthorization:
   StayBooking.allInstances()@pre->forAll(b |
     b.user.id <> RequestContext::authenticatedUserId or b.idempotencyKey <> command.idempotencyKey) implies
     result.paymentReference <> null and
@@ -327,32 +334,32 @@ post BR_UC_08_06_InitialStateReflectsPaymentAuthorization:
      (result.paymentReference.status = PaymentStatus::PENDING and result.status = BookingStatus::PENDING))
 ~~~
 
-~~~ocl
--- BR-UC-08-07
--- Source: Assumption
+~~~text
+BR-BOOK-STAY-07 - Payment Reference Contains Only Derived Token Fingerprint
+Source: Assumption
 context StayService::book(command: StayBookingCommand): StayBooking
-post BR_UC_08_07_PaymentReferenceContainsOnlyDerivedTokenFingerprint:
+post BR_BOOK_STAY_07_PaymentReferenceContainsOnlyDerivedTokenFingerprint:
   result.paymentReference <> null implies
     result.paymentReference.tokenFingerprint = PaymentFingerprint::of(command.paymentToken) and
     result.paymentReference.tokenFingerprint <> command.paymentToken
 ~~~
 
-~~~ocl
--- BR-UC-08-08
--- Source: Assumption
+~~~text
+BR-BOOK-STAY-08 - New Booking Has Payment Credential And Room Capacity
+Source: Assumption
 context StayService::book(command: StayBookingCommand): StayBooking
-pre BR_UC_08_08_NewBookingHasPaymentCredentialAndRoomCapacity:
+pre BR_BOOK_STAY_08_NewBookingHasPaymentCredentialAndRoomCapacity:
   StayBooking.allInstances()->forAll(b |
     b.user.id <> RequestContext::authenticatedUserId or b.idempotencyKey <> command.idempotencyKey) implies
     command.paymentToken <> null and command.paymentToken.trim().size() > 0 and
     StayQuote.allInstances()->one(q | q.id = command.quoteId and q.offer.availableRooms >= q.offer.rooms)
 ~~~
 
-~~~ocl
--- BR-UC-08-09
--- Source: Assumption
+~~~text
+BR-BOOK-STAY-09 - Replay Returns Original Booking Without New Effects
+Source: Assumption
 context StayService::book(command: StayBookingCommand): StayBooking
-post BR_UC_08_09_ReplayReturnsOriginalBookingWithoutNewEffects:
+post BR_BOOK_STAY_09_ReplayReturnsOriginalBookingWithoutNewEffects:
   let prior = StayBooking.allInstances()@pre->select(b |
     b.user.id = RequestContext::authenticatedUserId and b.idempotencyKey = command.idempotencyKey) in
   result.idempotencyKey = command.idempotencyKey and
@@ -367,21 +374,21 @@ post BR_UC_08_09_ReplayReturnsOriginalBookingWithoutNewEffects:
   endif)
 ~~~
 
-~~~ocl
--- BR-UC-08-10
--- Source: Assumption
+~~~text
+BR-BOOK-STAY-10 - Quote Requires Authenticated User And Live Offer
+Source: Assumption
 context StayService::quote(offerId: String): StayQuote
-pre BR_UC_08_10_QuoteRequiresAuthenticatedUserAndLiveOffer:
+pre BR_BOOK_STAY_10_QuoteRequiresAuthenticatedUserAndLiveOffer:
   User.allInstances()->one(u | u.id = RequestContext::authenticatedUserId and u.active) and
   StayOffer.allInstances()->one(o |
     o.id = offerId and o.available and o.expiresAt > RequestContext::startedAt)
 ~~~
 
-~~~ocl
--- BR-UC-08-11
--- Source: Assumption
+~~~text
+BR-BOOK-STAY-11 - Issued Quote Captures Revalidated Offer Terms
+Source: Assumption
 context StayService::quote(offerId: String): StayQuote
-post BR_UC_08_11_IssuedQuoteCapturesRevalidatedOfferTerms:
+post BR_BOOK_STAY_11_IssuedQuoteCapturesRevalidatedOfferTerms:
   result.oclIsNew() and result.offer.id = offerId and
   result.user.id = RequestContext::authenticatedUserId and
   result.offerVersion = result.offer.version and result.status = QuoteStatus::ACTIVE and
@@ -389,42 +396,42 @@ post BR_UC_08_11_IssuedQuoteCapturesRevalidatedOfferTerms:
   result.expiresAt > RequestContext::startedAt and result.expiresAt <= result.offer.expiresAt
 ~~~
 
-~~~ocl
--- BR-UC-08-12
--- Source: Assumption
+~~~text
+BR-BOOK-STAY-12 - Guest Contact And Authenticated Owner Are Usable
+Source: Assumption
 context StayService::book(command: StayBookingCommand): StayBooking
-pre BR_UC_08_12_GuestContactAndAuthenticatedOwnerAreUsable:
+pre BR_BOOK_STAY_12_GuestContactAndAuthenticatedOwnerAreUsable:
   User.allInstances()->one(u | u.id = RequestContext::authenticatedUserId and u.active) and
   command.guest.firstName.trim().size() > 0 and command.guest.lastName.trim().size() > 0 and
   command.guest.homeAddress.trim().size() > 0 and Validation::isEmail(command.guest.email) and Validation::isPhone(command.guest.phone) and
   Validation::isCountryCode(command.guest.countryCode)
 ~~~
 
-~~~ocl
--- BR-UC-08-13
--- Source: Assumption
+~~~text
+BR-BOOK-STAY-13 - New Booking Reserves Provider Inventory Once
+Source: Assumption
 context StayService::book(command: StayBookingCommand): StayBooking
-post BR_UC_08_13_NewBookingReservesProviderInventoryOnce:
+post BR_BOOK_STAY_13_NewBookingReservesProviderInventoryOnce:
   result.oclIsNew() implies
     result.providerReservationRef <> null and result.providerReservationRef.trim().size() > 0 and
     StayBooking.allInstances()->isUnique(b | b.providerReservationRef)
 ~~~
 
-~~~ocl
--- BR-UC-08-14
--- Source: Assumption
+~~~text
+BR-BOOK-STAY-14 - Quote Does Not Reserve Inventory Or Authorize Payment
+Source: Assumption
 context StayService::quote(offerId: String): StayQuote
-post BR_UC_08_14_QuoteDoesNotReserveInventoryOrAuthorizePayment:
+post BR_BOOK_STAY_14_QuoteDoesNotReserveInventoryOrAuthorizePayment:
   StayBooking.allInstances() = StayBooking.allInstances()@pre and
   ReadState::payments() = ReadState::payments()@pre and
   ProviderInventory::reservations() = ProviderInventory::reservations()@pre
 ~~~
 
-~~~ocl
--- BR-UC-08-15
--- Source: Assumption
+~~~text
+BR-BOOK-STAY-15 - Booking Retains The Submitted Guest Contact
+Source: Assumption
 context StayService::book(command: StayBookingCommand): StayBooking
-post BR_UC_08_15_BookingRetainsTheSubmittedGuestContact:
+post BR_BOOK_STAY_15_BookingRetainsTheSubmittedGuestContact:
   result.guest.firstName = command.guest.firstName and result.guest.lastName = command.guest.lastName and
   result.guest.homeAddress = command.guest.homeAddress and result.guest.email = command.guest.email and
   result.guest.phone = command.guest.phone and result.guest.countryCode = command.guest.countryCode and
@@ -432,11 +439,11 @@ post BR_UC_08_15_BookingRetainsTheSubmittedGuestContact:
 ~~~
 
 
-~~~ocl
--- BR-UC-08-16
--- Source: Figma
+~~~text
+BR-BOOK-STAY-16 - Save Card Choice Controls The Saved Provider Reference
+Source: Figma
 context StayService::book(command: StayBookingCommand): StayBooking
-post BR_UC_08_16_SaveCardChoiceControlsTheSavedProviderReference:
+post BR_BOOK_STAY_16_SaveCardChoiceControlsTheSavedProviderReference:
   (command.savePaymentMethod implies
     result.savedPaymentMethod <> null and result.savedPaymentMethod.user = result.user and
     result.savedPaymentMethod.providerReference <> command.paymentToken) and

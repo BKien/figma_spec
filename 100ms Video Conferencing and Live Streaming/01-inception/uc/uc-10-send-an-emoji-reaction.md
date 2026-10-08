@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-10
 uc_name: "Send an Emoji Reaction"
 ---
@@ -52,27 +52,29 @@ POST-1: The client renders the reaction event returned by the system.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Dismiss Reaction Choices
 
-1. The participant closes the reaction controls without selecting an item.
-2. The client restores the session controls.
+3a: The participant closes the reaction controls without selecting an item.
+
+3b: The client restores the session controls.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Reaction Creation Failure
 
-1. The reaction cannot be created.
-2. The client displays the returned failure notice without closing the session.
+5a: The reaction cannot be created.
+
+5b: The client displays the returned failure notice without closing the session.
 
 ### Related UI
 
-- Video Conferencing Desktop Features `6007:55138`.
+- Video Conferencing Desktop Features 6007:55138.
 - Component evidence: Modal/Emoji Reactions.
 
 ### Related API IDs
 
-`API-REACTION-CREATE`.
-`API-SESSION-STATE`.
+API-REACTION-CREATE.
+API-SESSION-STATE.
 
 ### Notes
 
@@ -92,12 +94,12 @@ class CollaborationService {
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-10-01
--- Source: Assumption
--- Assumption: A-19
+~~~text
+BR-SEND-REACTION-01 - Authenticated Membership
+Source: Assumption
+Assumption: A-19
 context CollaborationService::sendReaction(command: ReactionCommand, session: Session): ReactionEvent
-pre BR_UC_10_01_AuthenticatedMembership:
+pre BR_SEND_REACTION_01_AuthenticatedMembership:
   RequestContext::authenticated and RequestContext::sessionId = command.sessionId and
   command.participantId = RequestContext::participantId and
   Participant.allInstances()->exists(p | p.id = command.participantId and
@@ -105,56 +107,56 @@ pre BR_UC_10_01_AuthenticatedMembership:
     p.status = ParticipantStatus::JOINED)
 ~~~
 
-~~~ocl
--- BR-UC-10-02
--- Source: Assumption
--- Assumption: A-19
+~~~text
+BR-SEND-REACTION-02 - Target Session
+Source: Assumption
+Assumption: A-19
 context CollaborationService::sendReaction(command: ReactionCommand, session: Session): ReactionEvent
-pre BR_UC_10_02_TargetSession:
+pre BR_SEND_REACTION_02_TargetSession:
   command.sessionId = session.id and session.status <> SessionStatus::ENDED
 ~~~
 
-~~~ocl
--- BR-UC-10-03
--- Source: Assumption
--- Assumption: A-20
+~~~text
+BR-SEND-REACTION-03 - Command Key
+Source: Assumption
+Assumption: A-20
 context CollaborationService::sendReaction(command: ReactionCommand, session: Session): ReactionEvent
-pre BR_UC_10_03_CommandKey:
+pre BR_SEND_REACTION_03_CommandKey:
   command.idempotencyKey <> null and command.idempotencyKey.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-10-04
--- Source: Assumption
--- Assumption: A-10
+~~~text
+BR-SEND-REACTION-04 - Created Identity
+Source: Assumption
+Assumption: A-10
 context CollaborationService::sendReaction(command: ReactionCommand, session: Session): ReactionEvent
-post BR_UC_10_04_CreatedIdentity:
+post BR_SEND_REACTION_04_CreatedIdentity:
   result.oclIsNew() and result.id <> null and result.sessionId = command.sessionId and result.participantId = command.participantId
 ~~~
 
-~~~ocl
--- BR-UC-10-05
--- Source: Assumption
--- Assumption: A-10
+~~~text
+BR-SEND-REACTION-05 - Reaction Value
+Source: Assumption
+Assumption: A-10
 context CollaborationService::sendReaction(command: ReactionCommand, session: Session): ReactionEvent
-post BR_UC_10_05_ReactionValue:
+post BR_SEND_REACTION_05_ReactionValue:
   result.reaction = command.reaction and result.createdAt <> null and result.sequence = session.version@pre + 1
 ~~~
 
-~~~ocl
--- BR-UC-10-06
--- Source: Assumption
--- Assumption: A-10
+~~~text
+BR-SEND-REACTION-06 - Participation Unaffected
+Source: Assumption
+Assumption: A-10
 context CollaborationService::sendReaction(command: ReactionCommand, session: Session): ReactionEvent
-post BR_UC_10_06_ParticipationUnaffected:
+post BR_SEND_REACTION_06_ParticipationUnaffected:
   Participant.allInstances() = Participant.allInstances()@pre
 ~~~
 
-~~~ocl
--- BR-UC-10-07
--- Source: Assumption
--- Assumption: A-10
+~~~text
+BR-SEND-REACTION-07 - No Implicit Stage Request
+Source: Assumption
+Assumption: A-10
 context CollaborationService::sendReaction(command: ReactionCommand, session: Session): ReactionEvent
-post BR_UC_10_07_NoImplicitStageRequest:
+post BR_SEND_REACTION_07_NoImplicitStageRequest:
   StageRequest.allInstances() = StageRequest.allInstances()@pre
 ~~~

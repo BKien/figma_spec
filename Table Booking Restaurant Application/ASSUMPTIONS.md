@@ -22,3 +22,14 @@ The design supplies screen structure and visible actions, but not backend rules.
 | A-16 | User edits require a nonblank display name and preserve the account email. | UC-19 |
 
 No cancellation cutoff before the slot start, reservation duration, maximum party size, code lifetime, or message retention period is asserted from Figma. These require a product decision before implementation.
+
+## 2026-10-07 — Template completion decisions
+
+These decisions complete the utility contracts under the user-authorized template update; they are repository specification choices rather than claims about a deployed implementation.
+
+- Date::today uses Asia/Saigon at the captured request-start instant. DateTime::now uses that same instant in UTC with millisecond precision. Restaurant-local slot comparisons use the restaurant's IANA timezone.
+- Email normalization trims outer Unicode whitespace, applies NFC, and lowercases without provider-specific alias rewriting.
+- Password hashes use self-describing Argon2id with a fresh 16-byte salt, 65536 KiB memory, 3 iterations, parallelism 1, and a 32-byte output. Code and access-token verification uses separate external HMAC-SHA-256 keys; encrypted phone values use AES-256-GCM with an external key.
+- Booking request fingerprints use SHA-256 of versioned canonical JSON over the submitted command, excluding replay keys and supplied fingerprints. Nulls, decimal values, and timestamps have stable encodings.
+- Slot lists break equal start times by ID ascending; booking and notification lists break equal creation times by ID descending.
+- Restaurant address resolution must produce a unique geocoded IANA timezone. Ambiguous or unresolved addresses reject the write instead of receiving a guessed timezone.

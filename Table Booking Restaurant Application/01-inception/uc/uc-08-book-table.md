@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-08
 uc_name: "Book a Table"
 ---
@@ -53,26 +53,26 @@ POST-1: The client displays the booking result.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Return to Slot Selection
 
-1. The customer returns to slot selection from the confirmation view.
+2a: The customer returns to slot selection from the confirmation view.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Booking Conflict
 
-1. The client displays the returned booking conflict and offers the slot list again.
+6a: The client displays the returned booking conflict and offers the slot list again.
 
 ### Related UI
 
-- [Confirm Booking](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=295-495) (`295:495`)
-- [Confirm Booking OTP](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=2383-2998) (`2383:2998`)
-- [table booked](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=772-1193) (`772:1193`)
+- [Confirm Booking](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=295-495) (295:495)
+- [Confirm Booking OTP](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=2383-2998) (2383:2998)
+- [table booked](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=772-1193) (772:1193)
 
 ### Related API IDs
 
-- [API-BOOKING-CREATE](../api/api-booking-create.md)
-- [API-BOOKING-CHALLENGE](../api/api-booking-challenge.md)
+- [API-BOOKING-CREATE](../api/API-BOOKING-CREATE.md)
+- [API-BOOKING-CHALLENGE](../api/API-BOOKING-CHALLENGE.md)
 
 ### Notes
 
@@ -181,73 +181,73 @@ Booking --> "1" BookingStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-08-01
--- Source: Assumption
+~~~text
+BR-BOOK-TABLE-01 - Slot Can Serve Party
+Source: Assumption
 context BookingService::create(command: CreateBookingCommand): Booking
-pre BR_UC_08_01_SlotCanServeParty:
+pre BR_BOOK_TABLE_01_SlotCanServeParty:
   Booking.allInstances()->exists(b | b.account.id = RequestContext::accountId and b.idempotencyKey = command.idempotencyKey) or ReservationSlot.allInstances()->exists(s | s.id = command.slotId and s.restaurant.id = command.restaurantId and s.remainingSeats >= command.partySize and s.startsAt > DateTime::now())
 ~~~
-~~~ocl
--- BR-UC-08-02
--- Source: Assumption
+~~~text
+BR-BOOK-TABLE-02 - Verified Contact
+Source: Assumption
 context BookingService::create(command: CreateBookingCommand): Booking
-pre BR_UC_08_02_VerifiedContact:
+pre BR_BOOK_TABLE_02_VerifiedContact:
   Booking.allInstances()->exists(b | b.account.id = RequestContext::accountId and b.idempotencyKey = command.idempotencyKey) or VerificationChallenge.allInstances()->exists(v | v.account.id = RequestContext::accountId and v.purpose = ChallengePurpose::BOOKING and CodeHash::matches(command.verificationCode, v.codeHash) and v.expiresAt > DateTime::now() and v.consumedAt = null)
 ~~~
-~~~ocl
--- BR-UC-08-03
--- Source: Assumption
+~~~text
+BR-BOOK-TABLE-03 - Booking Is Bound To Slot And Owner
+Source: Assumption
 context BookingService::create(command: CreateBookingCommand): Booking
-post BR_UC_08_03_BookingIsBoundToSlotAndOwner:
+post BR_BOOK_TABLE_03_BookingIsBoundToSlotAndOwner:
   result.account.id = RequestContext::accountId and result.slot.id = command.slotId and result.status = BookingStatus::CONFIRMED
 ~~~
-~~~ocl
--- BR-UC-08-04
--- Source: Assumption
+~~~text
+BR-BOOK-TABLE-04 - Idempotent Creation
+Source: Assumption
 context BookingService::create(command: CreateBookingCommand): Booking
-post BR_UC_08_04_IdempotentCreation:
+post BR_BOOK_TABLE_04_IdempotentCreation:
   let prior = Booking.allInstances()@pre->select(b | b.account.id = RequestContext::accountId and b.idempotencyKey = command.idempotencyKey) in if prior->notEmpty() then result.id = prior->any(b | true).id else Booking.allInstances()->select(b | b.account.id = RequestContext::accountId and b.idempotencyKey = command.idempotencyKey)->size() = 1 endif
 ~~~
-~~~ocl
--- BR-UC-08-05
--- Source: Assumption
+~~~text
+BR-BOOK-TABLE-05 - Slot Capacity Changes Atomically
+Source: Assumption
 context BookingService::create(command: CreateBookingCommand): Booking
-post BR_UC_08_05_SlotCapacityChangesAtomically:
+post BR_BOOK_TABLE_05_SlotCapacityChangesAtomically:
   if Booking.allInstances()@pre->exists(b | b.account.id = RequestContext::accountId and b.idempotencyKey = command.idempotencyKey) then result.slot.remainingSeats = result.slot.remainingSeats@pre else ReservationSlot.allInstances()->one(s | s.id = command.slotId and s.remainingSeats = s.remainingSeats@pre - command.partySize and s.version = s.version@pre + 1) endif
 ~~~
-~~~ocl
--- BR-UC-08-06
--- Source: Assumption
+~~~text
+BR-BOOK-TABLE-06 - Challenge Stores Only Hash
+Source: Assumption
 context BookingService::issueChallenge(command: ChallengeCommand): VerificationChallenge
-post BR_UC_08_06_ChallengeStoresOnlyHash:
+post BR_BOOK_TABLE_06_ChallengeStoresOnlyHash:
   result.codeHash <> null and result.purpose = ChallengePurpose::BOOKING and result.expiresAt > DateTime::now()
 ~~~
-~~~ocl
--- BR-UC-08-07
--- Source: Assumption
+~~~text
+BR-BOOK-TABLE-07 - Existing Key Matches Intent
+Source: Assumption
 context BookingService::create(command: CreateBookingCommand): Booking
-pre BR_UC_08_07_ExistingKeyMatchesIntent:
+pre BR_BOOK_TABLE_07_ExistingKeyMatchesIntent:
   Booking.allInstances()->select(b | b.account.id = RequestContext::accountId and b.idempotencyKey = command.idempotencyKey)->forAll(b | b.requestFingerprint = RequestFingerprint::of(command))
 ~~~
-~~~ocl
--- BR-UC-08-08
--- Source: Assumption
+~~~text
+BR-BOOK-TABLE-08 - Booking Copies Confirmed Party
+Source: Assumption
 context BookingService::create(command: CreateBookingCommand): Booking
-post BR_UC_08_08_BookingCopiesConfirmedParty:
+post BR_BOOK_TABLE_08_BookingCopiesConfirmedParty:
   result.partySize = command.partySize and PhoneCipher::matches(result.contactPhoneEncrypted, command.contactPhone)
 ~~~
-~~~ocl
--- BR-UC-08-09
--- Source: Assumption
+~~~text
+BR-BOOK-TABLE-09 - Booking Stores Request Fingerprint
+Source: Assumption
 context BookingService::create(command: CreateBookingCommand): Booking
-post BR_UC_08_09_BookingStoresRequestFingerprint:
+post BR_BOOK_TABLE_09_BookingStoresRequestFingerprint:
   result.requestFingerprint = RequestFingerprint::of(command)
 ~~~
-~~~ocl
--- BR-UC-08-10
--- Source: Assumption
+~~~text
+BR-BOOK-TABLE-10 - Booking Challenge Is Consumed
+Source: Assumption
 context BookingService::create(command: CreateBookingCommand): Booking
-post BR_UC_08_10_BookingChallengeIsConsumed:
+post BR_BOOK_TABLE_10_BookingChallengeIsConsumed:
   Booking.allInstances()@pre->exists(b | b.account.id = RequestContext::accountId and b.idempotencyKey = command.idempotencyKey) or VerificationChallenge.allInstances()->exists(v | v.account.id = RequestContext::accountId and v.purpose = ChallengePurpose::BOOKING and v.consumedAt <> null)
 ~~~

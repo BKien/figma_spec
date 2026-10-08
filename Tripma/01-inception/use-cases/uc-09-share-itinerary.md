@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-09
 uc_name: "Share Itinerary"
 ---
@@ -36,11 +36,13 @@ The visitor initiates itinerary sharing from an available booking-confirmation e
 ### Pre-Condition(s)
 
 PRE-1: A booking-confirmation reference is available to the current experience.
+
 PRE-2: Tripma can attempt to resolve the referenced booking.
 
 ### Post-Condition(s)
 
 POST-1: When sharing succeeds, Tripma records the sharing outcome for the referenced booking.
+
 POST-2: When sharing cannot be completed, Tripma reports the outcome without changing the booking.
 
 ### Basic Flow
@@ -60,29 +62,40 @@ POST-2: When sharing cannot be completed, Tripma reports the outcome without cha
 ### Alternative Flow
 
 AF-1: Share with additional recipients
-3a. The visitor adds another recipient to the current request.
-3b. Tripma retains the previously supplied recipients.
-3c. The Basic Flow resumes at step 4.
+
+3a: The visitor adds another recipient to the current request.
+
+3b: Tripma retains the previously supplied recipients.
+
+3c: The Basic Flow resumes at step 4.
 
 AF-2: Cancel sharing
-3a. The visitor leaves the sharing experience before submitting.
-3b. Tripma returns to the booking-confirmation experience without creating a sharing record.
+
+3a: The visitor leaves the sharing experience before submitting.
+
+3b: Tripma returns to the booking-confirmation experience without creating a sharing record.
 
 ### Exception Flow
 
 EF-1: Recipient information requires attention
-4a. If the recipient information cannot be accepted, Tripma identifies the affected input and does not submit the request.
+
+4a: If the recipient information cannot be accepted, Tripma identifies the affected input and does not submit the request.
 
 EF-2: Booking access is unavailable
-7a. If the referenced booking cannot be accessed, API-BOOKING-ITINERARY-SHARE returns the corresponding outcome.
-7b. No itinerary is delivered.
+
+7a: If the referenced booking cannot be accessed, API-BOOKING-ITINERARY-SHARE returns the corresponding outcome.
+
+7b: No itinerary is delivered.
 
 EF-3: Itinerary delivery fails
-8a. If an itinerary cannot be delivered, the service records the failed delivery outcome.
-8b. Tripma reports the unsuccessful recipients without changing the booking.
+
+8a: If an itinerary cannot be delivered, the service records the failed delivery outcome.
+
+8b: Tripma reports the unsuccessful recipients without changing the booking.
 
 EF-4: Request cannot be completed
-6a. If Tripma cannot complete the request because of a technical failure, it presents a retryable error state.
+
+6a: If Tripma cannot complete the request because of a technical failure, it presents a retryable error state.
 
 ### Related UI
 
@@ -177,7 +190,7 @@ ItineraryDeliveryDto --> "1" ItineraryDeliveryStatus : deliveryStatus
 The following rules are authoritative for Prompt E. OCL is preserved where applicable; technical or non-OCL constraints remain authoritative natural-language requirements.
 
 ~~~text
-BR-SHARE-001: Confirmation access
+BR-SHARE-001 - Confirmation access
 context ShareItineraryService::share(
   dto : ShareItineraryDto
 ) : ShareItineraryResponseDto
@@ -192,7 +205,7 @@ pre BR_SHARE_001_Access:
         lower(trim(dto.access.confirmationCode)))))
 
 
-BR-SHARE-002: Recipient count
+BR-SHARE-002 - Recipient count
 context ShareItineraryService::share(
   dto : ShareItineraryDto
 ) : ShareItineraryResponseDto
@@ -201,7 +214,7 @@ pre BR_SHARE_002_Count:
   dto.recipientEmails->size() <= 3
 
 
-BR-SHARE-003: Accepted recipients
+BR-SHARE-003 - Accepted recipients
 context ShareItineraryService::share(
   dto : ShareItineraryDto
 ) : ShareItineraryResponseDto
@@ -211,7 +224,7 @@ pre BR_SHARE_003_Emails:
     isEmail(normalizeEmail(email)))
 
 
-BR-SHARE-004: Distinct recipients
+BR-SHARE-004 - Distinct recipients
 context ShareItineraryService::share(
   dto : ShareItineraryDto
 ) : ShareItineraryResponseDto
@@ -219,7 +232,7 @@ pre BR_SHARE_004_Distinct:
   dto.recipientEmails->isUnique(email | normalizeEmail(email))
 
 
-BR-SHARE-005: Form readiness
+BR-SHARE-005 - Form readiness
 context ShareItineraryService::canShare(
   dto : ShareItineraryDto
 ) : Boolean
@@ -233,7 +246,7 @@ post BR_SHARE_005_Result:
     dto.recipientEmails->isUnique(email | normalizeEmail(email))
 
 
-BR-SHARE-006: Sharing records
+BR-SHARE-006 - Sharing records
 context ShareItineraryService::share(
   dto : ShareItineraryDto
 ) : ShareItineraryResponseDto
@@ -249,7 +262,7 @@ post BR_SHARE_006_Records:
         record.deliveryStatus = delivery.deliveryStatus))
 
 
-BR-SHARE-007: Successful delivery
+BR-SHARE-007 - Successful delivery
 context ShareItineraryService::share(
   dto : ShareItineraryDto
 ) : ShareItineraryResponseDto
@@ -259,10 +272,10 @@ post BR_SHARE_007_Delivery:
       delivery.deliveryStatus = ItineraryDeliveryStatus::SENT and
       not delivery.sentAt.oclIsUndefined())
 Technical constraints:
-- A delivery is marked SENT only after the configured email provider accepts the itinerary message and returns a delivery reference.
+A delivery is marked SENT only after the configured email provider accepts the itinerary message and returns a delivery reference.
 
 
-BR-SHARE-008: Failed delivery
+BR-SHARE-008 - Failed delivery
 context ShareItineraryService::share(
   dto : ShareItineraryDto
 ) : ShareItineraryResponseDto
@@ -273,7 +286,7 @@ post BR_SHARE_008_Failure:
       delivery.sentAt.oclIsUndefined())
 
 
-BR-SHARE-009: Recipient normalization
+BR-SHARE-009 - Recipient normalization
 context ShareItineraryService::share(
   dto : ShareItineraryDto
 ) : ShareItineraryResponseDto
@@ -285,16 +298,15 @@ post BR_SHARE_009_Normalized:
         normalizeEmail(email) = delivery.recipientEmail))
 
 
-BR-SHARE-010: Itinerary boundary
+BR-SHARE-010 - Itinerary boundary
 Calling API-BOOKING-ITINERARY-SHARE shall not create, update, or delete the
 referenced Booking or its flight, passenger, seat, baggage, or payment records.
 
 
-BR-SHARE-011: Sensitive itinerary content
+BR-SHARE-011 - Sensitive itinerary content
 The shared itinerary and API response shall not contain a raw card number,
 card security code, payment token, password, password hash, or session token.
 Technical constraints:
-- Recipient addresses and itinerary content must not appear in URLs, analytics, traces, or application logs.
-- Email content is generated from the server-side booking projection after access is established; client-supplied itinerary content is not accepted.
-
+Recipient addresses and itinerary content must not appear in URLs, analytics, traces, or application logs.
+Email content is generated from the server-side booking projection after access is established; client-supplied itinerary content is not accepted.
 ~~~

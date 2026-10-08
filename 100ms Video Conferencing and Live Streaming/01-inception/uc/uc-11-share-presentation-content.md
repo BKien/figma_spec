@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-11
 uc_name: "Share Presentation Content"
 ---
@@ -52,34 +52,37 @@ POST-1: The client displays the returned content-share representation.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Share PDF Content
 
-1. The participant chooses PDF instead of screen content.
-2. The client presents the selected PDF in the share layout.
+3a: The participant chooses PDF instead of screen content.
 
-AF-2:
+3b: The client presents the selected PDF in the share layout.
 
-1. The participant chooses to stop the active share.
-2. The client submits the stop action and restores the returned session layout.
+AF-2: Stop Active Content Share
+
+6a: The participant chooses to stop the active share.
+
+6b: The client submits the stop action and restores the returned session layout.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Content Share Failure
 
-1. The system cannot complete the share action.
-2. The client displays the returned failure state and retains the session view.
+5a: The system cannot complete the share action.
+
+5b: The client displays the returned failure state and retains the session view.
 
 ### Related UI
 
-- Live Streaming Desktop Features `6007:86770`.
-- Video Conferencing Desktop Features `6007:55138`.
-- Video Conferencing Desktop Layouts `6007:77656`.
-- Video Conferencing Mobile Features `6012:52233`.
+- Live Streaming Desktop Features 6007:86770.
+- Video Conferencing Desktop Features 6007:55138.
+- Video Conferencing Desktop Layouts 6007:77656.
+- Video Conferencing Mobile Features 6012:52233.
 
 ### Related API IDs
 
-`API-CONTENT-SHARE-CONTROL`.
-`API-SESSION-STATE`.
+API-CONTENT-SHARE-CONTROL.
+API-SESSION-STATE.
 
 ### Notes
 
@@ -99,12 +102,12 @@ class ContentShareService {
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-11-01
--- Source: Assumption
--- Assumption: A-19
+~~~text
+BR-SHARE-CONTENT-01 - Authenticated Membership
+Source: Assumption
+Assumption: A-19
 context ContentShareService::control(command: ContentShareCommand, session: Session): ContentShare
-pre BR_UC_11_01_AuthenticatedMembership:
+pre BR_SHARE_CONTENT_01_AuthenticatedMembership:
   RequestContext::authenticated and RequestContext::sessionId = command.sessionId and
   command.ownerParticipantId = RequestContext::participantId and
   Participant.allInstances()->exists(p | p.id = command.ownerParticipantId and
@@ -112,53 +115,53 @@ pre BR_UC_11_01_AuthenticatedMembership:
     p.status = ParticipantStatus::JOINED)
 ~~~
 
-~~~ocl
--- BR-UC-11-02
--- Source: Assumption
--- Assumption: A-19
+~~~text
+BR-SHARE-CONTENT-02 - Target Session
+Source: Assumption
+Assumption: A-19
 context ContentShareService::control(command: ContentShareCommand, session: Session): ContentShare
-pre BR_UC_11_02_TargetSession:
+pre BR_SHARE_CONTENT_02_TargetSession:
   command.sessionId = session.id and session.status <> SessionStatus::ENDED
 ~~~
 
-~~~ocl
--- BR-UC-11-03
--- Source: Assumption
--- Assumption: A-20
+~~~text
+BR-SHARE-CONTENT-03 - Command Key
+Source: Assumption
+Assumption: A-20
 context ContentShareService::control(command: ContentShareCommand, session: Session): ContentShare
-pre BR_UC_11_03_CommandKey:
+pre BR_SHARE_CONTENT_03_CommandKey:
   command.idempotencyKey <> null and command.idempotencyKey.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-11-04
--- Source: Assumption
--- Assumption: A-11
+~~~text
+BR-SHARE-CONTENT-04 - Start Share
+Source: Assumption
+Assumption: A-11
 context ContentShareService::control(command: ContentShareCommand, session: Session): ContentShare
-pre BR_UC_11_04_StartShare:
+pre BR_SHARE_CONTENT_04_StartShare:
   command.action = ShareAction::START implies session.status = SessionStatus::LIVE and command.expectedVersion = null and
   command.kind <> null and command.sourceReference <> null and command.sourceReference.trim().size() > 0 and
   not ContentShare.allInstances()->exists(s | s.sessionId = session.id and s.status = ShareStatus::ACTIVE) and
   (session.kind <> SessionKind::LIVE_STREAM or Participant.allInstances()->exists(p | p.id = command.ownerParticipantId and p.role <> ParticipantRole::VIEWER))
 ~~~
 
-~~~ocl
--- BR-UC-11-05
--- Source: Assumption
--- Assumption: A-11
+~~~text
+BR-SHARE-CONTENT-05 - Stop Share
+Source: Assumption
+Assumption: A-11
 context ContentShareService::control(command: ContentShareCommand, session: Session): ContentShare
-pre BR_UC_11_05_StopShare:
+pre BR_SHARE_CONTENT_05_StopShare:
   command.action = ShareAction::STOP implies ContentShare.allInstances()->one(s |
     s.sessionId = session.id and s.status = ShareStatus::ACTIVE and s.version = command.expectedVersion and
     (s.ownerParticipantId = command.ownerParticipantId or Participant.allInstances()->exists(p | p.id = command.ownerParticipantId and p.role = ParticipantRole::HOST)))
 ~~~
 
-~~~ocl
--- BR-UC-11-06
--- Source: Assumption
--- Assumption: A-11
+~~~text
+BR-SHARE-CONTENT-06 - Share Effect
+Source: Assumption
+Assumption: A-11
 context ContentShareService::control(command: ContentShareCommand, session: Session): ContentShare
-post BR_UC_11_06_ShareEffect:
+post BR_SHARE_CONTENT_06_ShareEffect:
   result.sessionId = session.id and
   if command.action = ShareAction::START then result.oclIsNew() and result.status = ShareStatus::ACTIVE and
     result.ownerParticipantId = command.ownerParticipantId and result.kind = command.kind and result.sourceReference = command.sourceReference and
@@ -167,11 +170,11 @@ post BR_UC_11_06_ShareEffect:
     result.status = ShareStatus::STOPPED and result.version = command.expectedVersion + 1 and result.stoppedAt <> null endif
 ~~~
 
-~~~ocl
--- BR-UC-11-07
--- Source: Assumption
--- Assumption: A-22
+~~~text
+BR-SHARE-CONTENT-07 - One Active Share
+Source: Assumption
+Assumption: A-22
 context ContentShare
-inv BR_UC_11_07_OneActiveShare:
+inv BR_SHARE_CONTENT_07_OneActiveShare:
   ContentShare.allInstances()->select(s | s.sessionId = self.sessionId and s.status = ShareStatus::ACTIVE)->size() <= 1
 ~~~

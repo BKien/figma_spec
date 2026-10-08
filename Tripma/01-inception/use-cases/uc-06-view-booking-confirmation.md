@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-06
 uc_name: "View Booking Confirmation"
 ---
@@ -36,11 +36,13 @@ The visitor opens the Tripma booking-success experience.
 ### Pre-Condition(s)
 
 PRE-1: A booking-confirmation reference is available to the current experience.
+
 PRE-2: Tripma can attempt to resolve the referenced booking.
 
 ### Post-Condition(s)
 
 POST-1: When the request succeeds, Tripma presents the booking-confirmation experience.
+
 POST-2: When the experience cannot be completed, Tripma reports the applicable outcome without changing the booking.
 
 ### Basic Flow
@@ -56,26 +58,34 @@ POST-2: When the experience cannot be completed, Tripma reports the applicable o
 ### Alternative Flow
 
 AF-1: Open the experience again
-1a. The visitor reopens or refreshes the booking-success experience.
-1b. Tripma resolves the available confirmation reference.
-1c. The Basic Flow resumes at step 2.
+
+1a: The visitor reopens or refreshes the booking-success experience.
+
+1b: Tripma resolves the available confirmation reference.
+
+1c: The Basic Flow resumes at step 2.
 
 ### Exception Flow
 
 EF-1: Confirmation reference requires attention
-3a. If the confirmation request cannot be accepted, Tripma presents the corresponding access outcome.
-3b. No confirmation details are presented.
+
+3a: If the confirmation request cannot be accepted, Tripma presents the corresponding access outcome.
+
+3b: No confirmation details are presented.
 
 EF-2: Confirmation is unavailable
-4a. If the referenced confirmation cannot be resolved, Tripma presents an unavailable state.
-4b. The visitor may leave the experience or retry with another available reference.
+
+4a: If the referenced confirmation cannot be resolved, Tripma presents an unavailable state.
+
+4b: The visitor may leave the experience or retry with another available reference.
 
 EF-3: Request cannot be completed
-2a. If Tripma cannot complete a request because of a technical failure, it presents a recoverable error state.
+
+2a: If Tripma cannot complete a request because of a technical failure, it presents a recoverable error state.
 
 ### Related UI
 
-Booking-success page (`/successbooking`); confirmation message; flight summary; price breakdown; payment-method summary; flight-route image
+Booking-success page (/successbooking); confirmation message; flight summary; price breakdown; payment-method summary; flight-route image
 
 ### Related API IDs
 
@@ -259,7 +269,7 @@ BookingConfirmationViewDto --> "1" BookingStatus : status
 The following rules are authoritative for Prompt E. OCL is preserved where applicable; technical or non-OCL constraints remain authoritative natural-language requirements.
 
 ~~~text
-BR-CONFIRM-001: Confirmation access
+BR-CONFIRM-001 - Confirmation access
 context BookingConfirmationService::getConfirmation(
   access : ConfirmationAccessDto
 ) : BookingConfirmationResponseDto
@@ -274,7 +284,7 @@ pre BR_CONFIRM_001_BookingAccess:
         lower(trim(access.confirmationCode)))))
 
 
-BR-CONFIRM-002: Confirmation identity
+BR-CONFIRM-002 - Confirmation identity
 context BookingConfirmationService::getConfirmation(
   access : ConfirmationAccessDto
 ) : BookingConfirmationResponseDto
@@ -286,7 +296,7 @@ post BR_CONFIRM_002_Identity:
     trim(result.data.confirmationCode) <> ''
 
 
-BR-CONFIRM-003: Flight-leg projection
+BR-CONFIRM-003 - Flight-leg projection
 context BookingConfirmationService::getConfirmation(
   access : ConfirmationAccessDto
 ) : BookingConfirmationResponseDto
@@ -304,7 +314,7 @@ post BR_CONFIRM_003_Flights:
           booking.id = access.bookingId).returningFlightId)
 
 
-BR-CONFIRM-004: Passenger projection
+BR-CONFIRM-004 - Passenger projection
 context BookingConfirmationService::getConfirmation(
   access : ConfirmationAccessDto
 ) : BookingConfirmationResponseDto
@@ -322,7 +332,7 @@ post BR_CONFIRM_004_Passengers:
         info.lastName = passenger.lastName))
 
 
-BR-CONFIRM-005: Seat-assignment projection
+BR-CONFIRM-005 - Seat-assignment projection
 context BookingConfirmationService::getConfirmation(
   access : ConfirmationAccessDto
 ) : BookingConfirmationResponseDto
@@ -346,7 +356,7 @@ post BR_CONFIRM_005_Seats:
           storedSeat.seatClass = seat.seatClass)))
 
 
-BR-CONFIRM-006: Baggage projection
+BR-CONFIRM-006 - Baggage projection
 context BookingConfirmationService::getConfirmation(
   access : ConfirmationAccessDto
 ) : BookingConfirmationResponseDto
@@ -364,7 +374,7 @@ post BR_CONFIRM_006_Baggage:
         baggage.checkedBags = item.checkedBags))
 
 
-BR-CONFIRM-007: Price breakdown
+BR-CONFIRM-007 - Price breakdown
 context BookingConfirmationService::getConfirmation(
   access : ConfirmationAccessDto
 ) : BookingConfirmationResponseDto
@@ -387,7 +397,7 @@ post BR_CONFIRM_007_Price:
       price.baggageFees >= 0 and price.upgradeFees >= 0
 
 
-BR-CONFIRM-008: Monetary currency
+BR-CONFIRM-008 - Monetary currency
 context BookingConfirmationService::getConfirmation(
   access : ConfirmationAccessDto
 ) : BookingConfirmationResponseDto
@@ -399,10 +409,10 @@ post BR_CONFIRM_008_Currency:
     (result.data.returningFlight.oclIsUndefined() or
       result.data.returningFlight.currency = result.data.priceBreakdown.currency)
 Technical constraints:
-- Currency codes and displayed monetary values use the approved Tripma currency and fixed-precision formatting policy.
+Currency codes and displayed monetary values use the approved Tripma currency and fixed-precision formatting policy.
 
 
-BR-CONFIRM-009: Payment summary
+BR-CONFIRM-009 - Payment summary
 context BookingConfirmationService::getConfirmation(
   access : ConfirmationAccessDto
 ) : BookingConfirmationResponseDto
@@ -417,15 +427,14 @@ post BR_CONFIRM_009_Payment:
       payment.expireDate = result.data.payment.expireDate)
 
 
-BR-CONFIRM-010: Sensitive confirmation data
+BR-CONFIRM-010 - Sensitive confirmation data
 The confirmation view and response shall not contain a raw card number,
 card security code, payment token, password, or password hash.
 
 
-BR-CONFIRM-011: Confirmation retrieval is read-only
+BR-CONFIRM-011 - Confirmation retrieval is read-only
 Calling API-BOOKING-CONFIRMATION-GET shall not create, update, or delete Booking,
 Flight, PassengerInfo, PassengerBaggage, Seat, SeatAssignment, or PaymentInfo records.
 Technical constraints:
-- Client-side recovery stores only the minimum confirmation reference needed to request the view and must not store raw payment credentials.
-
+Client-side recovery stores only the minimum confirmation reference needed to request the view and must not store raw payment credentials.
 ~~~

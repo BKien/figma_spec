@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-03
 uc_name: "Filter the product listing"
 ---
@@ -50,19 +50,23 @@ POST-1: The client displays the returned filtered listing.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Clear selected filters
 
-1. The shopper clears the selected controls.
-2. The client submits the changed selection.
-3. The client displays the returned listing.
+1a: The shopper clears the selected controls.
+
+1b: The client submits the changed selection.
+
+1c: The client displays the returned listing.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Revise rejected filters
 
-1. The system returns a request rejection.
-2. The client presents the returned message beside the listing controls.
-3. The shopper revises the selections and submits again.
+3a: The system returns a request rejection.
+
+3b: The client presents the returned message beside the listing controls.
+
+3c: The shopper revises the selections and submits again.
 
 ### Related UI
 
@@ -70,7 +74,7 @@ EF-1:
 
 ### Related API IDs
 
-- [API-CATALOG](../api/api-catalog.md)
+- [API-CATALOG](../api/API-CATALOG.md)
 
 ### Notes
 
@@ -136,59 +140,59 @@ Product --> "1" Money : displayPrice
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-03-01
--- Source: Assumption
+~~~text
+BR-FILTER-PRODUCTS-01 - Lower Default
+Source: Assumption
 context CatalogCriteria
-inv BR_UC_03_01_LowerDefault:
+inv BR_FILTER_PRODUCTS_01_LowerDefault:
   self.minAmount = (if self.rawMinAmount = null then 0 else self.rawMinAmount endif)
 ~~~
-~~~ocl
--- BR-UC-03-02
--- Source: Assumption
+~~~text
+BR-FILTER-PRODUCTS-02 - Upper Default
+Source: Assumption
 context CatalogCriteria
-inv BR_UC_03_02_UpperDefault:
+inv BR_FILTER_PRODUCTS_02_UpperDefault:
   self.maxAmount = (if self.rawMaxAmount = null then if Product.allInstances()->isEmpty() then 0 else Product.allInstances()->collect(p | p.displayPrice.amount)->max() endif else self.rawMaxAmount endif)
 ~~~
-~~~ocl
--- BR-UC-03-03
--- Source: Assumption
+~~~text
+BR-FILTER-PRODUCTS-03 - Price Interval
+Source: Assumption
 context CatalogService::list(criteria: CatalogCriteria): CatalogResult
-pre BR_UC_03_03_PriceInterval:
+pre BR_FILTER_PRODUCTS_03_PriceInterval:
   criteria.minAmount >= 0 and criteria.maxAmount >= criteria.minAmount
 ~~~
-~~~ocl
--- BR-UC-03-04
--- Source: Assumption
+~~~text
+BR-FILTER-PRODUCTS-04 - Price Selection
+Source: Assumption
 context CatalogService::list(criteria: CatalogCriteria): CatalogResult
-post BR_UC_03_04_PriceSelection:
+post BR_FILTER_PRODUCTS_04_PriceSelection:
   result.items->forAll(p | p.displayPrice.amount >= criteria.minAmount and p.displayPrice.amount <= criteria.maxAmount)
 ~~~
-~~~ocl
--- BR-UC-03-05
--- Source: Assumption
+~~~text
+BR-FILTER-PRODUCTS-05 - Dress Style Selection
+Source: Assumption
 context CatalogService::list(criteria: CatalogCriteria): CatalogResult
-post BR_UC_03_05_DressStyleSelection:
+post BR_FILTER_PRODUCTS_05_DressStyleSelection:
   criteria.styles->isEmpty() or result.items->forAll(p | criteria.styles->includes(p.style))
 ~~~
-~~~ocl
--- BR-UC-03-06
--- Source: Assumption
+~~~text
+BR-FILTER-PRODUCTS-06 - Variant Intersection
+Source: Assumption
 context CatalogService::list(criteria: CatalogCriteria): CatalogResult
-post BR_UC_03_06_VariantIntersection:
+post BR_FILTER_PRODUCTS_06_VariantIntersection:
   result.items->forAll(p | p.variants->exists(v | (criteria.colors->isEmpty() or criteria.colors->includes(v.color)) and (criteria.sizes->isEmpty() or criteria.sizes->includes(v.size))))
 ~~~
-~~~ocl
--- BR-UC-03-07
--- Source: Assumption
+~~~text
+BR-FILTER-PRODUCTS-07 - Complete Matches
+Source: Assumption
 context CatalogService::list(criteria: CatalogCriteria): CatalogResult
-post BR_UC_03_07_CompleteMatches:
+post BR_FILTER_PRODUCTS_07_CompleteMatches:
   result.items->asSet() = Product.allInstances()->select(p | p.published and (criteria.categoryId = null or p.category.id = criteria.categoryId) and p.displayPrice.amount >= criteria.minAmount and p.displayPrice.amount <= criteria.maxAmount and (criteria.styles->isEmpty() or criteria.styles->includes(p.style)) and p.variants->exists(v | (criteria.colors->isEmpty() or criteria.colors->includes(v.color)) and (criteria.sizes->isEmpty() or criteria.sizes->includes(v.size))))
 ~~~
-~~~ocl
--- BR-UC-03-08
--- Source: Assumption
+~~~text
+BR-FILTER-PRODUCTS-08 - Filter Choices
+Source: Assumption
 context CatalogService::list(criteria: CatalogCriteria): CatalogResult
-post BR_UC_03_08_FilterChoices:
+post BR_FILTER_PRODUCTS_08_FilterChoices:
   result.colors = Variant.allInstances()->collect(v | v.color)->asSet() and result.sizes = Variant.allInstances()->collect(v | v.size)->asSet() and result.styles = Product.allInstances()->collect(p | p.style)->asSet()
 ~~~

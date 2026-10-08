@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-02
 uc_name: "Select Flight"
 ---
@@ -36,12 +36,15 @@ The visitor chooses a flight option from the Tripma results experience.
 ### Pre-Condition(s)
 
 PRE-1: A Tripma flight-results experience is available.
+
 PRE-2: The current search context and its flight options can be accessed.
 
 ### Post-Condition(s)
 
 POST-1: When the selection is accepted, Tripma makes the completed flight-selection context available to the passenger-information experience.
+
 POST-2: Tripma reflects the visitor's current choices in the flight-results experience.
+
 POST-3: When continuation cannot be completed, Tripma keeps the visitor in the flight-results experience and reports the outcome.
 
 ### Basic Flow
@@ -60,45 +63,64 @@ POST-3: When continuation cannot be completed, Tripma keeps the visitor in the f
 ### Alternative Flow
 
 AF-1: Change the current flight choice
-3a. The visitor chooses a different option for the currently presented flight leg.
-3b. Tripma updates the flight-selection state and any dependent selection state according to the Business Rules.
-3c. The Basic Flow resumes at step 4.
+
+3a: The visitor chooses a different option for the currently presented flight leg.
+
+3b: Tripma updates the flight-selection state and any dependent selection state according to the Business Rules.
+
+3c: The Basic Flow resumes at step 4.
 
 AF-2: Change a subsequent flight choice
-7a. The visitor chooses a different option from the subsequent flight-leg results.
-7b. Tripma updates the flight-selection state and summary.
-7c. The Basic Flow resumes at step 6.
+
+7a: The visitor chooses a different option from the subsequent flight-leg results.
+
+7b: Tripma updates the flight-selection state and summary.
+
+7c: The Basic Flow resumes at step 6.
 
 AF-3: Save and close the in-progress selection
-7d. The visitor chooses Save and Close.
-7e. Tripma processes the in-progress selection according to the Business Rules.
-7f. The use case ends without entering the passenger-information experience.
+
+7d: The visitor chooses Save and Close.
+
+7e: Tripma processes the in-progress selection according to the Business Rules.
+
+7f: The use case ends without entering the passenger-information experience.
 
 AF-4: Resume an in-progress selection
-1a. Tripma finds a previous in-progress selection.
-1b. Tripma evaluates and restores it according to the Business Rules.
-1c. The Basic Flow resumes at step 3.
+
+1a: Tripma finds a previous in-progress selection.
+
+1b: Tripma evaluates and restores it according to the Business Rules.
+
+1c: The Basic Flow resumes at step 3.
 
 AF-5: View more flight options
-2a. The visitor requests the remaining options for the currently presented flight leg.
-2b. Tripma updates the current result presentation according to the Business Rules.
-2c. The Basic Flow resumes at step 2.
+
+2a: The visitor requests the remaining options for the currently presented flight leg.
+
+2b: Tripma updates the current result presentation according to the Business Rules.
+
+2c: The Basic Flow resumes at step 2.
 
 ### Exception Flow
 
 EF-1: Selection is not ready to continue
-6a. If the current selection does not satisfy the Business Rules, Tripma keeps the visitor in the flight-results experience and makes the continuation action unavailable.
+
+6a: If the current selection does not satisfy the Business Rules, Tripma keeps the visitor in the flight-results experience and makes the continuation action unavailable.
 
 EF-2: Flight-selection context cannot be completed
-9a. If Tripma cannot create the completed flight-selection context because of a technical failure, it presents a recoverable error state.
-9b. Tripma does not open the passenger-information experience.
+
+9a: If Tripma cannot create the completed flight-selection context because of a technical failure, it presents a recoverable error state.
+
+9b: Tripma does not open the passenger-information experience.
 
 EF-3: In-progress selection cannot be saved or restored
-7g. If Tripma cannot process the in-progress selection, it presents a recoverable outcome according to the Business Rules.
+
+7g: If Tripma cannot process the in-progress selection, it presents a recoverable outcome according to the Business Rules.
 
 ### Related UI
 
-Flight-results page (`/flights`); flight card; flight-selection summary; passenger-information action; passenger-information page (`/booking`)
+Flight-results page (/flights); flight card; flight-selection summary; passenger-information action; passenger-information page (/booking)
 
 ### Related API IDs
 
@@ -232,7 +254,7 @@ end note
 The following rules are authoritative for Prompt E. OCL is preserved where applicable; technical or non-OCL constraints remain authoritative natural-language requirements.
 
 ~~~text
-BR-SELECT-001: Selected option belongs to the requested leg
+BR-SELECT-001 - Selected option belongs to the requested leg
 context FlightSelectionService::select(
   state : FlightBookingState,
   leg : FlightLeg,
@@ -246,7 +268,7 @@ pre BR_SELECT_001_OptionBelongsToLeg:
   endif
 
 
-BR-SELECT-002: Leg matches the trip type
+BR-SELECT-002 - Leg matches the trip type
 context FlightSelectionService::select(
   state : FlightBookingState,
   leg : FlightLeg,
@@ -258,7 +280,7 @@ pre BR_SELECT_002_ReturningLegSupported:
   leg = FlightLeg::RETURNING implies state.searchParams.type = true
 
 
-BR-SELECT-003: Single selection for each leg
+BR-SELECT-003 - Single selection for each leg
 context FlightSelectionService::select(
   state : FlightBookingState,
   leg : FlightLeg,
@@ -280,7 +302,7 @@ post BR_SELECT_003_ContextPreserved:
   result.returningOptions = state.returningOptions
 
 
-BR-SELECT-004: Presentation after selection
+BR-SELECT-004 - Presentation after selection
 context FlightSelectionService::select(
   state : FlightBookingState,
   leg : FlightLeg,
@@ -296,7 +318,7 @@ post BR_SELECT_004_Presentation:
     endif
 
 
-BR-SELECT-005: Returning-flight chronological compatibility
+BR-SELECT-005 - Returning-flight chronological compatibility
 context FlightSelectionService::select(
   state : FlightBookingState,
   leg : FlightLeg,
@@ -310,7 +332,7 @@ pre BR_SELECT_005_ReturnAfterOutboundArrival:
     flight.date >= state.selectedDepartingFlight.arrivalAt
 
 
-BR-SELECT-006: Selected flights remain chronologically compatible
+BR-SELECT-006 - Selected flights remain chronologically compatible
 context FlightBookingState
 inv BR_SELECT_006_ConsistentSelectionState:
   not selectedReturningFlight.oclIsUndefined() implies
@@ -318,10 +340,10 @@ inv BR_SELECT_006_ConsistentSelectionState:
     searchParams.type = true and
     selectedReturningFlight.date >= selectedDepartingFlight.arrivalAt
 Technical constraints:
-- Compatibility compares normalized timezone-aware instants rather than display strings or isolated local-time components.
+Compatibility compares normalized timezone-aware instants rather than display strings or isolated local-time components.
 
 
-BR-SELECT-007: Completion readiness
+BR-SELECT-007 - Completion readiness
 context FlightSelectionService::canContinue(
   state : FlightBookingState
 ) : Boolean
@@ -338,7 +360,7 @@ post BR_SELECT_007_Result:
     endif
 
 
-BR-SELECT-008: Completed selection context
+BR-SELECT-008 - Completed selection context
 context FlightSelectionService::createContext(
   state : FlightBookingState
 ) : SelectedFlightContextDto
@@ -353,14 +375,14 @@ post BR_SELECT_008_ContextMatchesSelection:
   result.departingFlight = state.selectedDepartingFlight and
   result.returningFlight = state.selectedReturningFlight
 Technical constraints:
-- The completed context is written atomically before navigation; failure preserves the previous completed context and prevents navigation.
+The completed context is written atomically before navigation; failure preserves the previous completed context and prevents navigation.
 
 
-BR-SELECT-009: Selection does not reserve inventory
+BR-SELECT-009 - Selection does not reserve inventory
 Selecting a flight shall not create a booking or modify flight or seat inventory. The booking workflow rechecks the selected flights and capacity before committing a reservation.
 
 
-BR-SELECT-010: Selection summary amounts
+BR-SELECT-010 - Selection summary amounts
 context FlightSelectionService::summarize(
   state : FlightBookingState
 ) : FlightSelectionSummaryDto
@@ -380,17 +402,17 @@ post BR_SELECT_010_Total:
   result.totalAmount = result.subtotalAmount + result.taxesAndFeesAmount
 
 
-BR-SELECT-011: Selection-summary currency
+BR-SELECT-011 - Selection-summary currency
 context FlightSelectionService::summarize(
   state : FlightBookingState
 ) : FlightSelectionSummaryDto
 post BR_SELECT_011_Currency:
   result.currency = state.currency
 Technical constraints:
-- Displayed amounts use the UC-01 response currency and its approved monetary rounding and formatting policy.
+Displayed amounts use the UC-01 response currency and its approved monetary rounding and formatting policy.
 
 
-BR-SELECT-012: Save the current selection
+BR-SELECT-012 - Save the current selection
 context FlightSelectionService::saveSelection(
   state : FlightBookingState
 ) : SavedFlightSelectionDto
@@ -410,7 +432,7 @@ post BR_SELECT_012_SavedFlightIdentifiers:
     else state.selectedReturningFlight.flightId endif
 
 
-BR-SELECT-013: Saved selection matches the current search
+BR-SELECT-013 - Saved selection matches the current search
 context FlightSelectionService::restoreSelection(
   state : FlightBookingState,
   saved : SavedFlightSelectionDto
@@ -421,7 +443,7 @@ pre BR_SELECT_013_SameSearchContext:
   (saved.type = true or saved.returningFlightId.oclIsUndefined())
 
 
-BR-SELECT-014: Saved flights are still available
+BR-SELECT-014 - Saved flights are still available
 context FlightSelectionService::restoreSelection(
   state : FlightBookingState,
   saved : SavedFlightSelectionDto
@@ -435,7 +457,7 @@ pre BR_SELECT_014_SavedOptionsStillExist:
       flight.flightId = saved.returningFlightId))
 
 
-BR-SELECT-015: Saved flight sequence remains compatible
+BR-SELECT-015 - Saved flight sequence remains compatible
 context FlightSelectionService::restoreSelection(
   state : FlightBookingState,
   saved : SavedFlightSelectionDto
@@ -449,10 +471,10 @@ pre BR_SELECT_015_SavedSequenceStillValid:
     state.departingOptions->any(departingFlight |
       departingFlight.flightId = saved.departingFlightId).arrivalAt)
 Technical constraints:
-- An invalid saved selection is ignored without replacing valid current state; a storage failure leaves the summary open and is retryable.
+An invalid saved selection is ignored without replacing valid current state; a storage failure leaves the summary open and is retryable.
 
 
-BR-SELECT-016: Restore an eligible saved selection
+BR-SELECT-016 - Restore an eligible saved selection
 context FlightSelectionService::restoreSelection(
   state : FlightBookingState,
   saved : SavedFlightSelectionDto
@@ -471,7 +493,7 @@ post BR_SELECT_016_RestoredSelection:
   result.currency = state.currency
 
 
-BR-SELECT-017: Expand the current flight result presentation
+BR-SELECT-017 - Expand the current flight result presentation
 context FlightSelectionService::expandResults(
   state : FlightBookingState,
   leg : FlightLeg
@@ -489,10 +511,10 @@ post BR_SELECT_017_OptionsPreserved:
   result.departingOptions = state.departingOptions and
   result.returningOptions = state.returningOptions
 Technical constraints:
-- Expanding locally available results must not trigger a redundant request for options already held by the client.
+Expanding locally available results must not trigger a redundant request for options already held by the client.
 
 
-BR-SELECT-018: Selected-card and active-leg presentation
+BR-SELECT-018 - Selected-card and active-leg presentation
 context FlightBookingState
 inv BR_SELECT_018_UniqueOptionIdentifiers:
   departingOptions->isUnique(flight | flight.flightId) and
@@ -503,6 +525,5 @@ inv BR_SELECT_018_SelectedOptionsRemainCanonical:
   (selectedReturningFlight.oclIsUndefined() or
     returningOptions->includes(selectedReturningFlight))
 Technical constraints:
-- Selected-card rendering is keyed by flight identifier so replacement cannot leave more than one card marked for the same leg.
-
+Selected-card rendering is keyed by flight identifier so replacement cannot leave more than one card marked for the same leg.
 ~~~

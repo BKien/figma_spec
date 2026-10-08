@@ -1,17 +1,17 @@
 ---
 artifact_type: api-contract
-status: Draft
+status: Frozen
 api_id: API-RESET-REQUEST
 related_uc_ids: ["UC-09", "UC-10"]
 ---
 
-# API-RESET-REQUEST: Request reset email
+# API-RESET-REQUEST: Request reset email.
 
 ## General Information
 
 ### API ID
 
-`API-RESET-REQUEST`
+API-RESET-REQUEST
 
 ### API Name
 
@@ -19,16 +19,16 @@ Request reset email.
 
 ### Related Use Case IDs
 
-- `UC-09` — [specification](../uc/uc-09-request-password-reset.md)
-- `UC-10` — [specification](../uc/uc-10-resend-password-reset-email.md)
+- UC-09 — [specification](../uc/uc-09-request-password-reset.md)
+- UC-10 — [specification](../uc/uc-10-resend-password-reset-email.md)
 
 ### Method
 
-`POST`
+POST
 
 ### Path
 
-`/v1/password-reset-requests`
+/v1/password-reset-requests
 
 ### Description
 
@@ -44,25 +44,37 @@ Public operation.
 
 ## Request Header(s)
 
-### Accept
+### headers.Accept
 
-Type: string.
-Required: Yes.
-Nullable: No.
-Default: None.
-Validation: HTTP media type syntax; allowed value application/json.
+Type: string.; Format: HTTP media type; Required: Yes.; Nullable: No.
+
+Trigger: Every POST request to this endpoint.
+
 Description: Response media type.
-Example: `"application/json"`.
 
-### Content-Type
+Example: "application/json".
 
-Type: string.
-Required: Yes.
-Nullable: No.
+Note: Identifies the requested response media type.
+
 Default: None.
+
 Validation: HTTP media type syntax; allowed value application/json.
+
+### headers.Content-Type
+
+Type: string.; Format: HTTP media type; Required: Yes.; Nullable: No.
+
+Trigger: Every POST request to this endpoint.
+
 Description: Request media type.
-Example: `"application/json"`.
+
+Example: "application/json".
+
+Note: Identifies the media type of the submitted request body.
+
+Default: None.
+
+Validation: HTTP media type syntax; allowed value application/json.
 
 ## Path Parameter(s)
 
@@ -76,13 +88,13 @@ None.
 
 ### body
 
-Type: ResetEmail.
-Required: Yes.
-Nullable: No.
-Default: None.
-Validation: Object or array shape defined in common-contract.md.
+Type: ResetEmail.; Required: Yes.; Nullable: No.
+
+Trigger: Every request body sent to this endpoint.
+
 Description: JSON object; full ResetEmail field definitions are in common-contract.md.
-Example: `{"email": "alex@example.com"}`.
+
+Example: {"email": "alex@example.com"}.
 
 ~~~json
 {
@@ -90,29 +102,37 @@ Example: `{"email": "alex@example.com"}`.
 }
 ~~~
 
+Default: None.
+
+Validation: Object or array shape defined in common-contract.md.
+
 ## Success Response — HTTP 202
 
 Content-Type: application/json.
 
 ### data
 
-Type: Accepted.
-Required: Yes.
-Nullable: No.
-Default: None.
-Validation: Object or array shape defined in common-contract.md.
+Type: Accepted.; Required: Yes.; Nullable: No.
+
+Trigger: Included in the HTTP 202 success response.
+
 Description: Accepted object; all nested fields are defined in common-contract.md.
-Example: `{"accepted": true}`.
+
+Example: {"accepted": true}.
+
+Default: None.
+
+Validation: Object or array shape defined in common-contract.md.
 
 ### requestId
 
-Type: string.
-Required: Yes.
-Nullable: No.
-Default: None.
-Validation: JSON type only.
+Type: string.; Required: Yes.; Nullable: No.
+
+Trigger: Included in the HTTP 202 success response.
+
 Description: Opaque response correlation identifier.
-Example: `"req_01"`.
+
+Example: "req_01".
 
 ~~~json
 {
@@ -123,6 +143,10 @@ Example: `"req_01"`.
 }
 ~~~
 
+Default: None.
+
+Validation: JSON type only.
+
 ## Error Response — HTTP 400
 
 Trigger: Malformed wire input.
@@ -131,43 +155,67 @@ Content-Type: application/json.
 
 ### error
 
-Type: object.
-Required: Yes.
-Nullable: No.
-Default: None.
-Validation: JSON type only.
+Type: object.; Required: Yes.; Nullable: No.
+
+Trigger: Included in the HTTP 400 error response.
+
 Description: Error object with code and message.
-Example: `{"code": "MALFORMED_REQUEST", "message": "Malformed wire input."}`.
+
+Example: {"code": "MALFORMED_REQUEST", "message": "Malformed wire input."}.
+
+Note: Field of the JSON error response.
+
+Default: None.
+
+Validation: JSON type only.
 
 ### error.code
 
-Type: string.
-Required: Yes.
-Nullable: No.
-Default: None.
-Validation: Membership in the public enum stated in the description.
+Type: string.; Required: Yes.; Nullable: No.
+
+Trigger: Included in the HTTP 400 error response when the containing error object or array item is present and non-null.
+
 Description: Public enum: MALFORMED_REQUEST.
-Example: `"MALFORMED_REQUEST"`.
+
+Example: "MALFORMED_REQUEST".
+
+Note: Field of the JSON error response; nested requiredness applies when its containing object or array item is present.
+
+Default: None.
+
+Validation: Membership in the public enum stated in the description.
 
 ### error.message
 
-Type: string.
-Required: Yes.
-Nullable: No.
-Default: None.
-Validation: JSON type only.
+Type: string.; Required: Yes.; Nullable: No.
+
+Trigger: Included in the HTTP 400 error response when the containing error object or array item is present and non-null.
+
 Description: Display message.
-Example: `"Malformed wire input."`.
+
+Example: "Malformed wire input.".
+
+Note: Field of the JSON error response; nested requiredness applies when its containing object or array item is present.
+
+Default: None.
+
+Validation: JSON type only.
 
 ### requestId
 
-Type: string.
-Required: Yes.
-Nullable: No.
-Default: None.
-Validation: JSON type only.
+Type: string.; Required: Yes.; Nullable: No.
+
+Trigger: Included in the HTTP 400 error response.
+
 Description: Opaque response correlation identifier.
-Example: `"req_01"`.
+
+Example: "req_01".
+
+Note: Field of the JSON error response.
+
+Default: None.
+
+Validation: JSON type only.
 
 ## Error Response — HTTP 429
 
@@ -177,43 +225,67 @@ Content-Type: application/json.
 
 ### error
 
-Type: object.
-Required: Yes.
-Nullable: No.
-Default: None.
-Validation: JSON type only.
+Type: object.; Required: Yes.; Nullable: No.
+
+Trigger: Included in the HTTP 429 error response.
+
 Description: Error object with code and message.
-Example: `{"code": "REQUEST_LIMITED", "message": "Request temporarily limited."}`.
+
+Example: {"code": "REQUEST_LIMITED", "message": "Request temporarily limited."}.
+
+Note: Field of the JSON error response.
+
+Default: None.
+
+Validation: JSON type only.
 
 ### error.code
 
-Type: string.
-Required: Yes.
-Nullable: No.
-Default: None.
-Validation: Membership in the public enum stated in the description.
+Type: string.; Required: Yes.; Nullable: No.
+
+Trigger: Included in the HTTP 429 error response when the containing error object or array item is present and non-null.
+
 Description: Public enum: REQUEST_LIMITED.
-Example: `"REQUEST_LIMITED"`.
+
+Example: "REQUEST_LIMITED".
+
+Note: Field of the JSON error response; nested requiredness applies when its containing object or array item is present.
+
+Default: None.
+
+Validation: Membership in the public enum stated in the description.
 
 ### error.message
 
-Type: string.
-Required: Yes.
-Nullable: No.
-Default: None.
-Validation: JSON type only.
+Type: string.; Required: Yes.; Nullable: No.
+
+Trigger: Included in the HTTP 429 error response when the containing error object or array item is present and non-null.
+
 Description: Display message.
-Example: `"Request temporarily limited."`.
+
+Example: "Request temporarily limited.".
+
+Note: Field of the JSON error response; nested requiredness applies when its containing object or array item is present.
+
+Default: None.
+
+Validation: JSON type only.
 
 ### requestId
 
-Type: string.
-Required: Yes.
-Nullable: No.
-Default: None.
-Validation: JSON type only.
+Type: string.; Required: Yes.; Nullable: No.
+
+Trigger: Included in the HTTP 429 error response.
+
 Description: Opaque response correlation identifier.
-Example: `"req_01"`.
+
+Example: "req_01".
+
+Note: Field of the JSON error response.
+
+Default: None.
+
+Validation: JSON type only.
 
 ## Error Response — HTTP 503
 
@@ -223,43 +295,67 @@ Content-Type: application/json.
 
 ### error
 
-Type: object.
-Required: Yes.
-Nullable: No.
-Default: None.
-Validation: JSON type only.
+Type: object.; Required: Yes.; Nullable: No.
+
+Trigger: Included in the HTTP 503 error response.
+
 Description: Error object with code and message.
-Example: `{"code": "SERVICE_UNAVAILABLE", "message": "Temporary service failure."}`.
+
+Example: {"code": "SERVICE_UNAVAILABLE", "message": "Temporary service failure."}.
+
+Note: Field of the JSON error response.
+
+Default: None.
+
+Validation: JSON type only.
 
 ### error.code
 
-Type: string.
-Required: Yes.
-Nullable: No.
-Default: None.
-Validation: Membership in the public enum stated in the description.
+Type: string.; Required: Yes.; Nullable: No.
+
+Trigger: Included in the HTTP 503 error response when the containing error object or array item is present and non-null.
+
 Description: Public enum: SERVICE_UNAVAILABLE.
-Example: `"SERVICE_UNAVAILABLE"`.
+
+Example: "SERVICE_UNAVAILABLE".
+
+Note: Field of the JSON error response; nested requiredness applies when its containing object or array item is present.
+
+Default: None.
+
+Validation: Membership in the public enum stated in the description.
 
 ### error.message
 
-Type: string.
-Required: Yes.
-Nullable: No.
-Default: None.
-Validation: JSON type only.
+Type: string.; Required: Yes.; Nullable: No.
+
+Trigger: Included in the HTTP 503 error response when the containing error object or array item is present and non-null.
+
 Description: Display message.
-Example: `"Temporary service failure."`.
+
+Example: "Temporary service failure.".
+
+Note: Field of the JSON error response; nested requiredness applies when its containing object or array item is present.
+
+Default: None.
+
+Validation: JSON type only.
 
 ### requestId
 
-Type: string.
-Required: Yes.
-Nullable: No.
-Default: None.
-Validation: JSON type only.
+Type: string.; Required: Yes.; Nullable: No.
+
+Trigger: Included in the HTTP 503 error response.
+
 Description: Opaque response correlation identifier.
-Example: `"req_01"`.
+
+Example: "req_01".
+
+Note: Field of the JSON error response.
+
+Default: None.
+
+Validation: JSON type only.
 
 ## Notes
 

@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-02
 uc_name: "Sign In"
 ---
@@ -52,24 +52,24 @@ POST-1: The client displays the sign-in result.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Open Sign Up
 
-1. The customer opens the sign-up form from the sign-in view.
+3a: The customer opens the sign-up form from the sign-in view.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Sign-In Error
 
-1. The client displays the returned sign-in error and offers another attempt.
+5a: The client displays the returned sign-in error and offers another attempt.
 
 ### Related UI
 
-- [Sign In with error msg](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=394-488) (`394:488`)
-- [Sign In Popup Web](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=2178-2715) (`2178:2715`)
+- [Sign In with error msg](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=394-488) (394:488)
+- [Sign In Popup Web](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=2178-2715) (2178:2715)
 
 ### Related API IDs
 
-- [API-SESSION-CREATE](../api/api-session-create.md)
+- [API-SESSION-CREATE](../api/API-SESSION-CREATE.md)
 
 ### Notes
 
@@ -134,52 +134,52 @@ Account --> "1" AccountStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-02-01
--- Source: Assumption
+~~~text
+BR-SIGN-IN-01 - Credential Matches
+Source: Assumption
 context AuthService::signIn(command: SignInCommand): Session
-pre BR_UC_02_01_CredentialMatches:
+pre BR_SIGN_IN_01_CredentialMatches:
   Account.allInstances()->exists(a | a.emailCanonical = Email::normalize(command.email) and PasswordHash::matches(command.password, a.passwordHash) and a.status = AccountStatus::ACTIVE)
 ~~~
-~~~ocl
--- BR-UC-02-02
--- Source: Assumption
+~~~text
+BR-SIGN-IN-02 - Session Reference Is Hashed
+Source: Assumption
 context AuthService::signIn(command: SignInCommand): Session
-post BR_UC_02_02_SessionReferenceIsHashed:
+post BR_SIGN_IN_02_SessionReferenceIsHashed:
   result.tokenHash = TokenHash::of(result.accessToken) and result.tokenHash <> result.accessToken
 ~~~
-~~~ocl
--- BR-UC-02-03
--- Source: Assumption
+~~~text
+BR-SIGN-IN-03 - Email Is Provided
+Source: Assumption
 context AuthService::signIn(command: SignInCommand): Session
-pre BR_UC_02_03_EmailIsProvided:
+pre BR_SIGN_IN_03_EmailIsProvided:
   command.email.trim().size() > 0
 ~~~
-~~~ocl
--- BR-UC-02-04
--- Source: Assumption
+~~~text
+BR-SIGN-IN-04 - Password Is Provided
+Source: Assumption
 context AuthService::signIn(command: SignInCommand): Session
-pre BR_UC_02_04_PasswordIsProvided:
+pre BR_SIGN_IN_04_PasswordIsProvided:
   command.password.size() > 0
 ~~~
-~~~ocl
--- BR-UC-02-05
--- Source: Assumption
+~~~text
+BR-SIGN-IN-05 - Session Belongs To Matched Account
+Source: Assumption
 context AuthService::signIn(command: SignInCommand): Session
-post BR_UC_02_05_SessionBelongsToMatchedAccount:
+post BR_SIGN_IN_05_SessionBelongsToMatchedAccount:
   result.account.emailCanonical = Email::normalize(command.email)
 ~~~
-~~~ocl
--- BR-UC-02-06
--- Source: Assumption
+~~~text
+BR-SIGN-IN-06 - Session Account Is Active
+Source: Assumption
 context AuthService::signIn(command: SignInCommand): Session
-post BR_UC_02_06_SessionAccountIsActive:
+post BR_SIGN_IN_06_SessionAccountIsActive:
   result.account.status = AccountStatus::ACTIVE
 ~~~
-~~~ocl
--- BR-UC-02-07
--- Source: Assumption
+~~~text
+BR-SIGN-IN-07 - Session Has Validity Window
+Source: Assumption
 context AuthService::signIn(command: SignInCommand): Session
-post BR_UC_02_07_SessionHasValidityWindow:
+post BR_SIGN_IN_07_SessionHasValidityWindow:
   result.createdAt <= DateTime::now() and result.expiresAt > result.createdAt
 ~~~

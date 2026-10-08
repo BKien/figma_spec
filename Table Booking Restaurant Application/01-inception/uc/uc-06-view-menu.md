@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-06
 uc_name: "View a Restaurant Menu"
 ---
@@ -50,24 +50,24 @@ POST-1: The client displays the returned menu items.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Close the Menu Overlay
 
-1. The visitor closes the overlay and returns to restaurant details.
+4a: The visitor closes the overlay and returns to restaurant details.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Menu Loading Error
 
-1. The client displays a menu loading error with a retry action.
+3a: The client displays a menu loading error with a retry action.
 
 ### Related UI
 
-- [menu card overlay](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=321-429) (`321:429`)
-- [restaurant profile](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=88-41) (`88:41`)
+- [menu card overlay](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=321-429) (321:429)
+- [restaurant profile](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=88-41) (88:41)
 
 ### Related API IDs
 
-- [API-MENU-LIST](../api/api-menu-list.md)
+- [API-MENU-LIST](../api/API-MENU-LIST.md)
 
 ### Notes
 
@@ -120,52 +120,52 @@ MenuItem --> "1" MenuItemStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-06-01
--- Source: Assumption
+~~~text
+BR-RESTAURANT-MENU-01 - Menu Belongs To Restaurant
+Source: Assumption
 context RestaurantService::menu(command: RestaurantId): Sequence(MenuItem)
-post BR_UC_06_01_MenuBelongsToRestaurant:
+post BR_RESTAURANT_MENU_01_MenuBelongsToRestaurant:
   result->forAll(i | i.restaurant.id = command.value)
 ~~~
-~~~ocl
--- BR-UC-06-02
--- Source: Assumption
+~~~text
+BR-RESTAURANT-MENU-02 - Visible Menu Items Only
+Source: Assumption
 context RestaurantService::menu(command: RestaurantId): Sequence(MenuItem)
-post BR_UC_06_02_VisibleMenuItemsOnly:
+post BR_RESTAURANT_MENU_02_VisibleMenuItemsOnly:
   result->forAll(i | i.status = MenuItemStatus::VISIBLE)
 ~~~
-~~~ocl
--- BR-UC-06-03
--- Source: Assumption
+~~~text
+BR-RESTAURANT-MENU-03 - Menu Restaurant Is Published
+Source: Assumption
 context RestaurantService::menu(command: RestaurantId): Sequence(MenuItem)
-pre BR_UC_06_03_MenuRestaurantIsPublished:
+pre BR_RESTAURANT_MENU_03_MenuRestaurantIsPublished:
   Restaurant.allInstances()->exists(r | r.id = command.value and r.status = RestaurantStatus::PUBLISHED)
 ~~~
-~~~ocl
--- BR-UC-06-04
--- Source: Assumption
+~~~text
+BR-RESTAURANT-MENU-04 - Menu Items Are Unique
+Source: Assumption
 context RestaurantService::menu(command: RestaurantId): Sequence(MenuItem)
-post BR_UC_06_04_MenuItemsAreUnique:
+post BR_RESTAURANT_MENU_04_MenuItemsAreUnique:
   result->isUnique(i | i.id)
 ~~~
-~~~ocl
--- BR-UC-06-05
--- Source: Assumption
+~~~text
+BR-RESTAURANT-MENU-05 - Menu Item Names Are Present
+Source: Assumption
 context RestaurantService::menu(command: RestaurantId): Sequence(MenuItem)
-post BR_UC_06_05_MenuItemNamesArePresent:
+post BR_RESTAURANT_MENU_05_MenuItemNamesArePresent:
   result->forAll(i | i.name.trim().size() > 0)
 ~~~
-~~~ocl
--- BR-UC-06-06
--- Source: Assumption
+~~~text
+BR-RESTAURANT-MENU-06 - Menu Sections Are Present
+Source: Assumption
 context RestaurantService::menu(command: RestaurantId): Sequence(MenuItem)
-post BR_UC_06_06_MenuSectionsArePresent:
+post BR_RESTAURANT_MENU_06_MenuSectionsArePresent:
   result->forAll(i | i.sectionName.trim().size() > 0)
 ~~~
-~~~ocl
--- BR-UC-06-07
--- Source: Assumption
+~~~text
+BR-RESTAURANT-MENU-07 - Menu Images Are Present
+Source: Assumption
 context RestaurantService::menu(command: RestaurantId): Sequence(MenuItem)
-post BR_UC_06_07_MenuImagesArePresent:
+post BR_RESTAURANT_MENU_07_MenuImagesArePresent:
   result->forAll(i | i.imageUrl <> null and i.imageUrl.trim().size() > 0)
 ~~~

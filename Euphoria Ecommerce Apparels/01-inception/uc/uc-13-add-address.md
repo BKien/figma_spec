@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-13
 uc_name: "Add a delivery address"
 ---
@@ -52,18 +52,21 @@ POST-1: The client displays the returned address book.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Cancel adding an address
 
-1. The customer chooses Cancel.
-2. The client returns to My Info.
+3a: The customer chooses Cancel.
+
+3b: The client returns to My Info.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Review the refreshed address book
 
-1. The system returns an operation conflict.
-2. The client refreshes the address book.
-3. The client asks the customer to review and submit the form again.
+5a: The system returns an operation conflict.
+
+5b: The client refreshes the address book.
+
+5c: The client asks the customer to review and submit the form again.
 
 ### Related UI
 
@@ -72,8 +75,8 @@ EF-1:
 
 ### Related API IDs
 
-- [API-ADDRESSES](../api/api-addresses.md)
-- [API-ADDRESS-CREATE](../api/api-address-create.md)
+- [API-ADDRESSES](../api/API-ADDRESSES.md)
+- [API-ADDRESS-CREATE](../api/API-ADDRESS-CREATE.md)
 
 ### Notes
 
@@ -138,52 +141,52 @@ Address --> "1" AddressFields : details
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-13-01
--- Source: Assumption
+~~~text
+BR-ADD-ADDRESS-01 - Account Book
+Source: Assumption
 context AddressService::add(ctx: RequestContext, book: AddressBook, input: AddressFields, shipping: Boolean, billing: Boolean, expectedVersion: Integer): AddressBook
-pre BR_UC_13_01_AccountBook:
+pre BR_ADD_ADDRESS_01_AccountBook:
   ctx.authenticated and ctx.csrfValid and book.customerId = ctx.customerId
 ~~~
-~~~ocl
--- BR-UC-13-02
--- Source: Assumption
+~~~text
+BR-ADD-ADDRESS-02 - Expected Revision
+Source: Assumption
 context AddressService::add(ctx: RequestContext, book: AddressBook, input: AddressFields, shipping: Boolean, billing: Boolean, expectedVersion: Integer): AddressBook
-pre BR_UC_13_02_ExpectedRevision:
+pre BR_ADD_ADDRESS_02_ExpectedRevision:
   expectedVersion = book.version
 ~~~
-~~~ocl
--- BR-UC-13-03
--- Source: Assumption
+~~~text
+BR-ADD-ADDRESS-03 - Address Accepted
+Source: Assumption
 context AddressService::add(ctx: RequestContext, book: AddressBook, input: AddressFields, shipping: Boolean, billing: Boolean, expectedVersion: Integer): AddressBook
-pre BR_UC_13_03_AddressAccepted:
+pre BR_ADD_ADDRESS_03_AddressAccepted:
   AddressValidation::valid(input)
 ~~~
-~~~ocl
--- BR-UC-13-04
--- Source: Assumption
+~~~text
+BR-ADD-ADDRESS-04 - Address Created
+Source: Assumption
 context AddressService::add(ctx: RequestContext, book: AddressBook, input: AddressFields, shipping: Boolean, billing: Boolean, expectedVersion: Integer): AddressBook
-post BR_UC_13_04_AddressCreated:
+post BR_ADD_ADDRESS_04_AddressCreated:
   result = book and result.version = expectedVersion + 1 and result.items->size() = book.items@pre->size() + 1 and result.items->one(a | a.oclIsNew() and a.customerId = ctx.customerId and a.details = input and a.defaultShipping = shipping and a.defaultBilling = billing)
 ~~~
-~~~ocl
--- BR-UC-13-05
--- Source: Assumption
+~~~text
+BR-ADD-ADDRESS-05 - Preserve Entries
+Source: Assumption
 context AddressService::add(ctx: RequestContext, book: AddressBook, input: AddressFields, shipping: Boolean, billing: Boolean, expectedVersion: Integer): AddressBook
-post BR_UC_13_05_PreserveEntries:
+post BR_ADD_ADDRESS_05_PreserveEntries:
   book.items@pre->forAll(a | result.items->includes(a) and a.details = a.details@pre and a.defaultShipping = (if shipping then false else a.defaultShipping@pre endif) and a.defaultBilling = (if billing then false else a.defaultBilling@pre endif))
 ~~~
-~~~ocl
--- BR-UC-13-06
--- Source: Assumption
+~~~text
+BR-ADD-ADDRESS-06 - Customer Addresses
+Source: Assumption
 context AddressBook
-inv BR_UC_13_06_CustomerAddresses:
+inv BR_ADD_ADDRESS_06_CustomerAddresses:
   self.items->forAll(a | a.customerId = self.customerId)
 ~~~
-~~~ocl
--- BR-UC-13-07
--- Source: Assumption
+~~~text
+BR-ADD-ADDRESS-07 - Required Address Values
+Source: Assumption
 context AddressValidation::valid(input: AddressFields): Boolean
-post BR_UC_13_07_RequiredAddressValues:
+post BR_ADD_ADDRESS_07_RequiredAddressValues:
   result = (TextSyntax::nonBlank(input.firstName) and TextSyntax::nonBlank(input.lastName) and TextSyntax::nonBlank(input.country) and TextSyntax::nonBlank(input.street) and TextSyntax::nonBlank(input.city) and TextSyntax::nonBlank(input.state) and TextSyntax::nonBlank(input.postalCode) and TextSyntax::nonBlank(input.phone))
 ~~~

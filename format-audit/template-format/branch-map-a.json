@@ -1,0 +1,353 @@
+{
+  "100ms Video Conferencing and Live Streaming/01-inception/uc/uc-01-review-join-preview-and-permissions.md": {
+    "AF-1": {"anchor": 5, "title": "Turn Off Preview Media", "reason": "The muted preview replaces the current media preview and control states rendered at step 5."},
+    "EF-1": {"anchor": 4, "title": "Permission Access Denied", "reason": "The denied access is the unsuccessful permission outcome received at step 4."}
+  },
+  "100ms Video Conferencing and Live Streaming/01-inception/uc/uc-02-join-a-session.md": {
+    "AF-1": {"anchor": 1, "title": "Change Preview Controls Before Joining", "reason": "Preview selections change before the participant chooses Join at step 1."},
+    "EF-1": {"anchor": 3, "title": "Session Cannot Be Joined", "reason": "The inability to join replaces the successful join result returned at step 3."}
+  },
+  "100ms Video Conferencing and Live Streaming/01-inception/uc/uc-03-start-a-live-stream.md": {
+    "AF-1": {"anchor": 1, "title": "Open Session Menu Before Starting", "reason": "The host opens the menu instead of choosing Start from the broadcaster preview at step 1."},
+    "EF-1": {"anchor": 3, "title": "Stream Start Failure", "reason": "The failure replaces the stream representation returned in response to the start request at step 3."}
+  },
+  "100ms Video Conferencing and Live Streaming/01-inception/uc/uc-04-stop-a-live-stream.md": {
+    "AF-1": {"anchor": 3, "title": "Cancel Stop Confirmation", "reason": "The host cancels rather than confirms the stop action at step 3."},
+    "EF-1": {"anchor": 5, "title": "Stream Stop Failure", "reason": "The failure replaces the ended stream representation returned at step 5."}
+  },
+  "100ms Video Conferencing and Live Streaming/01-inception/uc/uc-05-watch-a-live-stream.md": {
+    "AF-1": {"anchor": 4, "title": "Open Viewer Session Menu", "reason": "The viewer uses the viewer controls rendered at step 4 to open session actions."},
+    "EF-1": {"anchor": 3, "title": "Live Session Unavailable", "reason": "The unavailable state replaces the viewer-facing stream state returned at step 3."}
+  },
+  "100ms Video Conferencing and Live Streaming/01-inception/uc/uc-06-request-stage-access.md": {
+    "AF-1": {"anchor": 4, "title": "Withdraw Stage Request", "reason": "The viewer withdraws the request displayed at step 4."},
+    "EF-1": {"anchor": 3, "title": "Stage Request Failure", "reason": "The failure replaces the request representation returned at step 3."}
+  },
+  "100ms Video Conferencing and Live Streaming/01-inception/uc/uc-07-respond-to-a-stage-request.md": {
+    "AF-1": {"anchor": 3, "title": "Reject Stage Request", "reason": "The host chooses Reject instead of Accept at step 3."},
+    "EF-1": {"anchor": 5, "title": "Stage Response Failure", "reason": "The failure replaces the updated request and participant response at step 5."}
+  },
+  "100ms Video Conferencing and Live Streaming/01-inception/uc/uc-08-view-session-participants.md": {
+    "AF-1": {"anchor": 4, "title": "Close Participants Panel", "reason": "The participant closes the panel showing the participant list at step 4."},
+    "EF-1": {"anchor": 3, "title": "Participant List Unavailable", "reason": "The unavailable state replaces the participant representations returned at step 3."}
+  },
+  "100ms Video Conferencing and Live Streaming/01-inception/uc/uc-09-send-a-chat-message.md": {
+    "AF-1": {"anchor": 3, "title": "Close Chat Without Sending", "reason": "The participant closes chat instead of entering and sending a message at step 3."},
+    "EF-1": {"anchor": 5, "title": "Chat Message Creation Failure", "reason": "The creation failure replaces the created message returned at step 5."}
+  },
+  "100ms Video Conferencing and Live Streaming/01-inception/uc/uc-10-send-an-emoji-reaction.md": {
+    "AF-1": {"anchor": 3, "title": "Dismiss Reaction Choices", "reason": "The participant closes the reaction choices instead of choosing a reaction at step 3."},
+    "EF-1": {"anchor": 5, "title": "Reaction Creation Failure", "reason": "The creation failure replaces the created event returned at step 5."}
+  },
+  "100ms Video Conferencing and Live Streaming/01-inception/uc/uc-11-share-presentation-content.md": {
+    "AF-1": {"anchor": 3, "title": "Share PDF Content", "reason": "The participant chooses PDF as the sharing source selected at step 3."},
+    "AF-2": {"anchor": 6, "title": "Stop Active Content Share", "reason": "The participant stops the active shared content rendered at step 6."},
+    "EF-1": {"anchor": 5, "title": "Content Share Failure", "reason": "The failure replaces the content-share representation returned at step 5."}
+  },
+  "100ms Video Conferencing and Live Streaming/01-inception/uc/uc-12-configure-audio-and-video-devices.md": {
+    "AF-1": {"anchor": 3, "title": "Close Settings Without Confirming", "reason": "The participant closes settings instead of selecting and confirming values at step 3."},
+    "EF-1": {"anchor": 5, "title": "Device Preference Application Failure", "reason": "The failure replaces the local result or returned preferences received at step 5."}
+  },
+  "100ms Video Conferencing and Live Streaming/01-inception/uc/uc-13-select-a-virtual-background.md": {
+    "AF-1": {"anchor": 3, "title": "Select No Background", "reason": "The participant selects the no-background choice rather than another background at step 3."},
+    "EF-1": {"anchor": 5, "title": "Background Preference Application Failure", "reason": "The failure replaces the local result or returned preference at step 5."}
+  },
+  "100ms Video Conferencing and Live Streaming/01-inception/uc/uc-14-change-session-layout.md": {
+    "AF-1": {"anchor": 3, "title": "Enable Picture-in-Picture", "reason": "Picture-in-picture is an alternate view selection at step 3."},
+    "AF-2": {"anchor": 3, "title": "Open or Close a Side Panel", "reason": "Opening or closing a side panel is an alternate layout selection at step 3."},
+    "EF-1": {"anchor": 5, "title": "Layout Preference Update Failure", "reason": "The failure replaces the updated view preference returned at step 5."}
+  },
+  "100ms Video Conferencing and Live Streaming/01-inception/uc/uc-15-pin-or-spotlight-a-participant.md": {
+    "AF-1": {"anchor": 3, "title": "Remove Personal Pin", "reason": "Removing the personal pin is the reverse choice of the personal pin action at step 3."},
+    "AF-2": {"anchor": 3, "title": "Spotlight a Participant", "reason": "The participant chooses the session spotlight action instead of the personal pin action at step 3."},
+    "AF-3": {"anchor": 2, "title": "Remove Session Spotlight", "reason": "The visible spotlight action at step 2 provides the closest existing interaction for removing a session spotlight."},
+    "EF-1": {"anchor": 5, "title": "Focus Preference Update Failure", "reason": "The failure replaces the caller's updated focused view returned at step 5."}
+  },
+  "100ms Video Conferencing and Live Streaming/01-inception/uc/uc-16-control-session-recording.md": {
+    "AF-1": {"anchor": 6, "title": "Stop Active Recording", "reason": "The host stops the active recording indicated at step 6."},
+    "EF-1": {"anchor": 5, "title": "Recording Control Failure", "reason": "The failure replaces the recording representation returned at step 5."}
+  },
+  "100ms Video Conferencing and Live Streaming/01-inception/uc/uc-17-leave-a-session.md": {
+    "AF-1": {"anchor": 3, "title": "Cancel Leave Confirmation", "reason": "The participant cancels rather than confirms Leave at step 3."},
+    "EF-1": {"anchor": 5, "title": "Session Departure Failure", "reason": "The failure replaces the departure representation returned at step 5."}
+  },
+  "100ms Video Conferencing and Live Streaming/01-inception/uc/uc-18-end-a-session-for-everyone.md": {
+    "AF-1": {"anchor": 3, "title": "Cancel End-Session Confirmation", "reason": "The host cancels rather than confirms End for everyone at step 3."},
+    "EF-1": {"anchor": 5, "title": "Session Termination Failure", "reason": "The failure replaces the ended-session representation returned at step 5."}
+  },
+  "Travel Booking App Web & Mobile/01-inception/uc/uc-01-register-an-account.md": {
+    "AF-1": {"anchor": 3, "title": "Open Login Instead of Registering", "reason": "The visitor leaves registration rather than completing and submitting the form at step 3."},
+    "AF-2": {"anchor": 6, "title": "Revise Registration After Rejection", "reason": "The visitor revises fields after the rejected outcome rendered at step 6."},
+    "EF-1": {"anchor": 5, "title": "Registration Service Failure", "reason": "The technical failure replaces the registration outcome returned at step 5."}
+  },
+  "Travel Booking App Web & Mobile/01-inception/uc/uc-02-log-in.md": {
+    "AF-1": {"anchor": 3, "title": "Open Registration Instead of Logging In", "reason": "The visitor opens registration instead of submitting credentials at step 3."},
+    "AF-2": {"anchor": 6, "title": "Revise Credentials After Rejection", "reason": "The visitor replaces credentials after the rejected outcome rendered at step 6."},
+    "EF-1": {"anchor": 5, "title": "Login Request Failure", "reason": "The technical failure replaces the login outcome returned at step 5."}
+  },
+  "Travel Booking App Web & Mobile/01-inception/uc/uc-03-view-the-home-page.md": {
+    "AF-1": {"anchor": 4, "title": "Render an Empty Home Section", "reason": "The empty presentation changes how returned home sections are rendered at step 4."},
+    "AF-2": {"anchor": 4, "title": "Render the Actor's Header State", "reason": "The current actor's returned header state is rendered as part of the home layout at step 4."},
+    "AF-3": {"anchor": 5, "title": "Open Upcoming-Trip Notifications", "reason": "The actor's selection at step 5 is the closest existing action for opening a displayed notification control; Basic Flow does not explicitly name notifications."},
+    "EF-1": {"anchor": 3, "title": "Home Summary Loading Failure", "reason": "The loading failure replaces the home-summary outcome returned at step 3."},
+    "EF-2": {"anchor": 4, "title": "Render Available Home Sections", "reason": "The client renders remaining sections and an unavailable-section marker instead of rendering every section normally at step 4."}
+  },
+  "Travel Booking App Web & Mobile/01-inception/uc/uc-04-search-for-stays.md": {
+    "AF-1": {"anchor": 3, "title": "Select a Suggested Destination", "reason": "The traveller selects a suggested destination while entering criteria at step 3."},
+    "AF-2": {"anchor": 6, "title": "Replace Stay Search from Results", "reason": "The traveller reopens controls from the results continuation rendered at step 6."},
+    "EF-1": {"anchor": 3, "title": "Destination Suggestions Unavailable", "reason": "Destination suggestions are used while the traveller enters destination criteria at step 3."},
+    "EF-2": {"anchor": 5, "title": "Stay Search Failure", "reason": "The failure replaces the search outcome returned at step 5."}
+  },
+  "Travel Booking App Web & Mobile/01-inception/uc/uc-05-view-stay-results.md": {
+    "AF-1": {"anchor": 4, "title": "Display No Stay Results", "reason": "The no-results presentation replaces offer presentations rendered at step 4."},
+    "AF-2": {"anchor": 5, "title": "Request Another Stay Result Page", "reason": "The traveller requests another page while reviewing visible offer summaries at step 5."},
+    "EF-1": {"anchor": 3, "title": "Additional Stay Result Page Loading Failure", "reason": "Another result page uses the page outcome retrieval at step 3, after the pagination choice in AF-2."},
+    "EF-2": {"anchor": 3, "title": "Unusable Stay Search Context", "reason": "The unusable-context outcome replaces the usable page outcome returned at step 3."}
+  },
+  "Travel Booking App Web & Mobile/01-inception/uc/uc-06-filter-and-sort-stay-results.md": {
+    "AF-1": {"anchor": 3, "title": "Clear Stay Result Refinements", "reason": "Clearing refinements is an alternate change to selections at step 3."},
+    "AF-2": {"anchor": 3, "title": "Dismiss Pending Stay Filters", "reason": "The traveller dismisses pending changes instead of applying selections at step 3."},
+    "EF-1": {"anchor": 5, "title": "Stay Result Refresh Failure", "reason": "The failed refresh replaces the refinement outcome returned at step 5."}
+  },
+  "Travel Booking App Web & Mobile/01-inception/uc/uc-07-view-stay-details.md": {
+    "AF-1": {"anchor": 6, "title": "Return to Stay Results", "reason": "Returning to results is an available continuation from the detail view at step 6."},
+    "AF-2": {"anchor": 4, "title": "Render Remaining Stay Detail Sections", "reason": "An absent optional section changes the detail sections rendered at step 4."},
+    "EF-1": {"anchor": 3, "title": "Stay Detail Loading Failure", "reason": "The loading failure replaces the detail outcome returned at step 3."}
+  },
+  "Travel Booking App Web & Mobile/01-inception/uc/uc-08-book-a-stay.md": {
+    "AF-1": {"anchor": 4, "title": "Review a Refreshed Stay Checkout Summary", "reason": "The refreshed summary replaces the checkout summary presented before confirmation at step 4."},
+    "AF-2": {"anchor": 8, "title": "Use Stay Booking Recovery Actions", "reason": "The traveller chooses a recovery action from the outcome and continuation rendered at step 8."},
+    "EF-1": {"anchor": 7, "title": "Retry Stay Booking Confirmation", "reason": "No response is received in place of the booking outcome expected at step 7."}
+  },
+  "Travel Booking App Web & Mobile/01-inception/uc/uc-09-search-for-taxis.md": {
+    "AF-1": {"anchor": 3, "title": "Select a Suggested Rental Location", "reason": "The traveller selects a rental location while completing search criteria at step 3."},
+    "AF-2": {"anchor": 6, "title": "Replace Taxi Search from Results", "reason": "The traveller changes criteria from the results continuation rendered at step 6."},
+    "EF-1": {"anchor": 3, "title": "Taxi Location Suggestions Unavailable", "reason": "Location suggestions are used while the traveller completes criteria at step 3."},
+    "EF-2": {"anchor": 5, "title": "Taxi Search Failure", "reason": "The failure replaces the search outcome returned at step 5."}
+  },
+  "Travel Booking App Web & Mobile/01-inception/uc/uc-10-view-taxi-results.md": {
+    "AF-1": {"anchor": 4, "title": "Display No Taxi Results", "reason": "The no-results presentation replaces vehicle cards rendered at step 4."},
+    "AF-2": {"anchor": 5, "title": "Request Another Taxi Result Page", "reason": "The traveller requests another page while reviewing the displayed vehicles at step 5."},
+    "EF-1": {"anchor": 3, "title": "Additional Taxi Result Page Loading Failure", "reason": "Another result page uses the page outcome retrieval at step 3, after the pagination choice in AF-2."},
+    "EF-2": {"anchor": 3, "title": "Unusable Taxi Search Context", "reason": "The unusable-context outcome replaces the usable page outcome returned at step 3."}
+  },
+  "Travel Booking App Web & Mobile/01-inception/uc/uc-11-filter-and-sort-taxi-results.md": {
+    "AF-1": {"anchor": 3, "title": "Clear Taxi Result Refinements", "reason": "Clearing refinements is an alternate change to selections at step 3."},
+    "AF-2": {"anchor": 3, "title": "Dismiss Pending Taxi Filters", "reason": "The traveller dismisses pending changes instead of applying selections at step 3."},
+    "EF-1": {"anchor": 5, "title": "Taxi Result Refresh Failure", "reason": "The failed refresh replaces the refinement outcome returned at step 5."}
+  },
+  "Travel Booking App Web & Mobile/01-inception/uc/uc-12-view-taxi-and-driver-details.md": {
+    "AF-1": {"anchor": 6, "title": "Return to Taxi Results", "reason": "Returning to results is an alternate continuation instead of proceeding to reservation at step 6."},
+    "AF-2": {"anchor": 4, "title": "Render Remaining Taxi Detail Sections", "reason": "An absent optional section changes the vehicle and driver detail sections rendered at step 4."},
+    "EF-1": {"anchor": 3, "title": "Taxi Detail Loading Failure", "reason": "The loading failure replaces the detail outcome returned at step 3."}
+  },
+  "Travel Booking App Web & Mobile/01-inception/uc/uc-13-book-a-taxi.md": {
+    "AF-1": {"anchor": 5, "title": "Choose Pay the Driver", "reason": "The traveller chooses a payment option while completing checkout controls and confirming at step 5."},
+    "AF-2": {"anchor": 5, "title": "Reserve for Someone Else", "reason": "The traveller supplies guest details through the booking-party controls completed at step 5."},
+    "AF-3": {"anchor": 4, "title": "Review a Refreshed Taxi Checkout Summary", "reason": "The refreshed summary replaces the summary presented before confirmation at step 4."},
+    "EF-1": {"anchor": 8, "title": "Recover from a Taxi Reservation Outcome", "reason": "The recoverable outcome changes the outcome and continuation rendered at step 8."},
+    "EF-2": {"anchor": 7, "title": "Retry Taxi Reservation Confirmation", "reason": "No response is received in place of the reservation outcome expected at step 7."}
+  },
+  "Travel Booking App Web & Mobile/01-inception/uc/uc-14-search-for-flights.md": {
+    "AF-1": {"anchor": 3, "title": "Switch Flight Trip Options", "reason": "The traveller switches trip options while completing criteria before submission at step 3."},
+    "AF-2": {"anchor": 6, "title": "Replace Flight Search from Results", "reason": "The traveller reopens controls from the flight results continuation rendered at step 6."},
+    "EF-1": {"anchor": 6, "title": "Render Partial Flight Results", "reason": "The partial-result state changes the returned outcome rendered at step 6."},
+    "EF-2": {"anchor": 5, "title": "Flight Search Failure", "reason": "The failure replaces the search outcome returned at step 5."}
+  },
+  "Travel Booking App Web & Mobile/01-inception/uc/uc-15-view-filter-and-sort-flight-results.md": {
+    "AF-1": {"anchor": 3, "title": "Clear Flight Result Refinements", "reason": "Clearing refinements is an alternate change to displayed selections at step 3."},
+    "AF-2": {"anchor": 3, "title": "Switch Flight Sort Views", "reason": "Switching sort views changes displayed selections at step 3."},
+    "AF-3": {"anchor": 3, "title": "Dismiss Pending Flight Filters", "reason": "The traveller dismisses pending filter changes instead of proceeding with changed selections at step 3."},
+    "EF-1": {"anchor": 5, "title": "Flight Result Refresh Failure", "reason": "The failed refresh replaces the result outcome returned at step 5."},
+    "EF-2": {"anchor": 5, "title": "Unusable Flight Search Context", "reason": "The unusable-context outcome replaces the usable result outcome returned at step 5."}
+  },
+  "Travel Booking App Web & Mobile/01-inception/uc/uc-16-browse-budget-trips.md": {
+    "AF-1": {"anchor": 4, "title": "Display No Budget Trips", "reason": "The empty presentation replaces trip-card presentations rendered at step 4."},
+    "AF-2": {"anchor": 4, "title": "Adapt Budget Trips to the Active Layout", "reason": "Visual mode and device adaptation affect how returned trip cards are rendered at step 4."},
+    "EF-1": {"anchor": 5, "title": "Additional Budget Trip Page Loading Failure", "reason": "The failure follows the explicit request for another page at step 5."},
+    "EF-2": {"anchor": 3, "title": "Initial Budget Trip Request Failure", "reason": "The failed initial request replaces the page outcome returned at step 3."}
+  },
+  "Travel Booking App Web & Mobile/01-inception/uc/uc-17-view-budget-trip-details.md": {
+    "AF-1": {"anchor": 4, "title": "Render Remaining Budget Trip Detail Sections", "reason": "An absent optional section changes the trip-detail sections rendered at step 4."},
+    "AF-2": {"anchor": 4, "title": "Adapt Budget Trip Details to the Device", "reason": "Device adaptation affects how the returned detail sections are rendered at step 4."},
+    "EF-1": {"anchor": 3, "title": "Budget Trip Detail Loading Failure", "reason": "The loading failure replaces the detail outcome returned at step 3."}
+  },
+  "Travel Booking App Web & Mobile/01-inception/uc/uc-18-view-traveller-reviews.md": {
+    "AF-1": {"anchor": 4, "title": "Handle an Empty Review Section", "reason": "Displaying or omitting an empty section changes the review presentations rendered at step 4."},
+    "AF-2": {"anchor": 2, "title": "Request the Featured Review Page Size", "reason": "The design-specific page size modifies the review page requested at step 2."},
+    "EF-1": {"anchor": 6, "title": "Additional Review Page Loading Failure", "reason": "The failure follows the explicit request for another review page at step 6."},
+    "EF-2": {"anchor": 3, "title": "Initial Review Request Failure", "reason": "The failed initial request replaces the page outcome returned at step 3."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-01-register-account.md": {
+    "AF-1": {"anchor": 3, "title": "Switch to Sign In", "reason": "The visitor switches forms instead of entering and submitting registration details at step 3."},
+    "EF-1": {"anchor": 5, "title": "Registration Error", "reason": "The returned registration error replaces the account outcome at step 5."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-02-sign-in.md": {
+    "AF-1": {"anchor": 3, "title": "Open Sign Up", "reason": "The customer opens sign-up instead of submitting credentials at step 3."},
+    "EF-1": {"anchor": 5, "title": "Sign-In Error", "reason": "The returned error replaces the session outcome at step 5."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-03-browse-home.md": {
+    "AF-1": {"anchor": 4, "title": "Open a Featured Restaurant", "reason": "The visitor selects a featured card using the restaurant cards and actions rendered at step 4."},
+    "EF-1": {"anchor": 3, "title": "Home Content Loading Failure", "reason": "The failed loading replaces the restaurant cards and navigation content returned at step 3."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-04-search-restaurants.md": {
+    "AF-1": {"anchor": 4, "title": "Refresh Restaurant Search Inputs", "reason": "The visitor changes inputs through the search controls rendered with results at step 4."},
+    "EF-1": {"anchor": 3, "title": "Restaurant Search Error", "reason": "The search error replaces matching restaurant cards returned at step 3."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-05-view-restaurant.md": {
+    "AF-1": {"anchor": 4, "title": "Open Menu or Reservation", "reason": "The visitor continues from the profile and booking entry point displayed at step 4."},
+    "EF-1": {"anchor": 3, "title": "Restaurant Detail Unavailable", "reason": "The unavailable state replaces the restaurant profile returned at step 3."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-06-view-menu.md": {
+    "AF-1": {"anchor": 4, "title": "Close the Menu Overlay", "reason": "The visitor closes the menu overlay displayed at step 4."},
+    "EF-1": {"anchor": 3, "title": "Menu Loading Error", "reason": "The loading error replaces menu sections and items returned at step 3."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-07-check-availability.md": {
+    "AF-1": {"anchor": 1, "title": "Change the Dining Date", "reason": "The customer changes the dining date selected at step 1."},
+    "EF-1": {"anchor": 3, "title": "Slot Retrieval Failure", "reason": "The retrieval failure replaces slot options returned at step 3."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-08-book-table.md": {
+    "AF-1": {"anchor": 2, "title": "Return to Slot Selection", "reason": "The customer returns to slot selection from the confirmation view displayed at step 2."},
+    "EF-1": {"anchor": 6, "title": "Booking Conflict", "reason": "The returned conflict replaces the reservation outcome at step 6."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-09-view-bookings.md": {
+    "AF-1": {"anchor": 4, "title": "Open Booking Detail from History", "reason": "The customer chooses a booking from the history rendered at step 4."},
+    "EF-1": {"anchor": 3, "title": "Booking History Loading Error", "reason": "The loading error replaces booking summaries returned at step 3."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-10-change-booking.md": {
+    "AF-1": {"anchor": 3, "title": "Leave the Booking Edit Form", "reason": "The customer leaves the form instead of changing and submitting the booking at step 3."},
+    "EF-1": {"anchor": 5, "title": "Booking Update Conflict", "reason": "The returned conflict replaces the booking outcome at step 5."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-11-cancel-booking.md": {
+    "AF-1": {"anchor": 5, "title": "Dismiss Cancellation Confirmation", "reason": "The customer dismisses the prompt rather than confirms cancellation at step 5."},
+    "EF-1": {"anchor": 7, "title": "Booking Cancellation Error", "reason": "The returned error replaces the booking cancellation outcome at step 7."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-12-view-notifications.md": {
+    "AF-1": {"anchor": 4, "title": "Open a Booking from a Notification", "reason": "The customer chooses a related booking from notification items displayed at step 4."},
+    "EF-1": {"anchor": 3, "title": "Notifications Unavailable", "reason": "The unavailable state replaces notification summaries returned at step 3."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-13-view-profile.md": {
+    "AF-1": {"anchor": 4, "title": "Open Booking History from Profile", "reason": "The customer uses the navigation actions rendered with profile details at step 4."},
+    "EF-1": {"anchor": 3, "title": "Profile Loading Error", "reason": "The loading error replaces the profile view returned at step 3."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-14-contact-support.md": {
+    "AF-1": {"anchor": 3, "title": "Leave Contact Form Without Submitting", "reason": "The visitor returns to the restaurant page instead of entering and submitting a message at step 3."},
+    "EF-1": {"anchor": 5, "title": "Contact Submission Error", "reason": "The returned contact error replaces the submission receipt at step 5."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-15-view-admin-bookings.md": {
+    "AF-1": {"anchor": 4, "title": "Open an Individual Admin Booking", "reason": "The manager uses row actions in the bookings table displayed at step 4."},
+    "EF-1": {"anchor": 3, "title": "Admin Bookings Loading Error", "reason": "The loading error replaces booking summaries returned at step 3."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-16-update-admin-booking.md": {
+    "AF-1": {"anchor": 3, "title": "Dismiss Admin Booking Edit Popup", "reason": "The manager dismisses the popup instead of submitting booking updates at step 3."},
+    "EF-1": {"anchor": 5, "title": "Admin Booking Update Conflict", "reason": "The returned conflict replaces the booking result at step 5."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-17-view-table-layout.md": {
+    "AF-1": {"anchor": 4, "title": "Open a Table Detail Panel", "reason": "The manager selects a table from the layout rendered at step 4."},
+    "EF-1": {"anchor": 3, "title": "Table Layout Loading Error", "reason": "The loading error replaces tables and layout positions returned at step 3."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-18-manage-restaurants.md": {
+    "AF-1": {"anchor": 3, "title": "Close Restaurant Form", "reason": "The admin closes the form instead of submitting restaurant details at step 3."},
+    "EF-1": {"anchor": 5, "title": "Restaurant Save Error", "reason": "The returned save error replaces the restaurant outcome at step 5."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-19-manage-users.md": {
+    "AF-1": {"anchor": 4, "title": "Close User Edit Form", "reason": "The admin closes the edit form instead of submitting changes at step 4."},
+    "EF-1": {"anchor": 6, "title": "User Update Error", "reason": "The returned update error replaces the user outcome at step 6."}
+  },
+  "Table Booking Restaurant Application/01-inception/uc/uc-20-view-reports.md": {
+    "AF-1": {"anchor": 4, "title": "Change Report Period", "reason": "The manager changes the displayed period after report cards and charts are rendered at step 4."},
+    "EF-1": {"anchor": 3, "title": "Report Loading Error", "reason": "The loading error replaces report totals and series returned at step 3."}
+  },
+  "Financial Management/01-inception/uc/uc-01-register-an-account.md": {
+    "AF-1": {"anchor": 4, "title": "Return to Login", "reason": "The visitor follows the login link instead of submitting registration at step 4."},
+    "EF-1": {"anchor": 6, "title": "Registration Operation Error", "reason": "The operation error replaces the account and session result returned at step 6."}
+  },
+  "Financial Management/01-inception/uc/uc-02-log-in.md": {
+    "AF-1": {"anchor": 4, "title": "Create an Account Instead", "reason": "The visitor opens registration instead of submitting the login form at step 4."},
+    "EF-1": {"anchor": 6, "title": "Login Operation Error", "reason": "The operation error replaces the session result returned at step 6."}
+  },
+  "Financial Management/01-inception/uc/uc-03-view-transaction-history.md": {
+    "AF-1": {"anchor": 3, "title": "Display Empty Transaction History", "reason": "The empty page is an alternative transaction page returned at step 3."},
+    "EF-1": {"anchor": 3, "title": "Transaction History Operation Error", "reason": "The operation error replaces the transaction page returned at step 3."},
+    "EF-2": {"anchor": 3, "title": "Transaction History Authentication Rejected", "reason": "The rejected authentication context replaces the transaction page response at step 3."}
+  },
+  "Financial Management/01-inception/uc/uc-04-create-a-transaction.md": {
+    "AF-1": {"anchor": 4, "title": "Submit Without a Category", "reason": "Leaving category empty is an alternate form choice while entering and submitting transaction details at step 4."},
+    "EF-1": {"anchor": 6, "title": "Transaction Creation Operation Error", "reason": "The operation error replaces the creation result returned at step 6."},
+    "EF-2": {"anchor": 6, "title": "Transaction Creation Authentication Rejected", "reason": "The rejected authentication context replaces the creation result returned at step 6."},
+    "EF-3": {"anchor": 6, "title": "Transaction Creation Conflict", "reason": "The operation conflict replaces the creation result returned at step 6."}
+  },
+  "Financial Management/01-inception/uc/uc-05-view-bank-accounts.md": {
+    "AF-1": {"anchor": 3, "title": "Display an Empty Account List", "reason": "An empty account list is an alternative to the account cards returned at step 3."},
+    "EF-1": {"anchor": 3, "title": "Account List Operation Error", "reason": "The operation error replaces account cards returned at step 3."},
+    "EF-2": {"anchor": 3, "title": "Account List Authentication Rejected", "reason": "The rejected authentication context replaces the account response returned at step 3."}
+  },
+  "Financial Management/01-inception/uc/uc-06-add-a-bank-account.md": {
+    "AF-1": {"anchor": 3, "title": "Cancel Adding an Account", "reason": "The user cancels rather than enters and submits account details at step 3."},
+    "EF-1": {"anchor": 5, "title": "Account Creation Operation Error", "reason": "The operation error replaces the account result returned at step 5."},
+    "EF-2": {"anchor": 5, "title": "Account Creation Authentication Rejected", "reason": "The rejected authentication context replaces the account result returned at step 5."}
+  },
+  "Financial Management/01-inception/uc/uc-07-view-bank-account-details.md": {
+    "AF-1": {"anchor": 3, "title": "Display No Recent Account Activity", "reason": "No recent transactions is an alternative recent-transaction response at step 3."},
+    "EF-1": {"anchor": 3, "title": "Account Detail Operation Error", "reason": "The operation error replaces the account and recent transaction response returned at step 3."},
+    "EF-2": {"anchor": 3, "title": "Account Detail Authentication Rejected", "reason": "The rejected authentication context replaces the account detail response returned at step 3."}
+  },
+  "Financial Management/01-inception/uc/uc-08-edit-a-bank-account.md": {
+    "AF-1": {"anchor": 1, "title": "Edit an Account from the Accounts Page", "reason": "The Edit Accounts and pencil actions provide an alternate entry instead of selecting Edit on an opened account at step 1."},
+    "EF-1": {"anchor": 5, "title": "Account Update Operation Error", "reason": "The operation error replaces the account result returned at step 5."},
+    "EF-2": {"anchor": 5, "title": "Account Update Authentication Rejected", "reason": "The rejected authentication context replaces the account result returned at step 5."},
+    "EF-3": {"anchor": 5, "title": "Account Update Conflict", "reason": "The operation conflict replaces the account result returned at step 5."}
+  },
+  "Financial Management/01-inception/uc/uc-09-delete-a-bank-account.md": {
+    "AF-1": {"anchor": 3, "title": "Cancel Account Deletion", "reason": "The user cancels rather than confirms deletion at step 3."},
+    "EF-1": {"anchor": 5, "title": "Account Deletion Operation Error", "reason": "The operation error replaces the deletion result returned at step 5."},
+    "EF-2": {"anchor": 5, "title": "Account Deletion Authentication Rejected", "reason": "The rejected authentication context replaces the deletion result returned at step 5."},
+    "EF-3": {"anchor": 5, "title": "Account Deletion Conflict", "reason": "The operation conflict replaces the deletion result returned at step 5."}
+  },
+  "Financial Management/01-inception/uc/uc-10-view-monthly-expense-summary.md": {
+    "AF-1": {"anchor": 3, "title": "Display No Monthly Spending", "reason": "An empty monthly result is an alternative to monthly totals returned at step 3."},
+    "EF-1": {"anchor": 3, "title": "Monthly Expense Operation Error", "reason": "The operation error replaces monthly totals returned at step 3."},
+    "EF-2": {"anchor": 3, "title": "Monthly Expense Authentication Rejected", "reason": "The rejected authentication context replaces the monthly summary response at step 3."}
+  },
+  "Financial Management/01-inception/uc/uc-11-view-expenses-by-category.md": {
+    "AF-1": {"anchor": 3, "title": "Display an Empty Category Breakdown", "reason": "An empty breakdown is an alternative to category groups and details returned at step 3."},
+    "EF-1": {"anchor": 3, "title": "Category Expense Operation Error", "reason": "The operation error replaces category groups and details returned at step 3."},
+    "EF-2": {"anchor": 3, "title": "Category Expense Authentication Rejected", "reason": "The rejected authentication context replaces the category breakdown response at step 3."}
+  },
+  "Financial Management/01-inception/uc/uc-12-view-upcoming-bills.md": {
+    "AF-1": {"anchor": 3, "title": "Display No Upcoming Bills", "reason": "No bills is an alternative to bill rows returned at step 3."},
+    "EF-1": {"anchor": 3, "title": "Upcoming Bills Operation Error", "reason": "The operation error replaces bill rows returned at step 3."},
+    "EF-2": {"anchor": 3, "title": "Upcoming Bills Authentication Rejected", "reason": "The rejected authentication context replaces the bills response returned at step 3."}
+  },
+  "Financial Management/01-inception/uc/uc-13-view-financial-goals.md": {
+    "AF-1": {"anchor": 3, "title": "Display No Financial Goals", "reason": "No goal cards is an alternative to goal cards and progress values returned at step 3."},
+    "EF-1": {"anchor": 3, "title": "Financial Goals Operation Error", "reason": "The operation error replaces goal cards and progress values returned at step 3."},
+    "EF-2": {"anchor": 3, "title": "Financial Goals Authentication Rejected", "reason": "The rejected authentication context replaces the goals response returned at step 3."}
+  },
+  "Financial Management/01-inception/uc/uc-14-create-a-financial-goal.md": {
+    "AF-1": {"anchor": 3, "title": "Cancel Goal Creation", "reason": "The user cancels rather than enters and submits goal details at step 3."},
+    "EF-1": {"anchor": 5, "title": "Goal Creation Operation Error", "reason": "The operation error replaces the creation result returned at step 5."},
+    "EF-2": {"anchor": 5, "title": "Goal Creation Authentication Rejected", "reason": "The rejected authentication context replaces the creation result returned at step 5."}
+  },
+  "Financial Management/01-inception/uc/uc-15-adjust-a-financial-goal.md": {
+    "AF-1": {"anchor": 3, "title": "Cancel Goal Adjustment", "reason": "The user cancels instead of entering a target and selecting Save at step 3."},
+    "EF-1": {"anchor": 5, "title": "Goal Adjustment Operation Error", "reason": "The operation error replaces the update result returned at step 5."},
+    "EF-2": {"anchor": 5, "title": "Goal Adjustment Authentication Rejected", "reason": "The rejected authentication context replaces the update result returned at step 5."},
+    "EF-3": {"anchor": 5, "title": "Goal Adjustment Conflict", "reason": "The operation conflict replaces the update result returned at step 5."}
+  },
+  "Financial Management/01-inception/uc/uc-16-view-savings-summary.md": {
+    "AF-1": {"anchor": 3, "title": "Inspect Savings with No Recorded Activity", "reason": "Series with no recorded activity replace the yearly series returned at step 3 before rendering and tooltip inspection."},
+    "EF-1": {"anchor": 3, "title": "Savings Summary Operation Error", "reason": "The operation error replaces yearly series returned at step 3."},
+    "EF-2": {"anchor": 3, "title": "Savings Summary Authentication Rejected", "reason": "The rejected authentication context replaces the savings response returned at step 3."}
+  },
+  "Financial Management/01-inception/uc/uc-17-filter-transaction-history.md": {
+    "AF-1": {"anchor": 1, "title": "Select All Transaction Types", "reason": "All is an alternate transaction type filter selected at step 1."},
+    "EF-1": {"anchor": 3, "title": "Transaction Filter Operation Error", "reason": "The operation error replaces the matching transaction page returned at step 3."},
+    "EF-2": {"anchor": 3, "title": "Transaction Filter Authentication Rejected", "reason": "The rejected authentication context replaces the filtered history response returned at step 3."}
+  },
+  "Financial Management/01-inception/uc/uc-18-choose-a-category.md": {
+    "AF-1": {"anchor": 4, "title": "Clear Category Selection", "reason": "The user clears the selector instead of selecting a category at step 4."},
+    "EF-1": {"anchor": 6, "title": "Category Selection Operation Error", "reason": "The operation error replaces the category selection returned at step 6."},
+    "EF-2": {"anchor": 6, "title": "Category Selection Authentication Rejected", "reason": "The rejected authentication context replaces the selected-category response returned at step 6."}
+  }
+}

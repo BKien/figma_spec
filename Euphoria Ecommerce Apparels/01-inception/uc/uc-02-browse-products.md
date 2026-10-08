@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-02
 uc_name: "Browse products by category"
 ---
@@ -52,18 +52,21 @@ POST-1: The client displays the product listing.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Browse another category
 
-1. The shopper chooses another category.
-2. The client requests and displays its product listing.
+1a: The shopper chooses another category.
+
+1b: The client requests and displays its product listing.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Unavailable product listing
 
-1. The system returns an unavailable resource response.
-2. The client displays the returned message.
-3. The shopper returns to category navigation.
+3a: The system returns an unavailable resource response.
+
+3b: The client displays the returned message.
+
+3c: The shopper returns to category navigation.
 
 ### Related UI
 
@@ -71,7 +74,7 @@ EF-1:
 
 ### Related API IDs
 
-- [API-CATALOG](../api/api-catalog.md)
+- [API-CATALOG](../api/API-CATALOG.md)
 
 ### Notes
 
@@ -129,52 +132,52 @@ Variant --> "1" Money : price
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-02-01
--- Source: Assumption
+~~~text
+BR-BROWSE-PRODUCTS-01 - Category Reference
+Source: Assumption
 context CatalogService::list(criteria: CatalogCriteria): CatalogResult
-pre BR_UC_02_01_CategoryReference:
+pre BR_BROWSE_PRODUCTS_01_CategoryReference:
   criteria.categoryId = null or Category.allInstances()->exists(c | c.id = criteria.categoryId)
 ~~~
-~~~ocl
--- BR-UC-02-02
--- Source: Assumption
+~~~text
+BR-BROWSE-PRODUCTS-02 - Published Catalog
+Source: Assumption
 context CatalogService::list(criteria: CatalogCriteria): CatalogResult
-post BR_UC_02_02_PublishedCatalog:
+post BR_BROWSE_PRODUCTS_02_PublishedCatalog:
   result.items->forAll(p | p.published)
 ~~~
-~~~ocl
--- BR-UC-02-03
--- Source: Assumption
+~~~text
+BR-BROWSE-PRODUCTS-03 - Category Boundary
+Source: Assumption
 context CatalogService::list(criteria: CatalogCriteria): CatalogResult
-post BR_UC_02_03_CategoryBoundary:
+post BR_BROWSE_PRODUCTS_03_CategoryBoundary:
   criteria.categoryId = null or result.items->forAll(p | p.category.id = criteria.categoryId)
 ~~~
-~~~ocl
--- BR-UC-02-04
--- Source: Assumption
+~~~text
+BR-BROWSE-PRODUCTS-04 - Card Identity
+Source: Assumption
 context CatalogService::list(criteria: CatalogCriteria): CatalogResult
-post BR_UC_02_04_CardIdentity:
+post BR_BROWSE_PRODUCTS_04_CardIdentity:
   result.items->isUnique(id)
 ~~~
-~~~ocl
--- BR-UC-02-05
--- Source: Assumption
+~~~text
+BR-BROWSE-PRODUCTS-05 - Category Choices
+Source: Assumption
 context CatalogService::list(criteria: CatalogCriteria): CatalogResult
-post BR_UC_02_05_CategoryChoices:
+post BR_BROWSE_PRODUCTS_05_CategoryChoices:
   result.categories = Category.allInstances()->collect(c | c.id)->asSet()
 ~~~
-~~~ocl
--- BR-UC-02-06
--- Source: Assumption
+~~~text
+BR-BROWSE-PRODUCTS-06 - Result Count
+Source: Assumption
 context CatalogService::list(criteria: CatalogCriteria): CatalogResult
-post BR_UC_02_06_ResultCount:
+post BR_BROWSE_PRODUCTS_06_ResultCount:
   result.total = result.items->size()
 ~~~
-~~~ocl
--- BR-UC-02-07
--- Source: Assumption
+~~~text
+BR-BROWSE-PRODUCTS-07 - Display Price
+Source: Assumption
 context Product
-inv BR_UC_02_07_DisplayPrice:
+inv BR_BROWSE_PRODUCTS_07_DisplayPrice:
   self.displayPrice.amount >= 0 and self.variants->exists(v | v.price = self.displayPrice)
 ~~~

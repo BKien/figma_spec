@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-12
 uc_name: "Configure Audio and Video Devices"
 ---
@@ -52,29 +52,31 @@ POST-1: The client displays and applies the returned device preferences.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Close Settings Without Confirming
 
-1. The participant closes settings without confirming.
-2. The client restores the previous preview or session state.
+3a: The participant closes settings without confirming.
+
+3b: The client restores the previous preview or session state.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Device Preference Application Failure
 
-1. The selected preference cannot be applied.
-2. The client displays the returned failure state and keeps the previous visible selection.
+5a: The selected preference cannot be applied.
+
+5b: The client displays the returned failure state and keeps the previous visible selection.
 
 ### Related UI
 
-- Settings `6007:51132`.
-- Video Conferencing Desktop Preview `6066:89727`.
-- Video Conferencing Mobile Preview `6066:89005`.
+- Settings 6007:51132.
+- Video Conferencing Desktop Preview 6066:89727.
+- Video Conferencing Mobile Preview 6066:89005.
 
 ### Related API IDs
 
-`API-PREFERENCES-UPDATE`.
-`API-SESSION-JOIN`.
-`API-SESSION-STATE`.
+API-PREFERENCES-UPDATE.
+API-SESSION-JOIN.
+API-SESSION-STATE.
 
 ### Notes
 
@@ -99,12 +101,12 @@ class ClientPreferenceService {
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-12-01
--- Source: Assumption
--- Assumption: A-19
+~~~text
+BR-CONFIGURE-DEVICES-01 - Authenticated Membership
+Source: Assumption
+Assumption: A-19
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
-pre BR_UC_12_01_AuthenticatedMembership:
+pre BR_CONFIGURE_DEVICES_01_AuthenticatedMembership:
   RequestContext::authenticated and RequestContext::sessionId = command.sessionId and
   command.participantId = RequestContext::participantId and
   Participant.allInstances()->exists(p | p.id = command.participantId and
@@ -112,117 +114,117 @@ pre BR_UC_12_01_AuthenticatedMembership:
     p.status = ParticipantStatus::JOINED)
 ~~~
 
-~~~ocl
--- BR-UC-12-02
--- Source: Assumption
--- Assumption: A-20
+~~~text
+BR-CONFIGURE-DEVICES-02 - Command Key
+Source: Assumption
+Assumption: A-20
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
-pre BR_UC_12_02_CommandKey:
+pre BR_CONFIGURE_DEVICES_02_CommandKey:
   command.idempotencyKey <> null and command.idempotencyKey.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-12-03
--- Source: Assumption
--- Assumption: A-12
+~~~text
+BR-CONFIGURE-DEVICES-03 - Preference Target
+Source: Assumption
+Assumption: A-12
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
-pre BR_UC_12_03_PreferenceTarget:
+pre BR_CONFIGURE_DEVICES_03_PreferenceTarget:
   media.participantId = command.participantId and view.participantId = command.participantId and
   Session.allInstances()->exists(s | s.id = command.sessionId and s.status <> SessionStatus::ENDED)
 ~~~
 
-~~~ocl
--- BR-UC-12-04
--- Source: Assumption
--- Assumption: A-12
+~~~text
+BR-CONFIGURE-DEVICES-04 - Preference Identity
+Source: Assumption
+Assumption: A-12
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
-post BR_UC_12_04_PreferenceIdentity:
+post BR_CONFIGURE_DEVICES_04_PreferenceIdentity:
   result.media = media and result.view = view and media.updatedAt <> null and view.updatedAt <> null
 ~~~
 
-~~~ocl
--- BR-UC-12-05
--- Source: Assumption
--- Assumption: A-12
+~~~text
+BR-CONFIGURE-DEVICES-05 - microphone Device Id Syntax
+Source: Assumption
+Assumption: A-12
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
-pre BR_UC_12_05_microphoneDeviceIdSyntax:
+pre BR_CONFIGURE_DEVICES_05_microphoneDeviceIdSyntax:
   command.hasMicrophoneDeviceId implies (command.microphoneDeviceId = null or command.microphoneDeviceId.trim().size() > 0)
 ~~~
 
-~~~ocl
--- BR-UC-12-06
--- Source: Assumption
--- Assumption: A-12
+~~~text
+BR-CONFIGURE-DEVICES-06 - microphone Device Id Patch
+Source: Assumption
+Assumption: A-12
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
-post BR_UC_12_06_microphoneDeviceIdPatch:
+post BR_CONFIGURE_DEVICES_06_microphoneDeviceIdPatch:
   media.microphoneDeviceId = if command.hasMicrophoneDeviceId then command.microphoneDeviceId else media.microphoneDeviceId@pre endif
 ~~~
 
-~~~ocl
--- BR-UC-12-07
--- Source: Assumption
--- Assumption: A-12
+~~~text
+BR-CONFIGURE-DEVICES-07 - camera Device Id Syntax
+Source: Assumption
+Assumption: A-12
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
-pre BR_UC_12_07_cameraDeviceIdSyntax:
+pre BR_CONFIGURE_DEVICES_07_cameraDeviceIdSyntax:
   command.hasCameraDeviceId implies (command.cameraDeviceId = null or command.cameraDeviceId.trim().size() > 0)
 ~~~
 
-~~~ocl
--- BR-UC-12-08
--- Source: Assumption
--- Assumption: A-12
+~~~text
+BR-CONFIGURE-DEVICES-08 - camera Device Id Patch
+Source: Assumption
+Assumption: A-12
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
-post BR_UC_12_08_cameraDeviceIdPatch:
+post BR_CONFIGURE_DEVICES_08_cameraDeviceIdPatch:
   media.cameraDeviceId = if command.hasCameraDeviceId then command.cameraDeviceId else media.cameraDeviceId@pre endif
 ~~~
 
-~~~ocl
--- BR-UC-12-09
--- Source: Assumption
--- Assumption: A-12
+~~~text
+BR-CONFIGURE-DEVICES-09 - speaker Device Id Syntax
+Source: Assumption
+Assumption: A-12
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
-pre BR_UC_12_09_speakerDeviceIdSyntax:
+pre BR_CONFIGURE_DEVICES_09_speakerDeviceIdSyntax:
   command.hasSpeakerDeviceId implies (command.speakerDeviceId = null or command.speakerDeviceId.trim().size() > 0)
 ~~~
 
-~~~ocl
--- BR-UC-12-10
--- Source: Assumption
--- Assumption: A-12
+~~~text
+BR-CONFIGURE-DEVICES-10 - speaker Device Id Patch
+Source: Assumption
+Assumption: A-12
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
-post BR_UC_12_10_speakerDeviceIdPatch:
+post BR_CONFIGURE_DEVICES_10_speakerDeviceIdPatch:
   media.speakerDeviceId = if command.hasSpeakerDeviceId then command.speakerDeviceId else media.speakerDeviceId@pre endif
 ~~~
 
-~~~ocl
--- BR-UC-12-11
--- Source: Assumption
--- Assumption: A-12
+~~~text
+BR-CONFIGURE-DEVICES-11 - Other Media Unchanged
+Source: Assumption
+Assumption: A-12
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
-post BR_UC_12_11_OtherMediaUnchanged:
+post BR_CONFIGURE_DEVICES_11_OtherMediaUnchanged:
   MediaPreference.allInstances() = MediaPreference.allInstances()@pre and
   MediaPreference.allInstances()@pre->select(m | m.participantId <> command.participantId)->forAll(m |
     m.microphoneDeviceId = m.microphoneDeviceId@pre and m.cameraDeviceId = m.cameraDeviceId@pre and
     m.speakerDeviceId = m.speakerDeviceId@pre and m.virtualBackgroundId = m.virtualBackgroundId@pre and m.updatedAt = m.updatedAt@pre)
 ~~~
 
-~~~ocl
--- BR-UC-12-12
--- Source: Assumption
--- Assumption: A-12
+~~~text
+BR-CONFIGURE-DEVICES-12 - Local Device Availability
+Source: Assumption
+Assumption: A-12
 context ClientPreferenceService::selectDevices(draft: PreviewDraft, microphone: String, camera: String, speaker: String): PreviewDraft
-pre BR_UC_12_12_LocalDeviceAvailability:
+pre BR_CONFIGURE_DEVICES_12_LocalDeviceAvailability:
   (microphone = null or DeviceCatalog::isAvailable(draft.participantKey, microphone)) and
   (camera = null or DeviceCatalog::isAvailable(draft.participantKey, camera)) and
   (speaker = null or DeviceCatalog::isAvailable(draft.participantKey, speaker))
 ~~~
 
-~~~ocl
--- BR-UC-12-13
--- Source: Assumption
--- Assumption: A-12
+~~~text
+BR-CONFIGURE-DEVICES-13 - Local Device Draft
+Source: Assumption
+Assumption: A-12
 context ClientPreferenceService::selectDevices(draft: PreviewDraft, microphone: String, camera: String, speaker: String): PreviewDraft
-post BR_UC_12_13_LocalDeviceDraft:
+post BR_CONFIGURE_DEVICES_13_LocalDeviceDraft:
   result = draft and draft.microphoneDeviceId = microphone and draft.cameraDeviceId = camera and
   draft.speakerDeviceId = speaker and draft.virtualBackgroundId = draft.virtualBackgroundId@pre
 ~~~

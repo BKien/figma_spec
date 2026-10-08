@@ -1,17 +1,17 @@
 ---
 artifact_type: api-contract
-status: Draft
+status: Frozen
 api_id: API-LOCATION-SUGGEST
 related_uc_ids: ["UC-04", "UC-09"]
 ---
 
-# API-LOCATION-SUGGEST: Suggest Locations
+# API-LOCATION-SUGGEST: Location Suggestions
 
 ## General Information
 
 ### API ID
 
-`API-LOCATION-SUGGEST`
+API-LOCATION-SUGGEST
 
 ### API Name
 
@@ -19,16 +19,16 @@ Location Suggestions
 
 ### Related Use Case IDs
 
-- `UC-04`
-- `UC-09`
+- UC-04
+- UC-09
 
 ### Method
 
-`GET`
+GET
 
 ### Path
 
-`/api/v1/locations/suggestions`
+/api/v1/locations/suggestions
 
 ### Description
 
@@ -52,26 +52,31 @@ None.
 
 ## Query Parameter(s)
 
-### query
+### query.query
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a query-string value.
+Type: string; Required: Yes; Nullable: No
+
 Trigger: Location suggestion request.
+
 Description: User-entered location text.
-Example: `Paris`
 
-### limit
+Example: Paris
 
-Type: integer
-Required: No
-Nullable: No
-Default: `10`
-Validation: Must use integer syntax when supplied.
+Validation: Must be encoded as a query-string value.
+
+### query.limit
+
+Type: integer; Required: No; Nullable: No
+
 Trigger: Location suggestion request.
+
 Description: Requested result-page size.
-Example: `10`
+
+Example: 10
+
+Default: 10
+
+Validation: Must use integer syntax when supplied.
 
 ## Request Body
 
@@ -81,47 +86,55 @@ None.
 
 ### success
 
-Type: boolean
-Required: Yes
-Nullable: No
-Example: `true`
+Type: boolean; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response.
+
+Description: Indicates whether the HTTP operation completed successfully.
+
+Example: true
 
 ### message
 
-Type: string
-Required: Yes
-Nullable: No
-Example: `Location suggestions retrieved.`
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response.
+
+Description: Human-readable operation outcome summary.
+
+Example: Location suggestions retrieved.
 
 ### data[]
 
-Type: object array
-Required: Yes
-Nullable: No
-- Fields: `id` (string), `name` (string), `countryCode` (string).
+Type: object array; Required: Yes; Nullable: No
+- Fields: id (string), name (string), countryCode (string).
+
+Trigger: Included in the HTTP 200 success response.
+
 Description: Suggested locations.
-Example: `[{"id":"loc_paris","name":"Paris","countryCode":"FR"}]`
+
+Example: [{"id":"loc_paris","name":"Paris","countryCode":"FR"}]
 
 ## Error Response — HTTP 400
 
-- Code: `VALIDATION_ERROR`
+- Code: VALIDATION_ERROR
 Trigger: A query parameter cannot be decoded or does not match the declared wire type.
 Description: Protocol-level query error.
-- Example message: `The query parameters are invalid.`
+- Example message: The query parameters are invalid.
 
 ## Error Response — HTTP 422
 
-- Code: `UNPROCESSABLE_REQUEST`
+- Code: UNPROCESSABLE_REQUEST
 Trigger: The syntactically valid request cannot be completed.
 Description: Public processing failure.
-- Example message: `The request could not be completed.`
+- Example message: The request could not be completed.
 
 ## Error Response — HTTP 500
 
-- Code: `INTERNAL_ERROR`
+- Code: INTERNAL_ERROR
 Trigger: An unexpected server error prevents suggestions from being returned.
 Description: Unexpected lookup failure.
-- Example message: `Internal Server Error`
+- Example message: Internal Server Error
 
 ## Notes
 

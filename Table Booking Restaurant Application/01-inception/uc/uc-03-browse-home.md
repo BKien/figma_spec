@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-03
 uc_name: "Browse the Restaurant Home Page"
 ---
@@ -50,25 +50,25 @@ POST-1: The client presents the returned home content.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Open a Featured Restaurant
 
-1. The visitor chooses a featured restaurant, and the client opens its detail view.
+4a: The visitor chooses a featured restaurant, and the client opens its detail view.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Home Content Loading Failure
 
-1. The client displays a retry state when home content cannot be loaded.
+3a: The client displays a retry state when home content cannot be loaded.
 
 ### Related UI
 
-- [home](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=102-170) (`102:170`)
-- [home variant 1](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=278-790) (`278:790`)
-- [home variant 2](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=173-362) (`173:362`)
+- [home](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=102-170) (102:170)
+- [home variant 1](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=278-790) (278:790)
+- [home variant 2](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=173-362) (173:362)
 
 ### Related API IDs
 
-- [API-HOME-GET](../api/api-home-get.md)
+- [API-HOME-GET](../api/API-HOME-GET.md)
 
 ### Notes
 
@@ -105,52 +105,52 @@ Restaurant --> "1" RestaurantStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-03-01
--- Source: Assumption
+~~~text
+BR-BROWSE-HOME-01 - Published Restaurants Only
+Source: Assumption
 context DiscoveryService::home(): Sequence(Restaurant)
-post BR_UC_03_01_PublishedRestaurantsOnly:
+post BR_BROWSE_HOME_01_PublishedRestaurantsOnly:
   result->forAll(r | r.status = RestaurantStatus::PUBLISHED)
 ~~~
-~~~ocl
--- BR-UC-03-02
--- Source: Assumption
+~~~text
+BR-BROWSE-HOME-02 - Featured Items Have Images
+Source: Assumption
 context DiscoveryService::home(): Sequence(Restaurant)
-post BR_UC_03_02_FeaturedItemsHaveImages:
+post BR_BROWSE_HOME_02_FeaturedItemsHaveImages:
   result->forAll(r | r.heroImageUrl <> null)
 ~~~
-~~~ocl
--- BR-UC-03-03
--- Source: Assumption
+~~~text
+BR-BROWSE-HOME-03 - Featured Restaurants Are Unique
+Source: Assumption
 context DiscoveryService::home(): Sequence(Restaurant)
-post BR_UC_03_03_FeaturedRestaurantsAreUnique:
+post BR_BROWSE_HOME_03_FeaturedRestaurantsAreUnique:
   result->isUnique(r | r.id)
 ~~~
-~~~ocl
--- BR-UC-03-04
--- Source: Assumption
+~~~text
+BR-BROWSE-HOME-04 - Featured Names Are Present
+Source: Assumption
 context DiscoveryService::home(): Sequence(Restaurant)
-post BR_UC_03_04_FeaturedNamesArePresent:
+post BR_BROWSE_HOME_04_FeaturedNamesArePresent:
   result->forAll(r | r.name.trim().size() > 0)
 ~~~
-~~~ocl
--- BR-UC-03-05
--- Source: Assumption
+~~~text
+BR-BROWSE-HOME-05 - Featured Cities Are Present
+Source: Assumption
 context DiscoveryService::home(): Sequence(Restaurant)
-post BR_UC_03_05_FeaturedCitiesArePresent:
+post BR_BROWSE_HOME_05_FeaturedCitiesArePresent:
   result->forAll(r | r.city.trim().size() > 0)
 ~~~
-~~~ocl
--- BR-UC-03-06
--- Source: Assumption
+~~~text
+BR-BROWSE-HOME-06 - Featured Ratings Are Bounded
+Source: Assumption
 context DiscoveryService::home(): Sequence(Restaurant)
-post BR_UC_03_06_FeaturedRatingsAreBounded:
+post BR_BROWSE_HOME_06_FeaturedRatingsAreBounded:
   result->forAll(r | r.rating >= 0 and r.rating <= 5)
 ~~~
-~~~ocl
--- BR-UC-03-07
--- Source: Assumption
+~~~text
+BR-BROWSE-HOME-07 - Featured Images Are Nonempty
+Source: Assumption
 context DiscoveryService::home(): Sequence(Restaurant)
-post BR_UC_03_07_FeaturedImagesAreNonempty:
+post BR_BROWSE_HOME_07_FeaturedImagesAreNonempty:
   result->forAll(r | r.heroImageUrl.trim().size() > 0)
 ~~~

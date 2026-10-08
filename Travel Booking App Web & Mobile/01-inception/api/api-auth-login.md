@@ -1,17 +1,17 @@
 ---
 artifact_type: api-contract
-status: Draft
+status: Frozen
 api_id: API-AUTH-LOGIN
 related_uc_id: UC-02
 ---
 
-# API-AUTH-LOGIN: Log In
+# API-AUTH-LOGIN: User Login
 
 ## General Information
 
 ### API ID
 
-`API-AUTH-LOGIN`
+API-AUTH-LOGIN
 
 ### API Name
 
@@ -19,15 +19,15 @@ User Login
 
 ### Related Use Case IDs
 
-- `UC-02`
+- UC-02
 
 ### Method
 
-`POST`
+POST
 
 ### Path
 
-`/api/v1/auth/login`
+/api/v1/auth/login
 
 ### Description
 
@@ -43,17 +43,21 @@ None
 
 ## Request Header(s)
 
-### Content-Type
+### headers.Content-Type
 
-Type: string
-Format: MIME type
-Required: Yes
-Nullable: No
-Allowed value: `application/json`
-Validation: Must identify a JSON request body.
+Type: string; Format: MIME type; Required: Yes; Nullable: No
+
 Trigger: Every request containing the login body.
+
 Description: Declares the request body media type.
-Example: `application/json`
+
+Example: application/json
+
+Note: Identifies the media type of the submitted request body.
+
+Allowed value: application/json
+
+Validation: Must identify a JSON request body.
 
 ## Path Parameter(s)
 
@@ -67,110 +71,120 @@ None.
 
 ### email
 
-Type: string
-Format: email
-Required: Yes
-Nullable: No
-Validation: Must use email-address syntax.
+Type: string; Format: email; Required: Yes; Nullable: No
+
 Trigger: Login request.
+
 Description: Email submitted as part of the credential set.
-Example: `alex@example.com`
+
+Example: alex@example.com
+
+Validation: Must use email-address syntax.
 
 ### password
 
-Type: string
-Format: password
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
+Type: string; Format: password; Required: Yes; Nullable: No
+
 Trigger: Login request.
+
 Description: Password submitted as part of the credential set.
-Example: `Str0ng!Pass`
+
+Example: Str0ng!Pass
+
+Validation: Must be encoded as a JSON string.
 
 ## Success Response — HTTP 200
 
 ### success
 
-Type: boolean
-Required: Yes
-Nullable: No
+Type: boolean; Required: Yes; Nullable: No
+
 Trigger: The authentication request succeeds.
+
 Description: Indicates successful completion.
-Example: `true`
+
+Example: true
 
 ### message
 
-Type: string
-Required: Yes
-Nullable: No
+Type: string; Required: Yes; Nullable: No
+
 Trigger: The authentication request succeeds.
+
 Description: Human-readable success message.
-Example: `Login successful.`
+
+Example: Login successful.
 
 ### data.accessToken
 
-Type: string
-Required: Yes
-Nullable: No
+Type: string; Required: Yes; Nullable: No
+
 Trigger: The authentication request succeeds.
+
 Description: Access token for authenticated API calls.
-Example: `eyJhbGciOiJIUzI1NiIs...`
+
+Example: eyJhbGciOiJIUzI1NiIs...
 
 ### data.expiresAt
 
-Type: string
-Format: ISO 8601 date-time
-Required: Yes
-Nullable: No
+Type: string; Format: ISO 8601 date-time; Required: Yes; Nullable: No
+
 Trigger: The authentication request succeeds.
+
 Description: Access-token expiration timestamp.
-Example: `2026-09-19T10:30:00Z`
+
+Example: 2026-09-19T10:30:00Z
 
 ### data.user.id
 
-Type: string
-Required: Yes
-Nullable: No
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data.user object or array item is present and non-null.
+
 Description: Authenticated user identifier.
-Example: `usr_01JABCDEF`
+
+Example: usr_01JABCDEF
 
 ### data.user.fullName
 
-Type: string
-Required: Yes
-Nullable: No
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data.user object or array item is present and non-null.
+
 Description: Authenticated user's display name.
-Example: `Alex Morgan`
+
+Example: Alex Morgan
 
 ### data.user.email
 
-Type: string
-Format: email
-Required: Yes
-Nullable: No
+Type: string; Format: email; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data.user object or array item is present and non-null.
+
 Description: Authenticated user's email address.
-Example: `alex@example.com`
+
+Example: alex@example.com
 
 ## Error Response — HTTP 400
 
-- Code: `VALIDATION_ERROR`
+- Code: VALIDATION_ERROR
 Trigger: The request cannot be decoded or does not match the declared wire schema.
 Description: Protocol-level request error.
-- Example message: `The request payload is invalid.`
+- Example message: The request payload is invalid.
 
 ## Error Response — HTTP 401
 
-- Code: `INVALID_CREDENTIALS`
+- Code: INVALID_CREDENTIALS
 Trigger: The authentication request is not accepted.
 Description: Public authentication failure.
-- Example message: `The submitted credentials could not be accepted.`
+- Example message: The submitted credentials could not be accepted.
 
 ## Error Response — HTTP 500
 
-- Code: `INTERNAL_ERROR`
+- Code: INTERNAL_ERROR
 Trigger: An unexpected server error prevents authentication.
 Description: Unexpected authentication-service failure.
-- Example message: `Internal Server Error`
+- Example message: Internal Server Error
 
 ## Notes
 

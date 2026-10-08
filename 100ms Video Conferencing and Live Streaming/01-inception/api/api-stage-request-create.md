@@ -1,6 +1,6 @@
 ---
 artifact_type: api-contract
-status: Draft
+status: Frozen
 api_id: API-STAGE-REQUEST-CREATE
 related_uc_ids: ["UC-06", "UC-07"]
 ---
@@ -11,7 +11,7 @@ related_uc_ids: ["UC-06", "UC-07"]
 
 ### API ID
 
-`API-STAGE-REQUEST-CREATE`
+API-STAGE-REQUEST-CREATE
 
 ### API Name
 
@@ -19,16 +19,16 @@ Submit a Stage Request Action
 
 ### Related Use Case IDs
 
-- `UC-06`
-- `UC-07`
+- UC-06
+- UC-07
 
 ### Method
 
-`POST`
+POST
 
 ### Path
 
-`/api/v1/sessions/{sessionId}/stage-request-commands`
+/api/v1/sessions/{sessionId}/stage-request-commands
 
 ### Description
 
@@ -44,40 +44,55 @@ Required.
 
 ## Request Header(s)
 
-### Authorization
+### headers.Authorization
 
-Type: string
-Required: Yes
-Nullable: No
+Type: string; Format: Bearer token; Required: Yes; Nullable: No
+
+Trigger: Every POST request to this endpoint.
+
 Description: Bearer session access token.
-Example: `Bearer <session-access-token>`
 
-### Content-Type
+Example: Bearer <session-access-token>
 
-Type: string
-Required: Yes
-Nullable: No
-Allowed values: `application/json`
+Note: Uses the HTTP Bearer authentication scheme.
+
+### headers.Content-Type
+
+Type: string; Format: HTTP media type; Required: Yes; Nullable: No
+
+Trigger: Every POST request to this endpoint.
+
 Description: HTTP media-type header.
-Example: `application/json`
 
-### Idempotency-Key
+Example: application/json
 
-Type: string
-Required: Yes
-Nullable: No
+Note: Identifies the media type of the submitted request body.
+
+Allowed values: application/json
+
+### headers.Idempotency-Key
+
+Type: string; Format: Opaque HTTP header value; Required: Yes; Nullable: No
+
+Trigger: Every POST request to this endpoint.
+
 Description: Opaque HTTP command token.
-Example: `command-22-01`
+
+Example: command-22-01
+
+Note: Transmit the command reference as a single header value.
 
 ## Path Parameter(s)
 
-### sessionId
+### path.sessionId
 
-Type: string
-Required: Yes
-Nullable: No
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Every request using the sessionId path segment.
+
 Description: UUID identifier.
-Example: `11111111-1111-4111-8111-111111111111`
+
+Example: 11111111-1111-4111-8111-111111111111
 
 ## Query Parameter(s)
 
@@ -87,31 +102,41 @@ None.
 
 ### action
 
-Type: string
-Required: Yes
-Nullable: No
-Allowed values: `CREATE`, `ACCEPT`, `REJECT`, `CANCEL`
-Validation: Must be a JSON string. String values must belong to the declared enum.
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Every request body sent to this endpoint.
+
 Description: action value.
-Example: `CREATE`
+
+Example: CREATE
+
+Allowed values: CREATE, ACCEPT, REJECT, CANCEL
+
+Validation: Must be a JSON string. String values must belong to the declared enum.
 
 ### requestId
 
-Type: string
-Required: No
-Nullable: Yes
-Validation: Must be null or a JSON string.
+Type: string; Required: No; Nullable: Yes
+
+Trigger: When the client includes this property in the request body.
+
 Description: UUID identifier.
-Example: `11111111-1111-4111-8111-111111111111`
+
+Example: 11111111-1111-4111-8111-111111111111
+
+Validation: Must be null or a JSON string.
 
 ### expectedVersion
 
-Type: integer
-Required: No
-Nullable: Yes
-Validation: Must be null or a JSON integer.
+Type: integer; Required: No; Nullable: Yes
+
+Trigger: When the client includes this property in the request body.
+
 Description: expectedVersion value.
-Example: `1`
+
+Example: 1
+
+Validation: Must be null or a JSON integer.
 
 ## Success Response — HTTP 200
 
@@ -119,74 +144,82 @@ Inherits the success envelope and named object definitions in [Common Contract](
 
 ### data.request
 
-Type: object (StageRequest)
-Required: Yes
-Nullable: No
+Type: object (StageRequest); Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data object or array item is present and non-null.
+
 Description: Representation defined in the common contract.
+
+Example: {"requestId": "11111111-1111-4111-8111-111111111111", "sessionId": "11111111-1111-4111-8111-111111111111", "participantId": "11111111-1111-4111-8111-111111111111", "status": "PENDING", "version": 1, "decidedByParticipantId": null, "createdAt": "2026-09-22T09:00:00Z", "decidedAt": null}
 
 ### data.participant
 
-Type: object (Participant)
-Required: Yes
-Nullable: No
+Type: object (Participant); Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data object or array item is present and non-null.
+
 Description: Representation defined in the common contract.
+
+Example: {"participantId": "11111111-1111-4111-8111-111111111111", "sessionId": "11111111-1111-4111-8111-111111111111", "displayName": "Alex Morgan", "role": "VIEWER", "status": "JOINED", "microphoneEnabled": false, "cameraEnabled": false, "version": 1, "joinedAt": "2026-09-22T09:00:00Z", "leftAt": null}
 
 ### data.sessionVersion
 
-Type: integer
-Required: Yes
-Nullable: No
+Type: integer; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data object or array item is present and non-null.
+
 Description: sessionVersion value.
-Example: `1`
+
+Example: 1
 
 ## Error Response — HTTP 400
 
-- Code: `INVALID_REQUEST`
+- Code: INVALID_REQUEST
 Trigger: The request cannot be decoded or does not match the declared wire schema.
 Description: Uses the common error envelope.
-- Example message: `The request could not be completed.`
+- Example message: The request could not be completed.
 
 ## Error Response — HTTP 401
 
-- Code: `AUTHENTICATION_REJECTED`
+- Code: AUTHENTICATION_REJECTED
 Trigger: The authentication context is rejected.
 Description: Uses the common error envelope.
-- Example message: `The request could not be completed.`
+- Example message: The request could not be completed.
 
 ## Error Response — HTTP 403
 
-- Code: `ACCESS_REJECTED`
+- Code: ACCESS_REJECTED
 Trigger: The operation is rejected for the supplied access context.
 Description: Uses the common error envelope.
-- Example message: `The request could not be completed.`
+- Example message: The request could not be completed.
 
 ## Error Response — HTTP 404
 
-- Code: `RESOURCE_UNAVAILABLE`
+- Code: RESOURCE_UNAVAILABLE
 Trigger: The requested resource is unavailable.
 Description: Uses the common error envelope.
-- Example message: `The request could not be completed.`
+- Example message: The request could not be completed.
 
 ## Error Response — HTTP 409
 
-- Code: `OPERATION_CONFLICT`
+- Code: OPERATION_CONFLICT
 Trigger: The operation conflicts with the current resource response.
 Description: Uses the common error envelope.
-- Example message: `The request could not be completed.`
+- Example message: The request could not be completed.
 
 ## Error Response — HTTP 422
 
-- Code: `COMMAND_REJECTED`
+- Code: COMMAND_REJECTED
 Trigger: The submitted command is rejected.
 Description: Uses the common error envelope.
-- Example message: `The request could not be completed.`
+- Example message: The request could not be completed.
 
 ## Error Response — HTTP 503
 
-- Code: `SERVICE_UNAVAILABLE`
+- Code: SERVICE_UNAVAILABLE
 Trigger: A required service is temporarily unavailable.
 Description: Uses the common error envelope.
-- Example message: `The request could not be completed.`
+- Example message: The request could not be completed.
 
 ## Notes
 

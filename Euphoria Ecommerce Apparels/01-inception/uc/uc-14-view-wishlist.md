@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-14
 uc_name: "View saved wishlist products"
 ---
@@ -52,17 +52,19 @@ POST-1: The client displays the returned wishlist state.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Empty wishlist
 
-1. The system returns a wishlist with no saved cards.
-2. The client displays Your wishlist is empty and the Shop entry point.
+3a: The system returns a wishlist with no saved cards.
+
+3b: The client displays Your wishlist is empty and the Shop entry point.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Sign in to view the wishlist
 
-1. The system returns a rejected authentication context.
-2. The client presents the sign-in entry point.
+3c: The system returns a rejected authentication context.
+
+3d: The client presents the sign-in entry point.
 
 ### Related UI
 
@@ -71,8 +73,8 @@ EF-1:
 
 ### Related API IDs
 
-- [API-WISHLIST](../api/api-wishlist.md)
-- [API-PRODUCT](../api/api-product.md)
+- [API-WISHLIST](../api/API-WISHLIST.md)
+- [API-PRODUCT](../api/API-PRODUCT.md)
 
 ### Notes
 
@@ -127,52 +129,52 @@ WishlistResult --> "0..*" Product : items
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-14-01
--- Source: Assumption
+~~~text
+BR-WISHLIST-01 - Account Context
+Source: Assumption
 context WishlistService::read(ctx: RequestContext): WishlistResult
-pre BR_UC_14_01_AccountContext:
+pre BR_WISHLIST_01_AccountContext:
   ctx.authenticated
 ~~~
-~~~ocl
--- BR-UC-14-02
--- Source: Assumption
+~~~text
+BR-WISHLIST-02 - Saved Cards
+Source: Assumption
 context WishlistService::read(ctx: RequestContext): WishlistResult
-post BR_UC_14_02_SavedCards:
+post BR_WISHLIST_02_SavedCards:
   result.items->asSet() = WishlistEntry.allInstances()->select(w | w.customerId = ctx.customerId and w.product.published)->collect(w | w.product)->asSet() and result.items->forAll(a,b | let wa : WishlistEntry = WishlistEntry.allInstances()->any(w | w.customerId = ctx.customerId and w.product = a) in let wb : WishlistEntry = WishlistEntry.allInstances()->any(w | w.customerId = ctx.customerId and w.product = b) in wa.createdAt > wb.createdAt implies result.items->indexOf(a) < result.items->indexOf(b))
 ~~~
-~~~ocl
--- BR-UC-14-03
--- Source: Assumption
+~~~text
+BR-WISHLIST-03 - Saved Once
+Source: Assumption
 context WishlistEntry
-inv BR_UC_14_03_SavedOnce:
+inv BR_WISHLIST_03_SavedOnce:
   WishlistEntry.allInstances()->isUnique(w | Tuple{customerId = w.customerId, productId = w.product.id})
 ~~~
-~~~ocl
--- BR-UC-14-04
--- Source: Assumption
+~~~text
+BR-WISHLIST-04 - Card Count
+Source: Assumption
 context WishlistService::read(ctx: RequestContext): WishlistResult
-post BR_UC_14_04_CardCount:
+post BR_WISHLIST_04_CardCount:
   result.items->size() = WishlistEntry.allInstances()->select(w | w.customerId = ctx.customerId and w.product.published)->size()
 ~~~
-~~~ocl
--- BR-UC-14-05
--- Source: Assumption
+~~~text
+BR-WISHLIST-05 - Stable Saved Order
+Source: Assumption
 context WishlistService::read(ctx: RequestContext): WishlistResult
-post BR_UC_14_05_StableSavedOrder:
+post BR_WISHLIST_05_StableSavedOrder:
   result.items->forAll(a,b | let wa : WishlistEntry = WishlistEntry.allInstances()->any(w | w.customerId = ctx.customerId and w.product = a) in let wb : WishlistEntry = WishlistEntry.allInstances()->any(w | w.customerId = ctx.customerId and w.product = b) in wa.createdAt = wb.createdAt and a.displayRank < b.displayRank implies result.items->indexOf(a) < result.items->indexOf(b))
 ~~~
-~~~ocl
--- BR-UC-14-06
--- Source: Assumption
+~~~text
+BR-WISHLIST-06 - Saved Entries Unchanged
+Source: Assumption
 context WishlistService::read(ctx: RequestContext): WishlistResult
-post BR_UC_14_06_SavedEntriesUnchanged:
+post BR_WISHLIST_06_SavedEntriesUnchanged:
   WishlistEntry.allInstances() = WishlistEntry.allInstances()@pre and WishlistEntry.allInstances()->forAll(w | w.customerId = w.customerId@pre and w.product = w.product@pre and w.createdAt = w.createdAt@pre)
 ~~~
-~~~ocl
--- BR-UC-14-07
--- Source: Assumption
+~~~text
+BR-WISHLIST-07 - Cart Unchanged
+Source: Assumption
 context WishlistService::read(ctx: RequestContext): WishlistResult
-post BR_UC_14_07_CartUnchanged:
+post BR_WISHLIST_07_CartUnchanged:
   Cart.allInstances()->forAll(c | c.items = c.items@pre and c.version = c.version@pre)
 ~~~

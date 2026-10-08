@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-18
 uc_name: "View order details and progress"
 ---
@@ -50,18 +50,21 @@ POST-1: The client displays the returned order details and timeline.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Return to My orders
 
-1. The customer returns to My orders.
-2. The client displays the order list.
+4a: The customer returns to My orders.
+
+4b: The client displays the order list.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Unavailable order
 
-1. The system returns an unavailable resource response.
-2. The client displays the unavailable order message.
-3. The customer returns to the order list.
+3a: The system returns an unavailable resource response.
+
+3b: The client displays the unavailable order message.
+
+3c: The customer returns to the order list.
 
 ### Related UI
 
@@ -69,7 +72,7 @@ EF-1:
 
 ### Related API IDs
 
-- [API-ORDER-DETAIL](../api/api-order-detail.md)
+- [API-ORDER-DETAIL](../api/API-ORDER-DETAIL.md)
 
 ### Notes
 
@@ -140,59 +143,59 @@ OrderLine --> "1" Money : lineTotal
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-18-01
--- Source: Assumption
+~~~text
+BR-ORDER-DETAIL-01 - Customer Order
+Source: Assumption
 context OrderDetailService::read(ctx: RequestContext, orderId: String): OrderDetail
-pre BR_UC_18_01_CustomerOrder:
+pre BR_ORDER_DETAIL_01_CustomerOrder:
   ctx.authenticated and Order.allInstances()->exists(o | o.id = orderId and o.customerId = ctx.customerId)
 ~~~
-~~~ocl
--- BR-UC-18-02
--- Source: Assumption
+~~~text
+BR-ORDER-DETAIL-02 - Order Identity
+Source: Assumption
 context OrderDetailService::read(ctx: RequestContext, orderId: String): OrderDetail
-post BR_UC_18_02_OrderIdentity:
+post BR_ORDER_DETAIL_02_OrderIdentity:
   result.order.id = orderId and result.order.customerId = ctx.customerId
 ~~~
-~~~ocl
--- BR-UC-18-03
--- Source: Assumption
+~~~text
+BR-ORDER-DETAIL-03 - Timeline Sequence
+Source: Assumption
 context OrderDetailService::read(ctx: RequestContext, orderId: String): OrderDetail
-post BR_UC_18_03_TimelineSequence:
+post BR_ORDER_DETAIL_03_TimelineSequence:
   result.events = result.order.events->sortedBy(e | e.occurredAt) and result.events->forAll(e | e.orderId = orderId)
 ~~~
-~~~ocl
--- BR-UC-18-04
--- Source: Assumption
+~~~text
+BR-ORDER-DETAIL-04 - Item Amounts
+Source: Assumption
 context Order
-inv BR_UC_18_04_ItemAmounts:
+inv BR_ORDER_DETAIL_04_ItemAmounts:
   self.items->forAll(l | l.lineTotal.amount = l.quantity * l.unitPrice.amount and l.quantity > 0 and l.unitPrice.amount >= 0)
 ~~~
-~~~ocl
--- BR-UC-18-05
--- Source: Assumption
+~~~text
+BR-ORDER-DETAIL-05 - Currency Agreement
+Source: Assumption
 context Order
-inv BR_UC_18_05_CurrencyAgreement:
+inv BR_ORDER_DETAIL_05_CurrencyAgreement:
   self.items->forAll(l | l.unitPrice.currency = self.total.currency and l.lineTotal.currency = self.total.currency) and self.total.currency = self.subtotal.currency and self.total.currency = self.discount.currency and self.total.currency = self.shippingCharge.currency
 ~~~
-~~~ocl
--- BR-UC-18-06
--- Source: Assumption
+~~~text
+BR-ORDER-DETAIL-06 - Subtotal
+Source: Assumption
 context Order
-inv BR_UC_18_06_Subtotal:
+inv BR_ORDER_DETAIL_06_Subtotal:
   self.subtotal.amount = self.items->collect(l | l.lineTotal.amount)->sum()
 ~~~
-~~~ocl
--- BR-UC-18-07
--- Source: Assumption
+~~~text
+BR-ORDER-DETAIL-07 - Total
+Source: Assumption
 context Order
-inv BR_UC_18_07_Total:
+inv BR_ORDER_DETAIL_07_Total:
   self.total.amount = self.subtotal.amount - self.discount.amount + self.shippingCharge.amount and self.discount.amount >= 0 and self.shippingCharge.amount >= 0 and self.total.amount >= 0
 ~~~
-~~~ocl
--- BR-UC-18-08
--- Source: Assumption
+~~~text
+BR-ORDER-DETAIL-08 - Item Identity
+Source: Assumption
 context Order
-inv BR_UC_18_08_ItemIdentity:
+inv BR_ORDER_DETAIL_08_ItemIdentity:
   self.items->isUnique(variantId) and self.items->forAll(l | l.orderId = self.id)
 ~~~

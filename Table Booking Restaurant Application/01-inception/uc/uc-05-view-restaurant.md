@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-05
 uc_name: "View Restaurant Details"
 ---
@@ -50,24 +50,24 @@ POST-1: The client displays the returned restaurant details.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Open Menu or Reservation
 
-1. The visitor moves from the profile to the menu or reservation view.
+4a: The visitor moves from the profile to the menu or reservation view.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Restaurant Detail Unavailable
 
-1. The client shows an unavailable-detail state with a way back to results.
+3a: The client shows an unavailable-detail state with a way back to results.
 
 ### Related UI
 
-- [single restaurant view page](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=88-41) (`88:41`)
-- [single restaurant page mobile](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=4594-4056) (`4594:4056`)
+- [single restaurant view page](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=88-41) (88:41)
+- [single restaurant page mobile](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=4594-4056) (4594:4056)
 
 ### Related API IDs
 
-- [API-RESTAURANT-DETAIL](../api/api-restaurant-detail.md)
+- [API-RESTAURANT-DETAIL](../api/API-RESTAURANT-DETAIL.md)
 
 ### Notes
 
@@ -108,52 +108,52 @@ Restaurant --> "1" RestaurantStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-05-01
--- Source: Assumption
+~~~text
+BR-RESTAURANT-DETAIL-01 - Restaurant Is Published
+Source: Assumption
 context RestaurantService::detail(command: RestaurantId): Restaurant
-pre BR_UC_05_01_RestaurantIsPublished:
+pre BR_RESTAURANT_DETAIL_01_RestaurantIsPublished:
   Restaurant.allInstances()->exists(r | r.id = command.value and r.status = RestaurantStatus::PUBLISHED)
 ~~~
-~~~ocl
--- BR-UC-05-02
--- Source: Assumption
+~~~text
+BR-RESTAURANT-DETAIL-02 - Requested Restaurant Returned
+Source: Assumption
 context RestaurantService::detail(command: RestaurantId): Restaurant
-post BR_UC_05_02_RequestedRestaurantReturned:
+post BR_RESTAURANT_DETAIL_02_RequestedRestaurantReturned:
   result.id = command.value
 ~~~
-~~~ocl
--- BR-UC-05-03
--- Source: Assumption
+~~~text
+BR-RESTAURANT-DETAIL-03 - Detail Remains Published
+Source: Assumption
 context RestaurantService::detail(command: RestaurantId): Restaurant
-post BR_UC_05_03_DetailRemainsPublished:
+post BR_RESTAURANT_DETAIL_03_DetailRemainsPublished:
   result.status = RestaurantStatus::PUBLISHED
 ~~~
-~~~ocl
--- BR-UC-05-04
--- Source: Assumption
+~~~text
+BR-RESTAURANT-DETAIL-04 - Detail Name Is Present
+Source: Assumption
 context RestaurantService::detail(command: RestaurantId): Restaurant
-post BR_UC_05_04_DetailNameIsPresent:
+post BR_RESTAURANT_DETAIL_04_DetailNameIsPresent:
   result.name.trim().size() > 0
 ~~~
-~~~ocl
--- BR-UC-05-05
--- Source: Assumption
+~~~text
+BR-RESTAURANT-DETAIL-05 - Detail Address Is Present
+Source: Assumption
 context RestaurantService::detail(command: RestaurantId): Restaurant
-post BR_UC_05_05_DetailAddressIsPresent:
+post BR_RESTAURANT_DETAIL_05_DetailAddressIsPresent:
   result.address.trim().size() > 0
 ~~~
-~~~ocl
--- BR-UC-05-06
--- Source: Assumption
+~~~text
+BR-RESTAURANT-DETAIL-06 - Detail Timezone Is Present
+Source: Assumption
 context RestaurantService::detail(command: RestaurantId): Restaurant
-post BR_UC_05_06_DetailTimezoneIsPresent:
+post BR_RESTAURANT_DETAIL_06_DetailTimezoneIsPresent:
   result.timezone.trim().size() > 0
 ~~~
-~~~ocl
--- BR-UC-05-07
--- Source: Assumption
+~~~text
+BR-RESTAURANT-DETAIL-07 - Detail Rating Is Bounded
+Source: Assumption
 context RestaurantService::detail(command: RestaurantId): Restaurant
-post BR_UC_05_07_DetailRatingIsBounded:
+post BR_RESTAURANT_DETAIL_07_DetailRatingIsBounded:
   result.rating >= 0 and result.rating <= 5
 ~~~

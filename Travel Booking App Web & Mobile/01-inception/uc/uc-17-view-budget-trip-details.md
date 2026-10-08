@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-17
 uc_name: "View Budget Trip Details"
 ---
@@ -40,6 +40,7 @@ PRE-1: A selected budget-trip reference is available to the client.
 ### Post-Condition(s)
 
 POST-1: The client displays the trip-detail outcome returned by the system.
+
 POST-2: Navigation back to the originating trip list remains available.
 
 ### Basic Flow
@@ -53,28 +54,33 @@ POST-2: Navigation back to the originating trip list remains available.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Render Remaining Budget Trip Detail Sections
 
-1. If an optional section is absent from the response, the client renders the remaining trip-detail sections.
+4a: If an optional section is absent from the response, the client renders the remaining trip-detail sections.
 
-AF-2:
+AF-2: Adapt Budget Trip Details to the Device
 
-1. The client adapts the returned content to the active device layout.
+4b: The client adapts the returned content to the active device layout.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Budget Trip Detail Loading Failure
 
-1. If trip detail cannot be loaded, the client displays a retry state.
-2. The client retains navigation back to the trip list.
+3a: If trip detail cannot be loaded, the client displays a retry state.
+
+3b: The client retains navigation back to the trip list.
 
 ### Related UI
 
-`jaffna details page`; `jafna content`; `jafna content mobile`.
+jaffna details page; jafna content; jafna content mobile.
 
 ### Related API IDs
 
-`API-BUDGET-TRIP-DETAIL`.
+API-BUDGET-TRIP-DETAIL.
+
+### Notes
+
+None.
 
 ## UML Model
 
@@ -152,42 +158,42 @@ PriceEvidence --> "1" Money : amount
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-17-01
--- Source: Assumption
+~~~text
+BR-BUDGET-TRIP-DETAIL-01 - Detail Represents A Currently Published Trip
+Source: Assumption
 context TripService::getDetail(tripId: String): BudgetTrip
-post BR_UC_17_01_DetailRepresentsACurrentlyPublishedTrip:
+post BR_BUDGET_TRIP_DETAIL_01_DetailRepresentsACurrentlyPublishedTrip:
   result <> null and result.id = tripId and result.active and
   result.publishFrom <= RequestContext::startedAt and
   (result.publishUntil = null or result.publishUntil > RequestContext::startedAt)
 ~~~
 
-~~~ocl
--- BR-UC-17-02
--- Source: Assumption
+~~~text
+BR-BUDGET-TRIP-DETAIL-02 - Attractions Belong To The Trip Destination
+Source: Assumption
 context TripService::getDetail(tripId: String): BudgetTrip
-post BR_UC_17_02_AttractionsBelongToTheTripDestination:
+post BR_BUDGET_TRIP_DETAIL_02_AttractionsBelongToTheTripDestination:
   result.attractions->forAll(a |
     a.published and a.destinationId = result.destinationId) and
   result.attractions->isUnique(a | a.id)
 ~~~
 
-~~~ocl
--- BR-UC-17-03
--- Source: Assumption
+~~~text
+BR-BUDGET-TRIP-DETAIL-03 - Attraction Order Is Editorially Stable
+Source: Assumption
 context TripService::getDetail(tripId: String): BudgetTrip
-post BR_UC_17_03_AttractionOrderIsEditoriallyStable:
+post BR_BUDGET_TRIP_DETAIL_03_AttractionOrderIsEditoriallyStable:
   result.attractions->size() <= 1 or
   Sequence{1..result.attractions->size() - 1}->forAll(i |
     result.attractions->at(i).editorialRank <
       result.attractions->at(i + 1).editorialRank)
 ~~~
 
-~~~ocl
--- BR-UC-17-04
--- Source: Assumption
+~~~text
+BR-BUDGET-TRIP-DETAIL-04 - Indicative Price Uses Recent Evidence In The Same Currency
+Source: Assumption
 context TripService::getDetail(tripId: String): BudgetTrip
-post BR_UC_17_04_IndicativePriceUsesRecentEvidenceInTheSameCurrency:
+post BR_BUDGET_TRIP_DETAIL_04_IndicativePriceUsesRecentEvidenceInTheSameCurrency:
   let eligible = result.priceEvidence->select(e |
     e.active and e.amount.currency = result.startingPrice.currency and
     e.observedAt <= RequestContext::startedAt and
@@ -196,27 +202,27 @@ post BR_UC_17_04_IndicativePriceUsesRecentEvidenceInTheSameCurrency:
   result.startingPrice.amount = eligible->collect(e | e.amount.amount)->min()
 ~~~
 
-~~~ocl
--- BR-UC-17-05
--- Source: Assumption
+~~~text
+BR-BUDGET-TRIP-DETAIL-05 - Editorial Detail Retrieval Is Read Only
+Source: Assumption
 context TripService::getDetail(tripId: String): BudgetTrip
-post BR_UC_17_05_EditorialDetailRetrievalIsReadOnly:
+post BR_BUDGET_TRIP_DETAIL_05_EditorialDetailRetrievalIsReadOnly:
   ReadState::editorial() = ReadState::editorial()@pre
 ~~~
 
-~~~ocl
--- BR-UC-17-06
--- Source: Assumption
+~~~text
+BR-BUDGET-TRIP-DETAIL-06 - Published Trip Has Readable Content
+Source: Assumption
 context TripService::getDetail(tripId: String): BudgetTrip
-post BR_UC_17_06_PublishedTripHasReadableContent:
+post BR_BUDGET_TRIP_DETAIL_06_PublishedTripHasReadableContent:
   result.title.trim().size() > 0 and result.description.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-17-07
--- Source: Assumption
+~~~text
+BR-BUDGET-TRIP-DETAIL-07 - Trip Media Is Distinct And Ordered
+Source: Assumption
 context TripService::getDetail(tripId: String): BudgetTrip
-post BR_UC_17_07_TripMediaIsDistinctAndOrdered:
+post BR_BUDGET_TRIP_DETAIL_07_TripMediaIsDistinctAndOrdered:
   result.media->isUnique(m | m.id) and
   (result.media->isEmpty() or Sequence{1..result.media->size()}->forAll(i |
     result.media->at(i).sortOrder = i))

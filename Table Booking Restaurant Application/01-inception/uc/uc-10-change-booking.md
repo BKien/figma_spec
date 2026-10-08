@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-10
 uc_name: "Change a Booking"
 ---
@@ -52,24 +52,24 @@ POST-1: The client displays the updated booking result.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Leave the Booking Edit Form
 
-1. The customer leaves the edit form and returns to the booking view.
+3a: The customer leaves the edit form and returns to the booking view.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Booking Update Conflict
 
-1. The client displays the returned conflict and offers a fresh slot selection.
+5a: The client displays the returned conflict and offers a fresh slot selection.
 
 ### Related UI
 
-- [Edit Booking](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=3890-2970) (`3890:2970`)
-- [edit booking mobile](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=4611-4659) (`4611:4659`)
+- [Edit Booking](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=3890-2970) (3890:2970)
+- [edit booking mobile](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=4611-4659) (4611:4659)
 
 ### Related API IDs
 
-- [API-BOOKING-UPDATE](../api/api-booking-update.md)
+- [API-BOOKING-UPDATE](../api/API-BOOKING-UPDATE.md)
 
 ### Notes
 
@@ -142,52 +142,52 @@ Booking --> "1" BookingStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-10-01
--- Source: Assumption
+~~~text
+BR-CHANGE-BOOKING-01 - Owner And Editable State
+Source: Assumption
 context BookingService::change(command: ChangeBookingCommand): Booking
-pre BR_UC_10_01_OwnerAndEditableState:
+pre BR_CHANGE_BOOKING_01_OwnerAndEditableState:
   Booking.allInstances()->exists(b | b.id = command.bookingId and b.account.id = RequestContext::accountId and b.status = BookingStatus::CONFIRMED and b.slot.startsAt > DateTime::now())
 ~~~
-~~~ocl
--- BR-UC-10-02
--- Source: Assumption
+~~~text
+BR-CHANGE-BOOKING-02 - Fresh Slot And Version
+Source: Assumption
 context BookingService::change(command: ChangeBookingCommand): Booking
-pre BR_UC_10_02_FreshSlotAndVersion:
+pre BR_CHANGE_BOOKING_02_FreshSlotAndVersion:
   ReservationSlot.allInstances()->exists(s | s.id = command.slotId and s.remainingSeats >= command.partySize) and Booking.allInstances()->exists(b | b.id = command.bookingId and b.version = command.version)
 ~~~
-~~~ocl
--- BR-UC-10-03
--- Source: Assumption
+~~~text
+BR-CHANGE-BOOKING-03 - Updated Booking Version
+Source: Assumption
 context BookingService::change(command: ChangeBookingCommand): Booking
-post BR_UC_10_03_UpdatedBookingVersion:
+post BR_CHANGE_BOOKING_03_UpdatedBookingVersion:
   result.id = command.bookingId and result.slot.id = command.slotId and result.version = command.version + 1
 ~~~
-~~~ocl
--- BR-UC-10-04
--- Source: Assumption
+~~~text
+BR-CHANGE-BOOKING-04 - Changed Party Size Is Persisted
+Source: Assumption
 context BookingService::change(command: ChangeBookingCommand): Booking
-post BR_UC_10_04_ChangedPartySizeIsPersisted:
+post BR_CHANGE_BOOKING_04_ChangedPartySizeIsPersisted:
   result.partySize = command.partySize
 ~~~
-~~~ocl
--- BR-UC-10-05
--- Source: Assumption
+~~~text
+BR-CHANGE-BOOKING-05 - Changed Party Size Is Positive
+Source: Assumption
 context BookingService::change(command: ChangeBookingCommand): Booking
-pre BR_UC_10_05_ChangedPartySizeIsPositive:
+pre BR_CHANGE_BOOKING_05_ChangedPartySizeIsPositive:
   command.partySize > 0
 ~~~
-~~~ocl
--- BR-UC-10-06
--- Source: Assumption
+~~~text
+BR-CHANGE-BOOKING-06 - Changed Slot Matches Restaurant
+Source: Assumption
 context BookingService::change(command: ChangeBookingCommand): Booking
-pre BR_UC_10_06_ChangedSlotMatchesRestaurant:
+pre BR_CHANGE_BOOKING_06_ChangedSlotMatchesRestaurant:
   Booking.allInstances()->exists(b | b.id = command.bookingId and ReservationSlot.allInstances()->exists(s | s.id = command.slotId and s.restaurant.id = b.restaurant.id and s.startsAt > DateTime::now()))
 ~~~
-~~~ocl
--- BR-UC-10-07
--- Source: Assumption
+~~~text
+BR-CHANGE-BOOKING-07 - Changed Booking Remains Confirmed
+Source: Assumption
 context BookingService::change(command: ChangeBookingCommand): Booking
-post BR_UC_10_07_ChangedBookingRemainsConfirmed:
+post BR_CHANGE_BOOKING_07_ChangedBookingRemainsConfirmed:
   result.status = BookingStatus::CONFIRMED
 ~~~

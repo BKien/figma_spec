@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-11
 uc_name: "Cancel a Booking"
 ---
@@ -54,26 +54,26 @@ POST-1: The client displays the cancellation outcome.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Dismiss Cancellation Confirmation
 
-1. The customer dismisses the cancellation prompt and remains on the booking view.
+5a: The customer dismisses the cancellation prompt and remains on the booking view.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Booking Cancellation Error
 
-1. The client presents a returned cancellation error and the booking detail.
+7a: The client presents a returned cancellation error and the booking detail.
 
 ### Related UI
 
-- [Booking canceled](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=772-1196) (`772:1196`)
-- [Cancelled Booking](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=772-1245) (`772:1245`)
-- [history](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=4611-4772) (`4611:4772`)
-- [history cancellation prompt](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=4611-4710) (`4611:4710`)
+- [Booking canceled](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=772-1196) (772:1196)
+- [Cancelled Booking](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=772-1245) (772:1245)
+- [history](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=4611-4772) (4611:4772)
+- [history cancellation prompt](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=4611-4710) (4611:4710)
 
 ### Related API IDs
 
-- [API-BOOKING-CANCEL](../api/api-booking-cancel.md)
+- [API-BOOKING-CANCEL](../api/API-BOOKING-CANCEL.md)
 
 ### Notes
 
@@ -145,52 +145,52 @@ Booking --> "1" BookingStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-11-01
--- Source: Assumption
+~~~text
+BR-CANCEL-BOOKING-01 - Owner May Cancel
+Source: Assumption
 context BookingService::cancel(command: CancelBookingCommand): Booking
-pre BR_UC_11_01_OwnerMayCancel:
+pre BR_CANCEL_BOOKING_01_OwnerMayCancel:
   Booking.allInstances()->exists(b | b.id = command.bookingId and b.account.id = RequestContext::accountId and b.status = BookingStatus::CONFIRMED and b.version = command.version)
 ~~~
-~~~ocl
--- BR-UC-11-02
--- Source: Assumption
+~~~text
+BR-CANCEL-BOOKING-02 - Booking Is Cancelled
+Source: Assumption
 context BookingService::cancel(command: CancelBookingCommand): Booking
-post BR_UC_11_02_BookingIsCancelled:
+post BR_CANCEL_BOOKING_02_BookingIsCancelled:
   result.id = command.bookingId and result.status = BookingStatus::CANCELLED and result.version = command.version + 1
 ~~~
-~~~ocl
--- BR-UC-11-03
--- Source: Assumption
+~~~text
+BR-CANCEL-BOOKING-03 - Cancelled Capacity Is Released
+Source: Assumption
 context BookingService::cancel(command: CancelBookingCommand): Booking
-post BR_UC_11_03_CancelledCapacityIsReleased:
+post BR_CANCEL_BOOKING_03_CancelledCapacityIsReleased:
   result.slot.remainingSeats = result.slot.remainingSeats@pre + result.partySize and result.slot.version = result.slot.version@pre + 1
 ~~~
-~~~ocl
--- BR-UC-11-04
--- Source: Figma
+~~~text
+BR-CANCEL-BOOKING-04 - Cancellation Does Not Refund Points
+Source: Figma
 context BookingService::cancel(command: CancelBookingCommand): Booking
-post BR_UC_11_04_CancellationDoesNotRefundPoints:
+post BR_CANCEL_BOOKING_04_CancellationDoesNotRefundPoints:
   result.pointsUsed = result.pointsUsed@pre and result.account.pointsBalance = result.account.pointsBalance@pre
 ~~~
-~~~ocl
--- BR-UC-11-05
--- Source: Assumption
+~~~text
+BR-CANCEL-BOOKING-05 - Only Future Bookings Can Be Cancelled
+Source: Assumption
 context BookingService::cancel(command: CancelBookingCommand): Booking
-pre BR_UC_11_05_OnlyFutureBookingsCanBeCancelled:
+pre BR_CANCEL_BOOKING_05_OnlyFutureBookingsCanBeCancelled:
   Booking.allInstances()->exists(b | b.id = command.bookingId and b.slot.startsAt > DateTime::now())
 ~~~
-~~~ocl
--- BR-UC-11-06
--- Source: Assumption
+~~~text
+BR-CANCEL-BOOKING-06 - Cancellation Keeps Owner
+Source: Assumption
 context BookingService::cancel(command: CancelBookingCommand): Booking
-post BR_UC_11_06_CancellationKeepsOwner:
+post BR_CANCEL_BOOKING_06_CancellationKeepsOwner:
   result.account.id = Booking.allInstances()@pre->any(b | b.id = command.bookingId).account.id
 ~~~
-~~~ocl
--- BR-UC-11-07
--- Source: Assumption
+~~~text
+BR-CANCEL-BOOKING-07 - Cancellation Keeps Restaurant And Slot
+Source: Assumption
 context BookingService::cancel(command: CancelBookingCommand): Booking
-post BR_UC_11_07_CancellationKeepsRestaurantAndSlot:
+post BR_CANCEL_BOOKING_07_CancellationKeepsRestaurantAndSlot:
   result.restaurant.id = Booking.allInstances()@pre->any(b | b.id = command.bookingId).restaurant.id and result.slot.id = Booking.allInstances()@pre->any(b | b.id = command.bookingId).slot.id
 ~~~

@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-11
 uc_name: "View Unique Places"
 ---
@@ -36,11 +36,13 @@ The visitor opens a Tripma experience that provides unique places.
 ### Pre-Condition(s)
 
 PRE-1: The Tripma unique-places experience is available.
+
 PRE-2: Tripma can attempt to retrieve the unique-place collection.
 
 ### Post-Condition(s)
 
 POST-1: When retrieval succeeds, Tripma presents the returned unique-place collection.
+
 POST-2: When retrieval cannot be completed, Tripma reports the outcome without changing unique-place data.
 
 ### Basic Flow
@@ -55,17 +57,22 @@ POST-2: When retrieval cannot be completed, Tripma reports the outcome without c
 ### Alternative Flow
 
 AF-1: View the complete unique-place collection
-6a. The visitor requests the complete unique-place collection from the current experience.
-6b. Tripma presents the complete collection returned by API-UNIQUE-PLACES-LIST.
+
+6a: The visitor requests the complete unique-place collection from the current experience.
+
+6b: Tripma presents the complete collection returned by API-UNIQUE-PLACES-LIST.
 
 AF-2: No unique places are available
-4a. API-UNIQUE-PLACES-LIST returns an empty collection.
-4b. Tripma presents the empty unique-places experience.
+
+4a: API-UNIQUE-PLACES-LIST returns an empty collection.
+
+4b: Tripma presents the empty unique-places experience.
 
 ### Exception Flow
 
 EF-1: Request cannot be completed
-2a. If Tripma cannot complete the request because of a technical failure, it presents a retryable error state.
+
+2a: If Tripma cannot complete the request because of a technical failure, it presents a retryable error state.
 
 ### Related UI
 
@@ -137,7 +144,7 @@ UniquePlaceService ..> City
 The following rules are authoritative for Prompt E. OCL is preserved where applicable; technical or non-OCL constraints remain authoritative natural-language requirements.
 
 ~~~text
-BR-PLACE-001: Active unique places
+BR-PLACE-001 - Active unique places
 context UniquePlaceService::listPlaces() : UniquePlacesResponseDto
 post BR_PLACE_001_Active:
   result.success implies
@@ -146,7 +153,7 @@ post BR_PLACE_001_Active:
         place.id = item.id and place.active = true))
 
 
-BR-PLACE-002: Complete unique-place collection
+BR-PLACE-002 - Complete unique-place collection
 context UniquePlaceService::listPlaces() : UniquePlacesResponseDto
 post BR_PLACE_002_Complete:
   result.success implies
@@ -155,7 +162,7 @@ post BR_PLACE_002_Complete:
       place.active = true)->size()
 
 
-BR-PLACE-003: Unique-place projection
+BR-PLACE-003 - Unique-place projection
 context UniquePlaceService::listPlaces() : UniquePlacesResponseDto
 post BR_PLACE_003_Projection:
   result.success implies
@@ -175,7 +182,7 @@ post BR_PLACE_003_Projection:
         item.motivation = place.motivation)
 
 
-BR-PLACE-004: Unique-place price
+BR-PLACE-004 - Unique-place price
 context UniquePlaceService::listPlaces() : UniquePlacesResponseDto
 post BR_PLACE_004_Price:
   result.success implies
@@ -185,7 +192,7 @@ post BR_PLACE_004_Price:
       trim(item.currency) <> '')
 
 
-BR-PLACE-005: Descriptive content
+BR-PLACE-005 - Descriptive content
 context UniquePlaceService::listPlaces() : UniquePlacesResponseDto
 post BR_PLACE_005_Content:
   result.success implies
@@ -198,7 +205,7 @@ post BR_PLACE_005_Content:
       trim(item.motivation) <> '')
 
 
-BR-PLACE-006: Display order
+BR-PLACE-006 - Display order
 context UniquePlaceService::listPlaces() : UniquePlacesResponseDto
 post BR_PLACE_006_Order:
   result.success implies
@@ -213,15 +220,14 @@ post BR_PLACE_006_Order:
         current.displayOrder <= following.displayOrder)
 
 
-BR-PLACE-007: Empty collection
+BR-PLACE-007 - Empty collection
 context UniquePlaceService::listPlaces() : UniquePlacesResponseDto
 post BR_PLACE_007_Empty:
   UniquePlace.allInstances()->select(place | place.active = true)->isEmpty()
   implies result.success and result.data->isEmpty()
 
 
-BR-PLACE-008: Read-only retrieval
+BR-PLACE-008 - Read-only retrieval
 Calling API-UNIQUE-PLACES-LIST shall not create, update, or delete City or
 UniquePlace records.
-
 ~~~

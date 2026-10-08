@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-05
 uc_name: "View the Learning Dashboard"
 ---
@@ -20,7 +20,7 @@ View the Learning Dashboard
 ### Description
 
 - Gives the Student one account-scoped summary of enrolled-course progress, active/completed courses, upcoming learning units, and course suggestions.
-- Replaces UC-02's dashboard integration shell at `/student/dashboard`, including the post-onboarding destination in UC-03.
+- Replaces UC-02's dashboard integration shell at /student/dashboard, including the post-onboarding destination in UC-03.
 - The dashboard is a read-only overview. Metric definitions, omitted source features, and response contracts are project decisions, not Figma-derived business rules.
 
 ### Actor(s)
@@ -29,7 +29,7 @@ Authenticated Student with completed onboarding.
 
 ### Priority
 
-Not specified in the supplied source.
+High
 
 ### Trigger
 
@@ -54,17 +54,19 @@ POST-1: The client displays the returned interaction outcome.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Choose an alternative action
 
-1. The actor chooses an available alternative action.
-2. The client displays the returned alternative outcome.
+3a: The actor chooses an available alternative action.
+
+3b: The client displays the returned alternative outcome.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Unsuccessful interaction outcome
 
-1. The system returns an unsuccessful outcome.
-2. The client displays the returned recovery message.
+5a: The system returns an unsuccessful outcome.
+
+5b: The client displays the returned recovery message.
 
 ### Related UI
 
@@ -72,8 +74,8 @@ EF-1:
 
 ### Related API IDs
 
-- [API-UC-05-01](../api/api-uc-05-01.md)
-- [API-UC-05-02](../api/api-uc-05-02.md)
+- [API-STUDENT-DASHBOARD-GET](../api/API-STUDENT-DASHBOARD-GET.md)
+- [API-STUDENT-DASHBOARD-COURSE-DISCOVERY-GET](../api/API-STUDENT-DASHBOARD-COURSE-DISCOVERY-GET.md)
 
 ### Notes
 
@@ -123,58 +125,58 @@ UseCaseResult --> "1" ExecutionStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-05-01
--- Source: Product source
+~~~text
+BR-LEARNING-DASHBOARD-01 - Actor Is Present
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-pre BR_UC_05_01_ActorIsPresent:
+pre BR_LEARNING_DASHBOARD_01_ActorIsPresent:
   command.actorId <> null and command.actorId.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-05-02
--- Source: Product source
+~~~text
+BR-LEARNING-DASHBOARD-02 - Request Is Present
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-pre BR_UC_05_02_RequestIsPresent:
+pre BR_LEARNING_DASHBOARD_02_RequestIsPresent:
   command.requestId <> null and command.requestId.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-05-03
--- Source: Product source
+~~~text
+BR-LEARNING-DASHBOARD-03 - Payload Is Present
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-pre BR_UC_05_03_PayloadIsPresent:
+pre BR_LEARNING_DASHBOARD_03_PayloadIsPresent:
   command.payload <> null and command.payload.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-05-04
--- Source: Product source
+~~~text
+BR-LEARNING-DASHBOARD-04 - Execution Is Identified
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_05_04_ExecutionIsIdentified:
+post BR_LEARNING_DASHBOARD_04_ExecutionIsIdentified:
   result.executionId <> null and result.executionId.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-05-05
--- Source: Product source
+~~~text
+BR-LEARNING-DASHBOARD-05 - Result Matches Request
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_05_05_ResultMatchesRequest:
+post BR_LEARNING_DASHBOARD_05_ResultMatchesRequest:
   result.actorId = command.actorId and result.requestId = command.requestId
 ~~~
 
-~~~ocl
--- BR-UC-05-06
--- Source: Product source
+~~~text
+BR-LEARNING-DASHBOARD-06 - Result Is Completed
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_05_06_ResultIsCompleted:
+post BR_LEARNING_DASHBOARD_06_ResultIsCompleted:
   result.status = ExecutionStatus::COMPLETED
 ~~~
 
-~~~ocl
--- BR-UC-05-07
--- Source: Product source
+~~~text
+BR-LEARNING-DASHBOARD-07 - Result Is Versioned
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_05_07_ResultIsVersioned:
+post BR_LEARNING_DASHBOARD_07_ResultIsVersioned:
   result.version > 0 and result.createdAt <= DateTime::now()
 ~~~

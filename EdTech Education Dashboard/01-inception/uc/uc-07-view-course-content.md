@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-07
 uc_name: "View Course Modules and Learning Content"
 ---
@@ -29,7 +29,7 @@ Authenticated, onboarded Student enrolled in the selected course.
 
 ### Priority
 
-Not specified in the supplied source.
+High
 
 ### Trigger
 
@@ -54,17 +54,19 @@ POST-1: The client displays the returned interaction outcome.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Choose an alternative action
 
-1. The actor chooses an available alternative action.
-2. The client displays the returned alternative outcome.
+3a: The actor chooses an available alternative action.
+
+3b: The client displays the returned alternative outcome.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Unsuccessful interaction outcome
 
-1. The system returns an unsuccessful outcome.
-2. The client displays the returned recovery message.
+5a: The system returns an unsuccessful outcome.
+
+5b: The client displays the returned recovery message.
 
 ### Related UI
 
@@ -72,7 +74,7 @@ EF-1:
 
 ### Related API IDs
 
-- [API-UC-07-01](../api/api-uc-07-01.md)
+- [API-STUDENT-COURSE-CONTENT-GET](../api/API-STUDENT-COURSE-CONTENT-GET.md)
 
 ### Notes
 
@@ -122,58 +124,58 @@ UseCaseResult --> "1" ExecutionStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-07-01
--- Source: Product source
+~~~text
+BR-COURSE-CONTENT-01 - Actor Is Present
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-pre BR_UC_07_01_ActorIsPresent:
+pre BR_COURSE_CONTENT_01_ActorIsPresent:
   command.actorId <> null and command.actorId.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-07-02
--- Source: Product source
+~~~text
+BR-COURSE-CONTENT-02 - Request Is Present
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-pre BR_UC_07_02_RequestIsPresent:
+pre BR_COURSE_CONTENT_02_RequestIsPresent:
   command.requestId <> null and command.requestId.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-07-03
--- Source: Product source
+~~~text
+BR-COURSE-CONTENT-03 - Payload Is Present
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-pre BR_UC_07_03_PayloadIsPresent:
+pre BR_COURSE_CONTENT_03_PayloadIsPresent:
   command.payload <> null and command.payload.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-07-04
--- Source: Product source
+~~~text
+BR-COURSE-CONTENT-04 - Execution Is Identified
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_07_04_ExecutionIsIdentified:
+post BR_COURSE_CONTENT_04_ExecutionIsIdentified:
   result.executionId <> null and result.executionId.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-07-05
--- Source: Product source
+~~~text
+BR-COURSE-CONTENT-05 - Result Matches Request
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_07_05_ResultMatchesRequest:
+post BR_COURSE_CONTENT_05_ResultMatchesRequest:
   result.actorId = command.actorId and result.requestId = command.requestId
 ~~~
 
-~~~ocl
--- BR-UC-07-06
--- Source: Product source
+~~~text
+BR-COURSE-CONTENT-06 - Result Is Completed
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_07_06_ResultIsCompleted:
+post BR_COURSE_CONTENT_06_ResultIsCompleted:
   result.status = ExecutionStatus::COMPLETED
 ~~~
 
-~~~ocl
--- BR-UC-07-07
--- Source: Product source
+~~~text
+BR-COURSE-CONTENT-07 - Result Is Versioned
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_07_07_ResultIsVersioned:
+post BR_COURSE_CONTENT_07_ResultIsVersioned:
   result.version > 0 and result.createdAt <= DateTime::now()
 ~~~

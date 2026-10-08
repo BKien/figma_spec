@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-16
 uc_name: "Update a Booking as Admin"
 ---
@@ -52,24 +52,24 @@ POST-1: The client displays the updated booking.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Dismiss Admin Booking Edit Popup
 
-1. The manager dismisses the popup and returns to the list.
+3a: The manager dismisses the popup and returns to the list.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Admin Booking Update Conflict
 
-1. The client displays the returned conflict and keeps the popup available.
+5a: The client displays the returned conflict and keeps the popup available.
 
 ### Related UI
 
-- [edit booking popup](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=3769-3135) (`3769:3135`)
-- [Bookings](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=1000-2063) (`1000:2063`)
+- [edit booking popup](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=3769-3135) (3769:3135)
+- [Bookings](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=1000-2063) (1000:2063)
 
 ### Related API IDs
 
-- [API-ADMIN-BOOKING-UPDATE](../api/api-admin-booking-update.md)
+- [API-ADMIN-BOOKING-UPDATE](../api/API-ADMIN-BOOKING-UPDATE.md)
 
 ### Notes
 
@@ -136,52 +136,52 @@ RequestContext --> "1" Role : role
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-16-01
--- Source: Assumption
+~~~text
+BR-UPDATE-ADMIN-BOOKING-01 - Admin Booking In Scope
+Source: Assumption
 context AdminService::updateBooking(command: AdminBookingCommand): Booking
-pre BR_UC_16_01_AdminBookingInScope:
+pre BR_UPDATE_ADMIN_BOOKING_01_AdminBookingInScope:
   Booking.allInstances()->exists(b | b.id = command.bookingId and b.restaurant.id = RequestContext::restaurantId and b.version = command.version)
 ~~~
-~~~ocl
--- BR-UC-16-02
--- Source: Assumption
+~~~text
+BR-UPDATE-ADMIN-BOOKING-02 - Admin Update Increments Version
+Source: Assumption
 context AdminService::updateBooking(command: AdminBookingCommand): Booking
-post BR_UC_16_02_AdminUpdateIncrementsVersion:
+post BR_UPDATE_ADMIN_BOOKING_02_AdminUpdateIncrementsVersion:
   result.id = command.bookingId and result.version = command.version + 1
 ~~~
-~~~ocl
--- BR-UC-16-03
--- Source: Assumption
+~~~text
+BR-UPDATE-ADMIN-BOOKING-03 - Admin Target Slot Can Serve Party
+Source: Assumption
 context AdminService::updateBooking(command: AdminBookingCommand): Booking
-pre BR_UC_16_03_AdminTargetSlotCanServeParty:
+pre BR_UPDATE_ADMIN_BOOKING_03_AdminTargetSlotCanServeParty:
   ReservationSlot.allInstances()->exists(s | s.id = command.slotId and s.remainingSeats >= command.partySize)
 ~~~
-~~~ocl
--- BR-UC-16-04
--- Source: Assumption
+~~~text
+BR-UPDATE-ADMIN-BOOKING-04 - Admin Booking Fields Are Saved
+Source: Assumption
 context AdminService::updateBooking(command: AdminBookingCommand): Booking
-post BR_UC_16_04_AdminBookingFieldsAreSaved:
+post BR_UPDATE_ADMIN_BOOKING_04_AdminBookingFieldsAreSaved:
   result.slot.id = command.slotId and result.partySize = command.partySize
 ~~~
-~~~ocl
--- BR-UC-16-05
--- Source: Assumption
+~~~text
+BR-UPDATE-ADMIN-BOOKING-05 - Admin Update Role Authorized
+Source: Assumption
 context AdminService::updateBooking(command: AdminBookingCommand): Booking
-pre BR_UC_16_05_AdminUpdateRoleAuthorized:
+pre BR_UPDATE_ADMIN_BOOKING_05_AdminUpdateRoleAuthorized:
   RequestContext::role = Role::MANAGER or RequestContext::role = Role::SUPER_ADMIN
 ~~~
-~~~ocl
--- BR-UC-16-06
--- Source: Assumption
+~~~text
+BR-UPDATE-ADMIN-BOOKING-06 - Admin Party Size Is Positive
+Source: Assumption
 context AdminService::updateBooking(command: AdminBookingCommand): Booking
-pre BR_UC_16_06_AdminPartySizeIsPositive:
+pre BR_UPDATE_ADMIN_BOOKING_06_AdminPartySizeIsPositive:
   command.partySize > 0
 ~~~
-~~~ocl
--- BR-UC-16-07
--- Source: Assumption
+~~~text
+BR-UPDATE-ADMIN-BOOKING-07 - Admin Target Slot Matches Restaurant
+Source: Assumption
 context AdminService::updateBooking(command: AdminBookingCommand): Booking
-pre BR_UC_16_07_AdminTargetSlotMatchesRestaurant:
+pre BR_UPDATE_ADMIN_BOOKING_07_AdminTargetSlotMatchesRestaurant:
   Booking.allInstances()->exists(b | b.id = command.bookingId and ReservationSlot.allInstances()->exists(s | s.id = command.slotId and s.restaurant.id = b.restaurant.id and s.startsAt > DateTime::now()))
 ~~~

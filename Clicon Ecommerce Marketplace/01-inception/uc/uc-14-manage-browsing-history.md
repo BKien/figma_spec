@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-14
 uc_name: "View and Manage Browsing History"
 ---
@@ -30,7 +30,7 @@ Signed-in Customer with an active, verified account.
 
 ### Priority
 
-Not specified in the supplied source.
+Low
 
 ### Trigger
 
@@ -55,17 +55,19 @@ POST-1: The client displays the returned interaction outcome.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Choose an alternative action
 
-1. The actor chooses an available alternative action.
-2. The client displays the returned alternative outcome.
+3a: The actor chooses an available alternative action.
+
+3b: The client displays the returned alternative outcome.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Unsuccessful interaction outcome
 
-1. The system returns an unsuccessful outcome.
-2. The client displays the returned recovery message.
+5a: The system returns an unsuccessful outcome.
+
+5b: The client displays the returned recovery message.
 
 ### Related UI
 
@@ -73,9 +75,9 @@ EF-1:
 
 ### Related API IDs
 
-- [API-UC-14-01](../api/api-uc-14-01.md)
-- [API-UC-14-02](../api/api-uc-14-02.md)
-- [API-UC-14-03](../api/api-uc-14-03.md)
+- [API-BROWSING-HISTORY-LIST](../api/API-BROWSING-HISTORY-LIST.md)
+- [API-BROWSING-HISTORY-PREFERENCE-UPDATE](../api/API-BROWSING-HISTORY-PREFERENCE-UPDATE.md)
+- [API-BROWSING-HISTORY-VIEW-CREATE](../api/API-BROWSING-HISTORY-VIEW-CREATE.md)
 
 ### Notes
 
@@ -125,58 +127,58 @@ UseCaseResult --> "1" ExecutionStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-14-01
--- Source: Product source
+~~~text
+BR-BROWSING-HISTORY-01 - Actor Is Present
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-pre BR_UC_14_01_ActorIsPresent:
+pre BR_BROWSING_HISTORY_01_ActorIsPresent:
   command.actorId <> null and command.actorId.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-14-02
--- Source: Product source
+~~~text
+BR-BROWSING-HISTORY-02 - Request Is Present
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-pre BR_UC_14_02_RequestIsPresent:
+pre BR_BROWSING_HISTORY_02_RequestIsPresent:
   command.requestId <> null and command.requestId.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-14-03
--- Source: Product source
+~~~text
+BR-BROWSING-HISTORY-03 - Payload Is Present
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-pre BR_UC_14_03_PayloadIsPresent:
+pre BR_BROWSING_HISTORY_03_PayloadIsPresent:
   command.payload <> null and command.payload.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-14-04
--- Source: Product source
+~~~text
+BR-BROWSING-HISTORY-04 - Execution Is Identified
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_14_04_ExecutionIsIdentified:
+post BR_BROWSING_HISTORY_04_ExecutionIsIdentified:
   result.executionId <> null and result.executionId.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-14-05
--- Source: Product source
+~~~text
+BR-BROWSING-HISTORY-05 - Result Matches Request
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_14_05_ResultMatchesRequest:
+post BR_BROWSING_HISTORY_05_ResultMatchesRequest:
   result.actorId = command.actorId and result.requestId = command.requestId
 ~~~
 
-~~~ocl
--- BR-UC-14-06
--- Source: Product source
+~~~text
+BR-BROWSING-HISTORY-06 - Result Is Completed
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_14_06_ResultIsCompleted:
+post BR_BROWSING_HISTORY_06_ResultIsCompleted:
   result.status = ExecutionStatus::COMPLETED
 ~~~
 
-~~~ocl
--- BR-UC-14-07
--- Source: Product source
+~~~text
+BR-BROWSING-HISTORY-07 - Result Is Versioned
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_14_07_ResultIsVersioned:
+post BR_BROWSING_HISTORY_07_ResultIsVersioned:
   result.version > 0 and result.createdAt <= DateTime::now()
 ~~~

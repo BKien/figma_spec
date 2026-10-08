@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-03
 uc_name: "Start a Live Stream"
 ---
@@ -40,6 +40,7 @@ PRE-1: The client displays the broadcaster session interface.
 ### Post-Condition(s)
 
 POST-1: The client displays the stream state returned by the system.
+
 POST-2: Viewer-facing playback reflects the returned broadcast outcome.
 
 ### Basic Flow
@@ -52,29 +53,31 @@ POST-2: Viewer-facing playback reflects the returned broadcast outcome.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Open Session Menu Before Starting
 
-1. The host opens the session menu before starting.
-2. The client displays the available broadcaster actions.
+1a: The host opens the session menu before starting.
+
+1b: The client displays the available broadcaster actions.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Stream Start Failure
 
-1. The system cannot complete the start request.
-2. The client displays a technical-failure state and keeps the broadcaster interface available.
+3a: The system cannot complete the start request.
+
+3b: The client displays a technical-failure state and keeps the broadcaster interface available.
 
 ### Related UI
 
-- Broadcaster Preview `6007:51245`.
-- Live Session `6007:51075`.
-- Live Streaming Desktop Features `6007:86770`.
-- Live Streaming Mobile Features `6012:90506`.
+- Broadcaster Preview 6007:51245.
+- Live Session 6007:51075.
+- Live Streaming Desktop Features 6007:86770.
+- Live Streaming Mobile Features 6012:90506.
 
 ### Related API IDs
 
-`API-LIVE-STREAM-CONTROL`.
-`API-SESSION-STATE`.
+API-LIVE-STREAM-CONTROL.
+API-SESSION-STATE.
 
 ### Notes
 
@@ -95,12 +98,12 @@ class LiveStreamService {
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-03-01
--- Source: Assumption
--- Assumption: A-19
+~~~text
+BR-START-STREAM-01 - Authenticated Membership
+Source: Assumption
+Assumption: A-19
 context LiveStreamService::start(command: StreamControlCommand, stream: LiveStream, session: Session): LiveStream
-pre BR_UC_03_01_AuthenticatedMembership:
+pre BR_START_STREAM_01_AuthenticatedMembership:
   RequestContext::authenticated and RequestContext::sessionId = command.sessionId and
   command.actorParticipantId = RequestContext::participantId and
   Participant.allInstances()->exists(p | p.id = command.actorParticipantId and
@@ -108,78 +111,78 @@ pre BR_UC_03_01_AuthenticatedMembership:
     p.status = ParticipantStatus::JOINED and p.role = ParticipantRole::HOST)
 ~~~
 
-~~~ocl
--- BR-UC-03-02
--- Source: Assumption
--- Assumption: A-19
+~~~text
+BR-START-STREAM-02 - Target Session
+Source: Assumption
+Assumption: A-19
 context LiveStreamService::start(command: StreamControlCommand, stream: LiveStream, session: Session): LiveStream
-pre BR_UC_03_02_TargetSession:
+pre BR_START_STREAM_02_TargetSession:
   command.sessionId = session.id and session.status <> SessionStatus::ENDED
 ~~~
 
-~~~ocl
--- BR-UC-03-03
--- Source: Assumption
--- Assumption: A-20
+~~~text
+BR-START-STREAM-03 - Command Key
+Source: Assumption
+Assumption: A-20
 context LiveStreamService::start(command: StreamControlCommand, stream: LiveStream, session: Session): LiveStream
-pre BR_UC_03_03_CommandKey:
+pre BR_START_STREAM_03_CommandKey:
   command.idempotencyKey <> null and command.idempotencyKey.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-03-04
--- Source: Assumption
--- Assumption: A-03
+~~~text
+BR-START-STREAM-04 - Stream Target And Version
+Source: Assumption
+Assumption: A-03
 context LiveStreamService::start(command: StreamControlCommand, stream: LiveStream, session: Session): LiveStream
-pre BR_UC_03_04_StreamTargetAndVersion:
+pre BR_START_STREAM_04_StreamTargetAndVersion:
   command.action = StreamAction::START and session.kind = SessionKind::LIVE_STREAM and
   session.status = SessionStatus::LIVE and stream.sessionId = session.id and command.expectedVersion = stream.version
 ~~~
 
-~~~ocl
--- BR-UC-03-05
--- Source: Assumption
--- Assumption: A-03
+~~~text
+BR-START-STREAM-05 - Same Stream Version
+Source: Assumption
+Assumption: A-03
 context LiveStreamService::start(command: StreamControlCommand, stream: LiveStream, session: Session): LiveStream
-post BR_UC_03_05_SameStreamVersion:
+post BR_START_STREAM_05_SameStreamVersion:
   result = stream and stream.version = stream.version@pre + 1
 ~~~
 
-~~~ocl
--- BR-UC-03-06
--- Source: Assumption
--- Assumption: A-03
+~~~text
+BR-START-STREAM-06 - Ready Only
+Source: Assumption
+Assumption: A-03
 context LiveStreamService::start(command: StreamControlCommand, stream: LiveStream, session: Session): LiveStream
-pre BR_UC_03_06_ReadyOnly:
+pre BR_START_STREAM_06_ReadyOnly:
   stream.status = StreamStatus::READY
 ~~~
 
-~~~ocl
--- BR-UC-03-07
--- Source: Assumption
--- Assumption: A-03
+~~~text
+BR-START-STREAM-07 - Starting
+Source: Assumption
+Assumption: A-03
 context LiveStreamService::start(command: StreamControlCommand, stream: LiveStream, session: Session): LiveStream
-post BR_UC_03_07_Starting:
+post BR_START_STREAM_07_Starting:
   stream.status = StreamStatus::STARTING and stream.endedAt = null
 ~~~
 
-~~~ocl
--- BR-UC-03-08
--- Source: Assumption
--- Assumption: A-03
+~~~text
+BR-START-STREAM-08 - Provider Completion Target
+Source: Assumption
+Assumption: A-03
 context LiveStreamService::complete(command: ProviderCompletion, stream: LiveStream, session: Session): LiveStream
-pre BR_UC_03_08_ProviderCompletionTarget:
+pre BR_START_STREAM_08_ProviderCompletionTarget:
   RequestContext::providerAuthenticated and command.sessionId = session.id and stream.sessionId = session.id and
   command.resourceId = stream.id and command.expectedVersion = stream.version and stream.status = StreamStatus::STARTING and
   session.status = SessionStatus::LIVE and TransactionContext::lockedSessionId = session.id and TransactionContext::atomicCommit
 ~~~
 
-~~~ocl
--- BR-UC-03-09
--- Source: Assumption
--- Assumption: A-03
+~~~text
+BR-START-STREAM-09 - Provider Completion State
+Source: Assumption
+Assumption: A-03
 context LiveStreamService::complete(command: ProviderCompletion, stream: LiveStream, session: Session): LiveStream
-post BR_UC_03_09_ProviderCompletionState:
+post BR_START_STREAM_09_ProviderCompletionState:
   result = stream and stream.version = stream.version@pre + 1 and session.version = session.version@pre + 1 and
   if command.succeeded then stream.status = StreamStatus::LIVE and stream.startedAt <> null
   else stream.status = StreamStatus::READY endif

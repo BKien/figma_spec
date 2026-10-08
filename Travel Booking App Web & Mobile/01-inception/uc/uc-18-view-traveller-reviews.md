@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-18
 uc_name: "View Traveller Reviews"
 ---
@@ -40,6 +40,7 @@ PRE-1: The actor can access a page or section that presents traveller reviews.
 ### Post-Condition(s)
 
 POST-1: The client displays the review-page state returned by the system.
+
 POST-2: Available pagination or navigation remains accessible.
 
 ### Basic Flow
@@ -53,31 +54,35 @@ POST-2: Available pagination or navigation remains accessible.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Handle an Empty Review Section
 
-1. If no reviews are returned, the client displays or omits the section according to the related design.
+4a: If no reviews are returned, the client displays or omits the section according to the related design.
 
-AF-2:
+AF-2: Request the Featured Review Page Size
 
-1. A featured-review section requests the page size represented by its design.
+2a: A featured-review section requests the page size represented by its design.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Additional Review Page Loading Failure
 
-1. If another review page cannot be loaded, the client keeps the displayed reviews and offers a retry.
+6a: If another review page cannot be loaded, the client keeps the displayed reviews and offers a retry.
 
-EF-2:
+EF-2: Initial Review Request Failure
 
-1. If the initial request fails, the client displays the designed unavailable state.
+3a: If the initial request fails, the client displays the designed unavailable state.
 
 ### Related UI
 
-`reviews`; home-page testimonial sections.
+reviews; home-page testimonial sections.
 
 ### Related API IDs
 
-`API-REVIEW-LIST`.
+API-REVIEW-LIST.
+
+### Notes
+
+None.
 
 ## UML Model
 
@@ -156,49 +161,49 @@ ReviewPage "1" o-- "0..*" Review : items
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-18-01
--- Source: Assumption
+~~~text
+BR-TRAVELLER-REVIEWS-01 - Only Moderated Public Reviews Are Returned
+Source: Assumption
 context ReviewService::list(limit: Integer, offset: Integer): ReviewPage
-post BR_UC_18_01_OnlyModeratedPublicReviewsAreReturned:
+post BR_TRAVELLER_REVIEWS_01_OnlyModeratedPublicReviewsAreReturned:
   result.items->forAll(r |
     r.moderationStatus = ModerationStatus::APPROVED and
     r.published and r.publishedAt <= RequestContext::startedAt)
 ~~~
 
-~~~ocl
--- BR-UC-18-02
--- Source: Assumption
+~~~text
+BR-TRAVELLER-REVIEWS-02 - Verified Badge Reflects Completed Travel
+Source: Assumption
 context ReviewService::list(limit: Integer, offset: Integer): ReviewPage
-post BR_UC_18_02_VerifiedBadgeReflectsCompletedTravel:
+post BR_TRAVELLER_REVIEWS_02_VerifiedBadgeReflectsCompletedTravel:
   result.items->forAll(r |
     r.verifiedBooking =
       (r.bookingId <> null and
        r.tripCompletionStatus = TripCompletionStatus::COMPLETED))
 ~~~
 
-~~~ocl
--- BR-UC-18-03
--- Source: Assumption
+~~~text
+BR-TRAVELLER-REVIEWS-03 - Public Author Identity Is Privacy Preserving
+Source: Assumption
 context ReviewService::list(limit: Integer, offset: Integer): ReviewPage
-post BR_UC_18_03_PublicAuthorIdentityIsPrivacyPreserving:
+post BR_TRAVELLER_REVIEWS_03_PublicAuthorIdentityIsPrivacyPreserving:
   result.items->forAll(r |
     r.displayedAuthorName = PrivacyMask::personName(r.authorName))
 ~~~
 
-~~~ocl
--- BR-UC-18-04
--- Source: Assumption
+~~~text
+BR-TRAVELLER-REVIEWS-04 - Public Comment Passes Content Safety Projection
+Source: Assumption
 context ReviewService::list(limit: Integer, offset: Integer): ReviewPage
-post BR_UC_18_04_PublicCommentPassesContentSafetyProjection:
+post BR_TRAVELLER_REVIEWS_04_PublicCommentPassesContentSafetyProjection:
   result.items->forAll(r | ContentSafety::isPublicSafe(r.comment))
 ~~~
 
-~~~ocl
--- BR-UC-18-05
--- Source: Assumption
+~~~text
+BR-TRAVELLER-REVIEWS-05 - Review Order Is Recent And Deterministic
+Source: Assumption
 context ReviewService::list(limit: Integer, offset: Integer): ReviewPage
-post BR_UC_18_05_ReviewOrderIsRecentAndDeterministic:
+post BR_TRAVELLER_REVIEWS_05_ReviewOrderIsRecentAndDeterministic:
   result.items->size() <= 1 or
   Sequence{1..result.items->size() - 1}->forAll(i |
     result.items->at(i).publishedAt > result.items->at(i + 1).publishedAt or
@@ -206,37 +211,37 @@ post BR_UC_18_05_ReviewOrderIsRecentAndDeterministic:
       result.items->at(i).id < result.items->at(i + 1).id))
 ~~~
 
-~~~ocl
--- BR-UC-18-06
--- Source: Assumption
+~~~text
+BR-TRAVELLER-REVIEWS-06 - Page Metadata Matches Its Slice
+Source: Assumption
 context ReviewService::list(limit: Integer, offset: Integer): ReviewPage
-post BR_UC_18_06_PageMetadataMatchesItsSlice:
+post BR_TRAVELLER_REVIEWS_06_PageMetadataMatchesItsSlice:
   result.limit = limit and result.offset = offset and result.total >= 0 and
   result.items->size() = (result.total - offset).max(0).min(limit) and
   result.hasMore = (offset + result.items->size() < result.total)
 ~~~
 
-~~~ocl
--- BR-UC-18-07
--- Source: Assumption
+~~~text
+BR-TRAVELLER-REVIEWS-07 - Review Retrieval Is Read Only
+Source: Assumption
 context ReviewService::list(limit: Integer, offset: Integer): ReviewPage
-post BR_UC_18_07_ReviewRetrievalIsReadOnly:
+post BR_TRAVELLER_REVIEWS_07_ReviewRetrievalIsReadOnly:
   ReadState::reviews() = ReadState::reviews()@pre
 ~~~
 
-~~~ocl
--- BR-UC-18-08
--- Source: Assumption
+~~~text
+BR-TRAVELLER-REVIEWS-08 - Page Request Has Usable Bounds
+Source: Assumption
 context ReviewService::list(limit: Integer, offset: Integer): ReviewPage
-pre BR_UC_18_08_PageRequestHasUsableBounds:
+pre BR_TRAVELLER_REVIEWS_08_PageRequestHasUsableBounds:
   limit > 0 and offset >= 0
 ~~~
 
-~~~ocl
--- BR-UC-18-09
--- Source: Assumption
+~~~text
+BR-TRAVELLER-REVIEWS-09 - Ratings And Review Identity Are Well Formed
+Source: Assumption
 context ReviewService::list(limit: Integer, offset: Integer): ReviewPage
-post BR_UC_18_09_RatingsAndReviewIdentityAreWellFormed:
+post BR_TRAVELLER_REVIEWS_09_RatingsAndReviewIdentityAreWellFormed:
   result.items->isUnique(r | r.id) and
   result.items->forAll(r | r.rating >= 1 and r.rating <= 5)
 ~~~

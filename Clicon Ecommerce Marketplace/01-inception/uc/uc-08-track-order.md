@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-08
 uc_name: "Track Order"
 ---
@@ -30,7 +30,7 @@ Visitor or signed-in Customer in the browser context that placed the order.
 
 ### Priority
 
-Not specified in the supplied source.
+High
 
 ### Trigger
 
@@ -55,17 +55,19 @@ POST-1: The client displays the returned interaction outcome.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Choose an alternative action
 
-1. The actor chooses an available alternative action.
-2. The client displays the returned alternative outcome.
+3a: The actor chooses an available alternative action.
+
+3b: The client displays the returned alternative outcome.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Unsuccessful interaction outcome
 
-1. The system returns an unsuccessful outcome.
-2. The client displays the returned recovery message.
+5a: The system returns an unsuccessful outcome.
+
+5b: The client displays the returned recovery message.
 
 ### Related UI
 
@@ -74,7 +76,7 @@ EF-1:
 
 ### Related API IDs
 
-- [API-UC-08-01](../api/api-uc-08-01.md)
+- [API-ORDER-TRACK](../api/API-ORDER-TRACK.md)
 
 ### Notes
 
@@ -124,58 +126,58 @@ UseCaseResult --> "1" ExecutionStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-08-01
--- Source: Product source
+~~~text
+BR-TRACK-ORDER-01 - Actor Is Present
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-pre BR_UC_08_01_ActorIsPresent:
+pre BR_TRACK_ORDER_01_ActorIsPresent:
   command.actorId <> null and command.actorId.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-08-02
--- Source: Product source
+~~~text
+BR-TRACK-ORDER-02 - Request Is Present
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-pre BR_UC_08_02_RequestIsPresent:
+pre BR_TRACK_ORDER_02_RequestIsPresent:
   command.requestId <> null and command.requestId.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-08-03
--- Source: Product source
+~~~text
+BR-TRACK-ORDER-03 - Payload Is Present
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-pre BR_UC_08_03_PayloadIsPresent:
+pre BR_TRACK_ORDER_03_PayloadIsPresent:
   command.payload <> null and command.payload.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-08-04
--- Source: Product source
+~~~text
+BR-TRACK-ORDER-04 - Execution Is Identified
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_08_04_ExecutionIsIdentified:
+post BR_TRACK_ORDER_04_ExecutionIsIdentified:
   result.executionId <> null and result.executionId.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-08-05
--- Source: Product source
+~~~text
+BR-TRACK-ORDER-05 - Result Matches Request
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_08_05_ResultMatchesRequest:
+post BR_TRACK_ORDER_05_ResultMatchesRequest:
   result.actorId = command.actorId and result.requestId = command.requestId
 ~~~
 
-~~~ocl
--- BR-UC-08-06
--- Source: Product source
+~~~text
+BR-TRACK-ORDER-06 - Result Is Completed
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_08_06_ResultIsCompleted:
+post BR_TRACK_ORDER_06_ResultIsCompleted:
   result.status = ExecutionStatus::COMPLETED
 ~~~
 
-~~~ocl
--- BR-UC-08-07
--- Source: Product source
+~~~text
+BR-TRACK-ORDER-07 - Result Is Versioned
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_08_07_ResultIsVersioned:
+post BR_TRACK_ORDER_07_ResultIsVersioned:
   result.version > 0 and result.createdAt <= DateTime::now()
 ~~~

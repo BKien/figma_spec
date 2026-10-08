@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-09
 uc_name: "Search for Taxi Rentals"
 ---
@@ -40,6 +40,7 @@ PRE-1: The traveller can access the Taxi search interface.
 ### Post-Condition(s)
 
 POST-1: The client displays the taxi-rental search outcome returned by the system.
+
 POST-2: The entered location and rental period remain available for the next interaction.
 
 ### Basic Flow
@@ -53,31 +54,35 @@ POST-2: The entered location and rental period remain available for the next int
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Select a Suggested Rental Location
 
-1. The traveller selects the rental location from location suggestions.
+3a: The traveller selects the rental location from location suggestions.
 
-AF-2:
+AF-2: Replace Taxi Search from Results
 
-1. From the results view, the traveller changes the displayed criteria and submits a replacement search.
+6a: From the results view, the traveller changes the displayed criteria and submits a replacement search.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Taxi Location Suggestions Unavailable
 
-1. If location suggestions are unavailable, the client identifies the affected control and retains the entered criteria.
+3b: If location suggestions are unavailable, the client identifies the affected control and retains the entered criteria.
 
-EF-2:
+EF-2: Taxi Search Failure
 
-1. If the search cannot be completed, the client preserves the criteria and displays a retry action.
+5a: If the search cannot be completed, the client preserves the criteria and displays a retry action.
 
 ### Related UI
 
-`Taxi`; `taxi home page`; `Smooth Travels Start Here`; location control; `Pick-up Date & Time`; `Drop-off Date & Time`; `Passengers`.
+Taxi; taxi home page; Smooth Travels Start Here; location control; Pick-up Date & Time; Drop-off Date & Time; Passengers.
 
 ### Related API IDs
 
-`API-LOCATION-SUGGEST`; `API-TAXI-SEARCH`.
+API-LOCATION-SUGGEST; API-TAXI-SEARCH.
+
+### Notes
+
+None.
 
 ## UML Model
 
@@ -169,83 +174,83 @@ TaxiOffer --> "1" Money : deposit
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-09-01
--- Source: Figma
+~~~text
+BR-SEARCH-TAXIS-01 - Rental Location Is Supported
+Source: Figma
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-pre BR_UC_09_01_RentalLocationIsSupported:
+pre BR_SEARCH_TAXIS_01_RentalLocationIsSupported:
   Location.allInstances()->one(l | l.id = criteria.locationId and l.active and
     ServiceArea.allInstances()->one(a | a.id = l.serviceAreaId and a.active))
 ~~~
 
-~~~ocl
--- BR-UC-09-02
--- Source: Assumption
+~~~text
+BR-SEARCH-TAXIS-02 - Pickup Falls Within The Planning Window
+Source: Assumption
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-pre BR_UC_09_02_PickupFallsWithinThePlanningWindow:
+pre BR_SEARCH_TAXIS_02_PickupFallsWithinThePlanningWindow:
   let location: Location = Location.allInstances()->any(l | l.id = criteria.locationId) in
   BusinessClock::hoursBetween(BusinessClock::now(location.timeZone), criteria.pickupAt) >= 2 and
   BusinessClock::hoursBetween(BusinessClock::now(location.timeZone), criteria.pickupAt) <= 4320
 ~~~
 
-~~~ocl
--- BR-UC-09-03
--- Source: Assumption
+~~~text
+BR-SEARCH-TAXIS-03 - Party Fits An Available Vehicle Category
+Source: Assumption
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-pre BR_UC_09_03_PartyFitsAnAvailableVehicleCategory:
+pre BR_SEARCH_TAXIS_03_PartyFitsAnAvailableVehicleCategory:
   criteria.passengers >= 1 and criteria.passengers <= 16
 ~~~
 
-~~~ocl
--- BR-UC-09-04
--- Source: Figma
+~~~text
+BR-SEARCH-TAXIS-04 - Offers Match The Requested Location And Period
+Source: Figma
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-post BR_UC_09_04_OffersMatchTheRequestedLocationAndPeriod:
+post BR_SEARCH_TAXIS_04_OffersMatchTheRequestedLocationAndPeriod:
   result->forAll(o |
     o.locationId = criteria.locationId and o.pickupAt = criteria.pickupAt and
     o.dropoffAt = criteria.dropoffAt and o.vehicle.seatCapacity >= criteria.passengers)
 ~~~
 
-~~~ocl
--- BR-UC-09-05
--- Source: Assumption
+~~~text
+BR-SEARCH-TAXIS-05 - Offered Resources Are Live And Unallocated
+Source: Assumption
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-post BR_UC_09_05_OfferedResourcesAreLiveAndUnallocated:
+post BR_SEARCH_TAXIS_05_OfferedResourcesAreLiveAndUnallocated:
   result->forAll(o |
     o.available and o.expiresAt > RequestContext::startedAt and
     o.driver.active and o.vehicle.active and
     AllocationCalendar::isFree(o.driver.id, o.vehicle.id, o.pickupAt, o.dropoffAt))
 ~~~
 
-~~~ocl
--- BR-UC-09-06
--- Source: Assumption
+~~~text
+BR-SEARCH-TAXIS-06 - Provider Inventory Is Deduplicated
+Source: Assumption
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-post BR_UC_09_06_ProviderInventoryIsDeduplicated:
+post BR_SEARCH_TAXIS_06_ProviderInventoryIsDeduplicated:
   result->isUnique(o | o.providerOfferRef)
 ~~~
 
-~~~ocl
--- BR-UC-09-07
--- Source: Assumption
+~~~text
+BR-SEARCH-TAXIS-07 - Search Does Not Allocate Resources
+Source: Assumption
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-post BR_UC_09_07_SearchDoesNotAllocateResources:
+post BR_SEARCH_TAXIS_07_SearchDoesNotAllocateResources:
   ReadState::taxiBookings() = ReadState::taxiBookings()@pre
 ~~~
 
-~~~ocl
--- BR-UC-09-08
--- Source: Figma
+~~~text
+BR-SEARCH-TAXIS-08 - Rental Period Has Positive Duration
+Source: Figma
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-pre BR_UC_09_08_RentalPeriodHasPositiveDuration:
+pre BR_SEARCH_TAXIS_08_RentalPeriodHasPositiveDuration:
   criteria.dropoffAt > criteria.pickupAt
 ~~~
 
-~~~ocl
--- BR-UC-09-09
--- Source: Assumption
+~~~text
+BR-SEARCH-TAXIS-09 - Search Prices Use One Currency
+Source: Assumption
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-post BR_UC_09_09_SearchPricesUseOneCurrency:
+post BR_SEARCH_TAXIS_09_SearchPricesUseOneCurrency:
   result->forAll(o |
     o.total.amount >= 0 and o.total.currency = criteria.currency and
     o.deposit.amount >= 0 and o.deposit.currency = criteria.currency)

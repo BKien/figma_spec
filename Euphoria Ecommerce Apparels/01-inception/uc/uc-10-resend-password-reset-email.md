@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-10
 uc_name: "Resend the password reset email"
 ---
@@ -50,18 +50,21 @@ POST-1: The client displays the returned acknowledgement.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Return to login
 
-1. The visitor chooses Back to Login.
-2. The client displays the sign-in page.
+1a: The visitor chooses Back to Login.
+
+1b: The client displays the sign-in page.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Retry the resend request
 
-1. The system returns a temporary service failure.
-2. The client presents the retry action.
-3. The visitor retries the request.
+3a: The system returns a temporary service failure.
+
+3b: The client presents the retry action.
+
+3c: The visitor retries the request.
 
 ### Related UI
 
@@ -70,7 +73,7 @@ EF-1:
 
 ### Related API IDs
 
-- [API-RESET-REQUEST](../api/api-reset-request.md)
+- [API-RESET-REQUEST](../api/API-RESET-REQUEST.md)
 
 ### Notes
 
@@ -129,52 +132,52 @@ ResetDelivery --> "1" DeliveryStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-10-01
--- Source: Assumption
+~~~text
+BR-RESET-EMAIL-RESEND-01 - Keep Earlier Requests
+Source: Assumption
 context ResetService::request(email: String): Accepted
-post BR_UC_10_01_KeepEarlierRequests:
+post BR_RESET_EMAIL_RESEND_01_KeepEarlierRequests:
   ResetDelivery.allInstances()@pre->forAll(d | ResetDelivery.allInstances()->includes(d) and d.customerId = d.customerId@pre and d.status = d.status@pre and d.providerReference = d.providerReference@pre and d.createdAt = d.createdAt@pre)
 ~~~
-~~~ocl
--- BR-UC-10-02
--- Source: Assumption
+~~~text
+BR-RESET-EMAIL-RESEND-02 - Same Destination
+Source: Assumption
 context ResetService::request(email: String): Accepted
-post BR_UC_10_02_SameDestination:
+post BR_RESET_EMAIL_RESEND_02_SameDestination:
   ResetDelivery.allInstances()->select(d | d.oclIsNew())->forAll(d | Customer.allInstances()->exists(c | c.id = d.customerId and c.email = TextSyntax::canonicalEmail(email)))
 ~~~
-~~~ocl
--- BR-UC-10-03
--- Source: Assumption
+~~~text
+BR-RESET-EMAIL-RESEND-03 - No Account Creation
+Source: Assumption
 context ResetService::request(email: String): Accepted
-post BR_UC_10_03_NoAccountCreation:
+post BR_RESET_EMAIL_RESEND_03_NoAccountCreation:
   Customer.allInstances() = Customer.allInstances()@pre
 ~~~
-~~~ocl
--- BR-UC-10-04
--- Source: Assumption
+~~~text
+BR-RESET-EMAIL-RESEND-04 - Contact Data Preserved
+Source: Assumption
 context ResetService::request(email: String): Accepted
-post BR_UC_10_04_ContactDataPreserved:
+post BR_RESET_EMAIL_RESEND_04_ContactDataPreserved:
   Customer.allInstances()->forAll(c | c.email = c.email@pre and c.name = c.name@pre and c.phone = c.phone@pre)
 ~~~
-~~~ocl
--- BR-UC-10-05
--- Source: Assumption
+~~~text
+BR-RESET-EMAIL-RESEND-05 - Sessions Preserved
+Source: Assumption
 context ResetService::request(email: String): Accepted
-post BR_UC_10_05_SessionsPreserved:
+post BR_RESET_EMAIL_RESEND_05_SessionsPreserved:
   Session.allInstances() = Session.allInstances()@pre and Session.allInstances()->forAll(s | s.tokenHash = s.tokenHash@pre and s.csrfHash = s.csrfHash@pre and s.expiresAt = s.expiresAt@pre and s.revoked = s.revoked@pre)
 ~~~
-~~~ocl
--- BR-UC-10-06
--- Source: Assumption
+~~~text
+BR-RESET-EMAIL-RESEND-06 - Queued Dispatch Reference
+Source: Assumption
 context ResetDelivery
-inv BR_UC_10_06_QueuedDispatchReference:
+inv BR_RESET_EMAIL_RESEND_06_QueuedDispatchReference:
   self.status = DeliveryStatus::QUEUED implies self.providerReference = null
 ~~~
-~~~ocl
--- BR-UC-10-07
--- Source: Assumption
+~~~text
+BR-RESET-EMAIL-RESEND-07 - Sent Dispatch Reference
+Source: Assumption
 context ResetDelivery
-inv BR_UC_10_07_SentDispatchReference:
+inv BR_RESET_EMAIL_RESEND_07_SentDispatchReference:
   self.status = DeliveryStatus::SENT implies (self.providerReference <> null and TextSyntax::nonBlank(self.providerReference))
 ~~~

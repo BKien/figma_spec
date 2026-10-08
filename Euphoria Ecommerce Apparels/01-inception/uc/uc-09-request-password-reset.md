@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-09
 uc_name: "Request a password reset email"
 ---
@@ -50,18 +50,21 @@ POST-1: The client displays the Check Email acknowledgement.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Return to login
 
-1. The visitor chooses Back to Login.
-2. The client displays the sign-in page.
+4a: The visitor chooses Back to Login.
+
+4b: The client displays the sign-in page.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Retry the reset request
 
-1. The system returns a temporary service failure.
-2. The client presents the retry action.
-3. The visitor retries the request.
+3a: The system returns a temporary service failure.
+
+3b: The client presents the retry action.
+
+3c: The visitor retries the request.
 
 ### Related UI
 
@@ -70,7 +73,7 @@ EF-1:
 
 ### Related API IDs
 
-- [API-RESET-REQUEST](../api/api-reset-request.md)
+- [API-RESET-REQUEST](../api/API-RESET-REQUEST.md)
 
 ### Notes
 
@@ -124,52 +127,52 @@ ResetDelivery --> "1" DeliveryStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-09-01
--- Source: Assumption
+~~~text
+BR-PASSWORD-RESET-01 - Email Syntax
+Source: Assumption
 context ResetService::request(email: String): Accepted
-pre BR_UC_09_01_EmailSyntax:
+pre BR_PASSWORD_RESET_01_EmailSyntax:
   TextSyntax::email(email)
 ~~~
-~~~ocl
--- BR-UC-09-02
--- Source: Assumption
+~~~text
+BR-PASSWORD-RESET-02 - Neutral Acknowledgement
+Source: Assumption
 context ResetService::request(email: String): Accepted
-post BR_UC_09_02_NeutralAcknowledgement:
+post BR_PASSWORD_RESET_02_NeutralAcknowledgement:
   result.accepted = true
 ~~~
-~~~ocl
--- BR-UC-09-03
--- Source: Assumption
+~~~text
+BR-PASSWORD-RESET-03 - Known Account Queue
+Source: Assumption
 context ResetService::request(email: String): Accepted
-post BR_UC_09_03_KnownAccountQueue:
+post BR_PASSWORD_RESET_03_KnownAccountQueue:
   let matches : Set(Customer) = Customer.allInstances()->select(c | c.email = TextSyntax::canonicalEmail(email)) in matches->notEmpty() implies ResetDelivery.allInstances()->one(d | d.oclIsNew() and d.customerId = matches->any(true).id and d.status = DeliveryStatus::QUEUED)
 ~~~
-~~~ocl
--- BR-UC-09-04
--- Source: Assumption
+~~~text
+BR-PASSWORD-RESET-04 - Unknown Address
+Source: Assumption
 context ResetService::request(email: String): Accepted
-post BR_UC_09_04_UnknownAddress:
+post BR_PASSWORD_RESET_04_UnknownAddress:
   Customer.allInstances()->forAll(c | c.email <> TextSyntax::canonicalEmail(email)) implies ResetDelivery.allInstances() = ResetDelivery.allInstances()@pre
 ~~~
-~~~ocl
--- BR-UC-09-05
--- Source: Assumption
+~~~text
+BR-PASSWORD-RESET-05 - Queue Cardinality
+Source: Assumption
 context ResetService::request(email: String): Accepted
-post BR_UC_09_05_QueueCardinality:
+post BR_PASSWORD_RESET_05_QueueCardinality:
   ResetDelivery.allInstances()->select(d | d.oclIsNew())->size() = (if Customer.allInstances()->exists(c | c.email = TextSyntax::canonicalEmail(email)) then 1 else 0 endif)
 ~~~
-~~~ocl
--- BR-UC-09-06
--- Source: Assumption
+~~~text
+BR-PASSWORD-RESET-06 - Queue Time
+Source: Assumption
 context ResetService::request(email: String): Accepted
-post BR_UC_09_06_QueueTime:
+post BR_PASSWORD_RESET_06_QueueTime:
   ResetDelivery.allInstances()->select(d | d.oclIsNew())->forAll(d | d.createdAt = Clock::now())
 ~~~
-~~~ocl
--- BR-UC-09-07
--- Source: Assumption
+~~~text
+BR-PASSWORD-RESET-07 - Dispatch Boundary
+Source: Assumption
 context ResetService::request(email: String): Accepted
-post BR_UC_09_07_DispatchBoundary:
+post BR_PASSWORD_RESET_07_DispatchBoundary:
   ResetDelivery.allInstances()->select(d | d.oclIsNew())->forAll(d | d.providerReference = null)
 ~~~

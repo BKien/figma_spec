@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-14
 uc_name: "Contact Support"
 ---
@@ -52,24 +52,24 @@ POST-1: The client displays the submission result.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Leave Contact Form Without Submitting
 
-1. The visitor returns to the restaurant page without submitting.
+3a: The visitor returns to the restaurant page without submitting.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Contact Submission Error
 
-1. The client displays the returned contact error and keeps the form available.
+5a: The client displays the returned contact error and keeps the form available.
 
 ### Related UI
 
-- [Conatct Us Page](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=2345-2682) (`2345:2682`)
-- [Contact us Page Mobile](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=2375-2627) (`2375:2627`)
+- [Conatct Us Page](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=2345-2682) (2345:2682)
+- [Contact us Page Mobile](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=2375-2627) (2375:2627)
 
 ### Related API IDs
 
-- [API-CONTACT-CREATE](../api/api-contact-create.md)
+- [API-CONTACT-CREATE](../api/API-CONTACT-CREATE.md)
 
 ### Notes
 
@@ -120,52 +120,52 @@ ContactMessage --> "1" ContactStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-14-01
--- Source: Assumption
+~~~text
+BR-CONTACT-SUPPORT-01 - Message Has Content
+Source: Assumption
 context SupportService::submit(command: ContactCommand): ContactMessage
-pre BR_UC_14_01_MessageHasContent:
+pre BR_CONTACT_SUPPORT_01_MessageHasContent:
   command.message.trim().size() > 0
 ~~~
-~~~ocl
--- BR-UC-14-02
--- Source: Assumption
+~~~text
+BR-CONTACT-SUPPORT-02 - Submission Is Recorded
+Source: Assumption
 context SupportService::submit(command: ContactCommand): ContactMessage
-post BR_UC_14_02_SubmissionIsRecorded:
+post BR_CONTACT_SUPPORT_02_SubmissionIsRecorded:
   result.emailCanonical = Email::normalize(command.email) and result.status = ContactStatus::RECEIVED
 ~~~
-~~~ocl
--- BR-UC-14-03
--- Source: Assumption
+~~~text
+BR-CONTACT-SUPPORT-03 - Contact Content Is Recorded
+Source: Assumption
 context SupportService::submit(command: ContactCommand): ContactMessage
-post BR_UC_14_03_ContactContentIsRecorded:
+post BR_CONTACT_SUPPORT_03_ContactContentIsRecorded:
   result.name = command.name and result.message = command.message
 ~~~
-~~~ocl
--- BR-UC-14-04
--- Source: Assumption
+~~~text
+BR-CONTACT-SUPPORT-04 - Contact Name Is Present
+Source: Assumption
 context SupportService::submit(command: ContactCommand): ContactMessage
-pre BR_UC_14_04_ContactNameIsPresent:
+pre BR_CONTACT_SUPPORT_04_ContactNameIsPresent:
   command.name.trim().size() > 0
 ~~~
-~~~ocl
--- BR-UC-14-05
--- Source: Assumption
+~~~text
+BR-CONTACT-SUPPORT-05 - Contact Email Is Present
+Source: Assumption
 context SupportService::submit(command: ContactCommand): ContactMessage
-pre BR_UC_14_05_ContactEmailIsPresent:
+pre BR_CONTACT_SUPPORT_05_ContactEmailIsPresent:
   command.email.trim().size() > 0
 ~~~
-~~~ocl
--- BR-UC-14-06
--- Source: Assumption
+~~~text
+BR-CONTACT-SUPPORT-06 - Contact Has Identifier
+Source: Assumption
 context SupportService::submit(command: ContactCommand): ContactMessage
-post BR_UC_14_06_ContactHasIdentifier:
+post BR_CONTACT_SUPPORT_06_ContactHasIdentifier:
   result.id.trim().size() > 0
 ~~~
-~~~ocl
--- BR-UC-14-07
--- Source: Assumption
+~~~text
+BR-CONTACT-SUPPORT-07 - Contact Has Creation Time
+Source: Assumption
 context SupportService::submit(command: ContactCommand): ContactMessage
-post BR_UC_14_07_ContactHasCreationTime:
+post BR_CONTACT_SUPPORT_07_ContactHasCreationTime:
   result.createdAt <= DateTime::now()
 ~~~

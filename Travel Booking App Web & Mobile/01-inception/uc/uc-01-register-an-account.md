@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-01
 uc_name: "Register an Account"
 ---
@@ -40,6 +40,7 @@ PRE-1: The visitor is viewing the account-registration interface.
 ### Post-Condition(s)
 
 POST-1: The client displays the registration outcome returned by the system.
+
 POST-2: The interface reflects the navigation state associated with that outcome.
 
 ### Basic Flow
@@ -53,28 +54,33 @@ POST-2: The interface reflects the navigation state associated with that outcome
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Open Login Instead of Registering
 
-1. The visitor leaves registration and opens the login interface.
+3a: The visitor leaves registration and opens the login interface.
 
-AF-2:
+AF-2: Revise Registration After Rejection
 
-1. After a returned rejection, the visitor revises the displayed fields and submits a new request.
+6a: After a returned rejection, the visitor revises the displayed fields and submits a new request.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Registration Service Failure
 
-1. If the registration service cannot complete the request, the client displays a technical-failure state.
-2. The visitor may retry from the preserved registration context.
+5a: If the registration service cannot complete the request, the client displays a technical-failure state.
+
+5b: The visitor may retry from the preserved registration context.
 
 ### Related UI
 
-`create account`.
+create account.
 
 ### Related API IDs
 
-`API-AUTH-REGISTER`.
+API-AUTH-REGISTER.
+
+### Notes
+
+None.
 
 ## UML Model
 
@@ -148,69 +154,69 @@ Session --> User : user
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-01-01
--- Source: Assumption
+~~~text
+BR-REGISTER-ACCOUNT-01 - Canonical Identity Is Unclaimed
+Source: Assumption
 context AuthService::register(command: RegistrationCommand): Session
-pre BR_UC_01_01_CanonicalIdentityIsUnclaimed:
+pre BR_REGISTER_ACCOUNT_01_CanonicalIdentityIsUnclaimed:
   not User.allInstances()->exists(u |
     IdentityNormalization::canonicalEmail(u.email) =
     IdentityNormalization::canonicalEmail(command.email))
 ~~~
 
-~~~ocl
--- BR-UC-01-02
--- Source: Assumption
+~~~text
+BR-REGISTER-ACCOUNT-02 - Credential Is Independent Of Identity
+Source: Assumption
 context AuthService::register(command: RegistrationCommand): Session
-pre BR_UC_01_02_CredentialIsIndependentOfIdentity:
+pre BR_REGISTER_ACCOUNT_02_CredentialIsIndependentOfIdentity:
   CredentialPolicy::accepts(
     command.password,
     IdentityNormalization::canonicalEmail(command.email),
     command.fullName.trim())
 ~~~
 
-~~~ocl
--- BR-UC-01-03
--- Source: Figma
+~~~text
+BR-REGISTER-ACCOUNT-03 - Confirmation Represents Same Secret
+Source: Figma
 context AuthService::register(command: RegistrationCommand): Session
-pre BR_UC_01_03_ConfirmationRepresentsSameSecret:
+pre BR_REGISTER_ACCOUNT_03_ConfirmationRepresentsSameSecret:
   command.password = command.confirmPassword
 ~~~
 
-~~~ocl
--- BR-UC-01-04
--- Source: Assumption
+~~~text
+BR-REGISTER-ACCOUNT-04 - Exactly One Canonical Account Is Created
+Source: Assumption
 context AuthService::register(command: RegistrationCommand): Session
-post BR_UC_01_04_ExactlyOneCanonicalAccountIsCreated:
+post BR_REGISTER_ACCOUNT_04_ExactlyOneCanonicalAccountIsCreated:
   User.allInstances()->select(u |
     IdentityNormalization::canonicalEmail(u.email) =
     IdentityNormalization::canonicalEmail(command.email))->size() = 1 and
   User.allInstances()->size() = User.allInstances()@pre->size() + 1
 ~~~
 
-~~~ocl
--- BR-UC-01-05
--- Source: Assumption
+~~~text
+BR-REGISTER-ACCOUNT-05 - Stored Identity Is Canonical And Active
+Source: Assumption
 context AuthService::register(command: RegistrationCommand): Session
-post BR_UC_01_05_StoredIdentityIsCanonicalAndActive:
+post BR_REGISTER_ACCOUNT_05_StoredIdentityIsCanonicalAndActive:
   result.user.email = IdentityNormalization::canonicalEmail(command.email) and
   result.user.fullName = command.fullName.trim() and result.user.active
 ~~~
 
-~~~ocl
--- BR-UC-01-06
--- Source: Assumption
+~~~text
+BR-REGISTER-ACCOUNT-06 - Secret Is Persisted Only As Hash
+Source: Assumption
 context AuthService::register(command: RegistrationCommand): Session
-post BR_UC_01_06_SecretIsPersistedOnlyAsHash:
+post BR_REGISTER_ACCOUNT_06_SecretIsPersistedOnlyAsHash:
   PasswordHasher::matches(command.password, result.user.passwordHash) and
   result.user.passwordHash <> command.password
 ~~~
 
-~~~ocl
--- BR-UC-01-07
--- Source: Assumption
+~~~text
+BR-REGISTER-ACCOUNT-07 - Session Belongs To Created Identity
+Source: Assumption
 context AuthService::register(command: RegistrationCommand): Session
-post BR_UC_01_07_SessionBelongsToCreatedIdentity:
+post BR_REGISTER_ACCOUNT_07_SessionBelongsToCreatedIdentity:
   result.oclIsNew() and result.user.oclIsNew() and
   result.user.createdAt >= RequestContext::startedAt and
   result.expiresAt > result.user.createdAt and
@@ -218,11 +224,11 @@ post BR_UC_01_07_SessionBelongsToCreatedIdentity:
   result.tokenHash <> result.accessToken
 ~~~
 
-~~~ocl
--- BR-UC-01-08
--- Source: Assumption
+~~~text
+BR-REGISTER-ACCOUNT-08 - Identity Has Usable Display And Contact Values
+Source: Assumption
 context AuthService::register(command: RegistrationCommand): Session
-pre BR_UC_01_08_IdentityHasUsableDisplayAndContactValues:
+pre BR_REGISTER_ACCOUNT_08_IdentityHasUsableDisplayAndContactValues:
   command.fullName.trim().size() > 0 and
   Validation::isEmail(IdentityNormalization::canonicalEmail(command.email))
 ~~~

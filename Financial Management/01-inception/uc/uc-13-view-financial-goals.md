@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-13
 uc_name: "View Financial Goals"
 ---
@@ -40,6 +40,7 @@ PRE-1: The application view is open in the client.
 ### Post-Condition(s)
 
 POST-1: On success, the client displays the returned goal cards or create-goal entry point.
+
 POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Basic Flow
@@ -51,23 +52,27 @@ POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Display No Financial Goals
 
-1. The system returns no goal cards.
-2. The client displays the create-goal entry point.
+3a: The system returns no goal cards.
+
+3b: The client displays the create-goal entry point.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Financial Goals Operation Error
 
-1. The system returns an operation error.
-2. The client displays the error message and keeps the current view open.
-3. The actor revises the interaction or retries the request.
+3c: The system returns an operation error.
 
-EF-2:
+3d: The client displays the error message and keeps the current view open.
 
-1. The system returns a rejected authentication context.
-2. The client presents the login entry point.
+3e: The actor revises the interaction or retries the request.
+
+EF-2: Financial Goals Authentication Rejected
+
+3f: The system returns a rejected authentication context.
+
+3g: The client presents the login entry point.
 
 ### Related UI
 
@@ -75,7 +80,7 @@ EF-2:
 
 ### Related API IDs
 
-- [API-GOAL-LIST](../api/api-goal-list.md)
+- [API-GOAL-LIST](../api/API-GOAL-LIST.md)
 
 ### Notes
 
@@ -206,84 +211,84 @@ end note
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-13-01
--- Source: Product source
+~~~text
+BR-FINANCIAL-GOALS-01 - Authenticated Context
+Source: Product source
 context GoalService::list(ctx: RequestContext): GoalListResult
-pre BR_UC_13_01_AuthenticatedContext:
+pre BR_FINANCIAL_GOALS_01_AuthenticatedContext:
   ctx.authenticated and User.allInstances()->exists(u | u.id = ctx.userId)
 ~~~
 
-~~~ocl
--- BR-UC-13-02
--- Source: Product source
+~~~text
+BR-FINANCIAL-GOALS-02 - Saving Selection
+Source: Product source
 context GoalService::list(ctx: RequestContext): GoalListResult
-post BR_UC_13_02_SavingSelection:
+post BR_FINANCIAL_GOALS_02_SavingSelection:
   let candidates : Set(Goal) = Goal.allInstances()->select(g | g.userId = ctx.userId and g.startDate.ordinal <= g.endDate.ordinal and g.startDate.ordinal <= CalendarDate::monthEnd(ctx.today).ordinal and g.endDate.ordinal >= CalendarDate::monthStart(ctx.today).ordinal)->select(g | g.goalType = GoalType::Saving)->asSet() in if candidates->isEmpty() then result.savingGoal.oclIsUndefined() else let latest : Integer = candidates->collect(g | g.startDate.ordinal)->max() in result.savingGoal.id = candidates->select(g | g.startDate.ordinal = latest)->collect(id)->max() endif
 ~~~
 
-~~~ocl
--- BR-UC-13-03
--- Source: Product source
+~~~text
+BR-FINANCIAL-GOALS-03 - Exact Expense Coverage
+Source: Product source
 context GoalService::list(ctx: RequestContext): GoalListResult
-post BR_UC_13_03_ExactExpenseCoverage:
+post BR_FINANCIAL_GOALS_03_ExactExpenseCoverage:
   result.expenseGoals->collect(id)->asSet() = Goal.allInstances()->select(g | g.userId = ctx.userId and g.startDate.ordinal <= g.endDate.ordinal and g.startDate.ordinal <= CalendarDate::monthEnd(ctx.today).ordinal and g.endDate.ordinal >= CalendarDate::monthStart(ctx.today).ordinal)->select(g | g.goalType = GoalType::Expense_Limit)->collect(id)->asSet() and result.expenseGoals->isUnique(id)
 ~~~
 
-~~~ocl
--- BR-UC-13-04
--- Source: Assumption
+~~~text
+BR-FINANCIAL-GOALS-04 - Saving Progress
+Source: Assumption
 context GoalService::list(ctx: RequestContext): GoalListResult
-post BR_UC_13_04_SavingProgress:
+post BR_FINANCIAL_GOALS_04_SavingProgress:
   not result.savingGoal.oclIsUndefined() implies let g : Goal = Goal.allInstances()->any(g | g.id = result.savingGoal.id) in let rows : Set(Transaction) = Transaction.allInstances()->select(t | Account.allInstances()->exists(a | a.id = t.accountId and a.userId = ctx.userId) and t.status = TransactionStatus::Complete and t.date.ordinal >= (if g.startDate.ordinal > CalendarDate::monthStart(ctx.today).ordinal then g.startDate.ordinal else CalendarDate::monthStart(ctx.today).ordinal endif) and t.date.ordinal <= (if g.endDate.ordinal < CalendarDate::monthEnd(ctx.today).ordinal then g.endDate.ordinal else CalendarDate::monthEnd(ctx.today).ordinal endif))->asSet() in result.savingGoal.progress = Numeric::round2(rows->select(t | t.type = TransactionType::Revenue)->collect(amount)->sum() - rows->select(t | t.type = TransactionType::Expense)->collect(amount)->sum())
 ~~~
 
-~~~ocl
--- BR-UC-13-05
--- Source: Assumption
+~~~text
+BR-FINANCIAL-GOALS-05 - Expense Progress
+Source: Assumption
 context GoalService::list(ctx: RequestContext): GoalListResult
-post BR_UC_13_05_ExpenseProgress:
+post BR_FINANCIAL_GOALS_05_ExpenseProgress:
   result.expenseGoals->forAll(v | let g : Goal = Goal.allInstances()->any(g | g.id = v.id) in v.progress = Numeric::round2(Transaction.allInstances()->select(t | Account.allInstances()->exists(a | a.id = t.accountId and a.userId = ctx.userId) and t.status = TransactionStatus::Complete and t.type = TransactionType::Expense and t.categoryId = g.categoryId and t.date.ordinal >= (if g.startDate.ordinal > CalendarDate::monthStart(ctx.today).ordinal then g.startDate.ordinal else CalendarDate::monthStart(ctx.today).ordinal endif) and t.date.ordinal <= (if g.endDate.ordinal < CalendarDate::monthEnd(ctx.today).ordinal then g.endDate.ordinal else CalendarDate::monthEnd(ctx.today).ordinal endif))->collect(amount)->sum()))
 ~~~
 
-~~~ocl
--- BR-UC-13-06
--- Source: Product source
+~~~text
+BR-FINANCIAL-GOALS-06 - Category Label
+Source: Product source
 context GoalService::list(ctx: RequestContext): GoalListResult
-post BR_UC_13_06_CategoryLabel:
+post BR_FINANCIAL_GOALS_06_CategoryLabel:
   result.expenseGoals->forAll(v | if v.categoryId.oclIsUndefined() then v.category = 'Uncategorized' else let c : Category = Category.allInstances()->any(c | c.id = v.categoryId) in if c.oclIsUndefined() or Text::trim(c.name).size() = 0 then v.category = 'Unknown' else v.category = Text::trim(c.name) endif endif)
 ~~~
 
-~~~ocl
--- BR-UC-13-07
--- Source: Product source
+~~~text
+BR-FINANCIAL-GOALS-07 - Goal Projection
+Source: Product source
 context GoalService::list(ctx: RequestContext): GoalListResult
-post BR_UC_13_07_GoalProjection:
+post BR_FINANCIAL_GOALS_07_GoalProjection:
   result.expenseGoals->including(result.savingGoal)->reject(v | v.oclIsUndefined())->forAll(v | Goal.allInstances()->exists(g | g.id = v.id and g.userId = ctx.userId and g.goalType = v.goalType and g.categoryId = v.categoryId and g.targetAmount = v.targetAmount and g.startDate = v.startDate and g.endDate = v.endDate and g.version = v.version))
 ~~~
 
-~~~ocl
--- BR-UC-13-08
--- Source: Product source
+~~~text
+BR-FINANCIAL-GOALS-08 - Priority Order
+Source: Product source
 context GoalService::list(ctx: RequestContext): GoalListResult
-post BR_UC_13_08_PriorityOrder:
+post BR_FINANCIAL_GOALS_08_PriorityOrder:
   result.expenseGoals->size() <= 1 or Sequence{1..result.expenseGoals->size()-1}->forAll(i | let a : GoalView = result.expenseGoals->at(i) in let b : GoalView = result.expenseGoals->at(i+1) in (a.progress >= a.targetAmount and b.progress < b.targetAmount) or ((a.progress >= a.targetAmount) = (b.progress >= b.targetAmount) and (a.endDate.ordinal < b.endDate.ordinal or (a.endDate.ordinal = b.endDate.ordinal and (a.targetAmount < b.targetAmount or (a.targetAmount = b.targetAmount and a.id < b.id))))))
 ~~~
 
-~~~ocl
--- BR-UC-13-09
--- Source: Product source
--- Equality denotes the complete persistent value snapshot, including every property, not object identity alone.
+~~~text
+BR-FINANCIAL-GOALS-09 - Goal Unchanged
+Source: Product source
+Note: Equality denotes the complete persistent value snapshot, including every property, not object identity alone.
 context GoalService::list(ctx: RequestContext): GoalListResult
-post BR_UC_13_09_GoalUnchanged:
+post BR_FINANCIAL_GOALS_09_GoalUnchanged:
   Goal.allInstances()->collect(e | Tuple{id = e.id, userId = e.userId, goalType = e.goalType, categoryId = e.categoryId, startDate = e.startDate, endDate = e.endDate, targetAmount = e.targetAmount, version = e.version})->asSet() = Goal.allInstances()@pre->collect(e | Tuple{id = e.id@pre, userId = e.userId@pre, goalType = e.goalType@pre, categoryId = e.categoryId@pre, startDate = e.startDate@pre, endDate = e.endDate@pre, targetAmount = e.targetAmount@pre, version = e.version@pre})->asSet()
 ~~~
 
-~~~ocl
--- BR-UC-13-10
--- Source: Product source
--- Equality denotes the complete persistent value snapshot, including every property, not object identity alone.
+~~~text
+BR-FINANCIAL-GOALS-10 - Transaction Unchanged
+Source: Product source
+Note: Equality denotes the complete persistent value snapshot, including every property, not object identity alone.
 context GoalService::list(ctx: RequestContext): GoalListResult
-post BR_UC_13_10_TransactionUnchanged:
+post BR_FINANCIAL_GOALS_10_TransactionUnchanged:
   Transaction.allInstances()->collect(e | Tuple{id = e.id, accountId = e.accountId, categoryId = e.categoryId, date = e.date, type = e.type, status = e.status, description = e.description, shopName = e.shopName, paymentMethod = e.paymentMethod, amount = e.amount, receiptId = e.receiptId, createdAt = e.createdAt})->asSet() = Transaction.allInstances()@pre->collect(e | Tuple{id = e.id@pre, accountId = e.accountId@pre, categoryId = e.categoryId@pre, date = e.date@pre, type = e.type@pre, status = e.status@pre, description = e.description@pre, shopName = e.shopName@pre, paymentMethod = e.paymentMethod@pre, amount = e.amount@pre, receiptId = e.receiptId@pre, createdAt = e.createdAt@pre})->asSet()
 ~~~

@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-13
 uc_name: "View Profile"
 ---
@@ -50,24 +50,24 @@ POST-1: The client displays returned profile details.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Open Booking History from Profile
 
-1. The customer moves from the profile to booking history.
+4a: The customer moves from the profile to booking history.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Profile Loading Error
 
-1. The client displays a profile loading error and retry action.
+3a: The client displays a profile loading error and retry action.
 
 ### Related UI
 
-- [more/profile](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=4611-5055) (`4611:5055`)
-- [Profile component](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=770-1085) (`770:1085`)
+- [more/profile](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=4611-5055) (4611:5055)
+- [Profile component](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=770-1085) (770:1085)
 
 ### Related API IDs
 
-- [API-PROFILE-GET](../api/api-profile-get.md)
+- [API-PROFILE-GET](../api/API-PROFILE-GET.md)
 
 ### Notes
 
@@ -108,52 +108,52 @@ class Email <<utility>> {
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-13-01
--- Source: Assumption
+~~~text
+BR-PROFILE-01 - Own Profile Returned
+Source: Assumption
 context AccountService::profile(): ProfileView
-post BR_UC_13_01_OwnProfileReturned:
+post BR_PROFILE_01_OwnProfileReturned:
   result.id = RequestContext::accountId
 ~~~
-~~~ocl
--- BR-UC-13-02
--- Source: Assumption
+~~~text
+BR-PROFILE-02 - Profile Email Matches Account
+Source: Assumption
 context AccountService::profile(): ProfileView
-post BR_UC_13_02_ProfileEmailMatchesAccount:
+post BR_PROFILE_02_ProfileEmailMatchesAccount:
   result.email = Account.allInstances()->any(a | a.id = RequestContext::accountId).emailCanonical
 ~~~
-~~~ocl
--- BR-UC-13-03
--- Source: Assumption
+~~~text
+BR-PROFILE-03 - Profile Account Exists
+Source: Assumption
 context AccountService::profile(): ProfileView
-pre BR_UC_13_03_ProfileAccountExists:
+pre BR_PROFILE_03_ProfileAccountExists:
   Account.allInstances()->exists(a | a.id = RequestContext::accountId)
 ~~~
-~~~ocl
--- BR-UC-13-04
--- Source: Assumption
+~~~text
+BR-PROFILE-04 - Profile Name Matches Account
+Source: Assumption
 context AccountService::profile(): ProfileView
-post BR_UC_13_04_ProfileNameMatchesAccount:
+post BR_PROFILE_04_ProfileNameMatchesAccount:
   result.displayName = Account.allInstances()->any(a | a.id = RequestContext::accountId).displayName
 ~~~
-~~~ocl
--- BR-UC-13-05
--- Source: Assumption
+~~~text
+BR-PROFILE-05 - Profile Name Is Present
+Source: Assumption
 context AccountService::profile(): ProfileView
-post BR_UC_13_05_ProfileNameIsPresent:
+post BR_PROFILE_05_ProfileNameIsPresent:
   result.displayName.trim().size() > 0
 ~~~
-~~~ocl
--- BR-UC-13-06
--- Source: Assumption
+~~~text
+BR-PROFILE-06 - Profile Email Is Canonical
+Source: Assumption
 context AccountService::profile(): ProfileView
-post BR_UC_13_06_ProfileEmailIsCanonical:
+post BR_PROFILE_06_ProfileEmailIsCanonical:
   result.email = Email::normalize(result.email)
 ~~~
-~~~ocl
--- BR-UC-13-07
--- Source: Assumption
+~~~text
+BR-PROFILE-07 - Profile Email Is Present
+Source: Assumption
 context AccountService::profile(): ProfileView
-post BR_UC_13_07_ProfileEmailIsPresent:
+post BR_PROFILE_07_ProfileEmailIsPresent:
   result.email.trim().size() > 0
 ~~~

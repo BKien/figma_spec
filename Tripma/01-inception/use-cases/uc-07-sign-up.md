@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-07
 uc_name: "Sign Up"
 ---
@@ -36,12 +36,15 @@ The visitor opens the Tripma sign-up experience from an available entry point.
 ### Pre-Condition(s)
 
 PRE-1: The Tripma authentication experience is available.
+
 PRE-2: Tripma can accept an account request from the current experience.
 
 ### Post-Condition(s)
 
 POST-1: When sign-up succeeds, Tripma makes the new account available to subsequent account experiences.
+
 POST-2: When UC-07 was invoked by another use case, Tripma returns the sign-up outcome to that use case.
+
 POST-3: When sign-up cannot be completed, Tripma preserves the usable form state and reports the outcome.
 
 ### Basic Flow
@@ -61,38 +64,54 @@ POST-3: When sign-up cannot be completed, Tripma preserves the usable form state
 ### Alternative Flow
 
 AF-1: Open sign-up directly
-1a. The visitor chooses Sign up from the Tripma navigation area.
-1b. Tripma opens the authentication modal in Sign Up mode.
-1c. The Basic Flow resumes at step 3.
+
+1a: The visitor chooses Sign up from the Tripma navigation area.
+
+1b: Tripma opens the authentication modal in Sign Up mode.
+
+1c: The Basic Flow resumes at step 3.
 
 AF-2: Sign up during checkout
-1a. UC-05 invokes UC-07 from its account-creation entry point.
-1b. Tripma opens the Sign Up experience without replacing the usable checkout context.
-1c. When UC-07 succeeds, control returns to UC-05.
+
+1a: UC-05 invokes UC-07 from its account-creation entry point.
+
+1b: Tripma opens the Sign Up experience without replacing the usable checkout context.
+
+1c: When UC-07 succeeds, control returns to UC-05.
 
 AF-3: Decline optional deal alerts
-4a. The visitor leaves the optional deal-alert selection disabled.
-4b. The Basic Flow resumes at step 5.
+
+4a: The visitor leaves the optional deal-alert selection disabled.
+
+4b: The Basic Flow resumes at step 5.
 
 AF-4: Close the sign-up form
-4a. The visitor closes the modal before submitting.
-4b. Tripma discards the unsubmitted interaction and returns to the calling experience.
+
+4a: The visitor closes the modal before submitting.
+
+4b: Tripma discards the unsubmitted interaction and returns to the calling experience.
 
 ### Exception Flow
 
 EF-1: Sign-up information requires attention
-5a. If the form cannot be accepted, Tripma identifies the affected input and does not submit the request.
+
+5a: If the form cannot be accepted, Tripma identifies the affected input and does not submit the request.
 
 EF-2: Account identifier is unavailable
-8a. If the account identifier cannot be used, API-AUTH-SIGNUP returns the corresponding outcome.
-8b. Tripma preserves the usable form state.
+
+8a: If the account identifier cannot be used, API-AUTH-SIGNUP returns the corresponding outcome.
+
+8b: Tripma preserves the usable form state.
 
 EF-3: Account creation conflict
-9a. If the account cannot be created because the persisted state changed, API-AUTH-SIGNUP returns a conflict outcome.
-9b. Tripma does not create a duplicate account.
+
+9a: If the account cannot be created because the persisted state changed, API-AUTH-SIGNUP returns a conflict outcome.
+
+9b: Tripma does not create a duplicate account.
 
 EF-4: Request cannot be completed
-7a. If Tripma cannot complete the request because of a technical failure, it presents a retryable error state.
+
+7a: If Tripma cannot complete the request because of a technical failure, it presents a retryable error state.
 
 ### Related UI
 
@@ -166,7 +185,7 @@ RegisteredUserDto ..> User : maps from
 The following rules are authoritative for Prompt E. OCL is preserved where applicable; technical or non-OCL constraints remain authoritative natural-language requirements.
 
 ~~~text
-BR-SIGNUP-001: Required sign-up input
+BR-SIGNUP-001 - Required sign-up input
 context SignUpService::signUp(
   dto : SignUpDto
 ) : SignUpResponseDto
@@ -177,7 +196,7 @@ pre BR_SIGNUP_001_Required:
   not dto.receiveDealAlerts.oclIsUndefined()
 
 
-BR-SIGNUP-002: Accepted email
+BR-SIGNUP-002 - Accepted email
 context SignUpService::signUp(
   dto : SignUpDto
 ) : SignUpResponseDto
@@ -185,7 +204,7 @@ pre BR_SIGNUP_002_Email:
   isEmail(lower(trim(dto.email)))
 
 
-BR-SIGNUP-003: Unique email
+BR-SIGNUP-003 - Unique email
 context SignUpService::signUp(
   dto : SignUpDto
 ) : SignUpResponseDto
@@ -193,10 +212,10 @@ pre BR_SIGNUP_003_EmailAvailable:
   User.allInstances()->select(user |
     lower(trim(user.email)) = lower(trim(dto.email)))->isEmpty()
 Technical constraints:
-- The normalized email is protected by a database unique constraint so concurrent requests cannot create duplicate accounts.
+The normalized email is protected by a database unique constraint so concurrent requests cannot create duplicate accounts.
 
 
-BR-SIGNUP-004: Password length
+BR-SIGNUP-004 - Password length
 context SignUpService::signUp(
   dto : SignUpDto
 ) : SignUpResponseDto
@@ -204,7 +223,7 @@ pre BR_SIGNUP_004_PasswordLength:
   dto.password.size() >= 8
 
 
-BR-SIGNUP-005: Terms acceptance
+BR-SIGNUP-005 - Terms acceptance
 context SignUpService::signUp(
   dto : SignUpDto
 ) : SignUpResponseDto
@@ -212,7 +231,7 @@ pre BR_SIGNUP_005_Terms:
   dto.agreeTerms = true
 
 
-BR-SIGNUP-006: Form readiness
+BR-SIGNUP-006 - Form readiness
 context SignUpService::canSubmit(
   dto : SignUpDto
 ) : Boolean
@@ -224,7 +243,7 @@ post BR_SIGNUP_006_Result:
     dto.agreeTerms = true
 
 
-BR-SIGNUP-007: Persisted account
+BR-SIGNUP-007 - Persisted account
 context SignUpService::signUp(
   dto : SignUpDto
 ) : SignUpResponseDto
@@ -236,7 +255,7 @@ post BR_SIGNUP_007_User:
       not user.termsAcceptedAt.oclIsUndefined())
 
 
-BR-SIGNUP-008: Generated username
+BR-SIGNUP-008 - Generated username
 context SignUpService::signUp(
   dto : SignUpDto
 ) : SignUpResponseDto
@@ -247,7 +266,7 @@ post BR_SIGNUP_008_Username:
     User.allInstances()->isUnique(user | lower(trim(user.username)))
 
 
-BR-SIGNUP-009: Password storage
+BR-SIGNUP-009 - Password storage
 context SignUpService::signUp(
   dto : SignUpDto
 ) : SignUpResponseDto
@@ -260,10 +279,10 @@ post BR_SIGNUP_009_Hash:
       matches(dto.password, user.passwordHash) and
       cost(user.passwordHash) >= 10
 Technical constraints:
-- Password hashing uses the approved adaptive password-hashing implementation with a configurable work factor.
+Password hashing uses the approved adaptive password-hashing implementation with a configurable work factor.
 
 
-BR-SIGNUP-010: Deal-alert preference
+BR-SIGNUP-010 - Deal-alert preference
 context SignUpService::signUp(
   dto : SignUpDto
 ) : SignUpResponseDto
@@ -273,7 +292,7 @@ post BR_SIGNUP_010_Alerts:
       user.id = result.data.id).receiveDealAlerts = dto.receiveDealAlerts
 
 
-BR-SIGNUP-011: Registration response
+BR-SIGNUP-011 - Registration response
 context SignUpService::signUp(
   dto : SignUpDto
 ) : SignUpResponseDto
@@ -284,15 +303,14 @@ post BR_SIGNUP_011_Response:
     not result.data.createdAt.oclIsUndefined()
 
 
-BR-SIGNUP-012: Sign-up boundary
+BR-SIGNUP-012 - Sign-up boundary
 UC-07 shall not create a booking, process a payment, or create an authenticated
 session. Authentication is handled by UC-08 after the account has been created.
 
 
-BR-SIGNUP-013: Sensitive sign-up data
+BR-SIGNUP-013 - Sensitive sign-up data
 The raw password and password hash shall not be returned by API-AUTH-SIGNUP.
 Technical constraints:
-- The raw password is accepted only in the HTTPS request body and must not appear in URLs, query strings, analytics, traces, or application logs.
-- The password hash is excluded from default ORM selection and from all API response mappings.
-
+The raw password is accepted only in the HTTPS request body and must not appear in URLs, query strings, analytics, traces, or application logs.
+The password hash is excluded from default ORM selection and from all API response mappings.
 ~~~

@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-17
 uc_name: "View Table Layout"
 ---
@@ -50,24 +50,24 @@ POST-1: The client displays returned table positions and labels.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Open a Table Detail Panel
 
-1. The manager selects a table to view its detail panel.
+4a: The manager selects a table to view its detail panel.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Table Layout Loading Error
 
-1. The client displays a table-view loading error and retry action.
+3a: The client displays a table-view loading error and retry action.
 
 ### Related UI
 
-- [list of tables](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=3387-3558) (`3387:3558`)
-- [table layout](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=4657-6383) (`4657:6383`)
+- [list of tables](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=3387-3558) (3387:3558)
+- [table layout](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=4657-6383) (4657:6383)
 
 ### Related API IDs
 
-- [API-ADMIN-TABLE-LIST](../api/api-admin-table-list.md)
+- [API-ADMIN-TABLE-LIST](../api/API-ADMIN-TABLE-LIST.md)
 
 ### Notes
 
@@ -119,52 +119,52 @@ RequestContext --> "1" Role : role
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-17-01
--- Source: Assumption
+~~~text
+BR-TABLE-LAYOUT-01 - Table Scope Authorized
+Source: Assumption
 context AdminService::tables(command: RestaurantId): Sequence(DiningTable)
-pre BR_UC_17_01_TableScopeAuthorized:
+pre BR_TABLE_LAYOUT_01_TableScopeAuthorized:
   RequestContext::role = Role::SUPER_ADMIN or RequestContext::restaurantId = command.value
 ~~~
-~~~ocl
--- BR-UC-17-02
--- Source: Assumption
+~~~text
+BR-TABLE-LAYOUT-02 - Tables Belong To Restaurant
+Source: Assumption
 context AdminService::tables(command: RestaurantId): Sequence(DiningTable)
-post BR_UC_17_02_TablesBelongToRestaurant:
+post BR_TABLE_LAYOUT_02_TablesBelongToRestaurant:
   result->forAll(t | t.restaurant.id = command.value)
 ~~~
-~~~ocl
--- BR-UC-17-03
--- Source: Assumption
+~~~text
+BR-TABLE-LAYOUT-03 - Table Viewer Has Admin Role
+Source: Assumption
 context AdminService::tables(command: RestaurantId): Sequence(DiningTable)
-pre BR_UC_17_03_TableViewerHasAdminRole:
+pre BR_TABLE_LAYOUT_03_TableViewerHasAdminRole:
   RequestContext::role = Role::MANAGER or RequestContext::role = Role::SUPER_ADMIN
 ~~~
-~~~ocl
--- BR-UC-17-04
--- Source: Assumption
+~~~text
+BR-TABLE-LAYOUT-04 - Layout Tables Are Unique
+Source: Assumption
 context AdminService::tables(command: RestaurantId): Sequence(DiningTable)
-post BR_UC_17_04_LayoutTablesAreUnique:
+post BR_TABLE_LAYOUT_04_LayoutTablesAreUnique:
   result->isUnique(t | t.id)
 ~~~
-~~~ocl
--- BR-UC-17-05
--- Source: Assumption
+~~~text
+BR-TABLE-LAYOUT-05 - Table Labels Are Unique Per Restaurant
+Source: Assumption
 context AdminService::tables(command: RestaurantId): Sequence(DiningTable)
-post BR_UC_17_05_TableLabelsAreUniquePerRestaurant:
+post BR_TABLE_LAYOUT_05_TableLabelsAreUniquePerRestaurant:
   result->isUnique(t | t.label)
 ~~~
-~~~ocl
--- BR-UC-17-06
--- Source: Assumption
+~~~text
+BR-TABLE-LAYOUT-06 - Table Capacity Is Positive
+Source: Assumption
 context AdminService::tables(command: RestaurantId): Sequence(DiningTable)
-post BR_UC_17_06_TableCapacityIsPositive:
+post BR_TABLE_LAYOUT_06_TableCapacityIsPositive:
   result->forAll(t | t.capacity > 0)
 ~~~
-~~~ocl
--- BR-UC-17-07
--- Source: Assumption
+~~~text
+BR-TABLE-LAYOUT-07 - Table Coordinates Are Nonnegative
+Source: Assumption
 context AdminService::tables(command: RestaurantId): Sequence(DiningTable)
-post BR_UC_17_07_TableCoordinatesAreNonnegative:
+post BR_TABLE_LAYOUT_07_TableCoordinatesAreNonnegative:
   result->forAll(t | t.layoutX >= 0 and t.layoutY >= 0)
 ~~~

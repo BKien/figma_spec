@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-09
 uc_name: "Delete a Bank Account"
 ---
@@ -40,6 +40,7 @@ PRE-1: The application view is open in the client.
 ### Post-Condition(s)
 
 POST-1: On success, the client closes the deletion dialog and refreshes Accounts.
+
 POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Basic Flow
@@ -53,29 +54,35 @@ POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Cancel Account Deletion
 
-1. The user cancels the confirmation dialog.
-2. The client closes the dialog.
+3a: The user cancels the confirmation dialog.
+
+3b: The client closes the dialog.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Account Deletion Operation Error
 
-1. The system returns an operation error.
-2. The client displays the error message and keeps the current view open.
-3. The actor revises the interaction or retries the request.
+5a: The system returns an operation error.
 
-EF-2:
+5b: The client displays the error message and keeps the current view open.
 
-1. The system returns a rejected authentication context.
-2. The client presents the login entry point.
+5c: The actor revises the interaction or retries the request.
 
-EF-3:
+EF-2: Account Deletion Authentication Rejected
 
-1. The system returns an operation conflict.
-2. The client offers to reload the current resource.
-3. The user reloads the view and submits the interaction again.
+5d: The system returns a rejected authentication context.
+
+5e: The client presents the login entry point.
+
+EF-3: Account Deletion Conflict
+
+5f: The system returns an operation conflict.
+
+5g: The client offers to reload the current resource.
+
+5h: The user reloads the view and submits the interaction again.
 
 ### Related UI
 
@@ -83,7 +90,7 @@ EF-3:
 
 ### Related API IDs
 
-- [API-ACCOUNT-DELETE](../api/api-account-delete.md)
+- [API-ACCOUNT-DELETE](../api/API-ACCOUNT-DELETE.md)
 
 ### Notes
 
@@ -190,75 +197,75 @@ Transaction --> TransactionStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-09-01
--- Source: Product source
+~~~text
+BR-DELETE-ACCOUNT-01 - Authenticated Context
+Source: Product source
 context AccountService::delete(ctx: RequestContext, cmd: DeleteAccountCommand): DeleteResult
-pre BR_UC_09_01_AuthenticatedContext:
+pre BR_DELETE_ACCOUNT_01_AuthenticatedContext:
   ctx.authenticated and User.allInstances()->exists(u | u.id = ctx.userId)
 ~~~
 
-~~~ocl
--- BR-UC-09-02
--- Source: Product source
+~~~text
+BR-DELETE-ACCOUNT-02 - Owned Account
+Source: Product source
 context AccountService::delete(ctx: RequestContext, cmd: DeleteAccountCommand): DeleteResult
-pre BR_UC_09_02_OwnedAccount:
+pre BR_DELETE_ACCOUNT_02_OwnedAccount:
   Account.allInstances()->exists(a | a.id = cmd.accountId and a.userId = ctx.userId)
 ~~~
 
-~~~ocl
--- BR-UC-09-03
--- Source: Assumption
+~~~text
+BR-DELETE-ACCOUNT-03 - Version
+Source: Assumption
 context AccountService::delete(ctx: RequestContext, cmd: DeleteAccountCommand): DeleteResult
-pre BR_UC_09_03_Version:
+pre BR_DELETE_ACCOUNT_03_Version:
   Account.allInstances()->exists(a | a.id = cmd.accountId and a.version = cmd.expectedVersion)
 ~~~
 
-~~~ocl
--- BR-UC-09-04
--- Source: Product source
+~~~text
+BR-DELETE-ACCOUNT-04 - Account Deleted
+Source: Product source
 context AccountService::delete(ctx: RequestContext, cmd: DeleteAccountCommand): DeleteResult
-post BR_UC_09_04_AccountDeleted:
+post BR_DELETE_ACCOUNT_04_AccountDeleted:
   result.success implies not Account.allInstances()->exists(a | a.id = cmd.accountId)
 ~~~
 
-~~~ocl
--- BR-UC-09-05
--- Source: Product source
+~~~text
+BR-DELETE-ACCOUNT-05 - Transactions Deleted
+Source: Product source
 context AccountService::delete(ctx: RequestContext, cmd: DeleteAccountCommand): DeleteResult
-post BR_UC_09_05_TransactionsDeleted:
+post BR_DELETE_ACCOUNT_05_TransactionsDeleted:
   result.success implies not Transaction.allInstances()->exists(t | t.accountId = cmd.accountId)
 ~~~
 
-~~~ocl
--- BR-UC-09-06
--- Source: Assumption
+~~~text
+BR-DELETE-ACCOUNT-06 - Adjustment Deletion
+Source: Assumption
 context AccountService::delete(ctx: RequestContext, cmd: DeleteAccountCommand): DeleteResult
-post BR_UC_09_06_AdjustmentDeletion:
+post BR_DELETE_ACCOUNT_06_AdjustmentDeletion:
   result.success implies not BalanceAdjustment.allInstances()->exists(b | b.accountId = cmd.accountId)
 ~~~
 
-~~~ocl
--- BR-UC-09-07
--- Source: Product source
+~~~text
+BR-DELETE-ACCOUNT-07 - Other Accounts Preserved
+Source: Product source
 context AccountService::delete(ctx: RequestContext, cmd: DeleteAccountCommand): DeleteResult
-post BR_UC_09_07_OtherAccountsPreserved:
+post BR_DELETE_ACCOUNT_07_OtherAccountsPreserved:
   result.success implies Account.allInstances()->select(a | a.id <> cmd.accountId)->collect(e | Tuple{id = e.id, userId = e.userId, bankName = e.bankName, accountType = e.accountType, branchName = e.branchName, numberCiphertext = e.numberCiphertext, numberFingerprint = e.numberFingerprint, last4 = e.last4, balance = e.balance, version = e.version, createdAt = e.createdAt})->asSet() = Account.allInstances()@pre->select(a | a.id <> cmd.accountId)->collect(e | Tuple{id = e.id@pre, userId = e.userId@pre, bankName = e.bankName@pre, accountType = e.accountType@pre, branchName = e.branchName@pre, numberCiphertext = e.numberCiphertext@pre, numberFingerprint = e.numberFingerprint@pre, last4 = e.last4@pre, balance = e.balance@pre, version = e.version@pre, createdAt = e.createdAt@pre})->asSet() and Transaction.allInstances()->select(t | t.accountId <> cmd.accountId)->collect(e | Tuple{id = e.id, accountId = e.accountId, categoryId = e.categoryId, date = e.date, type = e.type, status = e.status, description = e.description, shopName = e.shopName, paymentMethod = e.paymentMethod, amount = e.amount, receiptId = e.receiptId, createdAt = e.createdAt})->asSet() = Transaction.allInstances()@pre->select(t | t.accountId <> cmd.accountId)->collect(e | Tuple{id = e.id@pre, accountId = e.accountId@pre, categoryId = e.categoryId@pre, date = e.date@pre, type = e.type@pre, status = e.status@pre, description = e.description@pre, shopName = e.shopName@pre, paymentMethod = e.paymentMethod@pre, amount = e.amount@pre, receiptId = e.receiptId@pre, createdAt = e.createdAt@pre})->asSet()
 ~~~
 
-~~~ocl
--- BR-UC-09-08
--- Source: Product source
--- Delete uses one database transaction with account version comparison, child deletion and account deletion.
+~~~text
+BR-DELETE-ACCOUNT-08 - Atomic Failure
+Source: Product source
+Note: Delete uses one database transaction with account version comparison, child deletion and account deletion.
 context AccountService::delete(ctx: RequestContext, cmd: DeleteAccountCommand): DeleteResult
-post BR_UC_09_08_AtomicFailure:
+post BR_DELETE_ACCOUNT_08_AtomicFailure:
   not result.success implies Account.allInstances()->collect(e | Tuple{id = e.id, userId = e.userId, bankName = e.bankName, accountType = e.accountType, branchName = e.branchName, numberCiphertext = e.numberCiphertext, numberFingerprint = e.numberFingerprint, last4 = e.last4, balance = e.balance, version = e.version, createdAt = e.createdAt})->asSet() = Account.allInstances()@pre->collect(e | Tuple{id = e.id@pre, userId = e.userId@pre, bankName = e.bankName@pre, accountType = e.accountType@pre, branchName = e.branchName@pre, numberCiphertext = e.numberCiphertext@pre, numberFingerprint = e.numberFingerprint@pre, last4 = e.last4@pre, balance = e.balance@pre, version = e.version@pre, createdAt = e.createdAt@pre})->asSet() and Transaction.allInstances()->collect(e | Tuple{id = e.id, accountId = e.accountId, categoryId = e.categoryId, date = e.date, type = e.type, status = e.status, description = e.description, shopName = e.shopName, paymentMethod = e.paymentMethod, amount = e.amount, receiptId = e.receiptId, createdAt = e.createdAt})->asSet() = Transaction.allInstances()@pre->collect(e | Tuple{id = e.id@pre, accountId = e.accountId@pre, categoryId = e.categoryId@pre, date = e.date@pre, type = e.type@pre, status = e.status@pre, description = e.description@pre, shopName = e.shopName@pre, paymentMethod = e.paymentMethod@pre, amount = e.amount@pre, receiptId = e.receiptId@pre, createdAt = e.createdAt@pre})->asSet() and BalanceAdjustment.allInstances()->collect(e | Tuple{id = e.id, accountId = e.accountId, userId = e.userId, oldBalance = e.oldBalance, newBalance = e.newBalance, accountVersion = e.accountVersion, createdAt = e.createdAt})->asSet() = BalanceAdjustment.allInstances()@pre->collect(e | Tuple{id = e.id@pre, accountId = e.accountId@pre, userId = e.userId@pre, oldBalance = e.oldBalance@pre, newBalance = e.newBalance@pre, accountVersion = e.accountVersion@pre, createdAt = e.createdAt@pre})->asSet()
 ~~~
 
-~~~ocl
--- BR-UC-09-09
--- Source: Product source
+~~~text
+BR-DELETE-ACCOUNT-09 - Response Identity
+Source: Product source
 context AccountService::delete(ctx: RequestContext, cmd: DeleteAccountCommand): DeleteResult
-post BR_UC_09_09_ResponseIdentity:
+post BR_DELETE_ACCOUNT_09_ResponseIdentity:
   result.success implies result.accountId = cmd.accountId
 ~~~

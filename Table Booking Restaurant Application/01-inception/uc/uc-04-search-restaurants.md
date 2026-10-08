@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-04
 uc_name: "Search Restaurants"
 ---
@@ -50,24 +50,24 @@ POST-1: The client displays a result or empty state.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Refresh Restaurant Search Inputs
 
-1. The visitor changes the search inputs and requests a refreshed list.
+4a: The visitor changes the search inputs and requests a refreshed list.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Restaurant Search Error
 
-1. The client displays a search error and keeps the entered inputs visible.
+3a: The client displays a search error and keeps the entered inputs visible.
 
 ### Related UI
 
-- [home search controls](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=102-170) (`102:170`)
-- [Wireframes search results](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=12-299) (`12:299`)
+- [home search controls](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=102-170) (102:170)
+- [Wireframes search results](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=12-299) (12:299)
 
 ### Related API IDs
 
-- [API-RESTAURANT-SEARCH](../api/api-restaurant-search.md)
+- [API-RESTAURANT-SEARCH](../api/API-RESTAURANT-SEARCH.md)
 
 ### Notes
 
@@ -129,52 +129,52 @@ Restaurant --> "1" RestaurantStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-04-01
--- Source: Assumption
+~~~text
+BR-SEARCH-RESTAURANTS-01 - Party Size Positive
+Source: Assumption
 context DiscoveryService::search(command: SearchCriteria): Sequence(Restaurant)
-pre BR_UC_04_01_PartySizePositive:
+pre BR_SEARCH_RESTAURANTS_01_PartySizePositive:
   command.partySize > 0
 ~~~
-~~~ocl
--- BR-UC-04-02
--- Source: Assumption
+~~~text
+BR-SEARCH-RESTAURANTS-02 - Only Published Matches
+Source: Assumption
 context DiscoveryService::search(command: SearchCriteria): Sequence(Restaurant)
-post BR_UC_04_02_OnlyPublishedMatches:
+post BR_SEARCH_RESTAURANTS_02_OnlyPublishedMatches:
   result->forAll(r | r.status = RestaurantStatus::PUBLISHED and r.city = command.location and r.cuisine = command.cuisine)
 ~~~
-~~~ocl
--- BR-UC-04-03
--- Source: Assumption
+~~~text
+BR-SEARCH-RESTAURANTS-03 - Results Have Requested Slots
+Source: Assumption
 context DiscoveryService::search(command: SearchCriteria): Sequence(Restaurant)
-post BR_UC_04_03_ResultsHaveRequestedSlots:
+post BR_SEARCH_RESTAURANTS_03_ResultsHaveRequestedSlots:
   result->forAll(r | ReservationSlot.allInstances()->exists(s | s.restaurant.id = r.id and s.date = command.date and s.mealName = command.meal and TimeUtils::matchesSlotTime(s.startsAt, command.time, r.timezone) and s.remainingSeats >= command.partySize))
 ~~~
-~~~ocl
--- BR-UC-04-04
--- Source: Assumption
+~~~text
+BR-SEARCH-RESTAURANTS-04 - Search Date Is Current Or Future
+Source: Assumption
 context DiscoveryService::search(command: SearchCriteria): Sequence(Restaurant)
-pre BR_UC_04_04_SearchDateIsCurrentOrFuture:
+pre BR_SEARCH_RESTAURANTS_04_SearchDateIsCurrentOrFuture:
   command.date >= Date::today()
 ~~~
-~~~ocl
--- BR-UC-04-05
--- Source: Assumption
+~~~text
+BR-SEARCH-RESTAURANTS-05 - Location Is Provided
+Source: Assumption
 context DiscoveryService::search(command: SearchCriteria): Sequence(Restaurant)
-pre BR_UC_04_05_LocationIsProvided:
+pre BR_SEARCH_RESTAURANTS_05_LocationIsProvided:
   command.location.trim().size() > 0
 ~~~
-~~~ocl
--- BR-UC-04-06
--- Source: Assumption
+~~~text
+BR-SEARCH-RESTAURANTS-06 - Cuisine Is Provided
+Source: Assumption
 context DiscoveryService::search(command: SearchCriteria): Sequence(Restaurant)
-pre BR_UC_04_06_CuisineIsProvided:
+pre BR_SEARCH_RESTAURANTS_06_CuisineIsProvided:
   command.cuisine.trim().size() > 0
 ~~~
-~~~ocl
--- BR-UC-04-07
--- Source: Assumption
+~~~text
+BR-SEARCH-RESTAURANTS-07 - Meal Is Provided
+Source: Assumption
 context DiscoveryService::search(command: SearchCriteria): Sequence(Restaurant)
-pre BR_UC_04_07_MealIsProvided:
+pre BR_SEARCH_RESTAURANTS_07_MealIsProvided:
   command.meal.trim().size() > 0
 ~~~

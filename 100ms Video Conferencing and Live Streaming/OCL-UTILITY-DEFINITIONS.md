@@ -1,15 +1,9 @@
 ---
 artifact_type: ocl-utility-definitions
 status: Frozen
-source_spreadsheet_id: 1b6nG8slHLf2CtXZwVHHsNrogvhHNg3lceK6f3B7mKIM
-source_sheet: "Use cases"
-source_range: "A2:B2"
-retrieved_at: 2026-09-28T15:29:00Z
 ---
 
 # OCL Utility Definitions
-
-> The spreadsheet row supplies the `trim` definition and this document format. Project-specific definitions come from `01-inception/uc/shared-domain-model.md` and the local BRs. They are not an exact projection of the financial-management spreadsheet row.
 
 ```text
 String.trim(): String
@@ -53,7 +47,7 @@ Paging::nextReactionCursor(sessionId: String, cursor: String): String
 - Returns the cursor for the next reaction read, retaining a high-water mark even when a page is empty.
 ```
 
-The paging cursors are authenticated opaque values. Domain permissions and page limits remain in the BRs. Service operations such as `SessionJoinService::join` and `ClientPreferenceService::selectDevices` are BR contexts rather than utility helpers.
+The paging cursors are authenticated opaque values. Domain permissions and page limits remain in the BRs. Service operations such as SessionJoinService::join and ClientPreferenceService::selectDevices are BR contexts rather than utility helpers.
 
 ## Utility Classes
 

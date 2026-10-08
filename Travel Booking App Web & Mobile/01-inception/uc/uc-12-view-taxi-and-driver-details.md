@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-12
 uc_name: "View Taxi Rental and Driver Details"
 ---
@@ -40,6 +40,7 @@ PRE-1: A selected Taxi offer reference is available to the client.
 ### Post-Condition(s)
 
 POST-1: The client displays the Taxi rental detail outcome returned by the system.
+
 POST-2: Navigation back to the originating result context remains available.
 
 ### Basic Flow
@@ -53,28 +54,33 @@ POST-2: Navigation back to the originating result context remains available.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Return to Taxi Results
 
-1. The traveller returns to the preserved Taxi result context.
+6a: The traveller returns to the preserved Taxi result context.
 
-AF-2:
+AF-2: Render Remaining Taxi Detail Sections
 
-1. If an optional section is absent from the response, the client renders the remaining detail sections.
+4a: If an optional section is absent from the response, the client renders the remaining detail sections.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Taxi Detail Loading Failure
 
-1. If the detail cannot be loaded, the client displays a retry state.
-2. The client retains navigation back to the result view.
+3a: If the detail cannot be loaded, the client displays a retry state.
+
+3b: The client retains navigation back to the result view.
 
 ### Related UI
 
-`Bajaj Details`; `Your Deal`; driver card; vehicle details; `Pick-up and drop-off`; price summary.
+Bajaj Details; Your Deal; driver card; vehicle details; Pick-up and drop-off; price summary.
 
 ### Related API IDs
 
-`API-TAXI-OFFER-DETAIL`.
+API-TAXI-OFFER-DETAIL.
+
+### Notes
+
+None.
 
 ## UML Model
 
@@ -176,11 +182,11 @@ TaxiOffer --> "1" Money : deposit
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-12-01
--- Source: Assumption
+~~~text
+BR-TAXI-DRIVER-DETAIL-01 - Detail Is Live Or Accessible Through Owned Booking
+Source: Assumption
 context TaxiService::getOffer(offerId: String): TaxiOfferDetail
-post BR_UC_12_01_DetailIsLiveOrAccessibleThroughOwnedBooking:
+post BR_TAXI_DRIVER_DETAIL_01_DetailIsLiveOrAccessibleThroughOwnedBooking:
   result <> null and result.offer.id = offerId and
   ((result.offer.available and result.offer.expiresAt > RequestContext::startedAt) or
    TaxiBooking.allInstances()->exists(b |
@@ -188,52 +194,52 @@ post BR_UC_12_01_DetailIsLiveOrAccessibleThroughOwnedBooking:
      Set{BookingStatus::PENDING, BookingStatus::CONFIRMED}->includes(b.status)))
 ~~~
 
-~~~ocl
--- BR-UC-12-02
--- Source: Figma
+~~~text
+BR-TAXI-DRIVER-DETAIL-02 - Detail Uses The Offers Assigned Resources
+Source: Figma
 context TaxiService::getOffer(offerId: String): TaxiOfferDetail
-post BR_UC_12_02_DetailUsesTheOffersAssignedResources:
+post BR_TAXI_DRIVER_DETAIL_02_DetailUsesTheOffersAssignedResources:
   result.driver = result.offer.driver and result.vehicle = result.offer.vehicle and
   result.vehicle.seatCapacity >= result.offer.passengers
 ~~~
 
-~~~ocl
--- BR-UC-12-03
--- Source: Figma
+~~~text
+BR-TAXI-DRIVER-DETAIL-03 - Driver Contact Matches The Displayed Assignment
+Source: Figma
 context TaxiService::getOffer(offerId: String): TaxiOfferDetail
-post BR_UC_12_03_DriverContactMatchesTheDisplayedAssignment:
+post BR_TAXI_DRIVER_DETAIL_03_DriverContactMatchesTheDisplayedAssignment:
   result.displayedDriverPhone = result.driver.phone
 ~~~
 
-~~~ocl
--- BR-UC-12-04
--- Source: Figma
+~~~text
+BR-TAXI-DRIVER-DETAIL-04 - Vehicle Registration Matches The Displayed Vehicle
+Source: Figma
 context TaxiService::getOffer(offerId: String): TaxiOfferDetail
-post BR_UC_12_04_VehicleRegistrationMatchesTheDisplayedVehicle:
+post BR_TAXI_DRIVER_DETAIL_04_VehicleRegistrationMatchesTheDisplayedVehicle:
   result.displayedRegistration = result.vehicle.registrationNumber
 ~~~
 
-~~~ocl
--- BR-UC-12-05
--- Source: Assumption
+~~~text
+BR-TAXI-DRIVER-DETAIL-05 - Detail Retrieval Does Not Allocate The Offer
+Source: Assumption
 context TaxiService::getOffer(offerId: String): TaxiOfferDetail
-post BR_UC_12_05_DetailRetrievalDoesNotAllocateTheOffer:
+post BR_TAXI_DRIVER_DETAIL_05_DetailRetrievalDoesNotAllocateTheOffer:
   ReadState::taxiBookings() = ReadState::taxiBookings()@pre
 ~~~
 
-~~~ocl
--- BR-UC-12-06
--- Source: Figma
+~~~text
+BR-TAXI-DRIVER-DETAIL-06 - Displayed Rental Uses One Location And Positive Duration
+Source: Figma
 context TaxiService::getOffer(offerId: String): TaxiOfferDetail
-post BR_UC_12_06_DisplayedRentalUsesOneLocationAndPositiveDuration:
+post BR_TAXI_DRIVER_DETAIL_06_DisplayedRentalUsesOneLocationAndPositiveDuration:
   result.offer.location.id = result.offer.locationId and result.offer.dropoffAt > result.offer.pickupAt
 ~~~
 
-~~~ocl
--- BR-UC-12-07
--- Source: Figma
+~~~text
+BR-TAXI-DRIVER-DETAIL-07 - Displayed Commercial Facts Are Coherent
+Source: Figma
 context TaxiService::getOffer(offerId: String): TaxiOfferDetail
-post BR_UC_12_07_DisplayedCommercialFactsAreCoherent:
+post BR_TAXI_DRIVER_DETAIL_07_DisplayedCommercialFactsAreCoherent:
   result.offer.total.amount >= 0 and result.offer.deposit.amount >= 0 and
   result.offer.total.currency = result.offer.deposit.currency and
   result.offer.mileageAllowanceKm >= 0 and result.offer.rating >= 0 and result.offer.rating <= 5

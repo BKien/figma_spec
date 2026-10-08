@@ -1,4 +1,52 @@
-# Tripma Specification Presentation Standard
+# Specification Presentation Standard
+
+## Current naming and completion rules — 2026-10-07
+
+The user-supplied directory D:/000-template/template/ and the explicit corrections on 2026-10-07 govern the active UC/API specifications. The previous migration notes below describe historical snapshots and do not override these corrections.
+
+- UC IDs use UC-NN and filenames use uc-NN-function-name.md. Existing use-case numbering and descriptive filenames remain valid.
+- API IDs use API-RESOURCE-OPERATION. Each API filename is exactly its uppercase ID plus .md. Generic API-UC-NN-NN identifiers are replaced with descriptive operation names; separate existing contracts for the same HTTP operation retain distinct names reflecting their use-case context.
+- BR IDs use BR-SHORT-USE-CASE-NAME-NN, with a gap-free local sequence. Existing descriptive Tripma names and three-digit sequences remain valid. Constraint identifiers use the same words joined with underscores.
+- Inline backtick delimiters are removed from active specification values and prose. Markdown block fences remain, as shown in the supplied utility example.
+- UML uses a plantuml block. Business Rules use text blocks with a bare BR ID and rule name, followed by source metadata and the OCL expressions. Prose bullet prefixes and the dash prefixes of BR metadata are removed; UML relationships and mathematical operators retain their meaning.
+- All formerly unspecified fields receive context-based values. Existing known wire schemas and business expressions remain authoritative. Trigger states when a field is sent or returned; Note describes its transport meaning, or None when no extra note applies. Existing format values remain; missing header formats are specified according to the header.
+- An entirely client-local UC with no API has exactly None in Related API IDs. Any explanatory sentence belongs in Notes.
+- Each OCL-UTILITY-DEFINITIONS.md uses only artifact_type: ocl-utility-definitions and status: Frozen in frontmatter. Its body contains a text block of domain-specific function signatures and descriptions, explanatory prose, and a Utility Classes section with a second text block. The 100ms definitions follow the user's supplied content; other products keep their own utilities and domain semantics.
+
+Source archives and persistence schemas are preserved. Identifier aliases and filename changes are applied to active specifications and supporting Markdown links. The audit baseline captures the pre-correction working tree, including earlier uncommitted edits.
+
+Verify the current format, resolved metadata, links, bidirectional UC/API associations, and preservation of the formal expressions with:
+
+~~~text
+python scripts/verify_template_completion.py
+~~~
+
+See format-audit/template-completion/REPORT.md for results and format-audit/template-completion/naming-plan.json for the complete scoped identifier mapping. Earlier preservation audits apply to their recorded historical baselines; their placeholder values and old names are superseded by this update.
+
+## Historical supplied-template migration — 2026-10-07
+
+The UC and API templates in the user-supplied `D:/000-template/template.zip` now govern all 411 active specifications in the nine project packages, including Tripma. This update supersedes the historical Draft status and unanchored branch numbering described below.
+
+All UC/API frontmatter uses `status: Frozen`; existing identities, names and single or multiple related UC associations are retained. Use cases follow the template's Functional Use-Case Specification hierarchy, include Notes, and retain the separate UML Model and Business Rules sections. Each alternative and exception flow has a title and activities labeled with its Basic Flow step and increasing letters, such as `5a:`, `5b:`. Previously unanchored flows use the editorial mappings and reasons saved in the [branch mapping A](format-audit/template-format/branch-map-a.json) and [branch mapping B](format-audit/template-format/branch-map-b.json). Activity wording and existing anchored branch titles remain unchanged.
+
+API contracts follow General Information, Request Header(s), Path Parameter(s), Query Parameter(s), Request Body, the existing success/error response sections, and Notes. Headers use `headers.` field names; path and query fields use `path.` and `query.`. Type, applicable Format, Required and Nullable share one metadata line. Trigger, Description and Example appear on separate lines; header and error fields also include Note. Missing template metadata reads `Not specified.`. Existing values, defaults, validation statements, public enums, examples, statuses and other notes remain authoritative. The template's sample HTTP outcomes do not introduce additional responses into an existing endpoint.
+
+The eight existing OCL utility documents begin with exactly these two frontmatter fields, matching the two-row metadata preview in the supplied image:
+
+```yaml
+artifact_type: ocl-utility-definitions
+status: Frozen
+```
+
+Additional source provenance is retained in each document's Source Metadata section. Existing UML and Business Rule code languages and bodies, utilities, schemas, source archives, shared contracts and supporting documents are preserved.
+
+The [current template audit](format-audit/template-format/REPORT.md) records the baseline and preservation checks. Re-run the current check with:
+
+```text
+python scripts/format_from_template.py --verify
+```
+
+## Historical Tripma presentation migration
 
 Reference: the existing [Tripma use cases](Tripma/01-inception/use-cases/) and [Tripma API contracts](Tripma/01-inception/api-constracts/).
 

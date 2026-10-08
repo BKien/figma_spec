@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-10
 uc_name: "View Taxi Rental Results"
 ---
@@ -40,6 +40,7 @@ PRE-1: A taxi-rental search result context is available to the client.
 ### Post-Condition(s)
 
 POST-1: The client displays the returned result-page state.
+
 POST-2: The displayed rental context remains available for navigation or revision.
 
 ### Basic Flow
@@ -53,31 +54,35 @@ POST-2: The displayed rental context remains available for navigation or revisio
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Display No Taxi Results
 
-1. If the response contains no offer presentations, the client displays the designed no-results state and keeps the search summary available.
+4a: If the response contains no offer presentations, the client displays the designed no-results state and keeps the search summary available.
 
-AF-2:
+AF-2: Request Another Taxi Result Page
 
-1. The traveller requests another result page from the current search context.
+5a: The traveller requests another result page from the current search context.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Additional Taxi Result Page Loading Failure
 
-1. If another result page cannot be loaded, the client keeps the displayed results and offers a retry.
+3a: If another result page cannot be loaded, the client keeps the displayed results and offers a retry.
 
-EF-2:
+EF-2: Unusable Taxi Search Context
 
-1. If the system returns an unusable-context outcome, the client presents the supplied recovery action.
+3b: If the system returns an unusable-context outcome, the client presents the supplied recovery action.
 
 ### Related UI
 
-`taxi list`; `Kurunegala: 68 Cars available`; vehicle result cards; `View Details`.
+taxi list; Kurunegala: 68 Cars available; vehicle result cards; View Details.
 
 ### Related API IDs
 
-`API-TAXI-SEARCH`.
+API-TAXI-SEARCH.
+
+### Notes
+
+None.
 
 ## UML Model
 
@@ -137,68 +142,68 @@ TaxiOffer --> "1" Money : total
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-10-01
--- Source: Assumption
+~~~text
+BR-TAXI-RESULTS-01 - Page Belongs To One Search Snapshot
+Source: Assumption
 context TaxiResultPage
-inv BR_UC_10_01_PageBelongsToOneSearchSnapshot:
+inv BR_TAXI_RESULTS_01_PageBelongsToOneSearchSnapshot:
   self.items->forAll(o |
     o.searchContextId = self.searchContextId and o.snapshotVersion = self.snapshotVersion)
 ~~~
 
-~~~ocl
--- BR-UC-10-02
--- Source: Assumption
+~~~text
+BR-TAXI-RESULTS-02 - Page Metadata Matches Its Slice
+Source: Assumption
 context TaxiResultPage
-inv BR_UC_10_02_PageMetadataMatchesItsSlice:
+inv BR_TAXI_RESULTS_02_PageMetadataMatchesItsSlice:
   self.total = self.orderedOfferIds->size() and self.limit > 0 and self.offset >= 0 and
   self.items->size() = (self.total - self.offset).max(0).min(self.limit) and
   self.hasMore = (self.offset + self.items->size() < self.total)
 ~~~
 
-~~~ocl
--- BR-UC-10-03
--- Source: Assumption
+~~~text
+BR-TAXI-RESULTS-03 - Page Inventory Was Live At Snapshot Creation
+Source: Assumption
 context TaxiResultPage
-inv BR_UC_10_03_PageInventoryWasLiveAtSnapshotCreation:
+inv BR_TAXI_RESULTS_03_PageInventoryWasLiveAtSnapshotCreation:
   self.items->forAll(o | o.available and o.expiresAt > self.capturedAt) and
   self.validUntil > self.capturedAt and self.items->forAll(o | self.validUntil <= o.expiresAt)
 ~~~
 
-~~~ocl
--- BR-UC-10-04
--- Source: Assumption
+~~~text
+BR-TAXI-RESULTS-04 - Offer Identifiers Do Not Repeat Across The Page
+Source: Assumption
 context TaxiResultPage
-inv BR_UC_10_04_OfferIdentifiersDoNotRepeatAcrossThePage:
+inv BR_TAXI_RESULTS_04_OfferIdentifiersDoNotRepeatAcrossThePage:
   self.items->isUnique(o | o.id)
 ~~~
 
-~~~ocl
--- BR-UC-10-05
--- Source: Assumption
+~~~text
+BR-TAXI-RESULTS-05 - Presentation Order Is Stable Within The Snapshot
+Source: Assumption
 context TaxiResultPage
-inv BR_UC_10_05_PresentationOrderIsStableWithinTheSnapshot:
+inv BR_TAXI_RESULTS_05_PresentationOrderIsStableWithinTheSnapshot:
   self.items->size() <= 1 or
   Sequence{1..self.items->size() - 1}->forAll(i |
     self.items->at(i).rank < self.items->at(i + 1).rank)
 ~~~
 
-~~~ocl
--- BR-UC-10-06
--- Source: Assumption
+~~~text
+BR-TAXI-RESULTS-06 - Page Is Exact Slice Of The Ordered Snapshot
+Source: Assumption
 context TaxiResultPage
-inv BR_UC_10_06_PageIsExactSliceOfTheOrderedSnapshot:
+inv BR_TAXI_RESULTS_06_PageIsExactSliceOfTheOrderedSnapshot:
   self.orderedOfferIds->isUnique(id | id) and
   (if self.items->isEmpty() then self.offset >= self.total
    else Sequence{1..self.items->size()}->forAll(i |
      self.items->at(i).id = self.orderedOfferIds->at(self.offset + i)) endif)
 ~~~
 
-~~~ocl
--- BR-UC-10-07
--- Source: Figma
+~~~text
+BR-TAXI-RESULTS-07 - Cards Contain Comparable Rental Facts
+Source: Figma
 context TaxiResultPage
-inv BR_UC_10_07_CardsContainComparableRentalFacts:
+inv BR_TAXI_RESULTS_07_CardsContainComparableRentalFacts:
   self.items->forAll(o |
     o.total.currency = self.currency and o.total.amount >= 0 and o.rating >= 0 and o.rating <= 5 and
     o.vehicle.seatCapacity > 0 and o.vehicle.largeBagCapacity >= 0 and

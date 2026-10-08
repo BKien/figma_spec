@@ -1,6 +1,6 @@
 ---
 artifact_type: api-contract
-status: Draft
+status: Frozen
 api_id: API-HOME-GET
 related_uc_id: UC-03
 ---
@@ -11,7 +11,7 @@ related_uc_id: UC-03
 
 ### API ID
 
-`API-HOME-GET`
+API-HOME-GET
 
 ### API Name
 
@@ -19,15 +19,15 @@ Browse the Restaurant Home Page
 
 ### Related Use Case IDs
 
-- `UC-03`
+- UC-03
 
 ### Method
 
-`GET`
+GET
 
 ### Path
 
-`/api/v1/home`
+/api/v1/home
 
 ### Description
 
@@ -61,128 +61,175 @@ None.
 
 ### success
 
-Type: boolean
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON boolean.
+Type: boolean; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response.
+
 Description: success supplied on the wire.
-Example: `true`
+
+Example: true
+
+Validation: Must be encoded as a JSON boolean.
 
 ### data
 
-Type: object
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON object.
+Type: object; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response.
+
 Description: data supplied on the wire.
-Example: `{}`
+
+Example: {}
+
+Validation: Must be encoded as a JSON object.
 
 ### data.restaurants
 
-Type: array
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON array.
+Type: array; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data object or array item is present and non-null.
+
 Description: data restaurants supplied on the wire.
-Example: `[]`
+
+Example: []
+
+Validation: Must be encoded as a JSON array.
 
 ### data.featuredCount
 
-Type: integer
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON integer.
+Type: integer; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data object or array item is present and non-null.
+
 Description: data featuredCount supplied on the wire.
-Example: `4`
+
+Example: 4
+
+Validation: Must be encoded as a JSON integer.
 
 ### data.restaurants[].id
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data.restaurants[] object or array item is present and non-null.
+
 Description: data restaurants[] id supplied on the wire.
-Example: `rst_123`
+
+Example: rst_123
+
+Validation: Must be encoded as a JSON string.
 
 ### data.restaurants[].name
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data.restaurants[] object or array item is present and non-null.
+
 Description: data restaurants[] name supplied on the wire.
-Example: `Villagio Restaurant and Bar`
+
+Example: Villagio Restaurant and Bar
+
+Validation: Must be encoded as a JSON string.
 
 ### data.restaurants[].heroImageUrl
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 200 success response when the containing data.restaurants[] object or array item is present and non-null.
+
 Description: data restaurants[] heroImageUrl supplied on the wire.
-Example: `https://example.com/hero.jpg`
+
+Example: https://example.com/hero.jpg
+
+Validation: Must be encoded as a JSON string.
 
 ## Error Response — HTTP 400
 
 ### error
 
-Type: object
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON object.
+Type: object; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 400 error response.
+
 Description: error supplied on the wire.
-Example: `{}`
+
+Example: {}
+
+Note: Field of the JSON error response.
+
+Validation: Must be encoded as a JSON object.
 
 ### error.code
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 400 error response when the containing error object or array item is present and non-null.
+
 Description: Stable public error identifier.
-Example: `MALFORMED_REQUEST`
+
+Example: MALFORMED_REQUEST
+
+Note: Field of the JSON error response; nested requiredness applies when its containing object or array item is present.
+
+Validation: Must be encoded as a JSON string.
 
 ### error.message
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
-Description: Human-readable error summary.
-Example: `The request could not be processed.`
+Type: string; Required: Yes; Nullable: No
 
 Trigger: Malformed wire input.
+
+Description: Human-readable error summary.
+
+Example: The request could not be processed.
+
+Note: Field of the JSON error response; nested requiredness applies when its containing object or array item is present.
+
+Validation: Must be encoded as a JSON string.
 
 ## Error Response — HTTP 503
 
 ### error
 
-Type: object
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON object.
+Type: object; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 503 error response.
+
 Description: error supplied on the wire.
-Example: `{}`
+
+Example: {}
+
+Note: Field of the JSON error response.
+
+Validation: Must be encoded as a JSON object.
 
 ### error.code
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
+Type: string; Required: Yes; Nullable: No
+
+Trigger: Included in the HTTP 503 error response when the containing error object or array item is present and non-null.
+
 Description: Stable public error identifier.
-Example: `SERVICE_UNAVAILABLE`
+
+Example: SERVICE_UNAVAILABLE
+
+Note: Field of the JSON error response; nested requiredness applies when its containing object or array item is present.
+
+Validation: Must be encoded as a JSON string.
 
 ### error.message
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Must be encoded as a JSON string.
-Description: Human-readable error summary.
-Example: `Please try again later.`
+Type: string; Required: Yes; Nullable: No
 
 Trigger: Temporary service failure.
+
+Description: Human-readable error summary.
+
+Example: Please try again later.
+
+Note: Field of the JSON error response; nested requiredness applies when its containing object or array item is present.
+
+Validation: Must be encoded as a JSON string.
 
 ## Notes
 

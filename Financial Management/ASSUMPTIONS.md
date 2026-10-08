@@ -1,6 +1,6 @@
 # Assumptions and Reviewed Product Decisions
 
-The spreadsheet establishes observable product behavior but also contains inconsistent policy and implementation claims. The user authorized corrections. Entries below are explicit product choices for this package, not facts about an existing running service. Rules changed or added on that basis use `Source: Assumption`; inherited rules use `Source: Product source`.
+The spreadsheet establishes observable product behavior but also contains inconsistent policy and implementation claims. The user authorized corrections. Entries below are explicit product choices for this package, not facts about an existing running service. Rules changed or added on that basis use Source: Assumption; inherited rules use Source: Product source.
 
 | ID | Decision | Affected use cases / contracts |
 | --- | --- | --- |
@@ -24,3 +24,11 @@ The spreadsheet establishes observable product behavior but also contains incons
 | A-18 | Complete cash flows cannot have a future transaction date. Future Pending/Failed entries remain history records without balance/report effects. | UC-04 |
 
 The source's arbitrary initial-deposit and investment-capacity thresholds are deliberately removed rather than transferred into assumptions. The category-detail interaction is the only proposed screen behavior; the filter goal is extracted from existing source interaction. See [review decisions](consistency-review.md) for source row anchors and [coverage](coverage-report.md) for unsupported flows.
+
+## 2026-10-07 — Template completion decisions
+
+These decisions complete the utility contracts under the user-authorized template update; they are repository specification choices rather than claims about a deployed implementation.
+
+- CalendarDate.ordinal uses 1970-01-01 as its fixed Gregorian epoch. Existing Asia/Saigon reporting dates, UTC creation timestamps, exact decimal arithmetic, and bcrypt behavior remain the established package decisions.
+- Text.lower is locale-independent Unicode lowercase. Text.email accepts bounded ASCII dot-atom addresses and rejects whitespace, quoted local parts, and malformed dotted domains.
+- The utility catalog includes operations declared in active local UML. Wire date parsing and account encryption remain prose-level transport/storage conventions rather than additional undeclared utility operations.

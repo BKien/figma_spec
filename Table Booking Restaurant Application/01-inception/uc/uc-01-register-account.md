@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-01
 uc_name: "Register an Account"
 ---
@@ -53,26 +53,26 @@ POST-1: The client displays the registration outcome and its next action.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Switch to Sign In
 
-1. The visitor switches to the sign-in form, and the client displays it.
+3a: The visitor switches to the sign-in form, and the client displays it.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Registration Error
 
-1. The client displays the returned registration error and keeps the form available.
+5a: The client displays the returned registration error and keeps the form available.
 
 ### Related UI
 
-- [Sign Up](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=339-1015) (`339:1015`)
-- [Sign Up Popup Web](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=2178-2751) (`2178:2751`)
-- [registration OTP state](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=395-748) (`395:748`)
+- [Sign Up](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=339-1015) (339:1015)
+- [Sign Up Popup Web](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=2178-2751) (2178:2751)
+- [registration OTP state](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=395-748) (395:748)
 
 ### Related API IDs
 
-- [API-ACCOUNT-REGISTER](../api/api-account-register.md)
-- [API-ACCOUNT-VERIFY](../api/api-account-verify.md)
+- [API-ACCOUNT-REGISTER](../api/API-ACCOUNT-REGISTER.md)
+- [API-ACCOUNT-VERIFY](../api/API-ACCOUNT-VERIFY.md)
 
 ### Notes
 
@@ -153,66 +153,66 @@ VerificationChallenge --> "1" ChallengePurpose : purpose
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-01-01
--- Source: Assumption
+~~~text
+BR-REGISTER-ACCOUNT-01 - Email Is Unique
+Source: Assumption
 context AuthService::register(command: RegistrationCommand): Account
-pre BR_UC_01_01_EmailIsUnique:
+pre BR_REGISTER_ACCOUNT_01_EmailIsUnique:
   Account.allInstances()->forAll(a | a.emailCanonical <> Email::normalize(command.email))
 ~~~
-~~~ocl
--- BR-UC-01-02
--- Source: Assumption
+~~~text
+BR-REGISTER-ACCOUNT-02 - Password Is Stored As Hash
+Source: Assumption
 context AuthService::register(command: RegistrationCommand): Account
-post BR_UC_01_02_PasswordIsStoredAsHash:
+post BR_REGISTER_ACCOUNT_02_PasswordIsStoredAsHash:
   result.passwordHash = PasswordHash::of(command.password) and result.passwordHash <> command.password
 ~~~
-~~~ocl
--- BR-UC-01-03
--- Source: Assumption
+~~~text
+BR-REGISTER-ACCOUNT-03 - New Account Awaits Verification
+Source: Assumption
 context AuthService::register(command: RegistrationCommand): Account
-post BR_UC_01_03_NewAccountAwaitsVerification:
+post BR_REGISTER_ACCOUNT_03_NewAccountAwaitsVerification:
   result.status = AccountStatus::PENDING_VERIFICATION
 ~~~
-~~~ocl
--- BR-UC-01-04
--- Source: Assumption
+~~~text
+BR-REGISTER-ACCOUNT-04 - Registration Challenge Is Created
+Source: Assumption
 context AuthService::register(command: RegistrationCommand): Account
-post BR_UC_01_04_RegistrationChallengeIsCreated:
+post BR_REGISTER_ACCOUNT_04_RegistrationChallengeIsCreated:
   VerificationChallenge.allInstances()->exists(v | v.account.id = result.id and v.purpose = ChallengePurpose::REGISTRATION and v.codeHash <> null and v.expiresAt > DateTime::now())
 ~~~
-~~~ocl
--- BR-UC-01-05
--- Source: Assumption
+~~~text
+BR-REGISTER-ACCOUNT-05 - Registration Challenge Matches
+Source: Assumption
 context AuthService::verify(command: VerifyAccountCommand): Account
-pre BR_UC_01_05_RegistrationChallengeMatches:
+pre BR_REGISTER_ACCOUNT_05_RegistrationChallengeMatches:
   VerificationChallenge.allInstances()->exists(v | v.account.id = command.accountId and v.purpose = ChallengePurpose::REGISTRATION and CodeHash::matches(command.code, v.codeHash) and v.expiresAt > DateTime::now() and v.consumedAt = null)
 ~~~
-~~~ocl
--- BR-UC-01-06
--- Source: Assumption
+~~~text
+BR-REGISTER-ACCOUNT-06 - Verification Activates Account
+Source: Assumption
 context AuthService::verify(command: VerifyAccountCommand): Account
-post BR_UC_01_06_VerificationActivatesAccount:
+post BR_REGISTER_ACCOUNT_06_VerificationActivatesAccount:
   result.id = command.accountId and result.status = AccountStatus::ACTIVE
 ~~~
-~~~ocl
--- BR-UC-01-07
--- Source: Assumption
+~~~text
+BR-REGISTER-ACCOUNT-07 - Account Fields Are Canonical
+Source: Assumption
 context AuthService::register(command: RegistrationCommand): Account
-post BR_UC_01_07_AccountFieldsAreCanonical:
+post BR_REGISTER_ACCOUNT_07_AccountFieldsAreCanonical:
   result.emailCanonical = Email::normalize(command.email) and result.displayName = command.displayName
 ~~~
-~~~ocl
--- BR-UC-01-08
--- Source: Assumption
+~~~text
+BR-REGISTER-ACCOUNT-08 - Agreement Is Accepted
+Source: Assumption
 context AuthService::register(command: RegistrationCommand): Account
-pre BR_UC_01_08_AgreementIsAccepted:
+pre BR_REGISTER_ACCOUNT_08_AgreementIsAccepted:
   command.agreementAccepted = true
 ~~~
-~~~ocl
--- BR-UC-01-09
--- Source: Assumption
+~~~text
+BR-REGISTER-ACCOUNT-09 - Registration Challenge Is Consumed
+Source: Assumption
 context AuthService::verify(command: VerifyAccountCommand): Account
-post BR_UC_01_09_RegistrationChallengeIsConsumed:
+post BR_REGISTER_ACCOUNT_09_RegistrationChallengeIsConsumed:
   VerificationChallenge.allInstances()->exists(v | v.account.id = command.accountId and v.purpose = ChallengePurpose::REGISTRATION and v.consumedAt <> null)
 ~~~

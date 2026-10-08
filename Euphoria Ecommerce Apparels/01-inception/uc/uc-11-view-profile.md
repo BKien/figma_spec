@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-11
 uc_name: "View contact details"
 ---
@@ -50,17 +50,19 @@ POST-1: The client displays the returned contact details.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Return to My orders
 
-1. The customer returns to My orders.
-2. The client displays the order-history route.
+1a: The customer returns to My orders.
+
+1b: The client displays the order-history route.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Sign in to view the profile
 
-1. The system returns a rejected authentication context.
-2. The client presents the sign-in entry point.
+3a: The system returns a rejected authentication context.
+
+3b: The client presents the sign-in entry point.
 
 ### Related UI
 
@@ -68,7 +70,7 @@ EF-1:
 
 ### Related API IDs
 
-- [API-PROFILE](../api/api-profile.md)
+- [API-PROFILE](../api/API-PROFILE.md)
 
 ### Notes
 
@@ -120,52 +122,52 @@ class TextSyntax <<primitive helper>> {
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-11-01
--- Source: Assumption
+~~~text
+BR-PROFILE-01 - Account Context
+Source: Assumption
 context ProfileService::read(ctx: RequestContext): Customer
-pre BR_UC_11_01_AccountContext:
+pre BR_PROFILE_01_AccountContext:
   ctx.authenticated
 ~~~
-~~~ocl
--- BR-UC-11-02
--- Source: Assumption
+~~~text
+BR-PROFILE-02 - Profile Reference
+Source: Assumption
 context ProfileService::read(ctx: RequestContext): Customer
-pre BR_UC_11_02_ProfileReference:
+pre BR_PROFILE_02_ProfileReference:
   Customer.allInstances()->exists(c | c.id = ctx.customerId)
 ~~~
-~~~ocl
--- BR-UC-11-03
--- Source: Assumption
+~~~text
+BR-PROFILE-03 - Customer Profile
+Source: Assumption
 context ProfileService::read(ctx: RequestContext): Customer
-post BR_UC_11_03_CustomerProfile:
+post BR_PROFILE_03_CustomerProfile:
   result.id = ctx.customerId
 ~~~
-~~~ocl
--- BR-UC-11-04
--- Source: Assumption
+~~~text
+BR-PROFILE-04 - Session Authentication
+Source: Assumption
 context RequestContext
-inv BR_UC_11_04_SessionAuthentication:
+inv BR_PROFILE_04_SessionAuthentication:
   self.authenticated = Session.allInstances()->exists(s | s.tokenHash = self.sessionHash and s.customerId = self.customerId and not s.revoked and s.expiresAt > Clock::now())
 ~~~
-~~~ocl
--- BR-UC-11-05
--- Source: Assumption
+~~~text
+BR-PROFILE-05 - Csrf Context
+Source: Assumption
 context RequestContext
-inv BR_UC_11_05_CsrfContext:
+inv BR_PROFILE_05_CsrfContext:
   self.csrfValid = Session.allInstances()->exists(s | s.tokenHash = self.sessionHash and s.customerId = self.customerId and s.csrfHash = self.csrfHash and not s.revoked and s.expiresAt > Clock::now())
 ~~~
-~~~ocl
--- BR-UC-11-06
--- Source: Assumption
+~~~text
+BR-PROFILE-06 - Canonical Identity
+Source: Assumption
 context Customer
-inv BR_UC_11_06_CanonicalIdentity:
+inv BR_PROFILE_06_CanonicalIdentity:
   self.email = TextSyntax::canonicalEmail(self.email) and Customer.allInstances()->isUnique(email)
 ~~~
-~~~ocl
--- BR-UC-11-07
--- Source: Assumption
+~~~text
+BR-PROFILE-07 - Contacts Unchanged
+Source: Assumption
 context ProfileService::read(ctx: RequestContext): Customer
-post BR_UC_11_07_ContactsUnchanged:
+post BR_PROFILE_07_ContactsUnchanged:
   Customer.allInstances()->forAll(c | c.name = c.name@pre and c.email = c.email@pre and c.phone = c.phone@pre)
 ~~~

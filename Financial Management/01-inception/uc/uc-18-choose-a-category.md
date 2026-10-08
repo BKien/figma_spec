@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-18
 uc_name: "Choose a Category"
 ---
@@ -40,6 +40,7 @@ PRE-1: The application view is open in the client.
 ### Post-Condition(s)
 
 POST-1: On success, the client displays the selected category in the requesting form.
+
 POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Basic Flow
@@ -54,23 +55,27 @@ POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Clear Category Selection
 
-1. The user clears the category selector.
-2. The client shows the form with no selected category.
+4a: The user clears the category selector.
+
+4b: The client shows the form with no selected category.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Category Selection Operation Error
 
-1. The system returns an operation error.
-2. The client displays the error message and keeps the current view open.
-3. The actor revises the interaction or retries the request.
+6a: The system returns an operation error.
 
-EF-2:
+6b: The client displays the error message and keeps the current view open.
 
-1. The system returns a rejected authentication context.
-2. The client presents the login entry point.
+6c: The actor revises the interaction or retries the request.
+
+EF-2: Category Selection Authentication Rejected
+
+6d: The system returns a rejected authentication context.
+
+6e: The client presents the login entry point.
 
 ### Related UI
 
@@ -82,8 +87,8 @@ EF-2:
 
 ### Related API IDs
 
-- [API-CATEGORY-LIST](../api/api-category-list.md)
-- [API-CATEGORY-DETAIL](../api/api-category-detail.md)
+- [API-CATEGORY-LIST](../api/API-CATEGORY-LIST.md)
+- [API-CATEGORY-DETAIL](../api/API-CATEGORY-DETAIL.md)
 
 ### Notes
 
@@ -131,67 +136,67 @@ CategoryResult --> Category : selected
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-18-01
--- Source: Product source
+~~~text
+BR-CHOOSE-CATEGORY-01 - Authenticated Context
+Source: Product source
 context CategoryService::choose(ctx: RequestContext, cmd: CategoryQuery): CategoryResult
-pre BR_UC_18_01_AuthenticatedContext:
+pre BR_CHOOSE_CATEGORY_01_AuthenticatedContext:
   ctx.authenticated and User.allInstances()->exists(u | u.id = ctx.userId)
 ~~~
 
-~~~ocl
--- BR-UC-18-02
--- Source: Assumption
+~~~text
+BR-CHOOSE-CATEGORY-02 - Exact List
+Source: Assumption
 context CategoryService::choose(ctx: RequestContext, cmd: CategoryQuery): CategoryResult
-post BR_UC_18_02_ExactList:
+post BR_CHOOSE_CATEGORY_02_ExactList:
   result.success implies result.categories->collect(id)->asSet() = Category.allInstances()->collect(id)->asSet()
 ~~~
 
-~~~ocl
--- BR-UC-18-03
--- Source: Assumption
+~~~text
+BR-CHOOSE-CATEGORY-03 - Category Identity
+Source: Assumption
 context Category
-inv BR_UC_18_03_CategoryIdentity:
+inv BR_CHOOSE_CATEGORY_03_CategoryIdentity:
   Category.allInstances()->isUnique(id)
 ~~~
 
-~~~ocl
--- BR-UC-18-04
--- Source: Assumption
+~~~text
+BR-CHOOSE-CATEGORY-04 - No Duplicate Choices
+Source: Assumption
 context CategoryService::choose(ctx: RequestContext, cmd: CategoryQuery): CategoryResult
-post BR_UC_18_04_NoDuplicateChoices:
+post BR_CHOOSE_CATEGORY_04_NoDuplicateChoices:
   result.categories->isUnique(id)
 ~~~
 
-~~~ocl
--- BR-UC-18-05
--- Source: Assumption
+~~~text
+BR-CHOOSE-CATEGORY-05 - Choice Mapping
+Source: Assumption
 context CategoryService::choose(ctx: RequestContext, cmd: CategoryQuery): CategoryResult
-post BR_UC_18_05_ChoiceMapping:
+post BR_CHOOSE_CATEGORY_05_ChoiceMapping:
   result.categories->forAll(v | Category.allInstances()->exists(c | c.id = v.id and c.name = v.name))
 ~~~
 
-~~~ocl
--- BR-UC-18-06
--- Source: Assumption
+~~~text
+BR-CHOOSE-CATEGORY-06 - Deterministic Order
+Source: Assumption
 context CategoryService::choose(ctx: RequestContext, cmd: CategoryQuery): CategoryResult
-post BR_UC_18_06_DeterministicOrder:
+post BR_CHOOSE_CATEGORY_06_DeterministicOrder:
   result.categories->size() <= 1 or Sequence{1..result.categories->size()-1}->forAll(i | result.categories->at(i).id < result.categories->at(i+1).id)
 ~~~
 
-~~~ocl
--- BR-UC-18-07
--- Source: Assumption
+~~~text
+BR-CHOOSE-CATEGORY-07 - Selected Identity
+Source: Assumption
 context CategoryService::choose(ctx: RequestContext, cmd: CategoryQuery): CategoryResult
-post BR_UC_18_07_SelectedIdentity:
+post BR_CHOOSE_CATEGORY_07_SelectedIdentity:
   result.success implies (if cmd.selectedId.oclIsUndefined() then result.selected.oclIsUndefined() else Category.allInstances()->one(c | c.id = cmd.selectedId and result.selected.id = c.id and result.selected.name = c.name) endif)
 ~~~
 
-~~~ocl
--- BR-UC-18-08
--- Source: Product source
--- Equality denotes the complete persistent value snapshot, including every property, not object identity alone.
+~~~text
+BR-CHOOSE-CATEGORY-08 - Category Unchanged
+Source: Product source
+Note: Equality denotes the complete persistent value snapshot, including every property, not object identity alone.
 context CategoryService::choose(ctx: RequestContext, cmd: CategoryQuery): CategoryResult
-post BR_UC_18_08_CategoryUnchanged:
+post BR_CHOOSE_CATEGORY_08_CategoryUnchanged:
   Category.allInstances()->collect(e | Tuple{id = e.id, name = e.name})->asSet() = Category.allInstances()@pre->collect(e | Tuple{id = e.id@pre, name = e.name@pre})->asSet()
 ~~~

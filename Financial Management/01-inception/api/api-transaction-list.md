@@ -1,6 +1,6 @@
 ---
 artifact_type: api-contract
-status: Draft
+status: Frozen
 api_id: API-TRANSACTION-LIST
 related_uc_ids: ["UC-03", "UC-17"]
 ---
@@ -11,7 +11,7 @@ related_uc_ids: ["UC-03", "UC-17"]
 
 ### API ID
 
-`API-TRANSACTION-LIST`
+API-TRANSACTION-LIST
 
 ### API Name
 
@@ -19,15 +19,15 @@ List Transactions
 
 ### Related Use Case IDs
 
-`UC-03`, `UC-17`
+UC-03, UC-17
 
 ### Method
 
-`GET`
+GET
 
 ### Path
 
-`/api/v1/transactions`
+/api/v1/transactions
 
 ### Description
 
@@ -43,15 +43,19 @@ Authenticated request context.
 
 ## Request Header(s)
 
-### Authorization
+### headers.Authorization
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: Matches the declared JSON type.
+Type: string; Format: Bearer token; Required: Yes; Nullable: No
+
 Trigger: Request containing this field.
+
 Description: Bearer authentication header.
-Example: `Bearer <access-token>`
+
+Example: Bearer <access-token>
+
+Note: Uses the HTTP Bearer authentication scheme.
+
+Validation: Matches the declared JSON type.
 
 ## Path Parameter(s)
 
@@ -61,37 +65,47 @@ None.
 
 ### query.type
 
-Type: string
-Required: No
-Nullable: No
-Default: All
-Allowed values: All; Revenue; Expense
-Validation: Member of the declared public enum.
+Type: string; Required: No; Nullable: No
+
 Trigger: Request containing this field.
+
 Description: Transaction type filter.
-Example: `All`
+
+Example: All
+
+Default: All
+
+Allowed values: All; Revenue; Expense
+
+Validation: Member of the declared public enum.
 
 ### query.limit
 
-Type: integer
-Required: No
-Nullable: No
-Default: 10
-Validation: JSON integer; query and path values use complete decimal text.
+Type: integer; Required: No; Nullable: No
+
 Trigger: Request containing this field.
+
 Description: Maximum number of returned records.
-Example: `10`
+
+Example: 10
+
+Default: 10
+
+Validation: JSON integer; query and path values use complete decimal text.
 
 ### query.offset
 
-Type: integer
-Required: No
-Nullable: No
-Default: 0
-Validation: JSON integer; query and path values use complete decimal text.
+Type: integer; Required: No; Nullable: No
+
 Trigger: Request containing this field.
+
 Description: Zero-based pagination offset.
-Example: `0`
+
+Example: 0
+
+Default: 0
+
+Validation: JSON integer; query and path values use complete decimal text.
 
 ## Request Body
 
@@ -101,146 +115,175 @@ None.
 
 ### success
 
-Type: boolean
-Required: Yes
-Nullable: No
-Validation: JSON boolean.
+Type: boolean; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Response outcome flag.
-Example: `true`
+
+Example: true
+
+Validation: JSON boolean.
 
 ### message
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: JSON string.
+Type: string; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Human-readable response message.
-Example: `Operation completed`
+
+Example: Operation completed
+
+Validation: JSON string.
 
 ### data
 
-Type: array<object>
-Required: Yes
-Nullable: No
-Validation: JSON array<object>.
+Type: array<object>; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Transaction array. May be empty.
-Example: `[]`
+
+Example: []
+
+Validation: JSON array<object>.
 
 ### data[].transaction_id
 
-Type: integer
-Required: Yes
-Nullable: No
-Validation: JSON integer.
+Type: integer; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Transactions.transaction_id.
-Example: `8`
+
+Example: 8
+
+Validation: JSON integer.
 
 ### data[].account_id
 
-Type: integer
-Required: Yes
-Nullable: No
-Validation: JSON integer.
+Type: integer; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Account identifier.
-Example: `3`
+
+Example: 3
+
+Validation: JSON integer.
 
 ### data[].transaction_date
 
-Type: string
-Format: date
-Required: Yes
-Nullable: No
-Validation: Valid calendar date in YYYY-MM-DD representation.
+Type: string; Format: date; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Transactions.transaction_date.
-Example: `2025-11-01`
+
+Example: 2025-11-01
+
+Validation: Valid calendar date in YYYY-MM-DD representation.
 
 ### data[].type
 
-Type: string
-Required: Yes
-Nullable: No
-Allowed values: Revenue; Expense
-Validation: Member of the declared public enum.
+Type: string; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Transaction type.
-Example: `Expense`
+
+Example: Expense
+
+Allowed values: Revenue; Expense
+
+Validation: Member of the declared public enum.
 
 ### data[].item_description
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: JSON string.
+Type: string; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Transactions.item_description.
-Example: `Movie Ticket`
+
+Example: Movie Ticket
+
+Validation: JSON string.
 
 ### data[].shop_name
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: JSON string.
+Type: string; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Transactions.shop_name.
-Example: `Cinema`
+
+Example: Cinema
+
+Validation: JSON string.
 
 ### data[].amount
 
-Type: number
-Required: Yes
-Nullable: No
-Validation: JSON number.
+Type: number; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Transactions.amount.
-Example: `150000`
+
+Example: 150000
+
+Validation: JSON number.
 
 ### data[].payment_method
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: JSON string.
+Type: string; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Transactions.payment_method.
-Example: `Credit Card`
+
+Example: Credit Card
+
+Validation: JSON string.
 
 ### data[].status
 
-Type: string
-Required: Yes
-Nullable: No
-Allowed values: Complete; Pending; Failed
-Validation: Member of the declared public enum.
+Type: string; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Transaction status.
-Example: `Complete`
+
+Example: Complete
+
+Allowed values: Complete; Pending; Failed
+
+Validation: Member of the declared public enum.
 
 ### total
 
-Type: integer
-Required: Yes
-Nullable: No
-Validation: JSON integer.
+Type: integer; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Integer count associated with the response.
-Example: `25`
+
+Example: 25
+
+Validation: JSON integer.
 
 ### hasMore
 
-Type: boolean
-Required: Yes
-Nullable: No
-Validation: JSON boolean.
+Type: boolean; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Boolean page continuation indicator.
-Example: `true`
+
+Example: true
+
+Validation: JSON boolean.
 
 ## Error Response — HTTP 400
 
@@ -248,44 +291,61 @@ Public outcome: Malformed wire input or rejected operation.
 
 ### success
 
-Type: boolean
-Required: Yes
-Nullable: No
-Validation: JSON boolean.
+Type: boolean; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Error outcome flag.
-Example: `false`
+
+Example: false
+
+Note: Field of the JSON error response.
+
+Validation: JSON boolean.
 
 ### message
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: JSON string.
+Type: string; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Human-readable error message.
-Example: `Request could not be completed`
+
+Example: Request could not be completed
+
+Note: Field of the JSON error response.
+
+Validation: JSON string.
 
 ### error
 
-Type: object
-Required: Yes
-Nullable: No
-Validation: JSON object.
+Type: object; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Error payload.
-Example: `{}`
+
+Example: {}
+
+Note: Field of the JSON error response.
+
+Validation: JSON object.
 
 ### error.code
 
-Type: string
-Required: Yes
-Nullable: No
-Allowed values: MALFORMED_REQUEST
-Validation: Member of the declared public enum.
+Type: string; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Public error code.
-Example: `MALFORMED_REQUEST`
+
+Example: MALFORMED_REQUEST
+
+Note: Field of the JSON error response; nested requiredness applies when its containing object or array item is present.
+
+Allowed values: MALFORMED_REQUEST
+
+Validation: Member of the declared public enum.
 
 ## Error Response — HTTP 401
 
@@ -293,44 +353,61 @@ Public outcome: Rejected authentication context.
 
 ### success
 
-Type: boolean
-Required: Yes
-Nullable: No
-Validation: JSON boolean.
+Type: boolean; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Error outcome flag.
-Example: `false`
+
+Example: false
+
+Note: Field of the JSON error response.
+
+Validation: JSON boolean.
 
 ### message
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: JSON string.
+Type: string; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Human-readable error message.
-Example: `Request could not be completed`
+
+Example: Request could not be completed
+
+Note: Field of the JSON error response.
+
+Validation: JSON string.
 
 ### error
 
-Type: object
-Required: Yes
-Nullable: No
-Validation: JSON object.
+Type: object; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Error payload.
-Example: `{}`
+
+Example: {}
+
+Note: Field of the JSON error response.
+
+Validation: JSON object.
 
 ### error.code
 
-Type: string
-Required: Yes
-Nullable: No
-Allowed values: UNAUTHENTICATED
-Validation: Member of the declared public enum.
+Type: string; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Public error code.
-Example: `UNAUTHENTICATED`
+
+Example: UNAUTHENTICATED
+
+Note: Field of the JSON error response; nested requiredness applies when its containing object or array item is present.
+
+Allowed values: UNAUTHENTICATED
+
+Validation: Member of the declared public enum.
 
 ## Error Response — HTTP 500
 
@@ -338,44 +415,61 @@ Public outcome: Temporary service failure.
 
 ### success
 
-Type: boolean
-Required: Yes
-Nullable: No
-Validation: JSON boolean.
+Type: boolean; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Error outcome flag.
-Example: `false`
+
+Example: false
+
+Note: Field of the JSON error response.
+
+Validation: JSON boolean.
 
 ### message
 
-Type: string
-Required: Yes
-Nullable: No
-Validation: JSON string.
+Type: string; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Human-readable error message.
-Example: `Request could not be completed`
+
+Example: Request could not be completed
+
+Note: Field of the JSON error response.
+
+Validation: JSON string.
 
 ### error
 
-Type: object
-Required: Yes
-Nullable: No
-Validation: JSON object.
+Type: object; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Error payload.
-Example: `{}`
+
+Example: {}
+
+Note: Field of the JSON error response.
+
+Validation: JSON object.
 
 ### error.code
 
-Type: string
-Required: Yes
-Nullable: No
-Allowed values: INTERNAL_ERROR
-Validation: Member of the declared public enum.
+Type: string; Required: Yes; Nullable: No
+
 Trigger: Response containing this field.
+
 Description: Public error code.
-Example: `INTERNAL_ERROR`
+
+Example: INTERNAL_ERROR
+
+Note: Field of the JSON error response; nested requiredness applies when its containing object or array item is present.
+
+Allowed values: INTERNAL_ERROR
+
+Validation: Member of the declared public enum.
 
 ## Notes
 

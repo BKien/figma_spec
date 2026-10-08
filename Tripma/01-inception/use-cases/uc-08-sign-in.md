@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-08
 uc_name: "Sign In"
 ---
@@ -36,11 +36,13 @@ The visitor initiates sign-in from the Tripma navbar.
 ### Pre-Condition(s)
 
 PRE-1: The Tripma authentication experience is available.
+
 PRE-2: Tripma can accept an authentication request.
 
 ### Post-Condition(s)
 
 POST-1: When sign-in succeeds, an authenticated Tripma session is available to subsequent experiences.
+
 POST-2: When sign-in cannot be completed, no authenticated session is created and Tripma reports the outcome.
 
 ### Basic Flow
@@ -59,20 +61,26 @@ POST-2: When sign-in cannot be completed, no authenticated session is created an
 ### Alternative Flow
 
 AF-1: Close sign-in
-3a. The visitor closes the sign-in experience before submitting.
-3b. Tripma returns to the initiating context without creating a session.
+
+3a: The visitor closes the sign-in experience before submitting.
+
+3b: Tripma returns to the initiating context without creating a session.
 
 ### Exception Flow
 
 EF-1: Sign-in information requires attention
-4a. If the supplied information cannot be accepted, Tripma identifies the affected input and does not submit the request.
+
+4a: If the supplied information cannot be accepted, Tripma identifies the affected input and does not submit the request.
 
 EF-2: Credentials are not accepted
-7a. If the submitted credentials cannot authenticate an account, API-AUTH-SIGNIN returns the corresponding outcome.
-7b. Tripma preserves the usable sign-in state and permits another attempt.
+
+7a: If the submitted credentials cannot authenticate an account, API-AUTH-SIGNIN returns the corresponding outcome.
+
+7b: Tripma preserves the usable sign-in state and permits another attempt.
 
 EF-3: Request cannot be completed
-6a. If Tripma cannot complete the request because of a technical failure, it presents a retryable error state.
+
+6a: If Tripma cannot complete the request because of a technical failure, it presents a retryable error state.
 
 ### Related UI
 
@@ -160,7 +168,7 @@ SignInService ..> PasswordHasher
 The following rules are authoritative for Prompt E. OCL is preserved where applicable; technical or non-OCL constraints remain authoritative natural-language requirements.
 
 ~~~text
-BR-SIGNIN-001: Required credential input
+BR-SIGNIN-001 - Required credential input
 context SignInService::signIn(
   dto : SignInDto
 ) : SignInResponseDto
@@ -169,7 +177,7 @@ pre BR_SIGNIN_001_Required:
   not dto.password.oclIsUndefined() and trim(dto.password) <> ''
 
 
-BR-SIGNIN-002: Accepted credential email
+BR-SIGNIN-002 - Accepted credential email
 context SignInService::signIn(
   dto : SignInDto
 ) : SignInResponseDto
@@ -177,7 +185,7 @@ pre BR_SIGNIN_002_Email:
   isEmail(normalizeEmail(dto.email))
 
 
-BR-SIGNIN-003: Credential password length
+BR-SIGNIN-003 - Credential password length
 context SignInService::signIn(
   dto : SignInDto
 ) : SignInResponseDto
@@ -185,7 +193,7 @@ pre BR_SIGNIN_003_PasswordLength:
   dto.password.size() >= 8
 
 
-BR-SIGNIN-004: Credential authentication
+BR-SIGNIN-004 - Credential authentication
 context SignInService::signIn(
   dto : SignInDto
 ) : SignInResponseDto
@@ -196,7 +204,7 @@ post BR_SIGNIN_004_Outcome:
       matches(dto.password, user.passwordHash))
 
 
-BR-SIGNIN-005: Credential rejection
+BR-SIGNIN-005 - Credential rejection
 context SignInService::signIn(
   dto : SignInDto
 ) : SignInResponseDto
@@ -208,7 +216,7 @@ post BR_SIGNIN_005_Rejection:
     not result.success and result.data.oclIsUndefined()
 
 
-BR-SIGNIN-006: Authenticated account identity
+BR-SIGNIN-006 - Authenticated account identity
 context SignInService::signIn(
   dto : SignInDto
 ) : SignInResponseDto
@@ -219,7 +227,7 @@ post BR_SIGNIN_006_User:
       normalizeEmail(user.email) = normalizeEmail(dto.email))
 
 
-BR-SIGNIN-007: JWT claims
+BR-SIGNIN-007 - JWT claims
 context SignInService::createJwt(
   user : User
 ) : JwtClaimsDto
@@ -230,7 +238,7 @@ post BR_SIGNIN_007_Claims:
   result.issuedAt <= result.expiresAt
 
 
-BR-SIGNIN-008: Session projection
+BR-SIGNIN-008 - Session projection
 context SignInService::createSession(
   token : JwtClaimsDto
 ) : SessionDto
@@ -238,7 +246,7 @@ post BR_SIGNIN_008_Session:
   result.expiresAt = token.expiresAt
 
 
-BR-SIGNIN-009: Sign-in response
+BR-SIGNIN-009 - Sign-in response
 context SignInService::signIn(
   dto : SignInDto
 ) : SignInResponseDto
@@ -252,11 +260,10 @@ post BR_SIGNIN_009_Response:
       user.username = result.data.user.username)
 
 
-BR-SIGNIN-010: Sensitive authentication data
+BR-SIGNIN-010 - Sensitive authentication data
 Passwords, password hashes and JWT contents shall not be
 returned in the API-AUTH-SIGNIN response.
 Technical constraints:
-- Authentication secrets and tokens must not appear in URLs, analytics, traces or application logs.
-- The session token is transmitted only through a Secure, HttpOnly cookie with an appropriate SameSite policy.
-
+Authentication secrets and tokens must not appear in URLs, analytics, traces or application logs.
+The session token is transmitted only through a Secure, HttpOnly cookie with an appropriate SameSite policy.
 ~~~

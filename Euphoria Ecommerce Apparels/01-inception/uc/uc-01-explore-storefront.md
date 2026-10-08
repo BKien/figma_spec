@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-01
 uc_name: "Explore the storefront"
 ---
@@ -52,18 +52,21 @@ POST-1: The client displays the storefront sections.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Open a featured product
 
-1. The shopper selects a featured product card.
-2. The client opens the product detail route.
+5a: The shopper selects a featured product card.
+
+5b: The client opens the product detail route.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Retry the storefront request
 
-1. The system returns a temporary service failure.
-2. The client presents a retry action for the storefront.
-3. The shopper retries the request.
+3a: The system returns a temporary service failure.
+
+3b: The client presents a retry action for the storefront.
+
+3c: The shopper retries the request.
 
 ### Related UI
 
@@ -71,8 +74,8 @@ EF-1:
 
 ### Related API IDs
 
-- [API-STOREFRONT](../api/api-storefront.md)
-- [API-CATALOG](../api/api-catalog.md)
+- [API-STOREFRONT](../api/API-STOREFRONT.md)
+- [API-CATALOG](../api/API-CATALOG.md)
 
 ### Notes
 
@@ -128,52 +131,52 @@ Storefront --> "0..*" Testimonial : testimonials
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-01-01
--- Source: Assumption
+~~~text
+BR-STOREFRONT-01 - Promotions
+Source: Assumption
 context StorefrontService::read(): Storefront
-post BR_UC_01_01_Promotions:
+post BR_STOREFRONT_01_Promotions:
   result.promotions = Promotion.allInstances()->select(p | p.published)->sortedBy(p | p.displayRank)
 ~~~
-~~~ocl
--- BR-UC-01-02
--- Source: Assumption
+~~~text
+BR-STOREFRONT-02 - Categories
+Source: Assumption
 context StorefrontService::read(): Storefront
-post BR_UC_01_02_Categories:
+post BR_STOREFRONT_02_Categories:
   result.categories = Category.allInstances()->sortedBy(c | c.displayRank)
 ~~~
-~~~ocl
--- BR-UC-01-03
--- Source: Assumption
+~~~text
+BR-STOREFRONT-03 - Featured Cards
+Source: Assumption
 context StorefrontService::read(): Storefront
-post BR_UC_01_03_FeaturedCards:
+post BR_STOREFRONT_03_FeaturedCards:
   result.featured = Product.allInstances()->select(p | p.published and p.featured)->sortedBy(p | p.displayRank)
 ~~~
-~~~ocl
--- BR-UC-01-04
--- Source: Assumption
+~~~text
+BR-STOREFRONT-04 - Feedback
+Source: Assumption
 context StorefrontService::read(): Storefront
-post BR_UC_01_04_Feedback:
+post BR_STOREFRONT_04_Feedback:
   result.testimonials = Testimonial.allInstances()->select(t | t.published)->sortedBy(t | t.displayRank)
 ~~~
-~~~ocl
--- BR-UC-01-05
--- Source: Assumption
+~~~text
+BR-STOREFRONT-05 - Category Destination
+Source: Assumption
 context Promotion
-inv BR_UC_01_05_CategoryDestination:
+inv BR_STOREFRONT_05_CategoryDestination:
   self.targetCategoryId = null or Category.allInstances()->exists(c | c.id = self.targetCategoryId)
 ~~~
-~~~ocl
--- BR-UC-01-06
--- Source: Assumption
+~~~text
+BR-STOREFRONT-06 - Rating Scale
+Source: Assumption
 context Testimonial
-inv BR_UC_01_06_RatingScale:
+inv BR_STOREFRONT_06_RatingScale:
   self.rating >= 0 and self.rating <= 5
 ~~~
-~~~ocl
--- BR-UC-01-07
--- Source: Assumption
+~~~text
+BR-STOREFRONT-07 - Editorial Positions
+Source: Assumption
 context Promotion
-inv BR_UC_01_07_EditorialPositions:
+inv BR_STOREFRONT_07_EditorialPositions:
   Promotion.allInstances()->isUnique(displayRank) and Category.allInstances()->isUnique(displayRank) and Testimonial.allInstances()->isUnique(displayRank)
 ~~~

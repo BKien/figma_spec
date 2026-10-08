@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-17
 uc_name: "Filter Transaction History"
 ---
@@ -40,6 +40,7 @@ PRE-1: The application view is open in the client.
 ### Post-Condition(s)
 
 POST-1: On success, the client replaces transaction rows and page controls for the selected filter.
+
 POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Basic Flow
@@ -51,23 +52,27 @@ POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Select All Transaction Types
 
-1. The user selects All.
-2. The client requests and displays the combined transaction view.
+1a: The user selects All.
+
+1b: The client requests and displays the combined transaction view.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Transaction Filter Operation Error
 
-1. The system returns an operation error.
-2. The client displays the error message and keeps the current view open.
-3. The actor revises the interaction or retries the request.
+3a: The system returns an operation error.
 
-EF-2:
+3b: The client displays the error message and keeps the current view open.
 
-1. The system returns a rejected authentication context.
-2. The client presents the login entry point.
+3c: The actor revises the interaction or retries the request.
+
+EF-2: Transaction Filter Authentication Rejected
+
+3d: The system returns a rejected authentication context.
+
+3e: The client presents the login entry point.
 
 ### Related UI
 
@@ -75,7 +80,7 @@ EF-2:
 
 ### Related API IDs
 
-- [API-TRANSACTION-LIST](../api/api-transaction-list.md)
+- [API-TRANSACTION-LIST](../api/API-TRANSACTION-LIST.md)
 
 ### Notes
 
@@ -187,93 +192,93 @@ end note
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-17-01
--- Source: Product source
+~~~text
+BR-FILTER-TRANSACTIONS-01 - Authenticated Context
+Source: Product source
 context TransactionService::filter(ctx: RequestContext, cmd: TransactionQuery): TransactionListResult
-pre BR_UC_17_01_AuthenticatedContext:
+pre BR_FILTER_TRANSACTIONS_01_AuthenticatedContext:
   ctx.authenticated and User.allInstances()->exists(u | u.id = ctx.userId)
 ~~~
 
-~~~ocl
--- BR-UC-17-02
--- Source: Assumption
+~~~text
+BR-FILTER-TRANSACTIONS-02 - Page Bounds
+Source: Assumption
 context TransactionService::filter(ctx: RequestContext, cmd: TransactionQuery): TransactionListResult
-pre BR_UC_17_02_PageBounds:
+pre BR_FILTER_TRANSACTIONS_02_PageBounds:
   cmd.limit > 0 and cmd.limit <= 100 and cmd.offset >= 0
 ~~~
 
-~~~ocl
--- BR-UC-17-03
--- Source: Product source
+~~~text
+BR-FILTER-TRANSACTIONS-03 - Scoped Page
+Source: Product source
 context TransactionService::filter(ctx: RequestContext, cmd: TransactionQuery): TransactionListResult
-post BR_UC_17_03_ScopedPage:
+post BR_FILTER_TRANSACTIONS_03_ScopedPage:
   result.success implies result.data->forAll(t | Account.allInstances()->exists(a | a.id = t.accountId and a.userId = ctx.userId) and (cmd.type = TransactionFilter::All or (cmd.type = TransactionFilter::Revenue and t.type = TransactionType::Revenue) or (cmd.type = TransactionFilter::Expense and t.type = TransactionType::Expense)))
 ~~~
 
-~~~ocl
--- BR-UC-17-04
--- Source: Product source
+~~~text
+BR-FILTER-TRANSACTIONS-04 - Exact Total
+Source: Product source
 context TransactionService::filter(ctx: RequestContext, cmd: TransactionQuery): TransactionListResult
-post BR_UC_17_04_ExactTotal:
+post BR_FILTER_TRANSACTIONS_04_ExactTotal:
   result.success implies result.total = Transaction.allInstances()->select(t | Account.allInstances()->exists(a | a.id = t.accountId and a.userId = ctx.userId) and (cmd.type = TransactionFilter::All or (cmd.type = TransactionFilter::Revenue and t.type = TransactionType::Revenue) or (cmd.type = TransactionFilter::Expense and t.type = TransactionType::Expense)))->size()
 ~~~
 
-~~~ocl
--- BR-UC-17-05
--- Source: Assumption
+~~~text
+BR-FILTER-TRANSACTIONS-05 - Ordered Page
+Source: Assumption
 context TransactionService::filter(ctx: RequestContext, cmd: TransactionQuery): TransactionListResult
-post BR_UC_17_05_OrderedPage:
+post BR_FILTER_TRANSACTIONS_05_OrderedPage:
   result.data->size() <= 1 or Sequence{1..result.data->size()-1}->forAll(i | result.data->at(i).date.ordinal > result.data->at(i+1).date.ordinal or (result.data->at(i).date.ordinal = result.data->at(i+1).date.ordinal and result.data->at(i).id > result.data->at(i+1).id))
 ~~~
 
-~~~ocl
--- BR-UC-17-06
--- Source: Assumption
+~~~text
+BR-FILTER-TRANSACTIONS-06 - Exact Page
+Source: Assumption
 context TransactionService::filter(ctx: RequestContext, cmd: TransactionQuery): TransactionListResult
-post BR_UC_17_06_ExactPage:
+post BR_FILTER_TRANSACTIONS_06_ExactPage:
   result.success implies let eligible : Set(Transaction) = Transaction.allInstances()->select(t | Account.allInstances()->exists(a | a.id = t.accountId and a.userId = ctx.userId) and (cmd.type = TransactionFilter::All or (cmd.type = TransactionFilter::Revenue and t.type = TransactionType::Revenue) or (cmd.type = TransactionFilter::Expense and t.type = TransactionType::Expense)))->asSet() in result.data->collect(id)->asSet() = eligible->select(t | eligible->select(other | other.date.ordinal > t.date.ordinal or (other.date.ordinal = t.date.ordinal and other.id > t.id))->size() >= cmd.offset and eligible->select(other | other.date.ordinal > t.date.ordinal or (other.date.ordinal = t.date.ordinal and other.id > t.id))->size() < cmd.offset + cmd.limit)->collect(id)->asSet()
 ~~~
 
-~~~ocl
--- BR-UC-17-07
--- Source: Product source
+~~~text
+BR-FILTER-TRANSACTIONS-07 - Has More
+Source: Product source
 context TransactionService::filter(ctx: RequestContext, cmd: TransactionQuery): TransactionListResult
-post BR_UC_17_07_HasMore:
+post BR_FILTER_TRANSACTIONS_07_HasMore:
   result.success implies result.hasMore = (cmd.offset + result.data->size() < result.total)
 ~~~
 
-~~~ocl
--- BR-UC-17-08
--- Source: Product source
+~~~text
+BR-FILTER-TRANSACTIONS-08 - No Duplicates
+Source: Product source
 context TransactionService::filter(ctx: RequestContext, cmd: TransactionQuery): TransactionListResult
-post BR_UC_17_08_NoDuplicates:
+post BR_FILTER_TRANSACTIONS_08_NoDuplicates:
   result.data->isUnique(id)
 ~~~
 
-~~~ocl
--- BR-UC-17-09
--- Source: Product source
--- Equality denotes the complete persistent value snapshot, including every property, not object identity alone.
+~~~text
+BR-FILTER-TRANSACTIONS-09 - Transaction Unchanged
+Source: Product source
+Note: Equality denotes the complete persistent value snapshot, including every property, not object identity alone.
 context TransactionService::filter(ctx: RequestContext, cmd: TransactionQuery): TransactionListResult
-post BR_UC_17_09_TransactionUnchanged:
+post BR_FILTER_TRANSACTIONS_09_TransactionUnchanged:
   Transaction.allInstances()->collect(e | Tuple{id = e.id, accountId = e.accountId, categoryId = e.categoryId, date = e.date, type = e.type, status = e.status, description = e.description, shopName = e.shopName, paymentMethod = e.paymentMethod, amount = e.amount, receiptId = e.receiptId, createdAt = e.createdAt})->asSet() = Transaction.allInstances()@pre->collect(e | Tuple{id = e.id@pre, accountId = e.accountId@pre, categoryId = e.categoryId@pre, date = e.date@pre, type = e.type@pre, status = e.status@pre, description = e.description@pre, shopName = e.shopName@pre, paymentMethod = e.paymentMethod@pre, amount = e.amount@pre, receiptId = e.receiptId@pre, createdAt = e.createdAt@pre})->asSet()
 ~~~
 
-~~~ocl
--- BR-UC-17-10
--- Source: Product source
--- Equality denotes the complete persistent value snapshot, including every property, not object identity alone.
+~~~text
+BR-FILTER-TRANSACTIONS-10 - Account Unchanged
+Source: Product source
+Note: Equality denotes the complete persistent value snapshot, including every property, not object identity alone.
 context TransactionService::filter(ctx: RequestContext, cmd: TransactionQuery): TransactionListResult
-post BR_UC_17_10_AccountUnchanged:
+post BR_FILTER_TRANSACTIONS_10_AccountUnchanged:
   Account.allInstances()->collect(e | Tuple{id = e.id, userId = e.userId, bankName = e.bankName, accountType = e.accountType, branchName = e.branchName, numberCiphertext = e.numberCiphertext, numberFingerprint = e.numberFingerprint, last4 = e.last4, balance = e.balance, version = e.version, createdAt = e.createdAt})->asSet() = Account.allInstances()@pre->collect(e | Tuple{id = e.id@pre, userId = e.userId@pre, bankName = e.bankName@pre, accountType = e.accountType@pre, branchName = e.branchName@pre, numberCiphertext = e.numberCiphertext@pre, numberFingerprint = e.numberFingerprint@pre, last4 = e.last4@pre, balance = e.balance@pre, version = e.version@pre, createdAt = e.createdAt@pre})->asSet()
 ~~~
 
-~~~ocl
--- BR-UC-17-11
--- Source: Assumption
--- Changing the type filter resets the initial page. Subsequent pages use View Transaction History.
+~~~text
+BR-FILTER-TRANSACTIONS-11 - Reset Pagination
+Source: Assumption
+Note: Changing the type filter resets the initial page. Subsequent pages use View Transaction History.
 context TransactionService::filter(ctx: RequestContext, cmd: TransactionQuery): TransactionListResult
-pre BR_UC_17_11_ResetPagination:
+pre BR_FILTER_TRANSACTIONS_11_ResetPagination:
   cmd.offset = 0
 ~~~

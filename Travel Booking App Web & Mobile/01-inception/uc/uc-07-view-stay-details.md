@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-07
 uc_name: "View Stay Details"
 ---
@@ -40,6 +40,7 @@ PRE-1: A selected stay reference is available to the client.
 ### Post-Condition(s)
 
 POST-1: The client displays the stay-detail outcome returned by the system.
+
 POST-2: Navigation back to the originating result context remains available.
 
 ### Basic Flow
@@ -53,28 +54,33 @@ POST-2: Navigation back to the originating result context remains available.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Return to Stay Results
 
-1. The traveller returns to the preserved result context.
+6a: The traveller returns to the preserved result context.
 
-AF-2:
+AF-2: Render Remaining Stay Detail Sections
 
-1. If an optional section is absent from the response, the client renders the remaining detail sections.
+4a: If an optional section is absent from the response, the client renders the remaining detail sections.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Stay Detail Loading Failure
 
-1. If stay detail cannot be loaded, the client displays a retry state.
-2. The client retains navigation back to the result view.
+3a: If stay detail cannot be loaded, the client displays a retry state.
+
+3b: The client retains navigation back to the result view.
 
 ### Related UI
 
-`hotel southern details page`; `stay details mobile`.
+hotel southern details page; stay details mobile.
 
 ### Related API IDs
 
-`API-STAY-DETAIL`.
+API-STAY-DETAIL.
+
+### Notes
+
+None.
 
 ## UML Model
 
@@ -161,38 +167,38 @@ StayDetail --> StayOffer : currentOffer
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-07-01
--- Source: Assumption
+~~~text
+BR-STAY-DETAIL-01 - Detail Represents The Selected Active Stay
+Source: Assumption
 context StayService::getDetail(stayId: String, offerId: String): StayDetail
-post BR_UC_07_01_DetailRepresentsTheSelectedActiveStay:
+post BR_STAY_DETAIL_01_DetailRepresentsTheSelectedActiveStay:
   result <> null and result.stay.id = stayId and result.stay.active
 ~~~
 
-~~~ocl
--- BR-UC-07-02
--- Source: Assumption
+~~~text
+BR-STAY-DETAIL-02 - Amenities Are Canonical And Non Repeating
+Source: Assumption
 context StayService::getDetail(stayId: String, offerId: String): StayDetail
-post BR_UC_07_02_AmenitiesAreCanonicalAndNonRepeating:
+post BR_STAY_DETAIL_02_AmenitiesAreCanonicalAndNonRepeating:
   result.stay.amenities->forAll(a | a = a.trim().toLower()) and
   result.stay.amenities->isUnique(a | a)
 ~~~
 
-~~~ocl
--- BR-UC-07-03
--- Source: Assumption
+~~~text
+BR-STAY-DETAIL-03 - Media Order Is Stable And Gap Free
+Source: Assumption
 context StayService::getDetail(stayId: String, offerId: String): StayDetail
-post BR_UC_07_03_MediaOrderIsStableAndGapFree:
+post BR_STAY_DETAIL_03_MediaOrderIsStableAndGapFree:
   result.stay.media->isUnique(m | m.id) and
   (result.stay.media->isEmpty() or
    Sequence{1..result.stay.media->size()}->forAll(i | result.stay.media->at(i).sortOrder = i))
 ~~~
 
-~~~ocl
--- BR-UC-07-04
--- Source: Assumption
+~~~text
+BR-STAY-DETAIL-04 - Review Summary Is Derived Only From Approved Ratings
+Source: Assumption
 context StayService::getDetail(stayId: String, offerId: String): StayDetail
-post BR_UC_07_04_ReviewSummaryIsDerivedOnlyFromApprovedRatings:
+post BR_STAY_DETAIL_04_ReviewSummaryIsDerivedOnlyFromApprovedRatings:
   result.reviewSummary.approvedCount =
     result.reviewSummary.approvedRatings->size() and
   (result.reviewSummary.approvedCount = 0 implies
@@ -203,30 +209,30 @@ post BR_UC_07_04_ReviewSummaryIsDerivedOnlyFromApprovedRatings:
       result.reviewSummary.approvedCount)
 ~~~
 
-~~~ocl
--- BR-UC-07-05
--- Source: Assumption
+~~~text
+BR-STAY-DETAIL-05 - Current Offer Is Bound To The Selected Context
+Source: Assumption
 context StayService::getDetail(stayId: String, offerId: String): StayDetail
-post BR_UC_07_05_CurrentOfferIsBoundToTheSelectedContext:
+post BR_STAY_DETAIL_05_CurrentOfferIsBoundToTheSelectedContext:
   (offerId = null implies result.currentOffer = null) and
   (result.currentOffer <> null implies
     result.currentOffer.id = offerId and result.currentOffer.stay = result.stay and
     result.currentOffer.available and result.currentOffer.expiresAt > RequestContext::startedAt)
 ~~~
 
-~~~ocl
--- BR-UC-07-06
--- Source: Assumption
+~~~text
+BR-STAY-DETAIL-06 - Detail Retrieval Is Read Only
+Source: Assumption
 context StayService::getDetail(stayId: String, offerId: String): StayDetail
-post BR_UC_07_06_DetailRetrievalIsReadOnly:
+post BR_STAY_DETAIL_06_DetailRetrievalIsReadOnly:
   ReadState::stays() = ReadState::stays()@pre
 ~~~
 
-~~~ocl
--- BR-UC-07-07
--- Source: Assumption
+~~~text
+BR-STAY-DETAIL-07 - Review Aggregate Uses The Selected Stay
+Source: Assumption
 context StayService::getDetail(stayId: String, offerId: String): StayDetail
-post BR_UC_07_07_ReviewAggregateUsesTheSelectedStay:
+post BR_STAY_DETAIL_07_ReviewAggregateUsesTheSelectedStay:
   result.reviewSummary.approvedRatings =
     Review.allInstances()->select(r |
       r.stayId = stayId and r.published and

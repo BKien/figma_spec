@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "checks": {
+    "api": 243,
+    "protected_files": 165,
+    "uc": 168,
+    "preserved_uml_and_rule_blocks": 1395,
+    "formatted_branches": 468,
+    "ocl": 8
+  },
+  "packages": {
+    "100ms Video Conferencing and Live Streaming": {
+      "api": 15,
+      "uc": 18,
+      "ocl": 1
+    },
+    "Clicon Ecommerce Marketplace": {
+      "api": 49,
+      "uc": 20,
+      "ocl": 1
+    },
+    "DH Dental Recruitment": {
+      "api": 42,
+      "uc": 20,
+      "ocl": 1
+    },
+    "EdTech Education Dashboard": {
+      "api": 50,
+      "uc": 20,
+      "ocl": 1
+    },
+    "Euphoria Ecommerce Apparels": {
+      "api": 13,
+      "uc": 18,
+      "ocl": 1
+    },
+    "Financial Management": {
+      "api": 18,
+      "uc": 18,
+      "ocl": 1
+    },
+    "Table Booking Restaurant Application": {
+      "api": 24,
+      "uc": 20,
+      "ocl": 1
+    },
+    "Travel Booking App Web & Mobile": {
+      "api": 16,
+      "uc": 18,
+      "ocl": 1
+    },
+    "Tripma": {
+      "api": 16,
+      "uc": 16
+    }
+  },
+  "pre_existing_missing_link_targets": [],
+  "scope": "Template presentation and source preservation; no domain-policy or database changes."
+}

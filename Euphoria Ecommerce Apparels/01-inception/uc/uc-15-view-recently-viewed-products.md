@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-15
 uc_name: "Rediscover recently viewed products"
 ---
@@ -52,17 +52,19 @@ POST-1: The client displays a selected product detail.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Open the product listing
 
-1. The customer chooses the Shop entry point.
-2. The client opens the product listing.
+5a: The customer chooses the Shop entry point.
+
+5b: The client opens the product listing.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Sign in to view recently viewed products
 
-1. The system returns a rejected authentication context.
-2. The client presents the sign-in entry point.
+3a: The system returns a rejected authentication context.
+
+3b: The client presents the sign-in entry point.
 
 ### Related UI
 
@@ -70,8 +72,8 @@ EF-1:
 
 ### Related API IDs
 
-- [API-WISHLIST](../api/api-wishlist.md)
-- [API-PRODUCT](../api/api-product.md)
+- [API-WISHLIST](../api/API-WISHLIST.md)
+- [API-PRODUCT](../api/API-PRODUCT.md)
 
 ### Notes
 
@@ -116,52 +118,52 @@ WishlistResult --> "0..*" Product : recentlyViewed
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-15-01
--- Source: Assumption
+~~~text
+BR-RECENT-PRODUCTS-01 - Customer Context
+Source: Assumption
 context WishlistService::read(ctx: RequestContext): WishlistResult
-pre BR_UC_15_01_CustomerContext:
+pre BR_RECENT_PRODUCTS_01_CustomerContext:
   ctx.authenticated
 ~~~
-~~~ocl
--- BR-UC-15-02
--- Source: Assumption
+~~~text
+BR-RECENT-PRODUCTS-02 - Viewed Membership
+Source: Assumption
 context WishlistService::read(ctx: RequestContext): WishlistResult
-post BR_UC_15_02_ViewedMembership:
+post BR_RECENT_PRODUCTS_02_ViewedMembership:
   result.recentlyViewed->asSet() = ViewedProduct.allInstances()->select(v | v.customerId = ctx.customerId and v.product.published)->collect(v | v.product)->asSet()
 ~~~
-~~~ocl
--- BR-UC-15-03
--- Source: Assumption
+~~~text
+BR-RECENT-PRODUCTS-03 - Recent Once
+Source: Assumption
 context ViewedProduct
-inv BR_UC_15_03_RecentOnce:
+inv BR_RECENT_PRODUCTS_03_RecentOnce:
   ViewedProduct.allInstances()->isUnique(v | Tuple{customerId = v.customerId, productId = v.product.id})
 ~~~
-~~~ocl
--- BR-UC-15-04
--- Source: Assumption
+~~~text
+BR-RECENT-PRODUCTS-04 - Recent Sequence
+Source: Assumption
 context WishlistService::read(ctx: RequestContext): WishlistResult
-post BR_UC_15_04_RecentSequence:
+post BR_RECENT_PRODUCTS_04_RecentSequence:
   result.recentlyViewed->forAll(a,b | let va : ViewedProduct = ViewedProduct.allInstances()->any(v | v.customerId = ctx.customerId and v.product = a) in let vb : ViewedProduct = ViewedProduct.allInstances()->any(v | v.customerId = ctx.customerId and v.product = b) in va.viewedAt > vb.viewedAt implies result.recentlyViewed->indexOf(a) < result.recentlyViewed->indexOf(b))
 ~~~
-~~~ocl
--- BR-UC-15-05
--- Source: Assumption
+~~~text
+BR-RECENT-PRODUCTS-05 - Recent Ties
+Source: Assumption
 context WishlistService::read(ctx: RequestContext): WishlistResult
-post BR_UC_15_05_RecentTies:
+post BR_RECENT_PRODUCTS_05_RecentTies:
   result.recentlyViewed->forAll(a,b | let va : ViewedProduct = ViewedProduct.allInstances()->any(v | v.customerId = ctx.customerId and v.product = a) in let vb : ViewedProduct = ViewedProduct.allInstances()->any(v | v.customerId = ctx.customerId and v.product = b) in va.viewedAt = vb.viewedAt and a.displayRank < b.displayRank implies result.recentlyViewed->indexOf(a) < result.recentlyViewed->indexOf(b))
 ~~~
-~~~ocl
--- BR-UC-15-06
--- Source: Assumption
+~~~text
+BR-RECENT-PRODUCTS-06 - Recent Card Identity
+Source: Assumption
 context WishlistService::read(ctx: RequestContext): WishlistResult
-post BR_UC_15_06_RecentCardIdentity:
+post BR_RECENT_PRODUCTS_06_RecentCardIdentity:
   result.recentlyViewed->isUnique(id)
 ~~~
-~~~ocl
--- BR-UC-15-07
--- Source: Assumption
+~~~text
+BR-RECENT-PRODUCTS-07 - Viewing History Unchanged
+Source: Assumption
 context WishlistService::read(ctx: RequestContext): WishlistResult
-post BR_UC_15_07_ViewingHistoryUnchanged:
+post BR_RECENT_PRODUCTS_07_ViewingHistoryUnchanged:
   ViewedProduct.allInstances() = ViewedProduct.allInstances()@pre and ViewedProduct.allInstances()->forAll(v | v.product = v.product@pre and v.customerId = v.customerId@pre and v.viewedAt = v.viewedAt@pre)
 ~~~

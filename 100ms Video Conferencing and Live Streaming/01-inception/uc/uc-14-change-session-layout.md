@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-14
 uc_name: "Change Session Layout"
 ---
@@ -52,34 +52,37 @@ POST-1: The client renders the returned view preference.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Enable Picture-in-Picture
 
-1. The participant enables picture-in-picture.
-2. The client renders the returned picture-in-picture view.
+3a: The participant enables picture-in-picture.
 
-AF-2:
+3b: The client renders the returned picture-in-picture view.
 
-1. The participant opens or closes a side panel.
-2. The client adjusts the returned session layout.
+AF-2: Open or Close a Side Panel
+
+3c: The participant opens or closes a side panel.
+
+3d: The client adjusts the returned session layout.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Layout Preference Update Failure
 
-1. The preference update cannot be completed.
-2. The client displays the returned failure state and retains the previous layout.
+5a: The preference update cannot be completed.
+
+5b: The client displays the returned failure state and retains the previous layout.
 
 ### Related UI
 
-- Live Streaming Desktop Layouts `6007:96234`.
-- Live Streaming Mobile Layouts `6012:102740`.
-- Video Conferencing Desktop Layouts `6007:77656`.
-- Video Conferencing Mobile Layouts `6012:78022`.
+- Live Streaming Desktop Layouts 6007:96234.
+- Live Streaming Mobile Layouts 6012:102740.
+- Video Conferencing Desktop Layouts 6007:77656.
+- Video Conferencing Mobile Layouts 6012:78022.
 
 ### Related API IDs
 
-`API-PREFERENCES-UPDATE`.
-`API-SESSION-STATE`.
+API-PREFERENCES-UPDATE.
+API-SESSION-STATE.
 
 ### Notes
 
@@ -101,67 +104,67 @@ class PreferenceService {
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-14-01
--- Source: Assumption
--- Assumption: A-14
+~~~text
+BR-SESSION-LAYOUT-01 - Non Null Layout And Pi P
+Source: Assumption
+Assumption: A-14
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
-pre BR_UC_14_01_NonNullLayoutAndPiP:
+pre BR_SESSION_LAYOUT_01_NonNullLayoutAndPiP:
   (command.hasLayout implies command.layout <> null) and (command.hasPictureInPicture implies command.pictureInPicture <> null)
 ~~~
 
-~~~ocl
--- BR-UC-14-02
--- Source: Assumption
--- Assumption: A-14
+~~~text
+BR-SESSION-LAYOUT-02 - Presenter Layout
+Source: Assumption
+Assumption: A-14
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
-pre BR_UC_14_02_PresenterLayout:
+pre BR_SESSION_LAYOUT_02_PresenterLayout:
   (command.hasLayout and command.layout = LayoutMode::PRESENTER) implies
   ContentShare.allInstances()->exists(s | s.sessionId = command.sessionId and s.status = ShareStatus::ACTIVE)
 ~~~
 
-~~~ocl
--- BR-UC-14-03
--- Source: Assumption
--- Assumption: A-14
+~~~text
+BR-SESSION-LAYOUT-03 - Panel Values
+Source: Assumption
+Assumption: A-14
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
-pre BR_UC_14_03_PanelValues:
+pre BR_SESSION_LAYOUT_03_PanelValues:
   command.hasSidePanel implies (command.sidePanel = null or command.sidePanel = 'CHAT' or command.sidePanel = 'PARTICIPANTS' or command.sidePanel = 'SETTINGS')
 ~~~
 
-~~~ocl
--- BR-UC-14-04
--- Source: Assumption
--- Assumption: A-14
+~~~text
+BR-SESSION-LAYOUT-04 - Layout Patch
+Source: Assumption
+Assumption: A-14
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
-post BR_UC_14_04_LayoutPatch:
+post BR_SESSION_LAYOUT_04_LayoutPatch:
   view.layout = if command.hasLayout then command.layout else view.layout@pre endif
 ~~~
 
-~~~ocl
--- BR-UC-14-05
--- Source: Assumption
--- Assumption: A-14
+~~~text
+BR-SESSION-LAYOUT-05 - Pi P Patch
+Source: Assumption
+Assumption: A-14
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
-post BR_UC_14_05_PiPPatch:
+post BR_SESSION_LAYOUT_05_PiPPatch:
   view.pictureInPicture = if command.hasPictureInPicture then command.pictureInPicture else view.pictureInPicture@pre endif
 ~~~
 
-~~~ocl
--- BR-UC-14-06
--- Source: Assumption
--- Assumption: A-14
+~~~text
+BR-SESSION-LAYOUT-06 - Pi P Clears Panel
+Source: Assumption
+Assumption: A-14
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
-post BR_UC_14_06_PiPClearsPanel:
+post BR_SESSION_LAYOUT_06_PiPClearsPanel:
   view.pictureInPicture implies view.sidePanel = null
 ~~~
 
-~~~ocl
--- BR-UC-14-07
--- Source: Assumption
--- Assumption: A-14
+~~~text
+BR-SESSION-LAYOUT-07 - Panel Patch
+Source: Assumption
+Assumption: A-14
 context PreferenceService::update(command: PreferencePatch, media: MediaPreference, view: ViewPreference): PreferencesResult
-post BR_UC_14_07_PanelPatch:
+post BR_SESSION_LAYOUT_07_PanelPatch:
   not view.pictureInPicture implies
     view.sidePanel = if command.hasSidePanel then command.sidePanel else view.sidePanel@pre endif
 ~~~

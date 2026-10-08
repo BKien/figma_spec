@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-04
 uc_name: "Change product listing order"
 ---
@@ -50,18 +50,21 @@ POST-1: The client displays the returned product sequence.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Choose Recommended
 
-1. The shopper chooses Recommended.
-2. The client submits the changed view.
-3. The client displays the returned sequence.
+1a: The shopper chooses Recommended.
+
+1b: The client submits the changed view.
+
+1c: The client displays the returned sequence.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Retry the product listing
 
-1. The system returns a temporary service failure.
-2. The client keeps the displayed listing and offers Retry.
+3a: The system returns a temporary service failure.
+
+3b: The client keeps the displayed listing and offers Retry.
 
 ### Related UI
 
@@ -69,7 +72,7 @@ EF-1:
 
 ### Related API IDs
 
-- [API-CATALOG](../api/api-catalog.md)
+- [API-CATALOG](../api/API-CATALOG.md)
 
 ### Notes
 
@@ -121,52 +124,52 @@ Product --> "1" Money : displayPrice
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-04-01
--- Source: Assumption
+~~~text
+BR-SORT-PRODUCTS-01 - Default View
+Source: Assumption
 context CatalogCriteria
-inv BR_UC_04_01_DefaultView:
+inv BR_SORT_PRODUCTS_01_DefaultView:
   self.sort = (if self.rawSort = null then CatalogSort::RECOMMENDED else self.rawSort endif)
 ~~~
-~~~ocl
--- BR-UC-04-02
--- Source: Assumption
+~~~text
+BR-SORT-PRODUCTS-02 - New First
+Source: Assumption
 context CatalogService::list(criteria: CatalogCriteria): CatalogResult
-post BR_UC_04_02_NewFirst:
+post BR_SORT_PRODUCTS_02_NewFirst:
   criteria.sort = CatalogSort::NEW implies result.items->forAll(a,b | a.createdAt > b.createdAt implies result.items->indexOf(a) < result.items->indexOf(b))
 ~~~
-~~~ocl
--- BR-UC-04-03
--- Source: Assumption
+~~~text
+BR-SORT-PRODUCTS-03 - New Ties
+Source: Assumption
 context CatalogService::list(criteria: CatalogCriteria): CatalogResult
-post BR_UC_04_03_NewTies:
+post BR_SORT_PRODUCTS_03_NewTies:
   criteria.sort = CatalogSort::NEW implies result.items->forAll(a,b | a.createdAt = b.createdAt and a.displayRank < b.displayRank implies result.items->indexOf(a) < result.items->indexOf(b))
 ~~~
-~~~ocl
--- BR-UC-04-04
--- Source: Assumption
+~~~text
+BR-SORT-PRODUCTS-04 - Recommended First
+Source: Assumption
 context CatalogService::list(criteria: CatalogCriteria): CatalogResult
-post BR_UC_04_04_RecommendedFirst:
+post BR_SORT_PRODUCTS_04_RecommendedFirst:
   criteria.sort = CatalogSort::RECOMMENDED implies result.items = result.items->sortedBy(p | p.recommendationRank)
 ~~~
-~~~ocl
--- BR-UC-04-05
--- Source: Assumption
+~~~text
+BR-SORT-PRODUCTS-05 - Editorial Rank Identity
+Source: Assumption
 context Product
-inv BR_UC_04_05_EditorialRankIdentity:
+inv BR_SORT_PRODUCTS_05_EditorialRankIdentity:
   Product.allInstances()->isUnique(displayRank)
 ~~~
-~~~ocl
--- BR-UC-04-06
--- Source: Assumption
+~~~text
+BR-SORT-PRODUCTS-06 - Recommendation Rank Identity
+Source: Assumption
 context Product
-inv BR_UC_04_06_RecommendationRankIdentity:
+inv BR_SORT_PRODUCTS_06_RecommendationRankIdentity:
   Product.allInstances()->isUnique(recommendationRank)
 ~~~
-~~~ocl
--- BR-UC-04-07
--- Source: Assumption
+~~~text
+BR-SORT-PRODUCTS-07 - Stable Catalog Values
+Source: Assumption
 context CatalogService::list(criteria: CatalogCriteria): CatalogResult
-post BR_UC_04_07_StableCatalogValues:
+post BR_SORT_PRODUCTS_07_StableCatalogValues:
   Product.allInstances() = Product.allInstances()@pre and Product.allInstances()->forAll(p | p.displayPrice = p.displayPrice@pre and p.displayRank = p.displayRank@pre and p.recommendationRank = p.recommendationRank@pre and p.createdAt = p.createdAt@pre)
 ~~~

@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-05
 uc_name: "View product details"
 ---
@@ -52,18 +52,21 @@ POST-1: The client displays the product detail and variant choices.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: View a similar product
 
-1. The shopper selects a similar product.
-2. The client requests and displays that product detail.
+5a: The shopper selects a similar product.
+
+5b: The client requests and displays that product detail.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Unavailable product
 
-1. The system returns an unavailable resource response.
-2. The client displays the unavailable product message.
-3. The shopper returns to the listing.
+3a: The system returns an unavailable resource response.
+
+3b: The client displays the unavailable product message.
+
+3c: The shopper returns to the listing.
 
 ### Related UI
 
@@ -71,7 +74,7 @@ EF-1:
 
 ### Related API IDs
 
-- [API-PRODUCT](../api/api-product.md)
+- [API-PRODUCT](../api/API-PRODUCT.md)
 
 ### Notes
 
@@ -150,73 +153,73 @@ ProductDetail --> "0..*" Product : similarProducts
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-05-01
--- Source: Assumption
+~~~text
+BR-PRODUCT-DETAIL-01 - Published Product
+Source: Assumption
 context ProductService::read(productId: String): ProductDetail
-pre BR_UC_05_01_PublishedProduct:
+pre BR_PRODUCT_DETAIL_01_PublishedProduct:
   Product.allInstances()->exists(p | p.id = productId and p.published)
 ~~~
-~~~ocl
--- BR-UC-05-02
--- Source: Assumption
+~~~text
+BR-PRODUCT-DETAIL-02 - Product Identity
+Source: Assumption
 context ProductService::read(productId: String): ProductDetail
-post BR_UC_05_02_ProductIdentity:
+post BR_PRODUCT_DETAIL_02_ProductIdentity:
   result.product.id = productId
 ~~~
-~~~ocl
--- BR-UC-05-03
--- Source: Assumption
+~~~text
+BR-PRODUCT-DETAIL-03 - Variant Choices
+Source: Assumption
 context ProductService::read(productId: String): ProductDetail
-post BR_UC_05_03_VariantChoices:
+post BR_PRODUCT_DETAIL_03_VariantChoices:
   result.variants->asSet() = result.product.variants and result.variants->forAll(v | v.productId = productId)
 ~~~
-~~~ocl
--- BR-UC-05-04
--- Source: Assumption
+~~~text
+BR-PRODUCT-DETAIL-04 - Gallery Sequence
+Source: Assumption
 context ProductService::read(productId: String): ProductDetail
-post BR_UC_05_04_GallerySequence:
+post BR_PRODUCT_DETAIL_04_GallerySequence:
   result.images = result.product.images->sortedBy(i | i.position) and result.images->forAll(i | i.productId = productId)
 ~~~
-~~~ocl
--- BR-UC-05-05
--- Source: Assumption
+~~~text
+BR-PRODUCT-DETAIL-05 - Description And Attributes
+Source: Assumption
 context ProductService::read(productId: String): ProductDetail
-post BR_UC_05_05_DescriptionAndAttributes:
+post BR_PRODUCT_DETAIL_05_DescriptionAndAttributes:
   result.description = result.product.description and result.attributes = result.product.attributes and result.attributes->forAll(a | a.productId = productId)
 ~~~
-~~~ocl
--- BR-UC-05-06
--- Source: Assumption
+~~~text
+BR-PRODUCT-DETAIL-06 - Related Products
+Source: Assumption
 context ProductService::read(productId: String): ProductDetail
-post BR_UC_05_06_RelatedProducts:
+post BR_PRODUCT_DETAIL_06_RelatedProducts:
   result.similarProducts = Product.allInstances()->select(p | p.published and p.id <> productId and p.category = result.product.category)->sortedBy(p | p.displayRank)
 ~~~
-~~~ocl
--- BR-UC-05-07
--- Source: Assumption
+~~~text
+BR-PRODUCT-DETAIL-07 - Public Selection
+Source: Assumption
 context Variant
-inv BR_UC_05_07_PublicSelection:
+inv BR_PRODUCT_DETAIL_07_PublicSelection:
   self.purchasable = (self.sellable and self.stock > 0)
 ~~~
-~~~ocl
--- BR-UC-05-08
--- Source: Assumption
+~~~text
+BR-PRODUCT-DETAIL-08 - Review Summary
+Source: Assumption
 context ProductService::read(productId: String): ProductDetail
-post BR_UC_05_08_ReviewSummary:
+post BR_PRODUCT_DETAIL_08_ReviewSummary:
   result.rating = result.product.rating and result.commentCount = result.product.commentCount and result.questionCount = result.product.questionCount
 ~~~
-~~~ocl
--- BR-UC-05-09
--- Source: Assumption
+~~~text
+BR-PRODUCT-DETAIL-09 - Review Values
+Source: Assumption
 context Product
-inv BR_UC_05_09_ReviewValues:
+inv BR_PRODUCT_DETAIL_09_ReviewValues:
   self.rating >= 0 and self.rating <= 5 and self.commentCount >= 0 and self.questionCount >= 0
 ~~~
-~~~ocl
--- BR-UC-05-10
--- Source: Assumption
+~~~text
+BR-PRODUCT-DETAIL-10 - Variant Identity
+Source: Assumption
 context Product
-inv BR_UC_05_10_VariantIdentity:
+inv BR_PRODUCT_DETAIL_10_VariantIdentity:
   self.variants->isUnique(v | Tuple{size = v.size, color = v.color}) and self.images->isUnique(position)
 ~~~

@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-07
 uc_name: "Enter billing details and review checkout"
 ---
@@ -53,19 +53,23 @@ POST-1: The client displays the returned checkout summary and delivery informati
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Edit billing details
 
-1. The shopper returns to the billing fields and edits the details.
-2. The shopper chooses Continue to delivery again.
-3. The client displays the returned checkout summary.
+3a: The shopper returns to the billing fields and edits the details.
+
+3b: The shopper chooses Continue to delivery again.
+
+3c: The client displays the returned checkout summary.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Review refreshed checkout summary
 
-1. The system returns an operation conflict.
-2. The client requests a refreshed cart and checkout summary.
-3. The client shows the returned summary and asks the shopper to review it before submitting again.
+6a: The system returns an operation conflict.
+
+6b: The client requests a refreshed cart and checkout summary.
+
+6c: The client shows the returned summary and asks the shopper to review it before submitting again.
 
 ### Related UI
 
@@ -74,8 +78,8 @@ EF-1:
 
 ### Related API IDs
 
-- [API-CART](../api/api-cart.md)
-- [API-CHECKOUT-PREVIEW](../api/api-checkout-preview.md)
+- [API-CART](../api/API-CART.md)
+- [API-CHECKOUT-PREVIEW](../api/API-CHECKOUT-PREVIEW.md)
 
 ### Notes
 
@@ -173,66 +177,66 @@ CheckoutPreview --> "1" Money : total
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-07-01
--- Source: Assumption
+~~~text
+BR-REVIEW-CHECKOUT-01 - Account Cart
+Source: Assumption
 context CheckoutService::preview(ctx: RequestContext, input: CheckoutInput): CheckoutPreview
-pre BR_UC_07_01_AccountCart:
+pre BR_REVIEW_CHECKOUT_01_AccountCart:
   ctx.authenticated and input.cart.customerId = ctx.customerId
 ~~~
-~~~ocl
--- BR-UC-07-02
--- Source: Assumption
+~~~text
+BR-REVIEW-CHECKOUT-02 - Cart Revision
+Source: Assumption
 context CheckoutService::preview(ctx: RequestContext, input: CheckoutInput): CheckoutPreview
-pre BR_UC_07_02_CartRevision:
+pre BR_REVIEW_CHECKOUT_02_CartRevision:
   input.cartVersion = input.cart.version and input.cart.items->notEmpty()
 ~~~
-~~~ocl
--- BR-UC-07-03
--- Source: Assumption
+~~~text
+BR-REVIEW-CHECKOUT-03 - Address Values
+Source: Assumption
 context CheckoutService::preview(ctx: RequestContext, input: CheckoutInput): CheckoutPreview
-pre BR_UC_07_03_AddressValues:
+pre BR_REVIEW_CHECKOUT_03_AddressValues:
   AddressValidation::valid(input.billing) and input.sameAsBilling and input.shipping = null
 ~~~
-~~~ocl
--- BR-UC-07-04
--- Source: Assumption
+~~~text
+BR-REVIEW-CHECKOUT-04 - Cart Snapshot
+Source: Assumption
 context CheckoutService::preview(ctx: RequestContext, input: CheckoutInput): CheckoutPreview
-post BR_UC_07_04_CartSnapshot:
+post BR_REVIEW_CHECKOUT_04_CartSnapshot:
   result.cartVersion = input.cartVersion and result.items = input.cart.items and result.subtotal = input.cart.subtotal
 ~~~
-~~~ocl
--- BR-UC-07-05
--- Source: Assumption
+~~~text
+BR-REVIEW-CHECKOUT-05 - Delivery And Savings
+Source: Assumption
 context CheckoutService::preview(ctx: RequestContext, input: CheckoutInput): CheckoutPreview
-post BR_UC_07_05_DeliveryAndSavings:
+post BR_REVIEW_CHECKOUT_05_DeliveryAndSavings:
   result.discount.amount = 0 and result.shipping.amount = self.deliveryCharge
 ~~~
-~~~ocl
--- BR-UC-07-06
--- Source: Assumption
+~~~text
+BR-REVIEW-CHECKOUT-06 - Total Amount
+Source: Assumption
 context CheckoutService::preview(ctx: RequestContext, input: CheckoutInput): CheckoutPreview
-post BR_UC_07_06_TotalAmount:
+post BR_REVIEW_CHECKOUT_06_TotalAmount:
   result.total.amount = result.subtotal.amount - result.discount.amount + result.shipping.amount
 ~~~
-~~~ocl
--- BR-UC-07-07
--- Source: Assumption
+~~~text
+BR-REVIEW-CHECKOUT-07 - Currency
+Source: Assumption
 context CheckoutService::preview(ctx: RequestContext, input: CheckoutInput): CheckoutPreview
-post BR_UC_07_07_Currency:
+post BR_REVIEW_CHECKOUT_07_Currency:
   result.total.currency = self.currency and result.subtotal.currency = self.currency and result.discount.currency = self.currency and result.shipping.currency = self.currency
 ~~~
-~~~ocl
--- BR-UC-07-08
--- Source: Assumption
+~~~text
+BR-REVIEW-CHECKOUT-08 - Provisional Configuration
+Source: Assumption
 context CheckoutService
-inv BR_UC_07_08_ProvisionalConfiguration:
+inv BR_REVIEW_CHECKOUT_08_ProvisionalConfiguration:
   self.currency = 'USD' and self.deliveryCharge = 5.00
 ~~~
-~~~ocl
--- BR-UC-07-09
--- Source: Assumption
+~~~text
+BR-REVIEW-CHECKOUT-09 - No Order Creation
+Source: Assumption
 context CheckoutService::preview(ctx: RequestContext, input: CheckoutInput): CheckoutPreview
-post BR_UC_07_09_NoOrderCreation:
+post BR_REVIEW_CHECKOUT_09_NoOrderCreation:
   Order.allInstances() = Order.allInstances()@pre and CheckoutReceipt.allInstances() = CheckoutReceipt.allInstances()@pre and input.cart.items = input.cart.items@pre and input.cart.version = input.cart.version@pre
 ~~~

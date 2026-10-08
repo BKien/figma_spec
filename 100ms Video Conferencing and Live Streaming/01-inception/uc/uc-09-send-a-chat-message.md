@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-09
 uc_name: "Send a Chat Message"
 ---
@@ -52,29 +52,31 @@ POST-1: The client displays the message returned by the system.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Close Chat Without Sending
 
-1. The participant closes chat without sending.
-2. The client restores the session layout.
+3a: The participant closes chat without sending.
+
+3b: The client restores the session layout.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Chat Message Creation Failure
 
-1. The collaboration service cannot create the message.
-2. The client displays a failure notice and preserves the entered text.
+5a: The collaboration service cannot create the message.
+
+5b: The client displays a failure notice and preserves the entered text.
 
 ### Related UI
 
-- Live Streaming Desktop Features `6007:86770`.
-- Video Conferencing Desktop Features `6007:55138`.
-- Live Streaming Mobile Features `6012:90506`.
-- Video Conferencing Mobile Features `6012:52233`.
+- Live Streaming Desktop Features 6007:86770.
+- Video Conferencing Desktop Features 6007:55138.
+- Live Streaming Mobile Features 6012:90506.
+- Video Conferencing Mobile Features 6012:52233.
 
 ### Related API IDs
 
-`API-CHAT-MESSAGE-CREATE`.
-`API-CHAT-MESSAGE-LIST`.
+API-CHAT-MESSAGE-CREATE.
+API-CHAT-MESSAGE-LIST.
 
 ### Notes
 
@@ -95,12 +97,12 @@ class CollaborationService {
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-09-01
--- Source: Assumption
--- Assumption: A-19
+~~~text
+BR-SEND-CHAT-01 - Authenticated Membership
+Source: Assumption
+Assumption: A-19
 context CollaborationService::sendMessage(command: ChatCommand, session: Session): ChatMessage
-pre BR_UC_09_01_AuthenticatedMembership:
+pre BR_SEND_CHAT_01_AuthenticatedMembership:
   RequestContext::authenticated and RequestContext::sessionId = command.sessionId and
   command.senderParticipantId = RequestContext::participantId and
   Participant.allInstances()->exists(p | p.id = command.senderParticipantId and
@@ -108,57 +110,57 @@ pre BR_UC_09_01_AuthenticatedMembership:
     p.status = ParticipantStatus::JOINED)
 ~~~
 
-~~~ocl
--- BR-UC-09-02
--- Source: Assumption
--- Assumption: A-19
+~~~text
+BR-SEND-CHAT-02 - Target Session
+Source: Assumption
+Assumption: A-19
 context CollaborationService::sendMessage(command: ChatCommand, session: Session): ChatMessage
-pre BR_UC_09_02_TargetSession:
+pre BR_SEND_CHAT_02_TargetSession:
   command.sessionId = session.id and session.status <> SessionStatus::ENDED
 ~~~
 
-~~~ocl
--- BR-UC-09-03
--- Source: Assumption
--- Assumption: A-20
+~~~text
+BR-SEND-CHAT-03 - Command Key
+Source: Assumption
+Assumption: A-20
 context CollaborationService::sendMessage(command: ChatCommand, session: Session): ChatMessage
-pre BR_UC_09_03_CommandKey:
+pre BR_SEND_CHAT_03_CommandKey:
   command.idempotencyKey <> null and command.idempotencyKey.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-09-04
--- Source: Assumption
--- Assumption: A-09
+~~~text
+BR-SEND-CHAT-04 - Message Body
+Source: Assumption
+Assumption: A-09
 context CollaborationService::sendMessage(command: ChatCommand, session: Session): ChatMessage
-pre BR_UC_09_04_MessageBody:
+pre BR_SEND_CHAT_04_MessageBody:
   command.body <> null and command.body.trim().size() > 0 and command.body.trim().size() <= 1000
 ~~~
 
-~~~ocl
--- BR-UC-09-05
--- Source: Assumption
--- Assumption: A-09
+~~~text
+BR-SEND-CHAT-05 - Created Identity
+Source: Assumption
+Assumption: A-09
 context CollaborationService::sendMessage(command: ChatCommand, session: Session): ChatMessage
-post BR_UC_09_05_CreatedIdentity:
+post BR_SEND_CHAT_05_CreatedIdentity:
   result.oclIsNew() and result.id <> null and result.sessionId = command.sessionId and result.senderParticipantId = command.senderParticipantId
 ~~~
 
-~~~ocl
--- BR-UC-09-06
--- Source: Assumption
--- Assumption: A-09
+~~~text
+BR-SEND-CHAT-06 - Message Value
+Source: Assumption
+Assumption: A-09
 context CollaborationService::sendMessage(command: ChatCommand, session: Session): ChatMessage
-post BR_UC_09_06_MessageValue:
+post BR_SEND_CHAT_06_MessageValue:
   result.body = command.body.trim() and result.sentAt <> null and result.sequence = session.version@pre + 1
 ~~~
 
-~~~ocl
--- BR-UC-09-07
--- Source: Assumption
--- Assumption: A-19
+~~~text
+BR-SEND-CHAT-07 - Authenticated Membership
+Source: Assumption
+Assumption: A-19
 context CollaborationService::listMessages(query: MessageQuery, session: Session): MessagePage
-pre BR_UC_09_07_AuthenticatedMembership:
+pre BR_SEND_CHAT_07_AuthenticatedMembership:
   RequestContext::authenticated and RequestContext::sessionId = query.sessionId and
   query.requesterParticipantId = RequestContext::participantId and
   Participant.allInstances()->exists(p | p.id = query.requesterParticipantId and
@@ -166,21 +168,21 @@ pre BR_UC_09_07_AuthenticatedMembership:
     p.status = ParticipantStatus::JOINED)
 ~~~
 
-~~~ocl
--- BR-UC-09-08
--- Source: Assumption
--- Assumption: A-23
+~~~text
+BR-SEND-CHAT-08 - Message Page Input
+Source: Assumption
+Assumption: A-23
 context CollaborationService::listMessages(query: MessageQuery, session: Session): MessagePage
-pre BR_UC_09_08_MessagePageInput:
+pre BR_SEND_CHAT_08_MessagePageInput:
   query.sessionId = session.id and session.status <> SessionStatus::ENDED and query.pageSize > 0 and query.pageSize <= 50 and
   Paging::validCursor(session.id, query.cursor, 'messages')
 ~~~
 
-~~~ocl
--- BR-UC-09-09
--- Source: Assumption
--- Assumption: A-23
+~~~text
+BR-SEND-CHAT-09 - Message History
+Source: Assumption
+Assumption: A-23
 context CollaborationService::listMessages(query: MessageQuery, session: Session): MessagePage
-post BR_UC_09_09_MessageHistory:
+post BR_SEND_CHAT_09_MessageHistory:
   result = Paging::messages(session.id, query.pageSize, query.cursor) and result.items->forAll(m | m.sessionId = session.id)
 ~~~

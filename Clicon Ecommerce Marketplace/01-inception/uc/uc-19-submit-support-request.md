@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-19
 uc_name: "Submit a Support Request"
 ---
@@ -29,7 +29,7 @@ Visitor or signed-in Customer.
 
 ### Priority
 
-Not specified in the supplied source.
+Medium
 
 ### Trigger
 
@@ -54,17 +54,19 @@ POST-1: The client displays the returned interaction outcome.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Choose an alternative action
 
-1. The actor chooses an available alternative action.
-2. The client displays the returned alternative outcome.
+3a: The actor chooses an available alternative action.
+
+3b: The client displays the returned alternative outcome.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Unsuccessful interaction outcome
 
-1. The system returns an unsuccessful outcome.
-2. The client displays the returned recovery message.
+5a: The system returns an unsuccessful outcome.
+
+5b: The client displays the returned recovery message.
 
 ### Related UI
 
@@ -73,7 +75,7 @@ EF-1:
 
 ### Related API IDs
 
-- [API-UC-19-01](../api/api-uc-19-01.md)
+- [API-SUPPORT-REQUEST-CREATE](../api/API-SUPPORT-REQUEST-CREATE.md)
 
 ### Notes
 
@@ -123,58 +125,58 @@ UseCaseResult --> "1" ExecutionStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-19-01
--- Source: Product source
+~~~text
+BR-SUPPORT-REQUEST-01 - Actor Is Present
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-pre BR_UC_19_01_ActorIsPresent:
+pre BR_SUPPORT_REQUEST_01_ActorIsPresent:
   command.actorId <> null and command.actorId.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-19-02
--- Source: Product source
+~~~text
+BR-SUPPORT-REQUEST-02 - Request Is Present
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-pre BR_UC_19_02_RequestIsPresent:
+pre BR_SUPPORT_REQUEST_02_RequestIsPresent:
   command.requestId <> null and command.requestId.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-19-03
--- Source: Product source
+~~~text
+BR-SUPPORT-REQUEST-03 - Payload Is Present
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-pre BR_UC_19_03_PayloadIsPresent:
+pre BR_SUPPORT_REQUEST_03_PayloadIsPresent:
   command.payload <> null and command.payload.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-19-04
--- Source: Product source
+~~~text
+BR-SUPPORT-REQUEST-04 - Execution Is Identified
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_19_04_ExecutionIsIdentified:
+post BR_SUPPORT_REQUEST_04_ExecutionIsIdentified:
   result.executionId <> null and result.executionId.trim().size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-19-05
--- Source: Product source
+~~~text
+BR-SUPPORT-REQUEST-05 - Result Matches Request
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_19_05_ResultMatchesRequest:
+post BR_SUPPORT_REQUEST_05_ResultMatchesRequest:
   result.actorId = command.actorId and result.requestId = command.requestId
 ~~~
 
-~~~ocl
--- BR-UC-19-06
--- Source: Product source
+~~~text
+BR-SUPPORT-REQUEST-06 - Result Is Completed
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_19_06_ResultIsCompleted:
+post BR_SUPPORT_REQUEST_06_ResultIsCompleted:
   result.status = ExecutionStatus::COMPLETED
 ~~~
 
-~~~ocl
--- BR-UC-19-07
--- Source: Product source
+~~~text
+BR-SUPPORT-REQUEST-07 - Result Is Versioned
+Source: Product source
 context UseCaseService::execute(command: UseCaseCommand): UseCaseResult
-post BR_UC_19_07_ResultIsVersioned:
+post BR_SUPPORT_REQUEST_07_ResultIsVersioned:
   result.version > 0 and result.createdAt <= DateTime::now()
 ~~~

@@ -1,6 +1,6 @@
 # Assumption Register
 
-The Figma source establishes interface evidence, not server policy. Every OCL block in this package is explicitly marked `Source: Assumption`. This register identifies decisions for review; their normative predicates and values appear only in the referenced OCL blocks.
+The Figma source establishes interface evidence, not server policy. Every OCL block in this package is explicitly marked Source: Assumption. This register identifies decisions for review; their normative predicates and values appear only in the referenced OCL blocks.
 
 | ID | Decision area | Normative location | Review note |
 | --- | --- | --- | --- |
@@ -24,3 +24,12 @@ The supported checkout scope is the Cash on delivery choice with Same as Billing
 ## Operational contract notes
 
 The OCL constraints describe before/after states of application operations, not a particular transaction engine or executable implementation. Wire decimal strings and timestamps map to the modeled value types described in each use case's local UML model. SQL constraints support the model, while cross-row calculations and operation postconditions still require service implementation. DBML compilation does not prove those predicates.
+
+## 2026-10-07 — Template completion decisions
+
+These decisions complete the utility contracts under the user-authorized template update; they are repository specification choices rather than claims about a deployed implementation.
+
+- Clock::now uses integer Unix milliseconds in UTC, captured once per operation, for all modeled timestamps and expiry comparisons.
+- Email syntax supports bounded ASCII dot-atom addresses. Canonical email normalization trims outer Unicode whitespace, applies NFC, and lowercases without provider-specific alias rewriting.
+- Digest::checkout uses versioned canonical JSON and SHA-256 over the immutable submitted checkout values, including the submitted cart version and displayed total. It excludes mutable cart contents, because successful checkout empties the cart before a same-request replay.
+- AddressValidation::valid tests the eight required nonblank address fields; optional instructions have no effect on acceptance.

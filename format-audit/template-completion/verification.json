@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "checks": {
+    "assertions": 40382,
+    "local_links": 1122,
+    "known_api_values": 18399,
+    "added_reverse_associations": 7,
+    "api_documents": 243,
+    "uc_sections_preserved": 1680,
+    "uml_models_preserved": 168,
+    "ocl_rules_preserved": 1410,
+    "business_rules_preserved": 1444,
+    "rule_prose_preserved": 1444,
+    "uc_documents": 168,
+    "api_filename_references": 271,
+    "prose_only_rules_preserved": 34,
+    "uc_api_edges": 300,
+    "supporting_documents": 62,
+    "utility_methods": 98,
+    "utility_documents": 8,
+    "new_json_examples": 619,
+    "protected_files": 91
+  },
+  "failures": [],
+  "limits": [
+    "Static presentation, traceability, and baseline preservation checks; no OCL execution or proof.",
+    "Utility signature equivalence is checked; utility semantic assertions are not executed."
+  ]
+}

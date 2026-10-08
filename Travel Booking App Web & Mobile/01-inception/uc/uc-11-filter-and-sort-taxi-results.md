@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-11
 uc_name: "Filter and Sort Taxi Rental Results"
 ---
@@ -40,6 +40,7 @@ PRE-1: The traveller is viewing Taxi results for a search context.
 ### Post-Condition(s)
 
 POST-1: The results view displays the refinement outcome returned by the system.
+
 POST-2: The search context remains available for another result interaction.
 
 ### Basic Flow
@@ -53,28 +54,33 @@ POST-2: The search context remains available for another result interaction.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Clear Taxi Result Refinements
 
-1. The traveller clears the displayed refinements and requests the base result view.
+3a: The traveller clears the displayed refinements and requests the base result view.
 
-AF-2:
+AF-2: Dismiss Pending Taxi Filters
 
-1. On mobile, the traveller dismisses the filter panel without applying pending changes.
+3b: On mobile, the traveller dismisses the filter panel without applying pending changes.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Taxi Result Refresh Failure
 
-1. If the refresh cannot be completed, the client keeps the previously displayed result state.
-2. The client presents the retry action returned for the failed refresh.
+5a: If the refresh cannot be completed, the client keeps the previously displayed result state.
+
+5b: The client presents the retry action returned for the failed refresh.
 
 ### Related UI
 
-`taxi filter`; `taxi filters mobile`; `Car category`; `Deposit required at pick-up`; `Electric Cars`; `Sort by: Our top picks`.
+taxi filter; taxi filters mobile; Car category; Deposit required at pick-up; Electric Cars; Sort by: Our top picks.
 
 ### Related API IDs
 
-`API-TAXI-SEARCH`.
+API-TAXI-SEARCH.
+
+### Notes
+
+None.
 
 ## UML Model
 
@@ -174,54 +180,54 @@ TaxiOffer --> "1" Money : deposit
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-11-01
--- Source: Assumption
+~~~text
+BR-FILTER-TAXIS-01 - Refinement Cannot Escape The Accepted Search
+Source: Assumption
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-post BR_UC_11_01_RefinementCannotEscapeTheAcceptedSearch:
+post BR_FILTER_TAXIS_01_RefinementCannotEscapeTheAcceptedSearch:
   result->forAll(o | criteria.searchContextId = null or o.searchContextId = criteria.searchContextId)
 ~~~
 
-~~~ocl
--- BR-UC-11-02
--- Source: Figma
+~~~text
+BR-FILTER-TAXIS-02 - Selected Car Categories Apply
+Source: Figma
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-post BR_UC_11_02_SelectedCarCategoriesApply:
+post BR_FILTER_TAXIS_02_SelectedCarCategoriesApply:
   result->forAll(o |
     criteria.vehicleCategories->isEmpty() or
     criteria.vehicleCategories->includes(o.vehicle.category))
 ~~~
 
-~~~ocl
--- BR-UC-11-03
--- Source: Figma
+~~~text
+BR-FILTER-TAXIS-03 - Selected Deposit Bands Apply
+Source: Figma
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-post BR_UC_11_03_SelectedDepositBandsApply:
+post BR_FILTER_TAXIS_03_SelectedDepositBandsApply:
   result->forAll(o | RentalFilter::depositMatches(criteria.depositBands, o.deposit))
 ~~~
 
-~~~ocl
--- BR-UC-11-04
--- Source: Figma
+~~~text
+BR-FILTER-TAXIS-04 - Selected Electric Types Apply
+Source: Figma
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-post BR_UC_11_04_SelectedElectricTypesApply:
+post BR_FILTER_TAXIS_04_SelectedElectricTypesApply:
   result->forAll(o | RentalFilter::electricMatches(criteria.electricTypes, o.vehicle.electricType))
 ~~~
 
-~~~ocl
--- BR-UC-11-05
--- Source: Assumption
+~~~text
+BR-FILTER-TAXIS-05 - Changed Refinement Starts A New Result Traversal
+Source: Assumption
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-pre BR_UC_11_05_ChangedRefinementStartsANewResultTraversal:
+pre BR_FILTER_TAXIS_05_ChangedRefinementStartsANewResultTraversal:
   criteria.offset >= 0 and criteria.limit > 0 and
   (SearchSnapshot::refinementChanged(criteria) implies criteria.offset = 0)
 ~~~
 
-~~~ocl
--- BR-UC-11-06
--- Source: Figma
+~~~text
+BR-FILTER-TAXIS-06 - Top Picks Order Is Deterministic
+Source: Figma
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-post BR_UC_11_06_TopPicksOrderIsDeterministic:
+post BR_FILTER_TAXIS_06_TopPicksOrderIsDeterministic:
   criteria.sort = TaxiSort::TOP_PICKS implies
     (result->size() <= 1 or Sequence{1..result->size() - 1}->forAll(i |
       result->at(i).recommendationScore > result->at(i + 1).recommendationScore or
@@ -229,31 +235,31 @@ post BR_UC_11_06_TopPicksOrderIsDeterministic:
        result->at(i).id < result->at(i + 1).id)))
 ~~~
 
-~~~ocl
--- BR-UC-11-07
--- Source: Assumption
+~~~text
+BR-FILTER-TAXIS-07 - Optional Price Bounds Are Coherent
+Source: Assumption
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-pre BR_UC_11_07_OptionalPriceBoundsAreCoherent:
+pre BR_FILTER_TAXIS_07_OptionalPriceBoundsAreCoherent:
   (criteria.minPrice = null or criteria.minPrice >= 0) and
   (criteria.maxPrice = null or criteria.maxPrice >= 0) and
   (criteria.minPrice = null or criteria.maxPrice = null or criteria.minPrice <= criteria.maxPrice)
 ~~~
 
-~~~ocl
--- BR-UC-11-08
--- Source: Assumption
+~~~text
+BR-FILTER-TAXIS-08 - Continuation References A Usable Snapshot
+Source: Assumption
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-pre BR_UC_11_08_ContinuationReferencesAUsableSnapshot:
+pre BR_FILTER_TAXIS_08_ContinuationReferencesAUsableSnapshot:
   (criteria.searchContextId = null and criteria.snapshotVersion = null) or
   (criteria.searchContextId <> null and criteria.snapshotVersion <> null and
    SearchSnapshot::accepts(criteria, RequestContext::startedAt))
 ~~~
 
-~~~ocl
--- BR-UC-11-09
--- Source: Assumption
+~~~text
+BR-FILTER-TAXIS-09 - Price Bounds Apply With The Visible Filters
+Source: Assumption
 context TaxiService::search(criteria: TaxiSearchCriteria): Sequence(TaxiOffer)
-post BR_UC_11_09_PriceBoundsApplyWithTheVisibleFilters:
+post BR_FILTER_TAXIS_09_PriceBoundsApplyWithTheVisibleFilters:
   result->forAll(o |
     (criteria.minPrice = null or o.total.amount >= criteria.minPrice) and
     (criteria.maxPrice = null or o.total.amount <= criteria.maxPrice))

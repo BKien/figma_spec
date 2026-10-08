@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-17
 uc_name: "Filter orders by status"
 ---
@@ -50,17 +50,19 @@ POST-1: The client displays the returned order-history view.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Choose a different order tab
 
-1. The customer chooses a different tab.
-2. The client requests and displays that view.
+1a: The customer chooses a different tab.
+
+1b: The client requests and displays that view.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Retry the order list
 
-1. The system returns a temporary service failure.
-2. The client presents a retry action in the order list.
+3a: The system returns a temporary service failure.
+
+3b: The client presents a retry action in the order list.
 
 ### Related UI
 
@@ -68,7 +70,7 @@ EF-1:
 
 ### Related API IDs
 
-- [API-ORDERS](../api/api-orders.md)
+- [API-ORDERS](../api/API-ORDERS.md)
 
 ### Notes
 
@@ -135,52 +137,52 @@ OrderEvent --> "1" OrderStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-17-01
--- Source: Assumption
+~~~text
+BR-FILTER-ORDERS-01 - Active Membership
+Source: Assumption
 context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)
-post BR_UC_17_01_ActiveMembership:
+post BR_FILTER_ORDERS_01_ActiveMembership:
   tab = OrderTab::ACTIVE implies result->forAll(o | Set{OrderStatus::PLACED, OrderStatus::IN_PROGRESS, OrderStatus::SHIPPED}->includes(o.status))
 ~~~
-~~~ocl
--- BR-UC-17-02
--- Source: Assumption
+~~~text
+BR-FILTER-ORDERS-02 - Cancelled Membership
+Source: Assumption
 context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)
-post BR_UC_17_02_CancelledMembership:
+post BR_FILTER_ORDERS_02_CancelledMembership:
   tab = OrderTab::CANCELLED implies result->forAll(o | o.status = OrderStatus::CANCELLED)
 ~~~
-~~~ocl
--- BR-UC-17-03
--- Source: Assumption
+~~~text
+BR-FILTER-ORDERS-03 - Completed Membership
+Source: Assumption
 context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)
-post BR_UC_17_03_CompletedMembership:
+post BR_FILTER_ORDERS_03_CompletedMembership:
   tab = OrderTab::COMPLETED implies result->forAll(o | o.status = OrderStatus::DELIVERED)
 ~~~
-~~~ocl
--- BR-UC-17-04
--- Source: Assumption
+~~~text
+BR-FILTER-ORDERS-04 - Tab Membership
+Source: Assumption
 context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)
-post BR_UC_17_04_TabMembership:
+post BR_FILTER_ORDERS_04_TabMembership:
   result->asSet() = Order.allInstances()->select(o | o.customerId = ctx.customerId and (if tab = OrderTab::ACTIVE then Set{OrderStatus::PLACED, OrderStatus::IN_PROGRESS, OrderStatus::SHIPPED}->includes(o.status) else if tab = OrderTab::COMPLETED then o.status = OrderStatus::DELIVERED else o.status = OrderStatus::CANCELLED endif endif))
 ~~~
-~~~ocl
--- BR-UC-17-05
--- Source: Assumption
+~~~text
+BR-FILTER-ORDERS-05 - No Cancellation Action
+Source: Assumption
 context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)
-post BR_UC_17_05_NoCancellationAction:
+post BR_FILTER_ORDERS_05_NoCancellationAction:
   Order.allInstances() = Order.allInstances()@pre and Order.allInstances()->forAll(o | o.status = o.status@pre and o.version = o.version@pre)
 ~~~
-~~~ocl
--- BR-UC-17-06
--- Source: Assumption
+~~~text
+BR-FILTER-ORDERS-06 - Events Preserved
+Source: Assumption
 context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)
-post BR_UC_17_06_EventsPreserved:
+post BR_FILTER_ORDERS_06_EventsPreserved:
   OrderEvent.allInstances() = OrderEvent.allInstances()@pre and OrderEvent.allInstances()->forAll(e | e.status = e.status@pre and e.occurredAt = e.occurredAt@pre and e.message = e.message@pre)
 ~~~
-~~~ocl
--- BR-UC-17-07
--- Source: Assumption
+~~~text
+BR-FILTER-ORDERS-07 - Payment Choice Preserved
+Source: Assumption
 context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)
-post BR_UC_17_07_PaymentChoicePreserved:
+post BR_FILTER_ORDERS_07_PaymentChoicePreserved:
   Order.allInstances()->forAll(o | o.paymentMethod = o.paymentMethod@pre and o.total = o.total@pre)
 ~~~

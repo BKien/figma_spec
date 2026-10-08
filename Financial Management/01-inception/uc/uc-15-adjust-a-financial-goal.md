@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-15
 uc_name: "Adjust a Financial Goal"
 ---
@@ -40,6 +40,7 @@ PRE-1: The application view is open in the client.
 ### Post-Condition(s)
 
 POST-1: On success, the client closes the adjustment dialog and refreshes goal cards.
+
 POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Basic Flow
@@ -53,29 +54,35 @@ POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Cancel Goal Adjustment
 
-1. The user cancels the adjustment.
-2. The client closes the dialog.
+3a: The user cancels the adjustment.
+
+3b: The client closes the dialog.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Goal Adjustment Operation Error
 
-1. The system returns an operation error.
-2. The client displays the error message and keeps the current view open.
-3. The actor revises the interaction or retries the request.
+5a: The system returns an operation error.
 
-EF-2:
+5b: The client displays the error message and keeps the current view open.
 
-1. The system returns a rejected authentication context.
-2. The client presents the login entry point.
+5c: The actor revises the interaction or retries the request.
 
-EF-3:
+EF-2: Goal Adjustment Authentication Rejected
 
-1. The system returns an operation conflict.
-2. The client offers to reload the current resource.
-3. The user reloads the view and submits the interaction again.
+5d: The system returns a rejected authentication context.
+
+5e: The client presents the login entry point.
+
+EF-3: Goal Adjustment Conflict
+
+5f: The system returns an operation conflict.
+
+5g: The client offers to reload the current resource.
+
+5h: The user reloads the view and submits the interaction again.
 
 ### Related UI
 
@@ -83,8 +90,8 @@ EF-3:
 
 ### Related API IDs
 
-- [API-GOAL-LIST](../api/api-goal-list.md)
-- [API-GOAL-UPDATE](../api/api-goal-update.md)
+- [API-GOAL-LIST](../api/API-GOAL-LIST.md)
+- [API-GOAL-UPDATE](../api/API-GOAL-UPDATE.md)
 
 ### Notes
 
@@ -155,67 +162,67 @@ GoalResult --> Goal : goal
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-15-01
--- Source: Product source
+~~~text
+BR-ADJUST-GOAL-01 - Authenticated Context
+Source: Product source
 context GoalService::update(ctx: RequestContext, cmd: UpdateGoalCommand): GoalResult
-pre BR_UC_15_01_AuthenticatedContext:
+pre BR_ADJUST_GOAL_01_AuthenticatedContext:
   ctx.authenticated and User.allInstances()->exists(u | u.id = ctx.userId)
 ~~~
 
-~~~ocl
--- BR-UC-15-02
--- Source: Product source
+~~~text
+BR-ADJUST-GOAL-02 - Owned Goal
+Source: Product source
 context GoalService::update(ctx: RequestContext, cmd: UpdateGoalCommand): GoalResult
-pre BR_UC_15_02_OwnedGoal:
+pre BR_ADJUST_GOAL_02_OwnedGoal:
   Goal.allInstances()->exists(g | g.id = cmd.goalId and g.userId = ctx.userId)
 ~~~
 
-~~~ocl
--- BR-UC-15-03
--- Source: Assumption
--- Exact decimal arithmetic; upper bound matches DECIMAL(18,2). Source positivity and precision are retained.
+~~~text
+BR-ADJUST-GOAL-03 - Target Amount
+Source: Assumption
+Note: Exact decimal arithmetic; upper bound matches DECIMAL(18,2). Source positivity and precision are retained.
 context GoalService::update(ctx: RequestContext, cmd: UpdateGoalCommand): GoalResult
-pre BR_UC_15_03_TargetAmount:
+pre BR_ADJUST_GOAL_03_TargetAmount:
   Numeric::finite(cmd.targetAmount) and cmd.targetAmount > 0 and Numeric::scale(cmd.targetAmount) <= 2 and cmd.targetAmount < 10000000000000000
 ~~~
 
-~~~ocl
--- BR-UC-15-04
--- Source: Assumption
+~~~text
+BR-ADJUST-GOAL-04 - Version
+Source: Assumption
 context GoalService::update(ctx: RequestContext, cmd: UpdateGoalCommand): GoalResult
-pre BR_UC_15_04_Version:
+pre BR_ADJUST_GOAL_04_Version:
   Goal.allInstances()->exists(g | g.id = cmd.goalId and g.version = cmd.expectedVersion)
 ~~~
 
-~~~ocl
--- BR-UC-15-05
--- Source: Assumption
+~~~text
+BR-ADJUST-GOAL-05 - Only Target Changed
+Source: Assumption
 context GoalService::update(ctx: RequestContext, cmd: UpdateGoalCommand): GoalResult
-post BR_UC_15_05_OnlyTargetChanged:
+post BR_ADJUST_GOAL_05_OnlyTargetChanged:
   result.success implies Goal.allInstances()->exists(g | g.id = cmd.goalId and g.targetAmount = cmd.targetAmount and g.version = g.version@pre + 1 and g.userId = g.userId@pre and g.goalType = g.goalType@pre and g.categoryId = g.categoryId@pre and g.startDate = g.startDate@pre and g.endDate = g.endDate@pre)
 ~~~
 
-~~~ocl
--- BR-UC-15-06
--- Source: Product source
+~~~text
+BR-ADJUST-GOAL-06 - Other Goals Preserved
+Source: Product source
 context GoalService::update(ctx: RequestContext, cmd: UpdateGoalCommand): GoalResult
-post BR_UC_15_06_OtherGoalsPreserved:
+post BR_ADJUST_GOAL_06_OtherGoalsPreserved:
   Goal.allInstances()->select(g | g.id <> cmd.goalId)->collect(e | Tuple{id = e.id, userId = e.userId, goalType = e.goalType, categoryId = e.categoryId, startDate = e.startDate, endDate = e.endDate, targetAmount = e.targetAmount, version = e.version})->asSet() = Goal.allInstances()@pre->select(g | g.id <> cmd.goalId)->collect(e | Tuple{id = e.id@pre, userId = e.userId@pre, goalType = e.goalType@pre, categoryId = e.categoryId@pre, startDate = e.startDate@pre, endDate = e.endDate@pre, targetAmount = e.targetAmount@pre, version = e.version@pre})->asSet()
 ~~~
 
-~~~ocl
--- BR-UC-15-07
--- Source: Assumption
+~~~text
+BR-ADJUST-GOAL-07 - Identity
+Source: Assumption
 context GoalService::update(ctx: RequestContext, cmd: UpdateGoalCommand): GoalResult
-post BR_UC_15_07_Identity:
+post BR_ADJUST_GOAL_07_Identity:
   result.success implies result.goal.id = cmd.goalId and result.goal.targetAmount = cmd.targetAmount and result.goal.version = cmd.expectedVersion + 1
 ~~~
 
-~~~ocl
--- BR-UC-15-08
--- Source: Product source
+~~~text
+BR-ADJUST-GOAL-08 - Failure Rollback
+Source: Product source
 context GoalService::update(ctx: RequestContext, cmd: UpdateGoalCommand): GoalResult
-post BR_UC_15_08_FailureRollback:
+post BR_ADJUST_GOAL_08_FailureRollback:
   not result.success implies Goal.allInstances()->collect(e | Tuple{id = e.id, userId = e.userId, goalType = e.goalType, categoryId = e.categoryId, startDate = e.startDate, endDate = e.endDate, targetAmount = e.targetAmount, version = e.version})->asSet() = Goal.allInstances()@pre->collect(e | Tuple{id = e.id@pre, userId = e.userId@pre, goalType = e.goalType@pre, categoryId = e.categoryId@pre, startDate = e.startDate@pre, endDate = e.endDate@pre, targetAmount = e.targetAmount@pre, version = e.version@pre})->asSet()
 ~~~

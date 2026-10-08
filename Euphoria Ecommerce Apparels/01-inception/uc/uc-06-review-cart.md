@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-06
 uc_name: "Review the cart"
 ---
@@ -52,18 +52,21 @@ POST-1: The client displays the returned cart or the empty-cart state.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Empty cart
 
-1. The system returns a cart with no lines.
-2. The client displays the empty-cart message.
-3. The shopper returns to shopping.
+3a: The system returns a cart with no lines.
+
+3b: The client displays the empty-cart message.
+
+3c: The shopper returns to shopping.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Sign in to view the cart
 
-1. The system returns a rejected authentication context.
-2. The client presents the sign-in entry point.
+3d: The system returns a rejected authentication context.
+
+3e: The client presents the sign-in entry point.
 
 ### Related UI
 
@@ -72,7 +75,7 @@ EF-1:
 
 ### Related API IDs
 
-- [API-CART](../api/api-cart.md)
+- [API-CART](../api/API-CART.md)
 
 ### Notes
 
@@ -126,59 +129,59 @@ CartLine --> "1" Money : lineTotal
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-06-01
--- Source: Assumption
+~~~text
+BR-REVIEW-CART-01 - Account Context
+Source: Assumption
 context CartService::read(ctx: RequestContext): Cart
-pre BR_UC_06_01_AccountContext:
+pre BR_REVIEW_CART_01_AccountContext:
   ctx.authenticated
 ~~~
-~~~ocl
--- BR-UC-06-02
--- Source: Assumption
+~~~text
+BR-REVIEW-CART-02 - Customer Cart
+Source: Assumption
 context CartService::read(ctx: RequestContext): Cart
-post BR_UC_06_02_CustomerCart:
+post BR_REVIEW_CART_02_CustomerCart:
   result.customerId = ctx.customerId
 ~~~
-~~~ocl
--- BR-UC-06-03
--- Source: Assumption
+~~~text
+BR-REVIEW-CART-03 - Quantity And Amount
+Source: Assumption
 context CartLine
-inv BR_UC_06_03_QuantityAndAmount:
+inv BR_REVIEW_CART_03_QuantityAndAmount:
   self.quantity > 0 and self.unitPrice.amount >= 0
 ~~~
-~~~ocl
--- BR-UC-06-04
--- Source: Assumption
+~~~text
+BR-REVIEW-CART-04 - Currency Consistency
+Source: Assumption
 context Cart
-inv BR_UC_06_04_CurrencyConsistency:
+inv BR_REVIEW_CART_04_CurrencyConsistency:
   self.items->forAll(l | l.unitPrice.currency = self.subtotal.currency and l.lineTotal.currency = self.subtotal.currency)
 ~~~
-~~~ocl
--- BR-UC-06-05
--- Source: Assumption
+~~~text
+BR-REVIEW-CART-05 - Line Amount
+Source: Assumption
 context CartLine
-inv BR_UC_06_05_LineAmount:
+inv BR_REVIEW_CART_05_LineAmount:
   self.lineTotal.amount = self.quantity * self.unitPrice.amount
 ~~~
-~~~ocl
--- BR-UC-06-06
--- Source: Assumption
+~~~text
+BR-REVIEW-CART-06 - Subtotal
+Source: Assumption
 context Cart
-inv BR_UC_06_06_Subtotal:
+inv BR_REVIEW_CART_06_Subtotal:
   self.subtotal.amount = self.items->collect(l | l.lineTotal.amount)->sum()
 ~~~
-~~~ocl
--- BR-UC-06-07
--- Source: Assumption
+~~~text
+BR-REVIEW-CART-07 - One Variant Line
+Source: Assumption
 context Cart
-inv BR_UC_06_07_OneVariantLine:
+inv BR_REVIEW_CART_07_OneVariantLine:
   self.items->isUnique(variantId) and self.version >= 0
 ~~~
-~~~ocl
--- BR-UC-06-08
--- Source: Assumption
+~~~text
+BR-REVIEW-CART-08 - Display Estimates
+Source: Assumption
 context Cart
-inv BR_UC_06_08_DisplayEstimates:
+inv BR_REVIEW_CART_08_DisplayEstimates:
   self.shippingEstimate.amount = (if self.items->isEmpty() then 0 else 5.00 endif) and self.shippingEstimate.currency = self.subtotal.currency and self.totalEstimate.currency = self.subtotal.currency and self.totalEstimate.amount = self.subtotal.amount + self.shippingEstimate.amount
 ~~~

@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-19
 uc_name: "Manage Users"
 ---
@@ -53,25 +53,25 @@ POST-1: The client displays the updated user record.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Close User Edit Form
 
-1. The admin closes the edit form and returns to the Users table.
+4a: The admin closes the edit form and returns to the Users table.
 
 ### Exception Flow
 
-EF-1:
+EF-1: User Update Error
 
-1. The client displays the returned update error and keeps the form available.
+6a: The client displays the returned update error and keeps the form available.
 
 ### Related UI
 
-- [Users](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=1016-4816) (`1016:4816`)
-- [User edit](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=1000-4208) (`1000:4208`)
+- [Users](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=1016-4816) (1016:4816)
+- [User edit](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=1000-4208) (1000:4208)
 
 ### Related API IDs
 
-- [API-ADMIN-USER-UPDATE](../api/api-admin-user-update.md)
-- [API-ADMIN-USER-LIST](../api/api-admin-user-list.md)
+- [API-ADMIN-USER-UPDATE](../api/API-ADMIN-USER-UPDATE.md)
+- [API-ADMIN-USER-LIST](../api/API-ADMIN-USER-LIST.md)
 
 ### Notes
 
@@ -128,52 +128,52 @@ RequestContext --> "1" Role : role
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-19-01
--- Source: Assumption
+~~~text
+BR-MANAGE-USERS-01 - Only Super Admin May Edit User
+Source: Assumption
 context AdminService::updateUser(command: UserCommand): Account
-pre BR_UC_19_01_OnlySuperAdminMayEditUser:
+pre BR_MANAGE_USERS_01_OnlySuperAdminMayEditUser:
   RequestContext::role = Role::SUPER_ADMIN
 ~~~
-~~~ocl
--- BR-UC-19-02
--- Source: Assumption
+~~~text
+BR-MANAGE-USERS-02 - User Version Matches
+Source: Assumption
 context AdminService::updateUser(command: UserCommand): Account
-pre BR_UC_19_02_UserVersionMatches:
+pre BR_MANAGE_USERS_02_UserVersionMatches:
   Account.allInstances()->exists(a | a.id = command.accountId and a.version = command.version)
 ~~~
-~~~ocl
--- BR-UC-19-03
--- Source: Assumption
+~~~text
+BR-MANAGE-USERS-03 - User Version Advances
+Source: Assumption
 context AdminService::updateUser(command: UserCommand): Account
-post BR_UC_19_03_UserVersionAdvances:
+post BR_MANAGE_USERS_03_UserVersionAdvances:
   result.id = command.accountId and result.version = command.version + 1
 ~~~
-~~~ocl
--- BR-UC-19-04
--- Source: Assumption
+~~~text
+BR-MANAGE-USERS-04 - Only Super Admin May List Users
+Source: Assumption
 context AdminService::users(): Sequence(Account)
-pre BR_UC_19_04_OnlySuperAdminMayListUsers:
+pre BR_MANAGE_USERS_04_OnlySuperAdminMayListUsers:
   RequestContext::role = Role::SUPER_ADMIN
 ~~~
-~~~ocl
--- BR-UC-19-05
--- Source: Assumption
+~~~text
+BR-MANAGE-USERS-05 - Edited User Fields Are Saved
+Source: Assumption
 context AdminService::updateUser(command: UserCommand): Account
-post BR_UC_19_05_EditedUserFieldsAreSaved:
+post BR_MANAGE_USERS_05_EditedUserFieldsAreSaved:
   result.displayName = command.displayName and result.status = command.status
 ~~~
-~~~ocl
--- BR-UC-19-06
--- Source: Assumption
+~~~text
+BR-MANAGE-USERS-06 - Edited Display Name Is Present
+Source: Assumption
 context AdminService::updateUser(command: UserCommand): Account
-pre BR_UC_19_06_EditedDisplayNameIsPresent:
+pre BR_MANAGE_USERS_06_EditedDisplayNameIsPresent:
   command.displayName.trim().size() > 0
 ~~~
-~~~ocl
--- BR-UC-19-07
--- Source: Assumption
+~~~text
+BR-MANAGE-USERS-07 - User Email Is Preserved
+Source: Assumption
 context AdminService::updateUser(command: UserCommand): Account
-post BR_UC_19_07_UserEmailIsPreserved:
+post BR_MANAGE_USERS_07_UserEmailIsPreserved:
   result.emailCanonical = result.emailCanonical@pre
 ~~~

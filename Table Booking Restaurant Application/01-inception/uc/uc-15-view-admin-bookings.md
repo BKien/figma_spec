@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-15
 uc_name: "View Admin Bookings"
 ---
@@ -50,24 +50,24 @@ POST-1: The client displays booking rows and controls.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Open an Individual Admin Booking
 
-1. The manager opens an individual booking from the table.
+4a: The manager opens an individual booking from the table.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Admin Bookings Loading Error
 
-1. The client displays a bookings loading error and retry action.
+3a: The client displays a bookings loading error and retry action.
 
 ### Related UI
 
-- [Bookings](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=1000-2063) (`1000:2063`)
-- [Super admin section](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=1000-4522) (`1000:4522`)
+- [Bookings](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=1000-2063) (1000:2063)
+- [Super admin section](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=1000-4522) (1000:4522)
 
 ### Related API IDs
 
-- [API-ADMIN-BOOKING-LIST](../api/api-admin-booking-list.md)
+- [API-ADMIN-BOOKING-LIST](../api/API-ADMIN-BOOKING-LIST.md)
 
 ### Notes
 
@@ -134,52 +134,52 @@ RequestContext --> "1" Role : role
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-15-01
--- Source: Assumption
+~~~text
+BR-ADMIN-BOOKINGS-01 - Manager Has Restaurant Scope
+Source: Assumption
 context AdminService::bookings(command: AdminScope): Sequence(Booking)
-pre BR_UC_15_01_ManagerHasRestaurantScope:
+pre BR_ADMIN_BOOKINGS_01_ManagerHasRestaurantScope:
   RequestContext::role = Role::SUPER_ADMIN or (RequestContext::role = Role::MANAGER and RequestContext::restaurantId = command.restaurantId)
 ~~~
-~~~ocl
--- BR-UC-15-02
--- Source: Assumption
+~~~text
+BR-ADMIN-BOOKINGS-02 - Rows Stay In Scope
+Source: Assumption
 context AdminService::bookings(command: AdminScope): Sequence(Booking)
-post BR_UC_15_02_RowsStayInScope:
+post BR_ADMIN_BOOKINGS_02_RowsStayInScope:
   result->forAll(b | b.restaurant.id = command.restaurantId)
 ~~~
-~~~ocl
--- BR-UC-15-03
--- Source: Assumption
+~~~text
+BR-ADMIN-BOOKINGS-03 - Admin Booking Rows Are Unique
+Source: Assumption
 context AdminService::bookings(command: AdminScope): Sequence(Booking)
-post BR_UC_15_03_AdminBookingRowsAreUnique:
+post BR_ADMIN_BOOKINGS_03_AdminBookingRowsAreUnique:
   result->isUnique(b | b.id)
 ~~~
-~~~ocl
--- BR-UC-15-04
--- Source: Assumption
+~~~text
+BR-ADMIN-BOOKINGS-04 - Admin Booking Rows Have Owners
+Source: Assumption
 context AdminService::bookings(command: AdminScope): Sequence(Booking)
-post BR_UC_15_04_AdminBookingRowsHaveOwners:
+post BR_ADMIN_BOOKINGS_04_AdminBookingRowsHaveOwners:
   result->forAll(b | b.account <> null)
 ~~~
-~~~ocl
--- BR-UC-15-05
--- Source: Assumption
+~~~text
+BR-ADMIN-BOOKINGS-05 - Admin Booking Rows Have Positive Parties
+Source: Assumption
 context AdminService::bookings(command: AdminScope): Sequence(Booking)
-post BR_UC_15_05_AdminBookingRowsHavePositiveParties:
+post BR_ADMIN_BOOKINGS_05_AdminBookingRowsHavePositiveParties:
   result->forAll(b | b.partySize > 0)
 ~~~
-~~~ocl
--- BR-UC-15-06
--- Source: Assumption
+~~~text
+BR-ADMIN-BOOKINGS-06 - Admin Booking Slots Match Restaurants
+Source: Assumption
 context AdminService::bookings(command: AdminScope): Sequence(Booking)
-post BR_UC_15_06_AdminBookingSlotsMatchRestaurants:
+post BR_ADMIN_BOOKINGS_06_AdminBookingSlotsMatchRestaurants:
   result->forAll(b | b.slot.restaurant.id = b.restaurant.id)
 ~~~
-~~~ocl
--- BR-UC-15-07
--- Source: Assumption
+~~~text
+BR-ADMIN-BOOKINGS-07 - Admin Booking Rows Have Creation Time
+Source: Assumption
 context AdminService::bookings(command: AdminScope): Sequence(Booking)
-post BR_UC_15_07_AdminBookingRowsHaveCreationTime:
+post BR_ADMIN_BOOKINGS_07_AdminBookingRowsHaveCreationTime:
   result->forAll(b | b.createdAt <= DateTime::now())
 ~~~

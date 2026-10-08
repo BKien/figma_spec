@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-12
 uc_name: "View My Trips"
 ---
@@ -36,11 +36,13 @@ The authenticated user opens the Tripma Your Trips experience.
 ### Pre-Condition(s)
 
 PRE-1: An authenticated Tripma session is available.
+
 PRE-2: Tripma can attempt to retrieve bookings for the current account.
 
 ### Post-Condition(s)
 
 POST-1: When retrieval succeeds, Tripma presents the current account's trip collection.
+
 POST-2: When retrieval cannot be completed, Tripma reports the outcome without changing any booking.
 
 ### Basic Flow
@@ -55,27 +57,38 @@ POST-2: When retrieval cannot be completed, Tripma reports the outcome without c
 ### Alternative Flow
 
 AF-1: Open a trip confirmation
-6a. The authenticated user selects a trip whose booking status is CONFIRMED.
-6b. Tripma invokes UC-06 — View Booking Confirmation for the selected booking.
-6c. UC-12 does not redefine confirmation-detail behavior.
+
+6a: The authenticated user selects a trip whose booking status is CONFIRMED.
+
+6b: Tripma invokes UC-06 — View Booking Confirmation for the selected booking.
+
+6c: UC-12 does not redefine confirmation-detail behavior.
 
 AF-2: Review a cancelled trip summary
-6a. The authenticated user reviews a trip whose booking status is CANCELLED.
-6b. Tripma keeps the user in the My Trips collection and presents the cancellation status carried by the summary.
-6c. UC-12 does not invoke UC-06 for that cancelled booking.
+
+6a: The authenticated user reviews a trip whose booking status is CANCELLED.
+
+6b: Tripma keeps the user in the My Trips collection and presents the cancellation status carried by the summary.
+
+6c: UC-12 does not invoke UC-06 for that cancelled booking.
 
 AF-3: No trips are available
-4a. API-MY-TRIPS-LIST returns an empty trip collection.
-4b. Tripma presents the empty Your Trips experience.
+
+4a: API-MY-TRIPS-LIST returns an empty trip collection.
+
+4b: Tripma presents the empty Your Trips experience.
 
 ### Exception Flow
 
 EF-1: Authentication is unavailable
-2a. If an authenticated session is unavailable, Tripma does not request an account trip collection.
-2b. Tripma makes UC-08 — Sign In available.
+
+2a: If an authenticated session is unavailable, Tripma does not request an account trip collection.
+
+2b: Tripma makes UC-08 — Sign In available.
 
 EF-2: Request cannot be completed
-2a. If Tripma cannot complete the request because of a technical failure, it presents a retryable error state.
+
+2a: If Tripma cannot complete the request because of a technical failure, it presents a retryable error state.
 
 ### Related UI
 
@@ -198,7 +211,7 @@ MyTripSummaryDto --> "1" TripTimingStatus : timingStatus
 The following rules are authoritative for Prompt E. OCL is preserved where applicable; technical or non-OCL constraints remain authoritative natural-language requirements.
 
 ~~~text
-BR-TRIPS-001: Authenticated account
+BR-TRIPS-001 - Authenticated account
 context MyTripsService::listMyTrips(
   currentUserId : UUID
 ) : MyTripsResponseDto
@@ -207,7 +220,7 @@ pre BR_TRIPS_001_User:
   User.allInstances()->exists(user | user.id = currentUserId)
 
 
-BR-TRIPS-002: Account booking scope
+BR-TRIPS-002 - Account booking scope
 context MyTripsService::listMyTrips(
   currentUserId : UUID
 ) : MyTripsResponseDto
@@ -231,7 +244,7 @@ post BR_TRIPS_002_Scope:
             ->includes(booking.status)))
 
 
-BR-TRIPS-003: Flight-leg projection
+BR-TRIPS-003 - Flight-leg projection
 context MyTripsService::listMyTrips(
   currentUserId : UUID
 ) : MyTripsResponseDto
@@ -250,7 +263,7 @@ post BR_TRIPS_003_Flights:
           trip.returningFlight.flightId = booking.returningFlightId))
 
 
-BR-TRIPS-004: Journey end
+BR-TRIPS-004 - Journey end
 context MyTripsService::listMyTrips(
   currentUserId : UUID
 ) : MyTripsResponseDto
@@ -266,7 +279,7 @@ post BR_TRIPS_004_JourneyEnd:
         endif)
 
 
-BR-TRIPS-005: Trip timing
+BR-TRIPS-005 - Trip timing
 context MyTripsService::listMyTrips(
   currentUserId : UUID
 ) : MyTripsResponseDto
@@ -285,7 +298,7 @@ post BR_TRIPS_005_Timing:
       trip.timingStatus = TripTimingStatus::CANCELLED)
 
 
-BR-TRIPS-006: Trip ordering
+BR-TRIPS-006 - Trip ordering
 context MyTripsService::listMyTrips(
   currentUserId : UUID
 ) : MyTripsResponseDto
@@ -299,7 +312,7 @@ post BR_TRIPS_006_Order:
       result.data.cancelledTrips->sortedBy(trip | trip.bookedAt)->reverse()
 
 
-BR-TRIPS-007: Passenger count
+BR-TRIPS-007 - Passenger count
 context MyTripsService::listMyTrips(
   currentUserId : UUID
 ) : MyTripsResponseDto
@@ -313,7 +326,7 @@ post BR_TRIPS_007_Passengers:
       trip.passengerCount >= 1)
 
 
-BR-TRIPS-008: Booking summary
+BR-TRIPS-008 - Booking summary
 context MyTripsService::listMyTrips(
   currentUserId : UUID
 ) : MyTripsResponseDto
@@ -334,7 +347,7 @@ post BR_TRIPS_008_Summary:
         trim(trip.currency) <> '')
 
 
-BR-TRIPS-009: Empty collection
+BR-TRIPS-009 - Empty collection
 context MyTripsService::listMyTrips(
   currentUserId : UUID
 ) : MyTripsResponseDto
@@ -350,14 +363,13 @@ post BR_TRIPS_009_Empty:
     result.data.cancelledTrips->isEmpty()
 
 
-BR-TRIPS-010: Sensitive trip-summary data
+BR-TRIPS-010 - Sensitive trip-summary data
 The My Trips response shall not contain passenger contact details, raw payment
 credentials, payment tokens, passwords, password hashes, session tokens, or
 booking-confirmation codes.
 
 
-BR-TRIPS-011: Read-only retrieval
+BR-TRIPS-011 - Read-only retrieval
 Calling API-MY-TRIPS-LIST shall not create, update, or delete User, Booking,
 Flight, PassengerInfo, SeatAssignment, PassengerBaggage, or PaymentInfo records.
-
 ~~~

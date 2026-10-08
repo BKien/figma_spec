@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-04
 uc_name: "Search for Stays"
 ---
@@ -40,6 +40,7 @@ PRE-1: The traveller can access a stay-search interface.
 ### Post-Condition(s)
 
 POST-1: The client displays the stay-search outcome returned by the system.
+
 POST-2: The entered search context remains available for the next interaction.
 
 ### Basic Flow
@@ -53,31 +54,35 @@ POST-2: The entered search context remains available for the next interaction.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Select a Suggested Destination
 
-1. While entering a destination, the traveller selects one of the returned location suggestions.
+3a: While entering a destination, the traveller selects one of the returned location suggestions.
 
-AF-2:
+AF-2: Replace Stay Search from Results
 
-1. From the results view, the traveller reopens the search controls, changes the criteria, and submits a replacement search.
+6a: From the results view, the traveller reopens the search controls, changes the criteria, and submits a replacement search.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Destination Suggestions Unavailable
 
-1. If destination suggestions are unavailable, the client keeps the search form visible and identifies the affected control.
+3b: If destination suggestions are unavailable, the client keeps the search form visible and identifies the affected control.
 
-EF-2:
+EF-2: Stay Search Failure
 
-1. If the search cannot be completed, the client preserves the selected criteria and displays a retry action.
+5a: If the search cannot be completed, the client preserves the selected criteria and displays a retry action.
 
 ### Related UI
 
-`stays`; `stay search bar`; `check in date picker`; `check out date picker`.
+stays; stay search bar; check in date picker; check out date picker.
 
 ### Related API IDs
 
-`API-LOCATION-SUGGEST`; `API-STAY-SEARCH`.
+API-LOCATION-SUGGEST; API-STAY-SEARCH.
+
+### Notes
+
+None.
 
 ## UML Model
 
@@ -155,20 +160,20 @@ StayOffer --> "1" Money : total
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-04-01
--- Source: Assumption
+~~~text
+BR-SEARCH-STAYS-01 - Destination Must Be Searchable
+Source: Assumption
 context StayService::search(criteria: StaySearchCriteria): Sequence(StayOffer)
-pre BR_UC_04_01_DestinationMustBeSearchable:
+pre BR_SEARCH_STAYS_01_DestinationMustBeSearchable:
   Location.allInstances()->one(d |
     d.id = criteria.destinationId and d.active)
 ~~~
 
-~~~ocl
--- BR-UC-04-02
--- Source: Assumption
+~~~text
+BR-SEARCH-STAYS-02 - Stay Falls Within The Sellable Window
+Source: Assumption
 context StayService::search(criteria: StaySearchCriteria): Sequence(StayOffer)
-pre BR_UC_04_02_StayFallsWithinTheSellableWindow:
+pre BR_SEARCH_STAYS_02_StayFallsWithinTheSellableWindow:
   let destination: Location =
     Location.allInstances()->any(d | d.id = criteria.destinationId) in
   criteria.checkIn >= BusinessCalendar::today(destination.timeZone) and
@@ -176,21 +181,21 @@ pre BR_UC_04_02_StayFallsWithinTheSellableWindow:
   BusinessCalendar::nights(criteria.checkIn, criteria.checkOut) <= 30
 ~~~
 
-~~~ocl
--- BR-UC-04-03
--- Source: Assumption
+~~~text
+BR-SEARCH-STAYS-03 - Occupancy Can Be Distributed Across Requested Rooms
+Source: Assumption
 context StayService::search(criteria: StaySearchCriteria): Sequence(StayOffer)
-pre BR_UC_04_03_OccupancyCanBeDistributedAcrossRequestedRooms:
+pre BR_SEARCH_STAYS_03_OccupancyCanBeDistributedAcrossRequestedRooms:
   criteria.rooms >= 1 and criteria.rooms <= 8 and
   criteria.adults >= criteria.rooms and
   criteria.adults <= criteria.rooms * 4
 ~~~
 
-~~~ocl
--- BR-UC-04-04
--- Source: Assumption
+~~~text
+BR-SEARCH-STAYS-04 - Returned Inventory Is Bound To The Search Context
+Source: Assumption
 context StayService::search(criteria: StaySearchCriteria): Sequence(StayOffer)
-post BR_UC_04_04_ReturnedInventoryIsBoundToTheSearchContext:
+post BR_SEARCH_STAYS_04_ReturnedInventoryIsBoundToTheSearchContext:
   result->forAll(o |
     o.available and o.expiresAt > RequestContext::startedAt and
     o.destinationId = criteria.destinationId and
@@ -199,27 +204,27 @@ post BR_UC_04_04_ReturnedInventoryIsBoundToTheSearchContext:
     o.availableRooms >= criteria.rooms)
 ~~~
 
-~~~ocl
--- BR-UC-04-05
--- Source: Assumption
+~~~text
+BR-SEARCH-STAYS-05 - Provider Inventory Is Deduplicated
+Source: Assumption
 context StayService::search(criteria: StaySearchCriteria): Sequence(StayOffer)
-post BR_UC_04_05_ProviderInventoryIsDeduplicated:
+post BR_SEARCH_STAYS_05_ProviderInventoryIsDeduplicated:
   result->isUnique(o | o.providerOfferRef)
 ~~~
 
-~~~ocl
--- BR-UC-04-06
--- Source: Assumption
+~~~text
+BR-SEARCH-STAYS-06 - Search Does Not Reserve Inventory
+Source: Assumption
 context StayService::search(criteria: StaySearchCriteria): Sequence(StayOffer)
-post BR_UC_04_06_SearchDoesNotReserveInventory:
+post BR_SEARCH_STAYS_06_SearchDoesNotReserveInventory:
   ReadState::stayBookings() = ReadState::stayBookings()@pre
 ~~~
 
-~~~ocl
--- BR-UC-04-07
--- Source: Assumption
+~~~text
+BR-SEARCH-STAYS-07 - Search Prices Use One Currency
+Source: Assumption
 context StayService::search(criteria: StaySearchCriteria): Sequence(StayOffer)
-post BR_UC_04_07_SearchPricesUseOneCurrency:
+post BR_SEARCH_STAYS_07_SearchPricesUseOneCurrency:
   result->forAll(o |
     o.total.amount >= 0 and o.total.currency = criteria.currency)
 ~~~

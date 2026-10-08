@@ -32,22 +32,22 @@ UC-18 also draws on goal form rows 299–316 and API rows 173–205. The categor
 
 | Source scope | Original rule identifiers preserved in snapshot | Normalized rule coverage | Disposition |
 | --- | --- | --- | --- |
-| Source UC-01 | BR-REG-01, BR-REG-02, BR-REG-04, BR-REG-05, BR-REG-06, BR-REG-03, BR-REG-07, BR-REG-08, BR-REG-09, BR-REG-10, BR-REG-11 | BR-UC-01-01 through BR-UC-01-14 | Retained and formalized; refinements recorded in review |
-| Source UC-02 | BR-LOG-01, BR-LOG-02, BR-LOG-03, BR-LOG-04, BR-LOG-05, BR-LOG-06 | BR-UC-02-01 through BR-UC-02-09 | Retained and formalized; refinements recorded in review |
-| Source UC-03 | BR-TXN-01, BR-TXN-02, BR-TXN-03, BR-TXN-04, BR-TXN-05, BR-TXN-06, BR-TXN-07 | BR-UC-03-01 through BR-UC-03-10 | Retained and formalized; refinements recorded in review |
-| Source UC-04 | BR-TXN-08, BR-TXN-09, BR-TXN-10, BR-TXN-11, BR-TXN-12, BR-TXN-13, BR-TXN-14, BR-TXN-15, BR-TXN-01 | BR-UC-04-01 through BR-UC-04-13 | Revised for Complete-only cash-flow accounting and exact mappings |
-| Source UC-05 | BR-ACC-01, BR-ACC-02, BR-ACC-03, BR-ACC-04, BR-ACC-05, BR-ACC-06 | BR-UC-05-01 through BR-UC-05-08 | Retained and formalized; refinements recorded in review |
-| Source UC-06 | BR-ACC-07, BR-ACC-08, BR-ACC-09, BR-ACC-10, BR-ACC-11, BR-ACC-12, BR-ACC-13, BR-ACC-14, BR-ACC-15, BR-ACC-16 | BR-UC-06-01 through BR-UC-06-10 | Revised; branch/deposit/capacity restrictions removed and concurrency/storage clarified |
-| Source UC-07 | BR-ACC-15, BR-ACC-16, BR-ACC-17 | BR-UC-07-01 through BR-UC-07-09 | Retained and formalized; refinements recorded in review |
-| Source UC-08 | BR-ACC-19, BR-ACC-20, BR-ACC-21, BR-ACC-22, BR-ACC-23, BR-ACC-24, BR-ACC-25, BR-ACC-26 | BR-UC-08-01 through BR-UC-08-14 | Revised; branch/deposit/capacity restrictions removed and concurrency/storage clarified |
-| Source UC-09 | BR-ACC-27, BR-ACC-28 | BR-UC-09-01 through BR-UC-09-09 | Retained and formalized; refinements recorded in review |
-| Source UC-10 | BR-EXP-01, BR-EXP-02, BR-EXP-03, BR-EXP-04, BR-EXP-05, BR-EXP-06, BR-EXP-07 | BR-UC-10-01 through BR-UC-10-10 | Revised for Complete-only cash-flow accounting and exact mappings |
-| Source UC-11 | BR-EXP-CAT-01, BR-EXP-CAT-02, BR-EXP-CAT-03, BR-EXP-CAT-04, BR-EXP-CAT-05, BR-EXP-CAT-06, BR-EXP-CAT-07 | BR-UC-11-01 through BR-UC-11-10 | Revised for Complete-only cash-flow accounting and exact mappings |
-| Source UC-12 | BR-BILL-UP-01, BR-BILL-UP-02, BR-BILL-UP-03, BR-BILL-UP-04, BR-BILL-UP-05, BR-BILL-UP-06 | BR-UC-12-01 through BR-UC-12-10 | Retained and formalized; refinements recorded in review |
-| Source UC-13 | BR-GOAL-VIEW-01, BR-GOAL-VIEW-02, BR-GOAL-VIEW-03, BR-GOAL-VIEW-04, BR-GOAL-VIEW-05, BR-GOAL-VIEW-06, BR-GOAL-VIEW-07 | BR-UC-13-01 through BR-UC-13-10 | Revised for Complete-only cash-flow accounting and exact mappings |
-| Source UC-14 | BR-GOAL-CREATE-01, BR-GOAL-CREATE-02, BR-GOAL-CREATE-03, BR-GOAL-CREATE-04, BR-GOAL-CREATE-05, BR-GOAL-CREATE-06, BR-GOAL-CREATE-07 | BR-UC-14-01 through BR-UC-14-09 | Retained and formalized; refinements recorded in review |
-| Source UC-15 | BR-GOAL-12, BR-GOAL-13, BR-GOAL-14, BR-GOAL-15, BR-GOAL-16, BR-GOAL-17 | BR-UC-15-01 through BR-UC-15-08 | Retained and formalized; refinements recorded in review |
-| Source UC-16 | BR-SAV-01, BR-SAV-02, BR-SAV-03, BR-SAV-04, BR-SAV-05, BR-SAV-06, BR-SAV-07, BR-SAV-08, BR-SAV-09 | BR-UC-16-01 through BR-UC-16-11 | Revised for Complete-only cash-flow accounting and exact mappings |
+| Source UC-01 | BR-REG-01, BR-REG-02, BR-REG-04, BR-REG-05, BR-REG-06, BR-REG-03, BR-REG-07, BR-REG-08, BR-REG-09, BR-REG-10, BR-REG-11 | BR-REGISTER-ACCOUNT-01 through BR-REGISTER-ACCOUNT-14 | Retained and formalized; refinements recorded in review |
+| Source UC-02 | BR-LOG-01, BR-LOG-02, BR-LOG-03, BR-LOG-04, BR-LOG-05, BR-LOG-06 | BR-LOGIN-01 through BR-LOGIN-09 | Retained and formalized; refinements recorded in review |
+| Source UC-03 | BR-TXN-01, BR-TXN-02, BR-TXN-03, BR-TXN-04, BR-TXN-05, BR-TXN-06, BR-TXN-07 | BR-TRANSACTION-HISTORY-01 through BR-TRANSACTION-HISTORY-10 | Retained and formalized; refinements recorded in review |
+| Source UC-04 | BR-TXN-08, BR-TXN-09, BR-TXN-10, BR-TXN-11, BR-TXN-12, BR-TXN-13, BR-TXN-14, BR-TXN-15, BR-TXN-01 | BR-CREATE-TRANSACTION-01 through BR-CREATE-TRANSACTION-13 | Revised for Complete-only cash-flow accounting and exact mappings |
+| Source UC-05 | BR-ACC-01, BR-ACC-02, BR-ACC-03, BR-ACC-04, BR-ACC-05, BR-ACC-06 | BR-BANK-ACCOUNTS-01 through BR-BANK-ACCOUNTS-08 | Retained and formalized; refinements recorded in review |
+| Source UC-06 | BR-ACC-07, BR-ACC-08, BR-ACC-09, BR-ACC-10, BR-ACC-11, BR-ACC-12, BR-ACC-13, BR-ACC-14, BR-ACC-15, BR-ACC-16 | BR-ADD-ACCOUNT-01 through BR-ADD-ACCOUNT-10 | Revised; branch/deposit/capacity restrictions removed and concurrency/storage clarified |
+| Source UC-07 | BR-ACC-15, BR-ACC-16, BR-ACC-17 | BR-ACCOUNT-DETAIL-01 through BR-ACCOUNT-DETAIL-09 | Retained and formalized; refinements recorded in review |
+| Source UC-08 | BR-ACC-19, BR-ACC-20, BR-ACC-21, BR-ACC-22, BR-ACC-23, BR-ACC-24, BR-ACC-25, BR-ACC-26 | BR-EDIT-ACCOUNT-01 through BR-EDIT-ACCOUNT-14 | Revised; branch/deposit/capacity restrictions removed and concurrency/storage clarified |
+| Source UC-09 | BR-ACC-27, BR-ACC-28 | BR-DELETE-ACCOUNT-01 through BR-DELETE-ACCOUNT-09 | Retained and formalized; refinements recorded in review |
+| Source UC-10 | BR-EXP-01, BR-EXP-02, BR-EXP-03, BR-EXP-04, BR-EXP-05, BR-EXP-06, BR-EXP-07 | BR-EXPENSE-SUMMARY-01 through BR-EXPENSE-SUMMARY-10 | Revised for Complete-only cash-flow accounting and exact mappings |
+| Source UC-11 | BR-EXP-CAT-01, BR-EXP-CAT-02, BR-EXP-CAT-03, BR-EXP-CAT-04, BR-EXP-CAT-05, BR-EXP-CAT-06, BR-EXP-CAT-07 | BR-CATEGORY-EXPENSES-01 through BR-CATEGORY-EXPENSES-10 | Revised for Complete-only cash-flow accounting and exact mappings |
+| Source UC-12 | BR-BILL-UP-01, BR-BILL-UP-02, BR-BILL-UP-03, BR-BILL-UP-04, BR-BILL-UP-05, BR-BILL-UP-06 | BR-UPCOMING-BILLS-01 through BR-UPCOMING-BILLS-10 | Retained and formalized; refinements recorded in review |
+| Source UC-13 | BR-GOAL-VIEW-01, BR-GOAL-VIEW-02, BR-GOAL-VIEW-03, BR-GOAL-VIEW-04, BR-GOAL-VIEW-05, BR-GOAL-VIEW-06, BR-GOAL-VIEW-07 | BR-FINANCIAL-GOALS-01 through BR-FINANCIAL-GOALS-10 | Revised for Complete-only cash-flow accounting and exact mappings |
+| Source UC-14 | BR-GOAL-CREATE-01, BR-GOAL-CREATE-02, BR-GOAL-CREATE-03, BR-GOAL-CREATE-04, BR-GOAL-CREATE-05, BR-GOAL-CREATE-06, BR-GOAL-CREATE-07 | BR-CREATE-GOAL-01 through BR-CREATE-GOAL-09 | Retained and formalized; refinements recorded in review |
+| Source UC-15 | BR-GOAL-12, BR-GOAL-13, BR-GOAL-14, BR-GOAL-15, BR-GOAL-16, BR-GOAL-17 | BR-ADJUST-GOAL-01 through BR-ADJUST-GOAL-08 | Retained and formalized; refinements recorded in review |
+| Source UC-16 | BR-SAV-01, BR-SAV-02, BR-SAV-03, BR-SAV-04, BR-SAV-05, BR-SAV-06, BR-SAV-07, BR-SAV-08, BR-SAV-09 | BR-SAVINGS-SUMMARY-01 through BR-SAVINGS-SUMMARY-11 | Revised for Complete-only cash-flow accounting and exact mappings |
 
 Source identifiers can be duplicated, embedded in multi-context blocks, or present only as prose. This table maps policy families rather than claiming one-to-one identity. Source variants and original rule text remain available under source/. Removed predicates and added assumptions have explicit decisions in [review](consistency-review.md) and [assumptions](ASSUMPTIONS.md).
 
@@ -55,24 +55,24 @@ Source identifiers can be duplicated, embedded in multi-context blocks, or prese
 
 | Source API / start row | Normalized contract | Use cases |
 | --- | --- | --- |
-| API-AUTH-LOGIN, row 3 | [API-AUTH-LOGIN](01-inception/api/api-auth-login.md) | UC-02 |
-| API-AUTH-REGISTER, row 21 | [API-AUTH-REGISTER](01-inception/api/api-auth-register.md) | UC-01 |
-| API-ACCOUNT-LIST, row 39 | [API-ACCOUNT-LIST](01-inception/api/api-account-list.md) | UC-04, UC-05 |
-| API-ACCOUNT-CREATE, row 55 | [API-ACCOUNT-CREATE](01-inception/api/api-account-create.md) | UC-06 |
-| API-ACCOUNT-DETAIL, row 74 | [API-ACCOUNT-DETAIL](01-inception/api/api-account-detail.md) | UC-07, UC-08 |
-| API-ACCOUNT-UPDATE, row 95 | [API-ACCOUNT-UPDATE](01-inception/api/api-account-update.md) | UC-08 |
-| API-ACCOUNT-DELETE, row 116 | [API-ACCOUNT-DELETE](01-inception/api/api-account-delete.md) | UC-09 |
-| API-TRANSACTION-LIST, row 136 | [API-TRANSACTION-LIST](01-inception/api/api-transaction-list.md) | UC-03, UC-17 |
-| API-TRANSACTION-CREATE, row 155 | [API-TRANSACTION-CREATE](01-inception/api/api-transaction-create.md) | UC-04 |
-| API-CATEGORY-LIST, row 173 | [API-CATEGORY-LIST](01-inception/api/api-category-list.md) | UC-04, UC-14, UC-18 |
-| API-CATEGORY-DETAIL, row 188 | [API-CATEGORY-DETAIL](01-inception/api/api-category-detail.md) | UC-18 |
-| API-EXPENSE-SUMMARY, row 206 | [API-EXPENSE-SUMMARY](01-inception/api/api-expense-summary.md) | UC-10 |
-| API-EXPENSE-BREAKDOWN, row 222 | [API-EXPENSE-BREAKDOWN](01-inception/api/api-expense-breakdown.md) | UC-11 |
-| API-BILL-LIST, row 242 | [API-BILL-LIST](01-inception/api/api-bill-list.md) | UC-12 |
-| API-GOAL-LIST, row 258 | [API-GOAL-LIST](01-inception/api/api-goal-list.md) | UC-13, UC-15 |
-| API-GOAL-CREATE, row 274 | [API-GOAL-CREATE](01-inception/api/api-goal-create.md) | UC-14 |
-| API-GOAL-UPDATE, row 291 | [API-GOAL-UPDATE](01-inception/api/api-goal-update.md) | UC-15 |
-| API-SAVINGS-SUMMARY, row 311 | [API-SAVINGS-SUMMARY](01-inception/api/api-savings-summary.md) | UC-16 |
+| API-AUTH-LOGIN, row 3 | [API-AUTH-LOGIN](01-inception/api/API-AUTH-LOGIN.md) | UC-02 |
+| API-AUTH-REGISTER, row 21 | [API-AUTH-REGISTER](01-inception/api/API-AUTH-REGISTER.md) | UC-01 |
+| API-ACCOUNT-LIST, row 39 | [API-ACCOUNT-LIST](01-inception/api/API-ACCOUNT-LIST.md) | UC-04, UC-05 |
+| API-ACCOUNT-CREATE, row 55 | [API-ACCOUNT-CREATE](01-inception/api/API-ACCOUNT-CREATE.md) | UC-06 |
+| API-ACCOUNT-DETAIL, row 74 | [API-ACCOUNT-DETAIL](01-inception/api/API-ACCOUNT-DETAIL.md) | UC-07, UC-08 |
+| API-ACCOUNT-UPDATE, row 95 | [API-ACCOUNT-UPDATE](01-inception/api/API-ACCOUNT-UPDATE.md) | UC-08 |
+| API-ACCOUNT-DELETE, row 116 | [API-ACCOUNT-DELETE](01-inception/api/API-ACCOUNT-DELETE.md) | UC-09 |
+| API-TRANSACTION-LIST, row 136 | [API-TRANSACTION-LIST](01-inception/api/API-TRANSACTION-LIST.md) | UC-03, UC-17 |
+| API-TRANSACTION-CREATE, row 155 | [API-TRANSACTION-CREATE](01-inception/api/API-TRANSACTION-CREATE.md) | UC-04 |
+| API-CATEGORY-LIST, row 173 | [API-CATEGORY-LIST](01-inception/api/API-CATEGORY-LIST.md) | UC-04, UC-14, UC-18 |
+| API-CATEGORY-DETAIL, row 188 | [API-CATEGORY-DETAIL](01-inception/api/API-CATEGORY-DETAIL.md) | UC-18 |
+| API-EXPENSE-SUMMARY, row 206 | [API-EXPENSE-SUMMARY](01-inception/api/API-EXPENSE-SUMMARY.md) | UC-10 |
+| API-EXPENSE-BREAKDOWN, row 222 | [API-EXPENSE-BREAKDOWN](01-inception/api/API-EXPENSE-BREAKDOWN.md) | UC-11 |
+| API-BILL-LIST, row 242 | [API-BILL-LIST](01-inception/api/API-BILL-LIST.md) | UC-12 |
+| API-GOAL-LIST, row 258 | [API-GOAL-LIST](01-inception/api/API-GOAL-LIST.md) | UC-13, UC-15 |
+| API-GOAL-CREATE, row 274 | [API-GOAL-CREATE](01-inception/api/API-GOAL-CREATE.md) | UC-14 |
+| API-GOAL-UPDATE, row 291 | [API-GOAL-UPDATE](01-inception/api/API-GOAL-UPDATE.md) | UC-15 |
+| API-SAVINGS-SUMMARY, row 311 | [API-SAVINGS-SUMMARY](01-inception/api/API-SAVINGS-SUMMARY.md) | UC-16 |
 
 ## Persistence Mapping
 

@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-03
 uc_name: "Enter Passenger Information"
 ---
@@ -36,12 +36,15 @@ The visitor enters the Tripma passenger-information experience from a completed 
 ### Pre-Condition(s)
 
 PRE-1: A completed Tripma flight-selection context is available.
+
 PRE-2: The passenger-information experience can access that context.
 
 ### Post-Condition(s)
 
 POST-1: When the submitted information is accepted, Tripma makes a passenger-information context available to the seat-selection experience.
+
 POST-2: Tripma preserves the current flight-selection context throughout this use case.
+
 POST-3: When the submitted information cannot be accepted, Tripma keeps the visitor in the passenger-information experience and reports the outcome.
 
 ### Basic Flow
@@ -63,57 +66,84 @@ POST-3: When the submitted information cannot be accepted, Tripma keeps the visi
 ### Alternative Flow
 
 AF-1: Use passenger information for the emergency contact
-4a. The visitor chooses the corresponding contact option.
-4b. Tripma updates the form according to the Business Rules.
-4c. The Basic Flow resumes at step 5.
+
+4a: The visitor chooses the corresponding contact option.
+
+4b: Tripma updates the form according to the Business Rules.
+
+4c: The Basic Flow resumes at step 5.
 
 AF-2: Provide a separate emergency contact
-4d. The visitor chooses the separate-contact path.
-4e. Tripma presents the corresponding controls.
-4f. The visitor provides the requested information.
-4g. The Basic Flow resumes at step 5.
+
+4d: The visitor chooses the separate-contact path.
+
+4e: Tripma presents the corresponding controls.
+
+4f: The visitor provides the requested information.
+
+4g: The Basic Flow resumes at step 5.
 
 AF-3: Use an alternate permitted form state
-3a. The visitor uses an alternate input path offered by the form.
-3b. Tripma retains the current form state according to the Business Rules.
-3c. The Basic Flow resumes at step 4.
+
+3a: The visitor uses an alternate input path offered by the form.
+
+3b: Tripma retains the current form state according to the Business Rules.
+
+3c: The Basic Flow resumes at step 4.
 
 AF-4: Save and close the in-progress form
-7a. The visitor chooses Save and Close.
-7b. Tripma processes the current form according to the Business Rules.
-7c. The use case ends without entering the seat-selection experience.
+
+7a: The visitor chooses Save and Close.
+
+7b: Tripma processes the current form according to the Business Rules.
+
+7c: The use case ends without entering the seat-selection experience.
 
 AF-5: Resume an in-progress form
-1a. Tripma finds a previously saved passenger form.
-1b. Tripma evaluates and restores it according to the Business Rules.
-1c. The Basic Flow resumes at step 2.
+
+1a: Tripma finds a previously saved passenger form.
+
+1b: Tripma evaluates and restores it according to the Business Rules.
+
+1c: The Basic Flow resumes at step 2.
 
 AF-6: Correct submitted information
-10a. The service identifies information that needs attention.
-10b. Tripma associates the returned outcome with the affected form control.
-10c. The visitor updates the information.
-10d. The Basic Flow resumes at step 6.
+
+10a: The service identifies information that needs attention.
+
+10b: Tripma associates the returned outcome with the affected form control.
+
+10c: The visitor updates the information.
+
+10d: The Basic Flow resumes at step 6.
 
 ### Exception Flow
 
 EF-1: Passenger form is not ready to continue
-6a. If the current form does not satisfy the Business Rules, Tripma keeps the visitor in the passenger-information experience and identifies the affected input.
-6b. The seat-selection action remains unavailable.
+
+6a: If the current form does not satisfy the Business Rules, Tripma keeps the visitor in the passenger-information experience and identifies the affected input.
+
+6b: The seat-selection action remains unavailable.
 
 EF-2: Passenger-information request is rejected
-10e. If the service rejects the request, it returns the API-PASSENGER-INFO-PREPARE client-error response.
-10f. Tripma preserves the visitor's current form and presents a recoverable outcome.
+
+10e: If the service rejects the request, it returns the API-PASSENGER-INFO-PREPARE client-error response.
+
+10f: Tripma preserves the visitor's current form and presents a recoverable outcome.
 
 EF-3: Passenger-information service is unavailable
-9a. If Tripma cannot complete the request because of a technical failure, it preserves the visitor's current form and presents a retryable error state.
-9b. Tripma does not open the seat-selection experience.
+
+9a: If Tripma cannot complete the request because of a technical failure, it preserves the visitor's current form and presents a retryable error state.
+
+9b: Tripma does not open the seat-selection experience.
 
 EF-4: In-progress form cannot be saved or restored
-7d. If Tripma cannot process an in-progress form, it preserves the current usable state and presents a recoverable outcome.
+
+7d: If Tripma cannot process an in-progress form, it preserves the current usable state and presents a recoverable outcome.
 
 ### Related UI
 
-Passenger-information step of the booking page (`/booking`); passenger form; emergency-contact form; baggage controls; Save and Close action; seat-selection action
+Passenger-information step of the booking page (/booking); passenger form; emergency-contact form; baggage controls; Save and Close action; seat-selection action
 
 ### Related API IDs
 
@@ -290,7 +320,7 @@ end note
 The following rules are authoritative for Prompt E. OCL is preserved where applicable; technical or non-OCL constraints remain authoritative natural-language requirements.
 
 ~~~text
-BR-PASS-001: Current trip context
+BR-PASS-001 - Current trip context
 context PassengerInformationService::prepare(
   tripContext : PassengerTripContextDto,
   form : PassengerFormDto
@@ -303,7 +333,7 @@ pre BR_PASS_001_TripTypeConsistent:
   tripContext.searchParams.type = tripContext.selectedFlights.type
 
 
-BR-PASS-002: Passenger coverage
+BR-PASS-002 - Passenger coverage
 context PassengerInformationService::prepare(
   tripContext : PassengerTripContextDto,
   form : PassengerFormDto
@@ -321,7 +351,7 @@ pre BR_PASS_002_PassengerTypesMatchSearch:
       tripContext.searchParams.minors
 
 
-BR-PASS-003: Unique passenger references
+BR-PASS-003 - Unique passenger references
 context PassengerInformationService::prepare(
   tripContext : PassengerTripContextDto,
   form : PassengerFormDto
@@ -330,7 +360,7 @@ pre BR_PASS_003_UniqueReferences:
   form.passengers->isUnique(p | p.passengerRef)
 
 
-BR-PASS-004: Primary passenger
+BR-PASS-004 - Primary passenger
 context PassengerInformationService::prepare(
   tripContext : PassengerTripContextDto,
   form : PassengerFormDto
@@ -341,7 +371,7 @@ pre BR_PASS_004_PrimaryPassenger:
     passenger.passengerType = PassengerType::ADULT)
 
 
-BR-PASS-005: Required passenger information
+BR-PASS-005 - Required passenger information
 context PassengerInformationService::prepare(
   tripContext : PassengerTripContextDto,
   form : PassengerFormDto
@@ -358,7 +388,7 @@ pre BR_PASS_005_RequiredValues:
   )
 
 
-BR-PASS-006: Date of birth precedes departure
+BR-PASS-006 - Date of birth precedes departure
 context PassengerInformationService::prepare(
   tripContext : PassengerTripContextDto,
   form : PassengerFormDto
@@ -375,7 +405,7 @@ pre BR_PASS_006_BirthDatesPrecedeDeparture:
       passenger.dateOfBirth < departureDate)
 
 
-BR-PASS-007: Passenger type matches age at departure
+BR-PASS-007 - Passenger type matches age at departure
 context PassengerInformationService::prepare(
   tripContext : PassengerTripContextDto,
   form : PassengerFormDto
@@ -396,7 +426,7 @@ pre BR_PASS_007_PassengerTypesMatchAgeOnDeparture:
     )
 
 
-BR-PASS-008: Optional passenger contact information
+BR-PASS-008 - Optional passenger contact information
 context PassengerInformationService::prepare(
   tripContext : PassengerTripContextDto,
   form : PassengerFormDto
@@ -410,7 +440,7 @@ pre BR_PASS_008_PassengerChannelsWhenPresent:
   )
 
 
-BR-PASS-009: Emergency contact
+BR-PASS-009 - Emergency contact
 context PassengerInformationService::prepare(
   tripContext : PassengerTripContextDto,
   form : PassengerFormDto
@@ -436,7 +466,7 @@ pre BR_PASS_009_ContactSource:
   endif
 
 
-BR-PASS-010: One baggage entry per passenger
+BR-PASS-010 - One baggage entry per passenger
 context PassengerInformationService::prepare(
   tripContext : PassengerTripContextDto,
   form : PassengerFormDto
@@ -449,7 +479,7 @@ pre BR_PASS_010_OneEntryPerPassenger:
       passenger.passengerRef = item.passengerRef))
 
 
-BR-PASS-011: Departing checked-baggage limit
+BR-PASS-011 - Departing checked-baggage limit
 context PassengerInformationService::prepare(
   tripContext : PassengerTripContextDto,
   form : PassengerFormDto
@@ -461,7 +491,7 @@ pre BR_PASS_011_DepartingRange:
       tripContext.departingMaxCheckedBagsPerPassenger)
 
 
-BR-PASS-012: Returning checked-baggage limit
+BR-PASS-012 - Returning checked-baggage limit
 context PassengerInformationService::prepare(
   tripContext : PassengerTripContextDto,
   form : PassengerFormDto
@@ -482,10 +512,10 @@ pre BR_PASS_012_ReturningRange:
       item.returningCheckedBags.oclIsUndefined())
   endif
 Technical constraints:
-- The service obtains baggage limits from the authoritative selected-flight data addressed by the request; it does not accept a client-supplied baggage limit as authoritative.
+The service obtains baggage limits from the authoritative selected-flight data addressed by the request; it does not accept a client-supplied baggage limit as authoritative.
 
 
-BR-PASS-013: Prepared passenger context
+BR-PASS-013 - Prepared passenger context
 context PassengerInformationService::prepare(
   tripContext : PassengerTripContextDto,
   form : PassengerFormDto
@@ -503,7 +533,7 @@ post BR_PASS_013_ContextData:
   result.emergencyContact = emergencyContactOf(form)
 
 
-BR-PASS-014: Completion readiness
+BR-PASS-014 - Completion readiness
 context PassengerInformationService::canContinue(
   tripContext : PassengerTripContextDto,
   form : PassengerFormDto
@@ -589,7 +619,7 @@ post BR_PASS_014_Result:
      endif)
 
 
-BR-PASS-015: Save the current passenger form
+BR-PASS-015 - Save the current passenger form
 context PassengerInformationService::saveForm(
   tripContext : PassengerTripContextDto,
   form : PassengerFormDto
@@ -602,7 +632,7 @@ post BR_PASS_015_SavedForm:
   not result.savedAt.oclIsUndefined()
 
 
-BR-PASS-016: Restore a saved passenger form
+BR-PASS-016 - Restore a saved passenger form
 context PassengerInformationService::restoreForm(
   tripContext : PassengerTripContextDto,
   saved : SavedPassengerFormDto
@@ -613,14 +643,13 @@ pre BR_PASS_016_SameSelectionContext:
 post BR_PASS_016_RestoredForm:
   result = saved.form
 Technical constraints:
-- Saved passenger data must use protected, time-limited storage. It must be removed when the flight selection changes, the booking finishes, the visitor discards the form, or the retention period expires.
-- A saved form that cannot be read safely or no longer belongs to the current selection is ignored without replacing the current usable form.
+Saved passenger data must use protected, time-limited storage. It must be removed when the flight selection changes, the booking finishes, the visitor discards the form, or the retention period expires.
+A saved form that cannot be read safely or no longer belongs to the current selection is ignored without replacing the current usable form.
 
 
-BR-PASS-017: Preparation has no persistence side effects
+BR-PASS-017 - Preparation has no persistence side effects
 API-PASSENGER-INFO-PREPARE shall not create, update, or delete Booking,
 PassengerInfo, EmergencyContact, PassengerBaggage, Flight, or Seat records.
 Technical constraints:
-- Passenger information is sent only in an HTTPS request body. Query strings, URLs, analytics payloads, and application logs must not contain raw passenger or emergency-contact values.
-
+Passenger information is sent only in an HTTPS request body. Query strings, URLs, analytics payloads, and application logs must not contain raw passenger or emergency-contact values.
 ~~~

@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-05
 uc_name: "Make Payment"
 ---
@@ -36,12 +36,15 @@ The visitor continues from the Tripma seat-selection experience to payment.
 ### Pre-Condition(s)
 
 PRE-1: The current Tripma checkout context is available.
+
 PRE-2: The payment experience can access the context prepared by the preceding booking steps.
 
 ### Post-Condition(s)
 
 POST-1: When checkout succeeds, Tripma makes a booking-confirmation context available to the success experience.
+
 POST-2: Tripma associates the completed checkout with the applicable visitor context.
+
 POST-3: When checkout cannot be completed, Tripma keeps the visitor in the payment experience and reports the outcome.
 
 ### Basic Flow
@@ -65,57 +68,84 @@ POST-3: When checkout cannot be completed, Tripma keeps the visitor in the payme
 ### Alternative Flow
 
 AF-1: Return to seat selection
-6a. The visitor chooses Back to seat select.
-6b. Tripma returns to the existing seat-selection context.
+
+6a: The visitor chooses Back to seat select.
+
+6b: Tripma returns to the existing seat-selection context.
 
 AF-2: Create an account during checkout
-3a. The visitor chooses the account-creation option exposed by the payment experience.
-3b. Tripma invokes UC-07 — Sign Up.
-3c. When UC-07 succeeds, Tripma invokes UC-08 — Sign In for the new account.
-3d. When UC-08 succeeds, the authenticated checkout context is restored.
-3e. The Basic Flow resumes at step 3.
+
+3a: The visitor chooses the account-creation option exposed by the payment experience.
+
+3b: Tripma invokes UC-07 — Sign Up.
+
+3c: When UC-07 succeeds, Tripma invokes UC-08 — Sign In for the new account.
+
+3d: When UC-08 succeeds, the authenticated checkout context is restored.
+
+3e: The Basic Flow resumes at step 3.
 
 AF-3: Save the payment method
-3f. The authenticated visitor chooses the save-card option exposed by the payment experience.
-3g. Tripma records the save-card intent without creating a saved payment method yet.
-3h. The Basic Flow resumes at step 3; UC-13 is invoked only after step 12 has returned a completed booking reference.
+
+3f: The authenticated visitor chooses the save-card option exposed by the payment experience.
+
+3g: Tripma records the save-card intent without creating a saved payment method yet.
+
+3h: The Basic Flow resumes at step 3; UC-13 is invoked only after step 12 has returned a completed booking reference.
 
 AF-4: Use another payment path
-3a. The visitor chooses another payment path offered by Tripma.
-3b. Tripma presents the corresponding controls.
-3c. The Basic Flow resumes at step 3.
+
+3a: The visitor chooses another payment path offered by Tripma.
+
+3b: Tripma presents the corresponding controls.
+
+3c: The Basic Flow resumes at step 3.
 
 AF-5: Use the primary-passenger billing address
-4i. The visitor chooses the corresponding billing-address option.
-4j. Tripma updates the checkout form according to the Business Rules.
-4k. The Basic Flow resumes at step 5.
+
+4i: The visitor chooses the corresponding billing-address option.
+
+4j: Tripma updates the checkout form according to the Business Rules.
+
+4k: The Basic Flow resumes at step 5.
 
 ### Exception Flow
 
 EF-1: Checkout information requires attention
-5a. If the checkout form does not satisfy the Business Rules, Tripma identifies the affected input and does not submit the booking request.
+
+5a: If the checkout form does not satisfy the Business Rules, Tripma identifies the affected input and does not submit the booking request.
 
 EF-2: Supporting use case cannot be completed
-3a. If an invoked supporting use case does not succeed, Tripma returns to the payment experience with its usable checkout state.
+
+3a: If an invoked supporting use case does not succeed, Tripma returns to the payment experience with its usable checkout state.
 
 EF-3: Payment is not accepted
-10a. If payment processing does not succeed, API-BOOKING-CREATE returns the corresponding payment outcome.
-10b. Tripma preserves the usable checkout state and does not open the success experience.
+
+10a: If payment processing does not succeed, API-BOOKING-CREATE returns the corresponding payment outcome.
+
+10b: Tripma preserves the usable checkout state and does not open the success experience.
 
 EF-4: Booking context changed
-9a. If the current booking contexts can no longer be accepted, API-BOOKING-CREATE returns a conflict outcome.
-9b. Tripma directs the visitor to the affected booking step.
+
+9a: If the current booking contexts can no longer be accepted, API-BOOKING-CREATE returns a conflict outcome.
+
+9b: Tripma directs the visitor to the affected booking step.
 
 EF-5: Booking operation fails
-11a. If the booking operation cannot be completed, Tripma presents a recoverable outcome.
-11b. No success experience is opened.
+
+11a: If the booking operation cannot be completed, Tripma presents a recoverable outcome.
+
+11b: No success experience is opened.
 
 EF-6: Request cannot be completed
-8a. If Tripma cannot complete the request because of a technical failure, it preserves the checkout form and presents a retryable error state.
+
+8a: If Tripma cannot complete the request because of a technical failure, it preserves the checkout form and presents a retryable error state.
 
 EF-7: Payment method cannot be saved
-14a. If UC-13 cannot save the reusable payment method after booking completion, Tripma reports that outcome without reversing the completed booking or payment.
-14b. The Basic Flow resumes at step 15.
+
+14a: If UC-13 cannot save the reusable payment method after booking completion, Tripma reports that outcome without reversing the completed booking or payment.
+
+14b: The Basic Flow resumes at step 15.
 
 ### Related UI
 
@@ -252,7 +282,7 @@ BookingConfirmationDto --> "1" PaymentStatus : paymentStatus
 The following rules are authoritative for Prompt E. OCL is preserved where applicable; technical or non-OCL constraints remain authoritative natural-language requirements.
 
 ~~~text
-BR-PAY-001: Current checkout context
+BR-PAY-001 - Current checkout context
 context MakePaymentService::makePayment(
   dto : MakePaymentDto,
   currentUserId : UUID,
@@ -268,7 +298,7 @@ pre BR_PAY_001_ContextLineage:
   )
 
 
-BR-PAY-002: Guest or authenticated checkout
+BR-PAY-002 - Guest or authenticated checkout
 context MakePaymentService::makePayment(
   dto : MakePaymentDto,
   currentUserId : UUID,
@@ -279,7 +309,7 @@ pre BR_PAY_002_CurrentUser:
   User.allInstances()->exists(user | user.id = currentUserId)
 
 
-BR-PAY-003: Supported payment method
+BR-PAY-003 - Supported payment method
 context MakePaymentService::makePayment(
   dto : MakePaymentDto,
   currentUserId : UUID,
@@ -289,7 +319,7 @@ pre BR_PAY_003_Method:
   PaymentMethod::allInstances()->includes(dto.payment.paymentMethod)
 
 
-BR-PAY-004: Credit-card information
+BR-PAY-004 - Credit-card information
 context MakePaymentService::makePayment(
   dto : MakePaymentDto,
   currentUserId : UUID,
@@ -304,7 +334,7 @@ pre BR_PAY_004_CardFields:
     not dto.payment.expireDate.oclIsUndefined()
 
 
-BR-PAY-005: Credit-card number
+BR-PAY-005 - Credit-card number
 context MakePaymentService::makePayment(
   dto : MakePaymentDto,
   currentUserId : UUID,
@@ -315,7 +345,7 @@ pre BR_PAY_005_CardNumber:
     isPaymentCardNumber(dto.payment.cardNumber)
 
 
-BR-PAY-006: Credit-card security code
+BR-PAY-006 - Credit-card security code
 context MakePaymentService::makePayment(
   dto : MakePaymentDto,
   currentUserId : UUID,
@@ -326,7 +356,7 @@ pre BR_PAY_006_SecurityCode:
     isCardSecurityCode(dto.payment.securityCode)
 
 
-BR-PAY-007: Credit-card expiration
+BR-PAY-007 - Credit-card expiration
 context MakePaymentService::makePayment(
   dto : MakePaymentDto,
   currentUserId : UUID,
@@ -337,7 +367,7 @@ pre BR_PAY_007_Expiration:
     isFutureCardExpiry(dto.payment.expireDate)
 
 
-BR-PAY-008: Provider payment information
+BR-PAY-008 - Provider payment information
 context MakePaymentService::makePayment(
   dto : MakePaymentDto,
   currentUserId : UUID,
@@ -349,7 +379,7 @@ pre BR_PAY_008_ProviderToken:
     trim(dto.payment.providerToken) <> ''
 
 
-BR-PAY-009: Billing address
+BR-PAY-009 - Billing address
 context MakePaymentService::makePayment(
   dto : MakePaymentDto,
   currentUserId : UUID,
@@ -362,7 +392,7 @@ pre BR_PAY_009_Address:
   )
 
 
-BR-PAY-010: Checkout readiness
+BR-PAY-010 - Checkout readiness
 context MakePaymentService::canSubmit(
   dto : MakePaymentDto,
   currentUserId : UUID
@@ -392,7 +422,7 @@ post BR_PAY_010_Result:
       checkoutContextFor(dto.seatSelectionContextKey))
 
 
-BR-PAY-011: Payment authorization
+BR-PAY-011 - Payment authorization
 context MakePaymentService::makePayment(
   dto : MakePaymentDto,
   currentUserId : UUID,
@@ -410,7 +440,7 @@ post BR_PAY_011_AuthorizedBeforeConfirmation:
       trim(payment.providerTransactionId) <> '')
 
 
-BR-PAY-012: Current flight and seat inventory
+BR-PAY-012 - Current flight and seat inventory
 context MakePaymentService::makePayment(
   dto : MakePaymentDto,
   currentUserId : UUID,
@@ -422,7 +452,7 @@ pre BR_PAY_012_Inventory:
   )
 
 
-BR-PAY-013: Baggage fee total
+BR-PAY-013 - Baggage fee total
 context MakePaymentService::makePayment(
   dto : MakePaymentDto,
   currentUserId : UUID,
@@ -435,7 +465,7 @@ post BR_PAY_013_BaggageFees:
     )
 
 
-BR-PAY-014: Upgrade fee total
+BR-PAY-014 - Upgrade fee total
 context MakePaymentService::makePayment(
   dto : MakePaymentDto,
   currentUserId : UUID,
@@ -447,7 +477,7 @@ post BR_PAY_014_UpgradeFees:
       checkoutContextFor(dto.seatSelectionContextKey).totalUpgradeAmount
 
 
-BR-PAY-015: Booking total
+BR-PAY-015 - Booking total
 context MakePaymentService::makePayment(
   dto : MakePaymentDto,
   currentUserId : UUID,
@@ -461,7 +491,7 @@ post BR_PAY_015_Total:
       result.data.upgradeFees
 
 
-BR-PAY-016: Atomic and idempotent booking creation
+BR-PAY-016 - Atomic and idempotent booking creation
 context MakePaymentService::makePayment(
   dto : MakePaymentDto,
   currentUserId : UUID,
@@ -476,11 +506,11 @@ post BR_PAY_016_BookingGraph:
       checkoutContextFor(dto.seatSelectionContextKey)
     )
 Technical constraints:
-- Booking, passenger, emergency-contact, baggage, seat-assignment and payment writes, together with the seat-availability update, must commit in one database transaction.
-- Repeating a request with the same idempotency key returns the original outcome and must not create another charge or booking.
+Booking, passenger, emergency-contact, baggage, seat-assignment and payment writes, together with the seat-availability update, must commit in one database transaction.
+Repeating a request with the same idempotency key returns the original outcome and must not create another charge or booking.
 
 
-BR-PAY-017: Booking confirmation
+BR-PAY-017 - Booking confirmation
 context MakePaymentService::makePayment(
   dto : MakePaymentDto,
   currentUserId : UUID,
@@ -497,20 +527,19 @@ post BR_PAY_017_Confirmation:
     not result.data.createdAt.oclIsUndefined()
 
 
-BR-PAY-018: Sensitive payment-data handling
+BR-PAY-018 - Sensitive payment-data handling
 Raw card numbers and security codes shall not be stored in Booking or
 PaymentInfo records and shall not be returned by
 API-BOOKING-CREATE.
 Technical constraints:
-- Raw card data and security codes must not be written to application logs, analytics, URLs or query strings.
-- Provider tokens must be encrypted at rest and excluded from default ORM selection and API responses.
-- A security code is used only for the immediate authorization attempt and is discarded afterward.
+Raw card data and security codes must not be written to application logs, analytics, URLs or query strings.
+Provider tokens must be encrypted at rest and excluded from default ORM selection and API responses.
+A security code is used only for the immediate authorization attempt and is discarded afterward.
 
 
-BR-PAY-019: Cancellation-term snapshot
+BR-PAY-019 - Cancellation-term snapshot
 Every successfully created booking shall own one BookingCancellationTerm that
 captures the applicable policy code, cancellation deadline, refund rate,
 cancellation fee, and currency when the booking is purchased. Later policy
 changes shall not modify that recorded term.
-
 ~~~

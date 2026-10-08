@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-16
 uc_name: "View order history"
 ---
@@ -52,17 +52,19 @@ POST-1: The client displays the returned order summaries.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Return to My Info
 
-1. The customer returns to My Info.
-2. The client opens My Info.
+5a: The customer returns to My Info.
+
+5b: The client opens My Info.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Retry the order list
 
-1. The system returns a temporary service failure.
-2. The client presents a retry action in the order list.
+3a: The system returns a temporary service failure.
+
+3b: The client presents a retry action in the order list.
 
 ### Related UI
 
@@ -70,8 +72,8 @@ EF-1:
 
 ### Related API IDs
 
-- [API-ORDERS](../api/api-orders.md)
-- [API-ORDER-DETAIL](../api/api-order-detail.md)
+- [API-ORDERS](../api/API-ORDERS.md)
+- [API-ORDER-DETAIL](../api/API-ORDER-DETAIL.md)
 
 ### Notes
 
@@ -140,52 +142,52 @@ Order --> "1" Money : total
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-16-01
--- Source: Assumption
+~~~text
+BR-ORDER-HISTORY-01 - Account Context
+Source: Assumption
 context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)
-pre BR_UC_16_01_AccountContext:
+pre BR_ORDER_HISTORY_01_AccountContext:
   ctx.authenticated
 ~~~
-~~~ocl
--- BR-UC-16-02
--- Source: Assumption
+~~~text
+BR-ORDER-HISTORY-02 - Customer Summaries
+Source: Assumption
 context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)
-post BR_UC_16_02_CustomerSummaries:
+post BR_ORDER_HISTORY_02_CustomerSummaries:
   result->forAll(o | o.customerId = ctx.customerId)
 ~~~
-~~~ocl
--- BR-UC-16-03
--- Source: Assumption
+~~~text
+BR-ORDER-HISTORY-03 - Distinct Orders
+Source: Assumption
 context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)
-post BR_UC_16_03_DistinctOrders:
+post BR_ORDER_HISTORY_03_DistinctOrders:
   result->isUnique(id)
 ~~~
-~~~ocl
--- BR-UC-16-04
--- Source: Assumption
+~~~text
+BR-ORDER-HISTORY-04 - Recent First
+Source: Assumption
 context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)
-post BR_UC_16_04_RecentFirst:
+post BR_ORDER_HISTORY_04_RecentFirst:
   result->forAll(a,b | a.placedAt > b.placedAt implies result->indexOf(a) < result->indexOf(b))
 ~~~
-~~~ocl
--- BR-UC-16-05
--- Source: Assumption
+~~~text
+BR-ORDER-HISTORY-05 - Placement Ties
+Source: Assumption
 context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)
-post BR_UC_16_05_PlacementTies:
+post BR_ORDER_HISTORY_05_PlacementTies:
   result->forAll(a,b | a.placedAt = b.placedAt and a.number < b.number implies result->indexOf(a) < result->indexOf(b))
 ~~~
-~~~ocl
--- BR-UC-16-06
--- Source: Assumption
+~~~text
+BR-ORDER-HISTORY-06 - Order Number Identity
+Source: Assumption
 context Order
-inv BR_UC_16_06_OrderNumberIdentity:
+inv BR_ORDER_HISTORY_06_OrderNumberIdentity:
   Order.allInstances()->isUnique(number)
 ~~~
-~~~ocl
--- BR-UC-16-07
--- Source: Assumption
+~~~text
+BR-ORDER-HISTORY-07 - Summary Snapshot Preserved
+Source: Assumption
 context OrderService::list(ctx: RequestContext, tab: OrderTab): Sequence(Order)
-post BR_UC_16_07_SummarySnapshotPreserved:
+post BR_ORDER_HISTORY_07_SummarySnapshotPreserved:
   Order.allInstances()->forAll(o | o.status = o.status@pre and o.total = o.total@pre and o.paymentMethod = o.paymentMethod@pre and o.placedAt = o.placedAt@pre and o.items = o.items@pre)
 ~~~

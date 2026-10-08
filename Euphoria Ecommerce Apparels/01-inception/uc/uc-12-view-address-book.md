@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-12
 uc_name: "View saved addresses"
 ---
@@ -50,17 +50,19 @@ POST-1: The client displays the returned address cards.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Open Add Address
 
-1. The customer chooses Add New in the address section.
-2. The client opens Add Address.
+4a: The customer chooses Add New in the address section.
+
+4b: The client opens Add Address.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Sign in to view addresses
 
-1. The system returns a rejected authentication context.
-2. The client presents the sign-in entry point.
+3a: The system returns a rejected authentication context.
+
+3b: The client presents the sign-in entry point.
 
 ### Related UI
 
@@ -68,7 +70,7 @@ EF-1:
 
 ### Related API IDs
 
-- [API-ADDRESSES](../api/api-addresses.md)
+- [API-ADDRESSES](../api/API-ADDRESSES.md)
 
 ### Notes
 
@@ -125,52 +127,52 @@ Address --> "1" AddressFields : details
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-12-01
--- Source: Assumption
+~~~text
+BR-ADDRESS-BOOK-01 - Account Context
+Source: Assumption
 context ProfileService::addresses(ctx: RequestContext): AddressBook
-pre BR_UC_12_01_AccountContext:
+pre BR_ADDRESS_BOOK_01_AccountContext:
   ctx.authenticated
 ~~~
-~~~ocl
--- BR-UC-12-02
--- Source: Assumption
+~~~text
+BR-ADDRESS-BOOK-02 - Book Reference
+Source: Assumption
 context ProfileService::addresses(ctx: RequestContext): AddressBook
-pre BR_UC_12_02_BookReference:
+pre BR_ADDRESS_BOOK_02_BookReference:
   AddressBook.allInstances()->exists(b | b.customerId = ctx.customerId)
 ~~~
-~~~ocl
--- BR-UC-12-03
--- Source: Assumption
+~~~text
+BR-ADDRESS-BOOK-03 - Book Identity
+Source: Assumption
 context ProfileService::addresses(ctx: RequestContext): AddressBook
-post BR_UC_12_03_BookIdentity:
+post BR_ADDRESS_BOOK_03_BookIdentity:
   result.customerId = ctx.customerId
 ~~~
-~~~ocl
--- BR-UC-12-04
--- Source: Assumption
+~~~text
+BR-ADDRESS-BOOK-04 - Address Entries
+Source: Assumption
 context ProfileService::addresses(ctx: RequestContext): AddressBook
-post BR_UC_12_04_AddressEntries:
+post BR_ADDRESS_BOOK_04_AddressEntries:
   result.items = Address.allInstances()->select(a | a.customerId = ctx.customerId)->sortedBy(a | a.id)
 ~~~
-~~~ocl
--- BR-UC-12-05
--- Source: Assumption
+~~~text
+BR-ADDRESS-BOOK-05 - Single Shipping Default
+Source: Assumption
 context AddressBook
-inv BR_UC_12_05_SingleShippingDefault:
+inv BR_ADDRESS_BOOK_05_SingleShippingDefault:
   self.items->select(a | a.defaultShipping)->size() <= 1
 ~~~
-~~~ocl
--- BR-UC-12-06
--- Source: Assumption
+~~~text
+BR-ADDRESS-BOOK-06 - Single Billing Default
+Source: Assumption
 context AddressBook
-inv BR_UC_12_06_SingleBillingDefault:
+inv BR_ADDRESS_BOOK_06_SingleBillingDefault:
   self.items->select(a | a.defaultBilling)->size() <= 1
 ~~~
-~~~ocl
--- BR-UC-12-07
--- Source: Assumption
+~~~text
+BR-ADDRESS-BOOK-07 - Book Unchanged
+Source: Assumption
 context ProfileService::addresses(ctx: RequestContext): AddressBook
-post BR_UC_12_07_BookUnchanged:
+post BR_ADDRESS_BOOK_07_BookUnchanged:
   AddressBook.allInstances()->forAll(b | b.version = b.version@pre and b.items = b.items@pre) and Address.allInstances()->forAll(a | a.defaultShipping = a.defaultShipping@pre and a.defaultBilling = a.defaultBilling@pre and a.details = a.details@pre)
 ~~~

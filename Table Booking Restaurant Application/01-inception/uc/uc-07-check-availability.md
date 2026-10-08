@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-07
 uc_name: "Check Table Availability"
 ---
@@ -50,27 +50,27 @@ POST-1: The client displays returned time slots or an empty state.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Change the Dining Date
 
-1. The customer changes the date and views refreshed slots.
+1a: The customer changes the date and views refreshed slots.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Slot Retrieval Failure
 
-1. The client shows a retry state if slot retrieval fails.
+3a: The client shows a retry state if slot retrieval fails.
 
 ### Related UI
 
-- [time slots reservation page](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=772-1137) (`772:1137`)
-- [not available](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=772-1139) (`772:1139`)
-- [select date](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=772-1127) (`772:1127`)
-- [restaurant booking view](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=88-41) (`88:41`)
-- [single restaurant page mobile](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=4611-4460) (`4611:4460`)
+- [time slots reservation page](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=772-1137) (772:1137)
+- [not available](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=772-1139) (772:1139)
+- [select date](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=772-1127) (772:1127)
+- [restaurant booking view](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=88-41) (88:41)
+- [single restaurant page mobile](https://www.figma.com/design/BKc1SojjRCQwSPPzZpvDn2/Table-Booking-Restaurant-Application--Web---Mobile---Admin-Panels---Community---Copy-?node-id=4611-4460) (4611:4460)
 
 ### Related API IDs
 
-- [API-SLOT-LIST](../api/api-slot-list.md)
+- [API-SLOT-LIST](../api/API-SLOT-LIST.md)
 
 ### Notes
 
@@ -131,52 +131,52 @@ Restaurant --> "1" RestaurantStatus : status
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-07-01
--- Source: Assumption
+~~~text
+BR-CHECK-AVAILABILITY-01 - Valid Search Window
+Source: Assumption
 context BookingService::availableSlots(command: AvailabilityCriteria): Sequence(ReservationSlot)
-pre BR_UC_07_01_ValidSearchWindow:
+pre BR_CHECK_AVAILABILITY_01_ValidSearchWindow:
   command.partySize > 0 and command.date >= Date::today()
 ~~~
-~~~ocl
--- BR-UC-07-02
--- Source: Assumption
+~~~text
+BR-CHECK-AVAILABILITY-02 - Only Matching Slots
+Source: Assumption
 context BookingService::availableSlots(command: AvailabilityCriteria): Sequence(ReservationSlot)
-post BR_UC_07_02_OnlyMatchingSlots:
+post BR_CHECK_AVAILABILITY_02_OnlyMatchingSlots:
   result->forAll(s | s.restaurant.id = command.restaurantId and s.date = command.date and s.remainingSeats >= command.partySize)
 ~~~
-~~~ocl
--- BR-UC-07-03
--- Source: Assumption
+~~~text
+BR-CHECK-AVAILABILITY-03 - Slots Appear In Time Order
+Source: Assumption
 context BookingService::availableSlots(command: AvailabilityCriteria): Sequence(ReservationSlot)
-post BR_UC_07_03_SlotsAppearInTimeOrder:
+post BR_CHECK_AVAILABILITY_03_SlotsAppearInTimeOrder:
   SequenceUtils::isAscendingByStartTime(result)
 ~~~
-~~~ocl
--- BR-UC-07-04
--- Source: Assumption
+~~~text
+BR-CHECK-AVAILABILITY-04 - Availability Restaurant Is Published
+Source: Assumption
 context BookingService::availableSlots(command: AvailabilityCriteria): Sequence(ReservationSlot)
-pre BR_UC_07_04_AvailabilityRestaurantIsPublished:
+pre BR_CHECK_AVAILABILITY_04_AvailabilityRestaurantIsPublished:
   Restaurant.allInstances()->exists(r | r.id = command.restaurantId and r.status = RestaurantStatus::PUBLISHED)
 ~~~
-~~~ocl
--- BR-UC-07-05
--- Source: Assumption
+~~~text
+BR-CHECK-AVAILABILITY-05 - Available Slots Are Unique
+Source: Assumption
 context BookingService::availableSlots(command: AvailabilityCriteria): Sequence(ReservationSlot)
-post BR_UC_07_05_AvailableSlotsAreUnique:
+post BR_CHECK_AVAILABILITY_05_AvailableSlotsAreUnique:
   result->isUnique(s | s.id)
 ~~~
-~~~ocl
--- BR-UC-07-06
--- Source: Assumption
+~~~text
+BR-CHECK-AVAILABILITY-06 - Available Slots Are Future
+Source: Assumption
 context BookingService::availableSlots(command: AvailabilityCriteria): Sequence(ReservationSlot)
-post BR_UC_07_06_AvailableSlotsAreFuture:
+post BR_CHECK_AVAILABILITY_06_AvailableSlotsAreFuture:
   result->forAll(s | s.startsAt > DateTime::now())
 ~~~
-~~~ocl
--- BR-UC-07-07
--- Source: Assumption
+~~~text
+BR-CHECK-AVAILABILITY-07 - Remaining Seats Do Not Exceed Capacity
+Source: Assumption
 context BookingService::availableSlots(command: AvailabilityCriteria): Sequence(ReservationSlot)
-post BR_UC_07_07_RemainingSeatsDoNotExceedCapacity:
+post BR_CHECK_AVAILABILITY_07_RemainingSeatsDoNotExceedCapacity:
   result->forAll(s | s.remainingSeats <= s.seatCapacity)
 ~~~

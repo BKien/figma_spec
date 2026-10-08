@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-05
 uc_name: "Watch a Live Stream"
 ---
@@ -50,27 +50,29 @@ POST-1: The client displays live playback and the viewer controls returned by th
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Open Viewer Session Menu
 
-1. The viewer opens the session menu.
-2. The client displays the viewer actions shown by the design.
+4a: The viewer opens the session menu.
+
+4b: The client displays the viewer actions shown by the design.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Live Session Unavailable
 
-1. The live-session representation cannot be returned.
-2. The client displays the visible loading or unavailable state.
+3a: The live-session representation cannot be returned.
+
+3b: The client displays the visible loading or unavailable state.
 
 ### Related UI
 
-- Live Streaming Viewer `6007:51397`.
-- Live Streaming Mobile Preview `6012:44409`.
+- Live Streaming Viewer 6007:51397.
+- Live Streaming Mobile Preview 6012:44409.
 
 ### Related API IDs
 
-`API-LIVE-STREAM-VIEW`.
-`API-SESSION-STATE`.
+API-LIVE-STREAM-VIEW.
+API-SESSION-STATE.
 
 ### Notes
 
@@ -90,12 +92,12 @@ class LiveStreamService {
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-05-01
--- Source: Assumption
--- Assumption: A-19
+~~~text
+BR-WATCH-STREAM-01 - Authenticated Membership
+Source: Assumption
+Assumption: A-19
 context LiveStreamService::view(sessionId: String, participantId: String, session: Session, stream: LiveStream): ViewerSession
-pre BR_UC_05_01_AuthenticatedMembership:
+pre BR_WATCH_STREAM_01_AuthenticatedMembership:
   RequestContext::authenticated and RequestContext::sessionId = sessionId and
   participantId = RequestContext::participantId and
   Participant.allInstances()->exists(p | p.id = participantId and
@@ -103,59 +105,59 @@ pre BR_UC_05_01_AuthenticatedMembership:
     p.status = ParticipantStatus::JOINED)
 ~~~
 
-~~~ocl
--- BR-UC-05-02
--- Source: Assumption
--- Assumption: A-05
+~~~text
+BR-WATCH-STREAM-02 - Viewer Target
+Source: Assumption
+Assumption: A-05
 context LiveStreamService::view(sessionId: String, participantId: String, session: Session, stream: LiveStream): ViewerSession
-pre BR_UC_05_02_ViewerTarget:
+pre BR_WATCH_STREAM_02_ViewerTarget:
   session.id = sessionId and stream.sessionId = sessionId and session.kind = SessionKind::LIVE_STREAM and
   session.status <> SessionStatus::ENDED and Participant.allInstances()->exists(p | p.id = participantId and
     (p.role = ParticipantRole::VIEWER or p.role = ParticipantRole::STAGE_PARTICIPANT))
 ~~~
 
-~~~ocl
--- BR-UC-05-03
--- Source: Assumption
--- Assumption: A-05
+~~~text
+BR-WATCH-STREAM-03 - Viewer Representation
+Source: Assumption
+Assumption: A-05
 context LiveStreamService::view(sessionId: String, participantId: String, session: Session, stream: LiveStream): ViewerSession
-post BR_UC_05_03_ViewerRepresentation:
+post BR_WATCH_STREAM_03_ViewerRepresentation:
   result.sessionId = session.id and result.participantId = participantId and
   result.role = Participant.allInstances()->any(p | p.id = participantId).role
 ~~~
 
-~~~ocl
--- BR-UC-05-04
--- Source: Assumption
--- Assumption: A-05
+~~~text
+BR-WATCH-STREAM-04 - Stream Snapshot
+Source: Assumption
+Assumption: A-05
 context LiveStreamService::view(sessionId: String, participantId: String, session: Session, stream: LiveStream): ViewerSession
-post BR_UC_05_04_StreamSnapshot:
+post BR_WATCH_STREAM_04_StreamSnapshot:
   result.streamStatus = stream.status and result.streamVersion = stream.version and result.sessionVersion = session.version
 ~~~
 
-~~~ocl
--- BR-UC-05-05
--- Source: Assumption
--- Assumption: A-05
+~~~text
+BR-WATCH-STREAM-05 - Playback Availability
+Source: Assumption
+Assumption: A-05
 context LiveStreamService::view(sessionId: String, participantId: String, session: Session, stream: LiveStream): ViewerSession
-post BR_UC_05_05_PlaybackAvailability:
+post BR_WATCH_STREAM_05_PlaybackAvailability:
   result.canPlayMedia = (stream.status = StreamStatus::LIVE)
 ~~~
 
-~~~ocl
--- BR-UC-05-06
--- Source: Assumption
--- Assumption: A-05
+~~~text
+BR-WATCH-STREAM-06 - Publishing Availability
+Source: Assumption
+Assumption: A-05
 context LiveStreamService::view(sessionId: String, participantId: String, session: Session, stream: LiveStream): ViewerSession
-post BR_UC_05_06_PublishingAvailability:
+post BR_WATCH_STREAM_06_PublishingAvailability:
   result.canPublishMedia = (stream.status = StreamStatus::LIVE and result.role = ParticipantRole::STAGE_PARTICIPANT)
 ~~~
 
-~~~ocl
--- BR-UC-05-07
--- Source: Assumption
--- Assumption: A-05
+~~~text
+BR-WATCH-STREAM-07 - Muted Playback Start
+Source: Assumption
+Assumption: A-05
 context LiveStreamService::view(sessionId: String, participantId: String, session: Session, stream: LiveStream): ViewerSession
-post BR_UC_05_07_MutedPlaybackStart:
+post BR_WATCH_STREAM_07_MutedPlaybackStart:
   result.initialAudioMuted
 ~~~

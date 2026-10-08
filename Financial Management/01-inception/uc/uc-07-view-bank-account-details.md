@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-07
 uc_name: "View Bank Account Details"
 ---
@@ -40,6 +40,7 @@ PRE-1: The application view is open in the client.
 ### Post-Condition(s)
 
 POST-1: On success, the client displays the returned account details and recent activity.
+
 POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Basic Flow
@@ -51,23 +52,27 @@ POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Display No Recent Account Activity
 
-1. The system returns no recent transactions.
-2. The client displays the account with an empty recent-activity panel.
+3a: The system returns no recent transactions.
+
+3b: The client displays the account with an empty recent-activity panel.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Account Detail Operation Error
 
-1. The system returns an operation error.
-2. The client displays the error message and keeps the current view open.
-3. The actor revises the interaction or retries the request.
+3c: The system returns an operation error.
 
-EF-2:
+3d: The client displays the error message and keeps the current view open.
 
-1. The system returns a rejected authentication context.
-2. The client presents the login entry point.
+3e: The actor revises the interaction or retries the request.
+
+EF-2: Account Detail Authentication Rejected
+
+3f: The system returns a rejected authentication context.
+
+3g: The client presents the login entry point.
 
 ### Related UI
 
@@ -75,7 +80,7 @@ EF-2:
 
 ### Related API IDs
 
-- [API-ACCOUNT-DETAIL](../api/api-account-detail.md)
+- [API-ACCOUNT-DETAIL](../api/API-ACCOUNT-DETAIL.md)
 
 ### Notes
 
@@ -206,76 +211,76 @@ end note
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-07-01
--- Source: Product source
+~~~text
+BR-ACCOUNT-DETAIL-01 - Authenticated Context
+Source: Product source
 context AccountService::detail(ctx: RequestContext, cmd: AccountDetailQuery): AccountDetailResult
-pre BR_UC_07_01_AuthenticatedContext:
+pre BR_ACCOUNT_DETAIL_01_AuthenticatedContext:
   ctx.authenticated and User.allInstances()->exists(u | u.id = ctx.userId)
 ~~~
 
-~~~ocl
--- BR-UC-07-02
--- Source: Product source
+~~~text
+BR-ACCOUNT-DETAIL-02 - Ownership
+Source: Product source
 context AccountService::detail(ctx: RequestContext, cmd: AccountDetailQuery): AccountDetailResult
-pre BR_UC_07_02_Ownership:
+pre BR_ACCOUNT_DETAIL_02_Ownership:
   Account.allInstances()->exists(a | a.id = cmd.accountId and a.userId = ctx.userId)
 ~~~
 
-~~~ocl
--- BR-UC-07-03
--- Source: Product source
+~~~text
+BR-ACCOUNT-DETAIL-03 - Account Mapping
+Source: Product source
 context AccountService::detail(ctx: RequestContext, cmd: AccountDetailQuery): AccountDetailResult
-post BR_UC_07_03_AccountMapping:
+post BR_ACCOUNT_DETAIL_03_AccountMapping:
   result.success implies Account.allInstances()->exists(a | a.id = result.account.id and a.id = cmd.accountId and a.userId = ctx.userId and a.bankName = result.account.bankName and a.accountType = result.account.accountType and a.branchName = result.account.branchName and a.balance = result.account.balance and a.version = result.account.version)
 ~~~
 
-~~~ocl
--- BR-UC-07-04
--- Source: Product source
+~~~text
+BR-ACCOUNT-DETAIL-04 - Full Number
+Source: Product source
 context AccountService::detail(ctx: RequestContext, cmd: AccountDetailQuery): AccountDetailResult
-post BR_UC_07_04_FullNumber:
+post BR_ACCOUNT_DETAIL_04_FullNumber:
   result.success implies result.account.fullNumber = AccountVault::decrypt(Account.allInstances()->any(a | a.id = cmd.accountId).numberCiphertext)
 ~~~
 
-~~~ocl
--- BR-UC-07-05
--- Source: Assumption
+~~~text
+BR-ACCOUNT-DETAIL-05 - Exact Recent
+Source: Assumption
 context AccountService::detail(ctx: RequestContext, cmd: AccountDetailQuery): AccountDetailResult
-post BR_UC_07_05_ExactRecent:
+post BR_ACCOUNT_DETAIL_05_ExactRecent:
   result.success implies let eligible : Set(Transaction) = Transaction.allInstances()->select(t | t.accountId = cmd.accountId)->asSet() in result.recent->collect(id)->asSet() = eligible->select(t | eligible->select(other | other.date.ordinal > t.date.ordinal or (other.date.ordinal = t.date.ordinal and other.id > t.id))->size() < 5)->collect(id)->asSet() and result.recent->isUnique(id)
 ~~~
 
-~~~ocl
--- BR-UC-07-06
--- Source: Assumption
+~~~text
+BR-ACCOUNT-DETAIL-06 - Recent Order
+Source: Assumption
 context AccountService::detail(ctx: RequestContext, cmd: AccountDetailQuery): AccountDetailResult
-post BR_UC_07_06_RecentOrder:
+post BR_ACCOUNT_DETAIL_06_RecentOrder:
   result.recent->size() <= 1 or Sequence{1..result.recent->size()-1}->forAll(i | result.recent->at(i).date.ordinal > result.recent->at(i+1).date.ordinal or (result.recent->at(i).date.ordinal = result.recent->at(i+1).date.ordinal and result.recent->at(i).id > result.recent->at(i+1).id))
 ~~~
 
-~~~ocl
--- BR-UC-07-07
--- Source: Product source
+~~~text
+BR-ACCOUNT-DETAIL-07 - Recent Projection
+Source: Product source
 context AccountService::detail(ctx: RequestContext, cmd: AccountDetailQuery): AccountDetailResult
-post BR_UC_07_07_RecentProjection:
+post BR_ACCOUNT_DETAIL_07_RecentProjection:
   result.recent->forAll(v | Transaction.allInstances()->exists(t | t.id = v.id and t.accountId = cmd.accountId and t.date = v.date and t.description = v.description and t.type = v.type and t.status = v.status and t.receiptId = v.receiptId and v.amount = (if t.type = TransactionType::Expense then -t.amount else t.amount endif)))
 ~~~
 
-~~~ocl
--- BR-UC-07-08
--- Source: Product source
--- Equality denotes the complete persistent value snapshot, including every property, not object identity alone.
+~~~text
+BR-ACCOUNT-DETAIL-08 - Account Unchanged
+Source: Product source
+Note: Equality denotes the complete persistent value snapshot, including every property, not object identity alone.
 context AccountService::detail(ctx: RequestContext, cmd: AccountDetailQuery): AccountDetailResult
-post BR_UC_07_08_AccountUnchanged:
+post BR_ACCOUNT_DETAIL_08_AccountUnchanged:
   Account.allInstances()->collect(e | Tuple{id = e.id, userId = e.userId, bankName = e.bankName, accountType = e.accountType, branchName = e.branchName, numberCiphertext = e.numberCiphertext, numberFingerprint = e.numberFingerprint, last4 = e.last4, balance = e.balance, version = e.version, createdAt = e.createdAt})->asSet() = Account.allInstances()@pre->collect(e | Tuple{id = e.id@pre, userId = e.userId@pre, bankName = e.bankName@pre, accountType = e.accountType@pre, branchName = e.branchName@pre, numberCiphertext = e.numberCiphertext@pre, numberFingerprint = e.numberFingerprint@pre, last4 = e.last4@pre, balance = e.balance@pre, version = e.version@pre, createdAt = e.createdAt@pre})->asSet()
 ~~~
 
-~~~ocl
--- BR-UC-07-09
--- Source: Product source
--- Equality denotes the complete persistent value snapshot, including every property, not object identity alone.
+~~~text
+BR-ACCOUNT-DETAIL-09 - Transaction Unchanged
+Source: Product source
+Note: Equality denotes the complete persistent value snapshot, including every property, not object identity alone.
 context AccountService::detail(ctx: RequestContext, cmd: AccountDetailQuery): AccountDetailResult
-post BR_UC_07_09_TransactionUnchanged:
+post BR_ACCOUNT_DETAIL_09_TransactionUnchanged:
   Transaction.allInstances()->collect(e | Tuple{id = e.id, accountId = e.accountId, categoryId = e.categoryId, date = e.date, type = e.type, status = e.status, description = e.description, shopName = e.shopName, paymentMethod = e.paymentMethod, amount = e.amount, receiptId = e.receiptId, createdAt = e.createdAt})->asSet() = Transaction.allInstances()@pre->collect(e | Tuple{id = e.id@pre, accountId = e.accountId@pre, categoryId = e.categoryId@pre, date = e.date@pre, type = e.type@pre, status = e.status@pre, description = e.description@pre, shopName = e.shopName@pre, paymentMethod = e.paymentMethod@pre, amount = e.amount@pre, receiptId = e.receiptId@pre, createdAt = e.createdAt@pre})->asSet()
 ~~~

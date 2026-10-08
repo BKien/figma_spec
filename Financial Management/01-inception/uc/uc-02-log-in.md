@@ -1,6 +1,6 @@
 ---
 artifact_type: business-use-case-specification
-status: "Draft"
+status: Frozen
 uc_id: UC-02
 uc_name: "Log In"
 ---
@@ -40,6 +40,7 @@ PRE-1: The application view is open in the client.
 ### Post-Condition(s)
 
 POST-1: On success, the client opens the home page with the returned user session.
+
 POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Basic Flow
@@ -54,18 +55,21 @@ POST-2: On failure, the client displays a recovery message in the current view.
 
 ### Alternative Flow
 
-AF-1:
+AF-1: Create an Account Instead
 
-1. The visitor selects Create an account.
-2. The client opens the registration page.
+4a: The visitor selects Create an account.
+
+4b: The client opens the registration page.
 
 ### Exception Flow
 
-EF-1:
+EF-1: Login Operation Error
 
-1. The system returns an operation error.
-2. The client displays the error message and keeps the current view open.
-3. The actor revises the interaction or retries the request.
+6a: The system returns an operation error.
+
+6b: The client displays the error message and keeps the current view open.
+
+6c: The actor revises the interaction or retries the request.
 
 ### Related UI
 
@@ -73,7 +77,7 @@ EF-1:
 
 ### Related API IDs
 
-- [API-AUTH-LOGIN](../api/api-auth-login.md)
+- [API-AUTH-LOGIN](../api/API-AUTH-LOGIN.md)
 
 ### Notes
 
@@ -151,76 +155,76 @@ ClientSession --> PublicUser : user
 
 ## Business Rules
 
-~~~ocl
--- BR-UC-02-01
--- Source: Product source
+~~~text
+BR-LOGIN-01 - Email
+Source: Product source
 context AuthService::login(ctx: RequestContext, cmd: LoginCommand): AuthResult
-pre BR_UC_02_01_Email:
+pre BR_LOGIN_01_Email:
   Text::email(Text::lower(Text::trim(cmd.email)))
 ~~~
 
-~~~ocl
--- BR-UC-02-02
--- Source: Product source
+~~~text
+BR-LOGIN-02 - Password Present
+Source: Product source
 context AuthService::login(ctx: RequestContext, cmd: LoginCommand): AuthResult
-pre BR_UC_02_02_PasswordPresent:
+pre BR_LOGIN_02_PasswordPresent:
   cmd.password.size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-02-03
--- Source: Product source
--- evaluated distinguishes a completed credential evaluation from infrastructure failure; it is internal and not a wire field.
+~~~text
+BR-LOGIN-03 - Credentials
+Source: Product source
+Note: evaluated distinguishes a completed credential evaluation from infrastructure failure; it is internal and not a wire field.
 context AuthService::login(ctx: RequestContext, cmd: LoginCommand): AuthResult
-post BR_UC_02_03_Credentials:
+post BR_LOGIN_03_Credentials:
   result.evaluated implies result.success = User.allInstances()->exists(u | u.email = Text::lower(Text::trim(cmd.email)) and PasswordHasher::matches(cmd.password, u.passwordHash))
 ~~~
 
-~~~ocl
--- BR-UC-02-04
--- Source: Product source
+~~~text
+BR-LOGIN-04 - Correct Identity
+Source: Product source
 context AuthService::login(ctx: RequestContext, cmd: LoginCommand): AuthResult
-post BR_UC_02_04_CorrectIdentity:
+post BR_LOGIN_04_CorrectIdentity:
   result.success implies User.allInstances()->exists(u | u.id = result.user.id and u.email = Text::lower(Text::trim(cmd.email)) and u.email = result.user.email and u.fullName = result.user.fullName)
 ~~~
 
-~~~ocl
--- BR-UC-02-05
--- Source: Product source
+~~~text
+BR-LOGIN-05 - Session Issued
+Source: Product source
 context AuthService::login(ctx: RequestContext, cmd: LoginCommand): AuthResult
-post BR_UC_02_05_SessionIssued:
+post BR_LOGIN_05_SessionIssued:
   result.success implies not result.accessToken.oclIsUndefined() and result.accessToken.size() > 0
 ~~~
 
-~~~ocl
--- BR-UC-02-06
--- Source: Product source
+~~~text
+BR-LOGIN-06 - Failure Session
+Source: Product source
 context AuthService::login(ctx: RequestContext, cmd: LoginCommand): AuthResult
-post BR_UC_02_06_FailureSession:
+post BR_LOGIN_06_FailureSession:
   not result.success implies result.accessToken.oclIsUndefined() and result.user.oclIsUndefined()
 ~~~
 
-~~~ocl
--- BR-UC-02-07
--- Source: Product source
+~~~text
+BR-LOGIN-07 - No Secrets
+Source: Product source
 context AuthService::login(ctx: RequestContext, cmd: LoginCommand): AuthResult
-post BR_UC_02_07_NoSecrets:
+post BR_LOGIN_07_NoSecrets:
   result.secretFields->intersection(Set{'password','passwordHash'})->isEmpty() and result.loggedFields->intersection(Set{'password','passwordHash','accessToken'})->isEmpty()
 ~~~
 
-~~~ocl
--- BR-UC-02-08
--- Source: Product source
--- Equality denotes the complete persistent value snapshot, including every property, not object identity alone.
+~~~text
+BR-LOGIN-08 - User Unchanged
+Source: Product source
+Note: Equality denotes the complete persistent value snapshot, including every property, not object identity alone.
 context AuthService::login(ctx: RequestContext, cmd: LoginCommand): AuthResult
-post BR_UC_02_08_UserUnchanged:
+post BR_LOGIN_08_UserUnchanged:
   User.allInstances()->collect(e | Tuple{id = e.id, fullName = e.fullName, email = e.email, username = e.username, passwordHash = e.passwordHash, version = e.version})->asSet() = User.allInstances()@pre->collect(e | Tuple{id = e.id@pre, fullName = e.fullName@pre, email = e.email@pre, username = e.username@pre, passwordHash = e.passwordHash@pre, version = e.version@pre})->asSet()
 ~~~
 
-~~~ocl
--- BR-UC-02-09
--- Source: Assumption
+~~~text
+BR-LOGIN-09 - Memory Session
+Source: Assumption
 context AuthClient::establish(response: AuthResult): ClientSession
-post BR_UC_02_09_MemorySession:
+post BR_LOGIN_09_MemorySession:
   response.success implies result.accessToken = response.accessToken and result.user = response.user and result.storage = 'Memory' and result.durableFields->intersection(Set{'accessToken','password','passwordHash'})->isEmpty()
 ~~~
